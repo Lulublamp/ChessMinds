@@ -9,6 +9,7 @@
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
+    "start": "turbo run start",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\""
   },
@@ -18,8 +19,10 @@
     "turbo": "latest"
   },
   "engines": {
-    "node": ">=14.0.0"
+    "node": ">=14.20.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@nestjs/cli": "^9.2.0"
+  },
   "packageManager": "yarn@1.22.19"
 }

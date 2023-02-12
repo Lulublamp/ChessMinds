@@ -1,73 +1,49 @@
-# Turborepo starter
+# Projet Integrateur
 
-This is an official Yarn v1 starter turborepo.
+Monorepo initié avec [Turborepo]
 
-## What's inside?
+### Apps et Packages
 
-This turborepo uses [Yarn](https://classic.yarnpkg.com/) as a package manager. It includes the following packages/apps:
+- `backend`: [NestJs](https://docs.nestjs.com/) - Apps
+- `client`: Electron + React + Typescript app - Apps
+- `core`: Algorithme du jeu en Typescript - Packages
+- `eslint-config-custom`: Configurations `eslint` - Packages
+- `tsconfig`: Configurations Typescript `tsconfig.json` - Packages
 
-### Apps and Packages
+Pour la premier pull:
+- Dans le dossier racine exécuter la commande suivante : `yarn install`
 
-- `docs`: a [Next.js](https://nextjs.org/) app
-- `web`: another [Next.js](https://nextjs.org/) app
-- `ui`: a stub React component library shared by both `web` and `docs` applications
-- `eslint-config-custom`: `eslint` configurations (includes `eslint-config-next` and `eslint-config-prettier`)
-- `tsconfig`: `tsconfig.json`s used throughout the monorepo
+### Client
 
-Each package/app is 100% [TypeScript](https://www.typescriptlang.org/).
+#### Installation
 
-### Utilities
+Si vous n'avez pas de dossier node_modules dans votre dossier `client` vous devez :
+- Dans le dossier racine exécuter la commande suivante : `yarn workspace client install`
 
-This turborepo has some additional tools already setup for you:
+Si après que vous avez pull depuis gitlab et que vous avez des problèmes d'importation faite la même chose
 
-- [TypeScript](https://www.typescriptlang.org/) for static type checking
-- [ESLint](https://eslint.org/) for code linting
-- [Prettier](https://prettier.io) for code formatting
+#### Lancement
 
-### Build
+Pour lancer le client il faut soit : 
+- Se rendre sur `./apps/client`, puis exécuter la commande suivante : `yarn run start`
+ OU
+- Dans le dossier racine exécuter la commande suivante : `yarn workspace client run start`
 
-To build all apps and packages, run the following command:
+### Backend
 
-```
-cd my-turborepo
-yarn run build
-```
+#### Installation
 
-### Develop
+Si vous n'avez pas de dossier node_modules dans votre dossier `backend` vous devez :
+- Dans le dossier racine exécuter la commande suivante : `yarn workspace backend install`
 
-To develop all apps and packages, run the following command:
+Si après que vous avez pull depuis gitlab et que vous avez des problèmes d'importation faite la même chose
 
-```
-cd my-turborepo
-yarn run dev
-```
+#### Lancement
 
-### Remote Caching
+Pour lancer le backend il faut soit : 
+- Se rendre sur `./apps/backend`, puis exécuter la commande suivante : `yarn run start`
+ OU
+- Dans le dossier racine exécuter la commande suivante : `yarn workspace backend run start`
 
-Turborepo can use a technique known as [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching) to share cache artifacts across machines, enabling you to share build caches with your team and CI/CD pipelines.
+### Consignes
 
-By default, Turborepo will cache locally. To enable Remote Caching you will need an account with Vercel. If you don't have an account you can [create one](https://vercel.com/signup), then enter the following commands:
-
-```
-cd my-turborepo
-npx turbo login
-```
-
-This will authenticate the Turborepo CLI with your [Vercel account](https://vercel.com/docs/concepts/personal-accounts/overview).
-
-Next, you can link your Turborepo to your Remote Cache by running the following command from the root of your turborepo:
-
-```
-npx turbo link
-```
-
-## Useful Links
-
-Learn more about the power of Turborepo:
-
-- [Tasks](https://turbo.build/repo/docs/core-concepts/monorepos/running-tasks)
-- [Caching](https://turbo.build/repo/docs/core-concepts/caching)
-- [Remote Caching](https://turbo.build/repo/docs/core-concepts/remote-caching)
-- [Filtering](https://turbo.build/repo/docs/core-concepts/monorepos/filtering)
-- [Configuration Options](https://turbo.build/repo/docs/reference/configuration)
-- [CLI Usage](https://turbo.build/repo/docs/reference/command-line-reference)
