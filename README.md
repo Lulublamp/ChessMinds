@@ -20,7 +20,7 @@ Pour la premier pull:
 Si vous n'avez pas de dossier node_modules dans votre dossier `client` vous devez :
 - Dans le dossier racine exécuter la commande suivante : `yarn workspace client install`
 
-Si après que vous avez pull depuis gitlab et que vous avez des problèmes d'importation faite la même chose
+Si après que vous avez pull depuis gitlab et que vous avez des problèmes d'importation faites la même chose
 
 #### Lancement
 
@@ -36,7 +36,7 @@ Pour lancer le client il faut soit :
 Si vous n'avez pas de dossier node_modules dans votre dossier `backend` vous devez :
 - Dans le dossier racine exécuter la commande suivante : `yarn workspace backend install`
 
-Si après que vous avez pull depuis gitlab et que vous avez des problèmes d'importation faite la même chose
+Si après que vous avez pull depuis gitlab et que vous avez des problèmes d'importation faites la même chose
 
 #### Lancement
 
@@ -45,5 +45,7 @@ Pour lancer le backend il faut soit :
  OU
 - Dans le dossier racine exécuter la commande suivante : `yarn workspace backend run start`
 
-### Consignes
+### Autres
+
+- Vous pouvez lancer les deux en même temps avec la commande suivante : `yarn run start:all`
 
