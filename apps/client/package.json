@@ -1,5 +1,5 @@
 {
-  "name": "client",
+  "name": "@TRPI/client",
   "productName": "chess",
   "version": "1.0.0",
   "description": "ElectronApp",
