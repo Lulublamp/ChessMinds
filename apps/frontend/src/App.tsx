@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useState , useEffect} from 'react'
+import { useState , FC} from 'react'
 import './App.css'
 
 interface AppProps {
@@ -7,7 +7,7 @@ interface AppProps {
 }
 
 
-const App = ({windowContext} : AppProps) => {
+const App : FC<AppProps> = ({windowContext} : AppProps) => {
   const [count, setCount] = useState(0)
   const [communication , setCommunication] = useState('')
   
