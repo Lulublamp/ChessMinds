@@ -10,6 +10,6 @@ const CLIENT_API = {
 
 contextBridge.exposeInMainWorld('client', {
     test: () => {
-        console.log('Hello from the renderer process!');
+        console.log('Hello from main process via client API');
     }
 });

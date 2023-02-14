@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-interface */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * This file will automatically be loaded by webpack and run in the "renderer" context.
  * To learn more about the differences between the "main" and the "renderer" context in
@@ -30,10 +28,9 @@
 
 import './main'
 
-export const windowContext = (window as any).client;
+export const windowContext = (window as any).client
 
 console.log('👋 This message is being logged by "renderer.js", included via webpack');
-windowContext.test();
-
 
 // This file will automatically be loaded by webpack and run in the "renderer" context.
+windowContext.test()

@@ -9,15 +9,19 @@ let container: HTMLElement | null = null
 
 export const MainRenderer = (root: HTMLElement , windowContext: any) => {  
   if (!container) {
-    console.log('windowContext', windowContext)
     container = root
     ReactDOM.createRoot(root).render(
       <React.StrictMode>
         <App/>
       </React.StrictMode>,
     )
-
   }
 }
 
-MainRenderer(root , null)
+document.addEventListener('DOMContentLoaded', () => {
+  console.log('Je MainRender depuis le front ?')
+  MainRenderer(root , null);
+})
+
+// MainRenderer(root , null)
+
