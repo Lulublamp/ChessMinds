@@ -2,8 +2,12 @@ import * as React from 'react'
 import { useState , useEffect} from 'react'
 import './App.css'
 
+interface AppProps {
+  windowContext: any
+}
 
-export default function App() {
+
+const App = ({windowContext} : AppProps) => {
   const [count, setCount] = useState(0)
   const [communication , setCommunication] = useState('')
   
@@ -17,7 +21,17 @@ export default function App() {
         <button onClick={() => setCount((count) => count + 1)}>
           Simple compteur {count}
         </button>
+        <>
+          {
+            windowContext &&
+            <p>
+              {windowContext.test}
+            </p>
+          }
+        </>
       </div>
     </div>
   )
 }
+
+export default App
