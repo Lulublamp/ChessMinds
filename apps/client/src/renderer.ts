@@ -33,4 +33,3 @@ export const windowContext = (window as any).client
 console.log('👋 This message is being logged by "renderer.js", included via webpack');
 
 // This file will automatically be loaded by webpack and run in the "renderer" context.
-windowContext.test()
