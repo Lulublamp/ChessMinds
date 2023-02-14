@@ -12,7 +12,7 @@ export const MainRenderer = (root: HTMLElement , windowContext: any) => {
       container = root
       ReactDOM.createRoot(root).render(
         <React.StrictMode>
-          <App/>
+          <App windowContext={windowContext}/>
         </React.StrictMode>,
       )
     }
