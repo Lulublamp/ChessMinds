@@ -13,39 +13,55 @@ Monorepo initié avec [Turborepo]
 Pour la premier pull:
 - Dans le dossier racine exécuter la commande suivante : `yarn install`
 
-### Client
+### Description
+
+Le projet est divisé en 4 parties :
+- Le client qui est une application Electron qui utilise notre application React
+- le frontend qui est une application React qui permet de gérer l'interface graphique
+- Le backend qui est une application NestJs qui permet de gérer les parties
+- Le core qui est un package qui contient l'algorithme du jeu
+
+### Initialisation
+
+#### Prérequis
+
+- [NodeJs](https://nodejs.org/en/)
+- [Yarn](https://yarnpkg.com/)
+- [Turborepo](https://turborepo.com/)
 
 #### Installation
 
-Si vous n'avez pas de dossier node_modules dans votre dossier `client` vous devez :
-- Dans le dossier racine exécuter la commande suivante : `yarn workspace client install`
+Si vous n'avez pas de dossier node_modules dans votre dossier racine vous devez :
+- `yarn install`
 
 Si après que vous avez pull depuis gitlab et que vous avez des problèmes d'importation faites la même chose
 
-#### Lancement
+Après pour chaque dossier (client, backend, core , frontend) vous devez faire la même chose :
+- `yarn workspace @TRPI/--nom du dossier-- install`
 
-Pour lancer le client il faut soit : 
-- Se rendre sur `./apps/client`, puis exécuter la commande suivante : `yarn run start`
- OU
-- Dans le dossier racine exécuter la commande suivante : `yarn workspace client run start`
+Exemple : `yarn workspace @TRPI/client install`
 
-### Backend
+Egalement si vous voulez lancer une commande dans un dossier en particulier :
+- Depuis le dossier racine `yarn workspace @TRPI/--nom du dossier-- run --nom de la commande--` 
+Exemple : `yarn workspace @TRPI/client run start`
 
-#### Installation
+- Depuis le dossier en question `yarn run --nom de la commande--`
+Exemple : `yarn run start` dans le dossier `client`
 
-Si vous n'avez pas de dossier node_modules dans votre dossier `backend` vous devez :
-- Dans le dossier racine exécuter la commande suivante : `yarn workspace backend install`
+### Lancement
 
-Si après que vous avez pull depuis gitlab et que vous avez des problèmes d'importation faites la même chose
+#### Client
 
-#### Lancement
+- Depuis le dossier racine `yarn workspace @TRPI/client run start`
+- Depuis le dossier client `yarn run start`
 
-Pour lancer le backend il faut soit : 
-- Se rendre sur `./apps/backend`, puis exécuter la commande suivante : `yarn run start`
- OU
-- Dans le dossier racine exécuter la commande suivante : `yarn workspace backend run start`
+#### Frontend
 
-### Autres
+- Depuis le dossier racine `yarn workspace @TRPI/frontend run dev`
+- Depuis le dossier frontend `yarn run dev`
 
-- Vous pouvez lancer les deux en même temps avec la commande suivante : `yarn run start:all`
+#### Backend
+
+- Depuis le dossier racine `yarn workspace @TRPI/backend run start`
+- Depuis le dossier backend `yarn run start`
 

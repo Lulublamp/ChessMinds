@@ -1,13 +1,14 @@
 import * as React from 'react'
 import { useState , FC} from 'react'
 import './App.css'
+import  ClientApi from '@TRPI/client/electron/preload'
 
-interface AppProps {
-  windowContext: any
+interface IAppProps {
+  windowContext: ClientApi | null
 }
 
 
-const App : FC<AppProps> = ({windowContext} : AppProps) => {
+const App : FC<IAppProps> = ({windowContext} : IAppProps) => {
   const [count, setCount] = useState(0)
   const [communication , setCommunication] = useState('')
   

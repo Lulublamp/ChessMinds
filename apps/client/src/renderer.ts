@@ -27,8 +27,9 @@
  */
 
 import './main'
+import ClientApi from '../electron/preload'
 
-export const windowContext = (window as any).client
+export const windowContext: ClientApi = (window as any).client
 
 console.log('👋 This message is being logged by "renderer.js", included via webpack');
 
