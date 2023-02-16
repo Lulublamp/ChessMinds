@@ -14,6 +14,12 @@
     },
     "start:all": {
       "cache": false
+    },
+    "run:client": {
+      "cache": false
+    },
+    "run:web": {
+      "cache": false
     }
   }
 }

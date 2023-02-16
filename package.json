@@ -11,7 +11,9 @@
     "dev": "turbo run dev",
     "start:all": "turbo run start:all",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\""
+    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "run:client" : "turbo run run:client",
+    "run:web" : "turbo run run:web"
   },
   "devDependencies": {
     "eslint-config-custom": "*",

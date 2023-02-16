@@ -10,7 +10,8 @@
     "package": "electron-forge package",
     "make": "electron-forge make",
     "publish": "electron-forge publish",
-    "lint": "eslint --ext .ts,.tsx ."
+    "lint": "eslint --ext .ts,.tsx .",
+    "run:client": "electron-forge start"
   },
   "keywords": [],
   "author": {
@@ -44,7 +45,6 @@
   "dependencies": {
     "electron-squirrel-startup": "^1.0.0",
     "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "@TRPI/frontend": "*"
+    "react-dom": "^18.2.0"
   }
 }
