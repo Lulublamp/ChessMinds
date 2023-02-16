@@ -1,4 +1,8 @@
-import { createContext } from 'react';
+import { createContext , useContext } from 'react';
 import ClientApi  from '@TRPI/client/electron/preload';
 
-export const WindowContext = createContext<ClientApi | null>(null);
+const WindowContext = createContext<ClientApi | null>(null);
+
+const useWindowContext = () => useContext(WindowContext)
+
+export { WindowContext, useWindowContext }

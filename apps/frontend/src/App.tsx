@@ -1,20 +1,13 @@
-import * as React from 'react'
-import { useState , FC, useContext} from 'react'
-import './App.css'
-import  ClientApi from '@TRPI/client/electron/preload'
-import useWindowContext from './contexts/WindowContextProvider'
-
-interface IAppProps {
-  windowContext: ClientApi | null
-}
+import * as React from "react";
+import { useState, FC } from "react";
+import { useWindowContext } from "./contexts/ContextProviders";
+import "./App.css";
 
 
-const App : FC = () => {
-  const [count, setCount] = useState(0)
-  const [communication , setCommunication] = useState('')
-  
-  const windowContext = useWindowContext()
-  
+const App: FC = () => {
+  const [count, setCount] = useState(0);
+  const windowContext = useWindowContext();
+
   return (
     <div className="App">
       <h1>Projet Integrateur</h1>
@@ -25,17 +18,10 @@ const App : FC = () => {
         <button onClick={() => setCount((count) => count + 1)}>
           Simple compteur {count}
         </button>
-        <>
-          {
-            windowContext &&
-            <p>
-              {windowContext.test}
-            </p>
-          }
-        </>
+        <>{windowContext && <p>{windowContext.test}</p>}</>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default App
+export default App;
