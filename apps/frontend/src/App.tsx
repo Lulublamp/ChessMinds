@@ -2,7 +2,7 @@ import * as React from 'react'
 import { useState , FC, useContext} from 'react'
 import './App.css'
 import  ClientApi from '@TRPI/client/electron/preload'
-import {WindowContext} from './contexts/WindowContext'
+import useWindowContext from './contexts/WindowContextProvider'
 
 interface IAppProps {
   windowContext: ClientApi | null
@@ -13,7 +13,7 @@ const App : FC = () => {
   const [count, setCount] = useState(0)
   const [communication , setCommunication] = useState('')
   
-  const windowContext = useContext(WindowContext)
+  const windowContext = useWindowContext()
   
   return (
     <div className="App">

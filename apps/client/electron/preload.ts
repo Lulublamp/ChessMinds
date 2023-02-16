@@ -8,6 +8,7 @@ const CLIENT_API = {
 
 type ClientApi = typeof CLIENT_API;
 
+//exposition de l'api client pour l'application front
 contextBridge.exposeInMainWorld('client' , CLIENT_API);
 
 export default ClientApi;
