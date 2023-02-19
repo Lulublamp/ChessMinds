@@ -8,7 +8,7 @@ console.clear();//supprimmer l'erreur du script qu'il ne trouve pas
 const root = document.getElementById('root') as HTMLElement
 
 document.addEventListener('DOMContentLoaded', () => {
-    MainRenderer(root , windowContext);
+	MainRenderer(root , windowContext);
 })
 
 

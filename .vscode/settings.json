@@ -1,0 +1,5 @@
+{
+	"prettier.tabWidth": 2,
+	"emmet.triggerExpansionOnTab": true,
+	"editor.tabSize": 2,
+}
