@@ -24,4 +24,5 @@ export class Partie {
 
   @CreateDateColumn()
   dureePartie: number;
+
 }
