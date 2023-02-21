@@ -1,11 +1,12 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
-
-
+import { Rencontre } from "src/rencontre/entities/rencontre.entity";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class Joueur {
 
   @PrimaryGeneratedColumn()
+  @OneToMany(() => Rencontre, (rencontre) => rencontre.joueurBlanc)
+  @OneToMany(() => Rencontre, (rencontre) => rencontre.joueurNoir)
   idJoueur: number;
 
   @Column()

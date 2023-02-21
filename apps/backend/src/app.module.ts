@@ -5,7 +5,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { Joueur } from './joueurs/entities/joueur.entity';
-import { JoueursModule } from './joueurs/joueurs.module';
+import { Partie } from './partie/entities/partie.entity';
+import { Rencontre } from './rencontre/entities/rencontre.entity';
 
 @Module({
   imports: [
@@ -18,13 +19,13 @@ import { JoueursModule } from './joueurs/joueurs.module';
         port: configService.get('MYSQL_PORT') || 3306,
         username: configService.get('MYSQL_USER') || 'root',
         database: configService.get('MYSQL_DATABASE') || 'chess-bdd',
-        entities: [Joueur],
+        entities: [Joueur,Rencontre,Partie],
         autoLoadEntities: true,
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
-    JoueursModule,
+   
   ],
   controllers: [AppController],
   providers: [AppService],
