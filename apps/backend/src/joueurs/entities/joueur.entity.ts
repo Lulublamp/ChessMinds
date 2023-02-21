@@ -26,6 +26,6 @@ export class Joueur {
   @Column({nullable:false})
   motDePasse: string;
 
-  @CreateDateColumn({nullable:false})
+  @CreateDateColumn({ type: 'timestamp', default: 'CURRENT_TIMESTAMP', nullable: false})
   dateInscription: Date;
 }

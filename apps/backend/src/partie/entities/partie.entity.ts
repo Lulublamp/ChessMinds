@@ -16,13 +16,13 @@ export class Partie {
   @JoinColumn()
   idRencontre: Rencontre;
 
-  @CreateDateColumn()
+  @CreateDateColumn({nullable:false})
   heureDebut: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({nullable:false})
   heureFin: number;
 
-  @CreateDateColumn()
+  @CreateDateColumn({nullable:false})
   dureePartie: number;
 
 }
