@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { Rencontre } from "src/rencontre/entities/rencontre.entity";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 

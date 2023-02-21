@@ -1,9 +1,8 @@
-import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from "typeorm";
-import { Joueur } from './joueur.entity';
+import { Column, Entity, JoinColumn, ManyToOne, PrimaryColumn } from 'typeorm';
+import { Joueur } from '../../joueurs/entities/joueur.entity';
 
 @Entity()
 export class Classement {
-
   @PrimaryColumn()
   idClassement: number;
 
@@ -12,5 +11,4 @@ export class Classement {
 
   @ManyToOne(() => Joueur, (joueur) => joueur.idJoueur)
   idJoueur: number;
-
 }
