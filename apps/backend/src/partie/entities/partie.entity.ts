@@ -4,13 +4,18 @@ import {
   JoinColumn,
   OneToOne,
   Column,
+  PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Rencontre } from '../../rencontre/entities/rencontre.entity';
 
 @Entity()
 export class Partie {
-  @OneToOne(() => Rencontre, (rencontre) => rencontre.idRencontre)
-  idRencontre: Rencontre[];
+  @PrimaryGeneratedColumn()
+  idPartie: number;
+
+  @OneToOne(() => Rencontre)
+  @JoinColumn()
+  idRencontre: Rencontre;
 
   @CreateDateColumn()
   heureDebut: number;
@@ -20,7 +25,4 @@ export class Partie {
 
   @CreateDateColumn()
   dureePartie: number;
-
-  @Column()
-  coups: string;
 }

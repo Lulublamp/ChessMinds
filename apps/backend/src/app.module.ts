@@ -4,6 +4,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+import { Classement } from './classement/entities/classement.entity';
 import { Joueur } from './joueurs/entities/joueur.entity';
 import { Partie } from './partie/entities/partie.entity';
 import { Rencontre } from './rencontre/entities/rencontre.entity';
@@ -19,7 +20,7 @@ import { Rencontre } from './rencontre/entities/rencontre.entity';
         port: configService.get('MYSQL_PORT') || 3306,
         username: configService.get('MYSQL_USER') || 'root',
         database: configService.get('MYSQL_DATABASE') || 'chess-bdd',
-        entities: [Joueur,Rencontre,Partie],
+        entities: [Joueur,Rencontre,Partie,Classement],
         autoLoadEntities: true,
         synchronize: true,
       }),

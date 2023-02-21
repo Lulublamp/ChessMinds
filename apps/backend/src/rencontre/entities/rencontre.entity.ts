@@ -2,7 +2,6 @@ import {
   Column,
   Entity,
   PrimaryGeneratedColumn,
-  ManyToMany,
   JoinColumn,
   ManyToOne,
 } from 'typeorm';
@@ -13,11 +12,13 @@ export class Rencontre {
   @PrimaryGeneratedColumn()
   idRencontre: number;
 
-  @ManyToOne(() => Joueur, (joueur) => joueur.idJoueur)
-  joueurBlanc: number;
+  @ManyToOne(() => Joueur)
+  @JoinColumn()
+  joueurBlanc: Joueur;
 
-  @Column()
-  joueurNoir: number;
+  @ManyToOne(() => Joueur)
+  @JoinColumn()
+  joueurNoir: Joueur;
 
   @Column()
   vainqueur: number;

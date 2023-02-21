@@ -6,8 +6,6 @@ import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } f
 export class Joueur {
 
   @PrimaryGeneratedColumn()
-  @OneToMany(() => Rencontre, (rencontre) => rencontre.joueurBlanc)
-  @OneToMany(() => Rencontre, (rencontre) => rencontre.joueurNoir)
   idJoueur: number;
 
   @Column()
@@ -27,5 +25,4 @@ export class Joueur {
 
   @CreateDateColumn()
   dateInscription: Date;
-  
 }
