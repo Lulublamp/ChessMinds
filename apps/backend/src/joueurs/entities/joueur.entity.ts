@@ -11,21 +11,21 @@ export class Joueur {
   @PrimaryGeneratedColumn()
   idJoueur: number;
 
-  @Column()
+  @Column({nullable: false})
   adresseMail: string;
 
   @Column()
   pseudo: string;
 
-  @Column()
+  @Column({nullable:false})
   tagJoueur: string;
 
-  @Column()
+  @Column({nullable:false})
   loginJoueur: string;
 
-  @Column()
+  @Column({nullable:false})
   motDePasse: string;
 
-  @CreateDateColumn()
+  @CreateDateColumn({nullable:false})
   dateInscription: Date;
 }

@@ -12,15 +12,15 @@ export class Rencontre {
   @PrimaryGeneratedColumn()
   idRencontre: number;
 
-  @ManyToOne(() => Joueur)
+  @ManyToOne(() => Joueur,{nullable:false})
   @JoinColumn()
   joueurBlanc: Joueur;
 
-  @ManyToOne(() => Joueur)
+  @ManyToOne(() => Joueur, {nullable:false})
   @JoinColumn()
   joueurNoir: Joueur;
 
-  @Column()
+  @Column({nullable:false})
   vainqueur: number;
 
 }

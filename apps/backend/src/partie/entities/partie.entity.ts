@@ -12,7 +12,7 @@ export class Partie {
   @PrimaryGeneratedColumn()
   idPartie: number;
 
-  @OneToOne(() => Rencontre)
+  @OneToOne(() => Rencontre, {nullable:false})
   @JoinColumn()
   idRencontre: Rencontre;
 

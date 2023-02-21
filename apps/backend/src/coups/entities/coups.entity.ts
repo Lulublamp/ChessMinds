@@ -17,14 +17,14 @@ enum Piece {
   ROI = 'ROI',
 }
 enum Echiquier {
-  A1 = 'A1',A2 = 'A2',A3 = 'A3',A4 = 'A4',A5 = 'A5',A6 = 'A6',A7 = 'A7',A8 = 'A8',
-  B1 = 'B1',B2 = 'B2',B3 = 'B3',B4 = 'B4',B5 = 'B5',B6 = 'B6',B7 = 'B7',B8 = 'B8',
-  C1 = 'C1',C2 = 'C2',C3 = 'C3',C4 = 'C4',C5 = 'C5',C6 = 'C6',C7 = 'C7',C8 = 'C8',
-  D1 = 'D1',D2 = 'D2',D3 = 'D3',D4 = 'D4',D5 = 'D5',D6 = 'D6',D7 = 'D7',D8 = 'D8',
-  E1 = 'E1',E2 = 'E2',E3 = 'E3',E4 = 'E4',E5 = 'E5',E6 = 'E6',E7 = 'E7',E8 = 'E8',
-  F1 = 'F1',F2 = 'F2',F3 = 'F3',F4 = 'F4',F5 = 'F5',F6 = 'F6',F7 = 'F7',F8 = 'F8',
-  G1 = 'G1',G2 = 'G2',G3 = 'G3',G4 = 'G4',G5 = 'G5',G6 = 'G6',G7 = 'G7',G8 = 'G8',
-  H1 = 'H1',H2 = 'H2',H3 = 'H3',H4 = 'H4',H5 = 'H5',H6 = 'H6',H7 = 'H7',H8 = 'H8',
+  A1 = 11, A2 =12,  A3 = 13, A4 = 14, A5 = 15, A6 = 16, A7 = 17, A8 = 18,
+  B1 = 21, B2 = 22, B3 = 23, B4 = 24, B5 = 25, B6 = 26, B7 = 27, B8 = 28,
+  C1 = 31, C2 = 32, C3 = 33, C4 = 34, C5 = 35, C6 = 36, C7 = 37, C8 = 38,
+  D1 = 41, D2 = 42, D3 = 43, D4 = 44, D5 = 45, D6 = 46, D7 = 47, D8 = 48,
+  E1 = 51, E2 = 52, E3 = 53, E4 = 54, E5 = 55, E6 = 56, E7 = 57, E8 = 58,
+  F1 = 61, F2 = 62, F3 = 63, F4 = 64, F5 = 65, F6 = 66, F7 = 67, F8 = 68,
+  G1 = 71, G2 = 72, G3 = 73, G4 = 74, G5 = 75, G6 = 76, G7 = 77, G8 = 78,
+  H1 = 81, H2 = 82, H3 = 83, H4 = 84, H5 = 85, H6 = 86, H7 = 87, H8 = 88,
 }
 
 @Entity()
@@ -39,9 +39,9 @@ export class Coups {
   @Column({type:'enum', enum: Echiquier})
   caseSource: Echiquier;
 
-  @Column()
+  @Column({type:'enum', enum: Echiquier, nullable: false})
   caseDestination: Echiquier;
 
-  @Column()
+  @Column({ nullable: false })
   piece: Piece;
 }

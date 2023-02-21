@@ -12,10 +12,10 @@ export class Classement {
   @PrimaryGeneratedColumn()
   idClassement: number;
 
-  @OneToOne(() => Joueur)
+  @OneToOne(() => Joueur, {nullable:false})
   @JoinColumn()
   idJoueur: Joueur;
 
-  @Column()
+  @Column({nullable:false})
   ELO: number;
 }
