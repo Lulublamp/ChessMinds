@@ -3,7 +3,6 @@ import {
   Entity,
   JoinColumn,
   OneToOne,
-  Column,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 import { Rencontre } from '../../rencontre/entities/rencontre.entity';
