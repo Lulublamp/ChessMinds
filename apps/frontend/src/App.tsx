@@ -1,27 +1,19 @@
 import * as React from "react";
-import { useState, FC } from "react";
-import { useWindowContext } from "./contexts/ContextProviders";
-import "./App.css";
+import {  FC } from "react";
+import { HashRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home/Home";
+import Network from "./pages/NetworkInit/Network";
 
 
 const App: FC = () => {
-  const [count, setCount] = useState(0);
-  const windowContext = useWindowContext();
-
   return (
-    <div className="App">
-      <h1>Projet Integrateur</h1>
-      <div className="card">
-        <p>
-          Pour pouvoir modifier : <code>frontend/src/App.tsx</code>
-        </p>
-        <button onClick={() => setCount((count) => count + 1)}>
-          Simple compteur {count}
-        </button>
-        <>{windowContext && <p>{windowContext.test}</p>}</>
-      </div>
-    </div>
-  );
+    <HashRouter>
+      <Routes>
+        <Route path="/" element={<Home/>}/>
+        <Route path="/network" element={<Network/>}/>
+      </Routes>
+    </HashRouter>
+  )
 };
 
 export default App;
