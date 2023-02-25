@@ -31,8 +31,8 @@ export class MmRankedGateway {
     );
     const toPrint =
       l !== this.queue.getCoupledPlayers().length
-        ? this.queue.getCoupledPlayers()
-        : this.queue.getPlayers();
+        ? `Match ${this.queue.getCoupledPlayers()}`
+        : `Add Player ${this.queue.getCoupledPlayers()}`;
     console.log('mm-ranked: ', toPrint);
   }
 }
