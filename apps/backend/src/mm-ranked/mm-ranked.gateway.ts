@@ -29,7 +29,8 @@ export class MmRankedGateway {
   }
 
   @SubscribeMessage(CoreEvents.JOIN_QUEUE_R)
-  handleJoinQueue(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+  handleJoinQueue(@MessageBody() data: any, @ConnectedSocket() client) {
+    console.log(client);
     console.log('mm-ranked: Join Queue');
     const l = this.queue.getCoupledPlayers().length;
     this.queue.addPlayer(data);

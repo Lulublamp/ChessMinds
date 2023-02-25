@@ -19,7 +19,11 @@ const TNetwork: FC = () => {
   const [elo , setElo] = useState<number>(0);
 
   function handleConnection(){
-    const socket = io("http://localhost:3001/" + CoreNameSpaces.MM_RANKED);
+    const socket = io(`http://localhost:3001/${CoreNameSpaces.MM_RANKED}` , {
+      extraHeaders: {
+        "access_token": 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hcmlhIiwic3ViIjoyLCJpYXQiOjE2NzczNDI5MDgsImV4cCI6MTY3Nzk0NzcwOH0.zBHir7nz76nCU2ez238FY1Px2bBvUxhGV0idj2vVKFY',
+      },
+    });
     setCurrentSocket(() => socket);
     const clientEmitter = new ClientEventEmitter(socket);
     setClientEmitter(() => clientEmitter);

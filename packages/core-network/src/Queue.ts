@@ -90,6 +90,7 @@ export class Queue {
     return 'match';
   }
 
+  //modifier avec proposition de lucas + logarithmique un truc du genre
   rankPlayers(player: Player): number | null {
     if (player.elo < 800){
       return 1;
