@@ -32,7 +32,7 @@ export class MmRankedGateway {
     const toPrint =
       l !== this.queue.getCoupledPlayers().length
         ? `Match ${this.queue.getCoupledPlayers()}`
-        : `Add Player ${this.queue.getCoupledPlayers()}`;
+        : `Add Player ${this.queue.getPlayers()}`;
     console.log('mm-ranked: ', toPrint);
   }
 }
