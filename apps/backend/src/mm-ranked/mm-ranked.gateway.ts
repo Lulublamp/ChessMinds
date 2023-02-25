@@ -10,7 +10,6 @@ import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
   namespace: CoreNameSpaces.MM_RANKED,
-  transports: ['websocket'],
   cors: true,
 })
 export class MmRankedGateway {
