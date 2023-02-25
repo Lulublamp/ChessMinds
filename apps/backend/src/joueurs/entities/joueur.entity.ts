@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import { 
   Column, 
   CreateDateColumn, 
@@ -26,6 +27,6 @@ export class Joueur {
   @Column({nullable:false})
   motDePasse: string;
 
-  @CreateDateColumn({ type: 'timestamp', default: 'CURRENT_TIMESTAMP', nullable: false})
+  @CreateDateColumn()
   dateInscription: Date;
 }
