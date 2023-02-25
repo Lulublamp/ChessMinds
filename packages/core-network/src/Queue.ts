@@ -49,13 +49,17 @@ export class Queue {
 
   isReady(): boolean {
     if (this.isEmpty()) return false;
-    return this.players.length % 2 === 0;
+    return true;
+  }
+
+  isReadyToMatch(p : Player){
+    return this.players.filter((player) => player.rank === p.rank).length > 0;
   }
 
   addPlayer(player: Player): void {
     console.log(this.isReady());
     player.rank = this.rankPlayers(player);
-    this.isReady() ? this.setMatch(player) : this.players.push(player);
+    this.isReady() ? (this.isReadyToMatch(player) ? this.setMatch(player) : this.players.push(player))  : this.players.push(player);
   }
 
   removePlayer(player: Player): void {
