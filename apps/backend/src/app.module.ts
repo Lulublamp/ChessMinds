@@ -9,6 +9,8 @@ import { Joueur } from './joueurs/entities/joueur.entity';
 import { Partie } from './partie/entities/partie.entity';
 import { Rencontre } from './rencontre/entities/rencontre.entity';
 import { MatchMakingModule } from './match-making/match-making.module';
+import { AuthModule } from './auth/auth.module';
+import { MmRankedGateway } from './mm-ranked/mm-ranked.gateway';
 
 @Module({
   imports: [
@@ -28,7 +30,7 @@ import { MatchMakingModule } from './match-making/match-making.module';
       inject: [ConfigService],
     }),
     MatchMakingModule,
-   
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

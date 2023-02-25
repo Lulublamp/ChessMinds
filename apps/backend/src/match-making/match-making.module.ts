@@ -6,6 +6,6 @@ import { MmUnRankedGateway } from 'src/mm-un-ranked/mm-un-ranked.gateway';
 @Module({
   imports: [],
   controllers: [],
-  providers: [MmRankedGateway , MmUnRankedGateway],
+  providers: [MmUnRankedGateway , MmRankedGateway],
 })
 export class MatchMakingModule {}

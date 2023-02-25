@@ -8,7 +8,10 @@ import {
 import { CoreEvents, CoreNameSpaces, Queue } from '@TRPI/core-nt';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway({ namespace: CoreNameSpaces.MM_RANKED })
+@WebSocketGateway({
+  namespace: CoreNameSpaces.MM_RANKED,
+  cors: true,
+})
 export class MmRankedGateway {
   @WebSocketServer()
   server: Server;
@@ -20,8 +23,14 @@ export class MmRankedGateway {
     this.queue = new Queue(4);
   }
 
+  handleConnection(client: Socket, ...args: any[]) {
+    console.log('mm-ranked: Connection');
+    console.log(client.id);
+  }
+
   @SubscribeMessage(CoreEvents.JOIN_QUEUE_R)
-  handleJoinQueue(@MessageBody() data: any, @ConnectedSocket() client: Socket) {
+  handleJoinQueue(@MessageBody() data: any, @ConnectedSocket() client) {
+    console.log(client);
     console.log('mm-ranked: Join Queue');
     const l = this.queue.getCoupledPlayers().length;
     this.queue.addPlayer(data);
@@ -37,5 +46,18 @@ export class MmRankedGateway {
       : console.log(
           'mm-ranked: Add Player : ' + JSON.stringify(this.queue.getPlayers()),
         );
+  }
+
+  @SubscribeMessage(CoreEvents.LEAVE_QUEUE_R)
+  handleLeaveQueue(@MessageBody() data: any) {
+    console.log('mm-ranked: Leave Queue');
+    this.queue.removePlayer(data);
+    this.server.emit(
+      CoreEvents.MATCH_MAKING_STATE_R,
+      this.queue.getCoupledPlayers(),
+    );
+    console.log(
+      'mm-ranked: Remove Player : ' + JSON.stringify(this.queue.getPlayers()),
+    );
   }
 }

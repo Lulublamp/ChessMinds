@@ -49,13 +49,21 @@ export class Queue {
 
   isReady(): boolean {
     if (this.isEmpty()) return false;
-    return this.players.length % 2 === 0;
+    return true;
+  }
+
+  isReadyToMatch(p : Player){
+    return this.players.filter((player) => player.rank === p.rank).length > 0;
   }
 
   addPlayer(player: Player): void {
     console.log(this.isReady());
     player.rank = this.rankPlayers(player);
-    this.isReady() ? this.setMatch(player) : this.players.push(player);
+    this.isReady() ? (this.isReadyToMatch(player) ? this.setMatch(player) : this.players.push(player))  : this.players.push(player);
+  }
+
+  removePlayer(player: Player): void {
+    this.players = this.players.filter((p) => p.id !== player.id);
   }
 
   setMatch(player: Player): string | null {
@@ -82,20 +90,21 @@ export class Queue {
     return 'match';
   }
 
+  //modifier avec proposition de lucas + logarithmique un truc du genre
   rankPlayers(player: Player): number | null {
-    if (player.elo > 800){
+    if (player.elo < 800){
       return 1;
-    }else if (player.elo > 1000){
+    }else if (player.elo < 1000){
       return 2;
-    }else if (player.elo > 1200){
+    }else if (player.elo < 1200){
       return 3;
-    }else if(player.elo > 1400){
+    }else if(player.elo < 1400){
       return 4;
-    }else if(player.elo > 1600){
+    }else if(player.elo < 1600){
       return 5;
-    }else if(player.elo > 1800){
+    }else if(player.elo < 1800){
       return 6;
-    }else if(player.elo > 2000){
+    }else if(player.elo < 2000){
       return 7;
     }
     return null;
