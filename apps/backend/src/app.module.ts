@@ -8,6 +8,7 @@ import { Classement } from './classement/entities/classement.entity';
 import { Joueur } from './joueurs/entities/joueur.entity';
 import { Partie } from './partie/entities/partie.entity';
 import { Rencontre } from './rencontre/entities/rencontre.entity';
+import { MatchMakingModule } from './match-making/match-making.module';
 
 @Module({
   imports: [
@@ -26,15 +27,10 @@ import { Rencontre } from './rencontre/entities/rencontre.entity';
       }),
       inject: [ConfigService],
     }),
+    MatchMakingModule,
    
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule implements OnModuleInit{
-
-  onModuleInit() {
-    console.log(__dirname + '/**/*.entity{.ts,.js}')
-  }
-
-}
+export class AppModule {}
