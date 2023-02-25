@@ -29,10 +29,13 @@ export class MmRankedGateway {
       CoreEvents.MATCH_MAKING_STATE_R,
       this.queue.getCoupledPlayers(),
     );
-    const toPrint =
-      l !== this.queue.getCoupledPlayers().length
-        ? `Match ${this.queue.getCoupledPlayers()}`
-        : `Add Player ${this.queue.getPlayers()}`;
-    console.log('mm-ranked: ', toPrint);
+    l !== this.queue.getCoupledPlayers().length
+      ? console.log(
+          'mm-ranked: Match : ' +
+            JSON.stringify(this.queue.getCoupledPlayers()),
+        )
+      : console.log(
+          'mm-ranked: Add Player : ' + JSON.stringify(this.queue.getPlayers()),
+        );
   }
 }

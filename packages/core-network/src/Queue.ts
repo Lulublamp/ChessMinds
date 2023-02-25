@@ -48,7 +48,8 @@ export class Queue {
   }
 
   isReady(): boolean {
-    return this.players.length % 3 === 0 && !this.isEmpty();
+    if (this.isEmpty()) return false;
+    return this.players.length % 2 === 0;
   }
 
   addPlayer(player: Player): void {
