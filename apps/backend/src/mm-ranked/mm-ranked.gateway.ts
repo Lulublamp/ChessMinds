@@ -8,7 +8,11 @@ import {
 import { CoreEvents, CoreNameSpaces, Queue } from '@TRPI/core-nt';
 import { Server, Socket } from 'socket.io';
 
-@WebSocketGateway({ namespace: CoreNameSpaces.MM_RANKED })
+@WebSocketGateway({
+  namespace: CoreNameSpaces.MM_RANKED,
+  transports: ['websocket'],
+  cors: true,
+})
 export class MmRankedGateway {
   @WebSocketServer()
   server: Server;
@@ -18,6 +22,11 @@ export class MmRankedGateway {
   afterInit() {
     console.log('mm-ranked: Init');
     this.queue = new Queue(4);
+  }
+
+  handleConnection(client: Socket, ...args: any[]) {
+    console.log('mm-ranked: Connection');
+    console.log(client.id);
   }
 
   @SubscribeMessage(CoreEvents.JOIN_QUEUE_R)

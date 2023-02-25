@@ -22,7 +22,7 @@ const Home: FC = () => {
           Simple compteur {count}
         </button>
         <>{windowContext && <p>{windowContext.test}</p>}</>
-        <Link to="/network">Test Réseau</Link>
+        <Link to="/TNetwork">Test Réseau</Link>
       </div>
     </div>
   );
