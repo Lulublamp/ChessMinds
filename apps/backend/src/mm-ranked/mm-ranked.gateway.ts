@@ -38,4 +38,17 @@ export class MmRankedGateway {
           'mm-ranked: Add Player : ' + JSON.stringify(this.queue.getPlayers()),
         );
   }
+
+  @SubscribeMessage(CoreEvents.LEAVE_QUEUE_R)
+  handleLeaveQueue(@MessageBody() data: any) {
+    console.log('mm-ranked: Leave Queue');
+    this.queue.removePlayer(data);
+    this.server.emit(
+      CoreEvents.MATCH_MAKING_STATE_R,
+      this.queue.getCoupledPlayers(),
+    );
+    console.log(
+      'mm-ranked: Remove Player : ' + JSON.stringify(this.queue.getPlayers()),
+    );
+  }
 }

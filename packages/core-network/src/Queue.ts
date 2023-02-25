@@ -58,6 +58,10 @@ export class Queue {
     this.isReady() ? this.setMatch(player) : this.players.push(player);
   }
 
+  removePlayer(player: Player): void {
+    this.players = this.players.filter((p) => p.id !== player.id);
+  }
+
   setMatch(player: Player): string | null {
     if (!this.isReady()) return null
     const sameRank = this.players.filter((p) => p.rank === player.rank);
@@ -83,19 +87,19 @@ export class Queue {
   }
 
   rankPlayers(player: Player): number | null {
-    if (player.elo > 800){
+    if (player.elo < 800){
       return 1;
-    }else if (player.elo > 1000){
+    }else if (player.elo < 1000){
       return 2;
-    }else if (player.elo > 1200){
+    }else if (player.elo < 1200){
       return 3;
-    }else if(player.elo > 1400){
+    }else if(player.elo < 1400){
       return 4;
-    }else if(player.elo > 1600){
+    }else if(player.elo < 1600){
       return 5;
-    }else if(player.elo > 1800){
+    }else if(player.elo < 1800){
       return 6;
-    }else if(player.elo > 2000){
+    }else if(player.elo < 2000){
       return 7;
     }
     return null;
