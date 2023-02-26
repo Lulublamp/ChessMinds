@@ -1,12 +1,6 @@
 import { CoreEvents, EVENT_TYPES } from './Event';
 import { Socket , io} from "socket.io-client";
-import { eICreateRoomEvent } from './events/eICreateRoom';
-import { eILeaveRoomEvent } from './events/eILeaveRoomEvent';
-import { eIMatchMakingStateEvent } from './events/eIMatchMakingStateEvent';
-import { eIInitGameEvent } from './events/eIInitGameEvent';
-
-
-
+import { eICreateRoomEvent, eIInitGameEvent, eILeaveRoomEvent, eIMatchMakingStateEvent } from './events/emitEvents';
 
 export type IRespond = eICreateRoomEvent | eILeaveRoomEvent | eIMatchMakingStateEvent | eIInitGameEvent;
 
