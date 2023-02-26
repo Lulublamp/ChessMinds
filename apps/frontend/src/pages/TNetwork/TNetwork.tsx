@@ -7,6 +7,7 @@ import { Socket , io} from "socket.io-client";
 import { CoreNameSpaces } from '@TRPI/core-nt/src/Namespace';
 import { CoreEvents } from '@TRPI/core-nt/src/Event';
 import { ClientEventEmitter } from '@TRPI/core-nt/src/ClientEventEmitter';
+import { eICreateRoomEvent } from "@TRPI/core-nt/src/events/eICreateRoom";
 
 
 
@@ -31,11 +32,13 @@ const TNetwork: FC = () => {
 
   function handleJoinQueue(name: string , elo: number){
     if(clientEmitter && currentSocket){
-      clientEmitter.emitter(CoreEvents.JOIN_QUEUE_R , {
-        id: `${count}`,
-        name: name,
-        elo: elo,
-      });
+      // clientEmitter.(CoreEvents.JOIN_QUEUE_R , {
+      //   id: `${count}`,
+      //   name: name,
+      //   elo: elo,
+      // });
+
+      
 
       setCount(() => count + 1);
     }
@@ -55,6 +58,7 @@ const TNetwork: FC = () => {
       <button onClick={() => handleJoinQueue(name , elo)}>
         Join RankedMatchMaking
       </button>
+      <p>{`In Queu : ${count}`}</p>
     </div>
   );
   
