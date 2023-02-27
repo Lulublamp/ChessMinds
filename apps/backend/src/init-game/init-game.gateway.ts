@@ -2,7 +2,7 @@ import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
 import { EVENT_TYPES, NAMESPACE_TYPES } from '@TRPI/core-nt';
 
 @WebSocketGateway({
-  namespace: 'aze',
+  namespace: NAMESPACE_TYPES.IN_GAME,
   cors: true,
   origins: '*:*',
 })

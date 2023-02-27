@@ -5,7 +5,13 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { EVENT_TYPES, NAMESPACE_TYPES, Queue } from '@TRPI/core-nt';
+import {
+  EVENT_TYPES,
+  Match,
+  NAMESPACE_TYPES,
+  Player,
+  Queue,
+} from '@TRPI/core-nt';
 import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
@@ -24,26 +30,28 @@ export class MmRankedGateway {
   }
 
   handleConnection(client: Socket, ...args: any[]) {
-    console.log('mm-ranked: Connection');
+    console.log('mm-ranked: Connection : ' + client.id);
   }
 
   @SubscribeMessage(EVENT_TYPES.JOIN_QUEUE_R)
-  handleJoinQueue(@MessageBody() data: any, @ConnectedSocket() client) {
+  handleJoinQueue(
+    @MessageBody() data: Player,
+    @ConnectedSocket() client: Socket,
+  ): null {
     console.log('mm-ranked: Join Queue');
-    const l = this.queue.getCoupledPlayers().length;
-    this.queue.addPlayer(data);
-    this.server.emit(
-      EVENT_TYPES.MATCH_MAKING_STATE_R,
-      this.queue.getCoupledPlayers(),
-    );
-    l !== this.queue.getCoupledPlayers().length
-      ? console.log(
-          'mm-ranked: Match : ' +
-            JSON.stringify(this.queue.getCoupledPlayers()),
-        )
-      : console.log(
-          'mm-ranked: Add Player : ' + JSON.stringify(this.queue.getPlayers()),
-        );
+    data.socket = client;
+    const maybeRoom: [string, Match] | number = this.queue.addPlayer(data);
+    if (typeof maybeRoom === 'number') return null;
+    else {
+      const [room, match] = maybeRoom;
+      match.players.forEach((player) => {
+        player.socket?.join(room);
+      });
+      console.log('mm-ranked: Join Room : ' + room);
+      this.server
+        .in(room)
+        .emit(EVENT_TYPES.INIT_GAME, Queue.excludeSocket(match));
+    }
   }
 
   @SubscribeMessage(EVENT_TYPES.LEAVE_QUEUE_R)

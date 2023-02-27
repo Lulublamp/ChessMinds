@@ -1,4 +1,7 @@
+import { Socket } from "socket.io";
+
 export interface Player {
+  socket?: Socket;
   id: string;
   name: string;
   elo: number;
@@ -56,18 +59,17 @@ export class Queue {
     return this.players.filter((player) => player.rank === p.rank).length > 0;
   }
 
-  addPlayer(player: Player): void {
-    console.log(this.isReady());
+  addPlayer(player: Player): [string, Match] | number {
     player.rank = this.rankPlayers(player);
-    this.isReady() ? (this.isReadyToMatch(player) ? this.setMatch(player) : this.players.push(player))  : this.players.push(player);
+    const maybeMatch: [string , Match] | number = this.isReady() ? (this.isReadyToMatch(player) ? this.setMatch(player) : this.players.push(player))  : this.players.push(player);
+    return maybeMatch;
   }
 
   removePlayer(player: Player): void {
     this.players = this.players.filter((p) => p.id !== player.id);
   }
 
-  setMatch(player: Player): string | null {
-    if (!this.isReady()) return null
+  setMatch(player: Player): [string, Match] {
     const sameRank = this.players.filter((p) => p.rank === player.rank);
     console.log(sameRank);
     let random = this.maxPlayers - sameRank.length;
@@ -77,6 +79,8 @@ export class Queue {
         random = rand;
       }
     }
+    console.log('P1 : ' + sameRank[random].id + ' P2 : ' + player.id);
+
     const newMatch: Match = {
       players: [sameRank[random], player],
       createdAt: new Date(),
@@ -85,9 +89,25 @@ export class Queue {
       state: MatchState.playing,
     }
     this.coupledPlayers.push(newMatch);
-    this.players = this.players.filter((p) => p.id !== player.id);
-    this.players = this.players.filter((p) => p.id !== sameRank[random].id);
-    return 'match';
+    console.log('before filter : ')
+    console.log(this.players)
+    this.players = this.players.filter((p) => p.id !== sameRank[random].id && p.id !== player.id);
+    console.log('after filter : ')
+    console.log(this.players)
+    return [this.getRandomRoomId() , newMatch];
+  }
+  
+  getRandomRoomId(): string {
+    return Math.random().toString(36).substr(2, 9);
+  }
+
+  static excludeSocket(match: Match): Match{
+    match.players.forEach((player) => {
+      delete player.socket;
+    });
+    console.log(match);
+
+    return match;
   }
 
   //modifier avec proposition de lucas + logarithmique un truc du genre

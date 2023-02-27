@@ -31,7 +31,7 @@ export class EventEmitter {
 }
 
 
-export class ClientEventEmitter<T extends NAMESPACE_TYPES> extends EventEmitter{
+export class ClientEventManager<T extends NAMESPACE_TYPES> extends EventEmitter{
 
   private type: T;
 
@@ -60,5 +60,20 @@ export class ClientEventEmitter<T extends NAMESPACE_TYPES> extends EventEmitter{
   public leaveMatchMakingEvent(data: Check<T , MM_UNRANKED , eILeaveRoomEvent>) {
     if (!this.validateEmit(NAMESPACE_TYPES.MM_UNRANKED)) return 
     this.send(EVENT_TYPES.LEAVE_QUEUE_R, data);
+  }
+
+  public listenToInitGame(setter: any) {
+    this.socket.on(EVENT_TYPES.INIT_GAME, (dat: any) => {
+      console.log('data' , dat)
+      setter(() => dat);
+      setTimeout(() => {
+        setter(() => null);
+      }, 2000);
+    })
+  }
+  
+
+  public close() {
+    this.socket.close();
   }
 }
