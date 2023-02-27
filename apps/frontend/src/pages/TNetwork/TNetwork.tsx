@@ -2,40 +2,35 @@
 
 import * as React from "react";
 import { useState, FC, useEffect, useRef } from "react";
-import { Link } from "react-router-dom";
-import { Socket , io} from "socket.io-client";
-import { CoreNameSpaces } from '@TRPI/core-nt/src/Namespace';
-import { CoreEvents } from '@TRPI/core-nt/src/Event';
-import { ClientEventEmitter } from '@TRPI/core-nt/src/ClientEventEmitter';
+import { ClientEventEmitter , MM_RANKED , NAMESPACE_TYPES , eIJoinQueueEvent, MM_UNRANKED } from '@TRPI/core-nt/index';
 
 
 
 
 const TNetwork: FC = () => {
   const [count, setCount] = useState(0);
-  const [currentSocket, setCurrentSocket] = useState<Socket | null>(null);
-  const [clientEmitter , setClientEmitter] = useState<ClientEventEmitter | null>(null);
+  const [clientEmitter , setClientEmitter] = useState<ClientEventEmitter<MM_RANKED> | null>(null);
   const [name , setName] = useState<string>("");
   const [elo , setElo] = useState<number>(0);
 
   function handleConnection(){
-    const socket = io(`http://localhost:3001/${CoreNameSpaces.MM_RANKED}` , {
-      extraHeaders: {
-        "access_token": 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hcmlhIiwic3ViIjoyLCJpYXQiOjE2NzczNDI5MDgsImV4cCI6MTY3Nzk0NzcwOH0.zBHir7nz76nCU2ez238FY1Px2bBvUxhGV0idj2vVKFY',
-      },
-    });
-    setCurrentSocket(() => socket);
-    const clientEmitter = new ClientEventEmitter(socket);
+    console.log('handleConnection');
+    const clientEmitter = new ClientEventEmitter<MM_RANKED>(NAMESPACE_TYPES.MM_RANKED);
     setClientEmitter(() => clientEmitter);
   }
 
   function handleJoinQueue(name: string , elo: number){
-    if(clientEmitter && currentSocket){
-      clientEmitter.emitter(CoreEvents.JOIN_QUEUE_R , {
+    if(clientEmitter){
+      const mockData: eIJoinQueueEvent = {
         id: `${count}`,
         name: name,
         elo: elo,
-      });
+      }
+
+      clientEmitter.joinMatchMakingEvent(mockData)
+
+      clientEmitter.leaveMatchMakingEvent(mockData as never)
+      
 
       setCount(() => count + 1);
     }
@@ -55,6 +50,7 @@ const TNetwork: FC = () => {
       <button onClick={() => handleJoinQueue(name , elo)}>
         Join RankedMatchMaking
       </button>
+      <p>{`In Queu : ${count}`}</p>
     </div>
   );
   

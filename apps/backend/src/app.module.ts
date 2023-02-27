@@ -11,6 +11,7 @@ import { Rencontre } from './rencontre/entities/rencontre.entity';
 import { MatchMakingModule } from './match-making/match-making.module';
 import { AuthModule } from './auth/auth.module';
 import { MmRankedGateway } from './mm-ranked/mm-ranked.gateway';
+import { InitGameGateway } from './init-game/init-game.gateway';
 
 @Module({
   imports: [
