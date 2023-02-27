@@ -2,7 +2,7 @@ export interface Player {
   id: string;
   name: string;
   elo: number;
-  rank: number | null;
+  rank?: number | null;
 }
 
 

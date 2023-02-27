@@ -17,3 +17,6 @@ export interface eILeaveRoomEvent {
 export interface eIMatchMakingStateEvent {
   
 }
+
+export interface eIJoinQueueEvent extends Player{}
+  

@@ -1,9 +1,10 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
-import { CoreEvents, CoreNameSpaces } from '@TRPI/core-nt';
+import { CoreEvents, NAMESPACE_TYPES } from '@TRPI/core-nt';
 
 @WebSocketGateway({
-  namespace: CoreNameSpaces.INIT_GAME,
+  namespace: 'aze',
   cors: true,
+  origins: '*:*',
 })
 export class InitGameGateway {
   @SubscribeMessage(CoreEvents.INIT_GAME)

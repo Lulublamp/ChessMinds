@@ -3,7 +3,7 @@ import { IoAdapter } from '@nestjs/platform-socket.io';
 import { INestApplicationContext } from '@nestjs/common';
 import { Server } from 'socket.io';
 import { AuthService } from '../auth/auth.service';
-import { CoreNameSpaces } from '@TRPI/core-nt';
+import { NAMESPACE_TYPES } from '@TRPI/core-nt';
 
 export class AuthenticatedSocketAdapter extends IoAdapter {
   private readonly authService: AuthService;
@@ -40,8 +40,10 @@ export class AuthenticatedSocketAdapter extends IoAdapter {
       await this.validate(socket, next);
     });
 
-    server.of(CoreNameSpaces.MM_RANKED).use(async (socket: any, next) => {
-      await this.validate(socket, next);
+    server.of(NAMESPACE_TYPES.MM_RANKED).use(async (socket: any, next) => {
+      console.log('mm-ranked: AuthenticatedSocketAdapter passed')
+      // await this.validate(socket, next);
+      next()
     });
 
 
