@@ -15,14 +15,14 @@ export class EventEmitter {
       this.socket = socket;
     }
 
-    private _send<T extends EVENT_TYPES>(event: T, data: IRespond) {
+    private _send(event: EVENT_TYPES, data: IRespond) {
       this.socket.emit(event, data , (response: any) => {
         console.log('response ack' , response)
         return response;
       })
     }
   
-    protected send<T extends EVENT_TYPES>(event: T, data: IRespond) {
+    protected send(event: EVENT_TYPES, data: IRespond) {
       console.log('typeof data' , typeof data)
       this._send(event, data);
     }
