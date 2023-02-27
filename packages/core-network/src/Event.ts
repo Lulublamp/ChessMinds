@@ -1,4 +1,4 @@
-  export const CoreEvents = {
+  export const EVENT_TYPES = {
   JOIN_QUEUE_R: 'JOIN_QUEUE',
   LEAVE_QUEUE_R: 'LEAVE_QUEUE',
   MATCH_MAKING_STATE_R: 'MATCH_MAKING_STATE',
@@ -8,11 +8,10 @@
 
 
 
-export type EVENT_TYPES = typeof CoreEvents[keyof typeof CoreEvents];
+export type EVENT_TYPES = typeof EVENT_TYPES[keyof typeof EVENT_TYPES];
 
-export type JOIN_QUEUE_R = typeof CoreEvents.JOIN_QUEUE_R
-export type LEAVE_QUEUE_R = typeof CoreEvents.LEAVE_QUEUE_R
-export type MATCH_MAKING_STATE = typeof CoreEvents.MATCH_MAKING_STATE_R
-export type INIT_GAME = typeof CoreEvents.INIT_GAME
-export type INCOMING_CATCH = typeof CoreEvents.INCOMING_CATCH
-
+export type JOIN_QUEUE_R = typeof EVENT_TYPES.JOIN_QUEUE_R
+export type LEAVE_QUEUE_R = typeof EVENT_TYPES.LEAVE_QUEUE_R
+export type MATCH_MAKING_STATE = typeof EVENT_TYPES.MATCH_MAKING_STATE_R
+export type INIT_GAME = typeof EVENT_TYPES.INIT_GAME
+export type INCOMING_CATCH = typeof EVENT_TYPES.INCOMING_CATCH

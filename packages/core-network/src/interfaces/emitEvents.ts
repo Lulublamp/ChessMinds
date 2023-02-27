@@ -1,4 +1,4 @@
-import { Match, Player } from "../Queue";
+import { Match, Player } from "../utils/Queue";
 
 export interface eICreateRoomEvent{
   roomId: string;

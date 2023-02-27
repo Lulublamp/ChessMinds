@@ -1,5 +1,5 @@
 import { SubscribeMessage, WebSocketGateway } from '@nestjs/websockets';
-import { CoreEvents, NAMESPACE_TYPES } from '@TRPI/core-nt';
+import { EVENT_TYPES, NAMESPACE_TYPES } from '@TRPI/core-nt';
 
 @WebSocketGateway({
   namespace: 'aze',
@@ -7,7 +7,7 @@ import { CoreEvents, NAMESPACE_TYPES } from '@TRPI/core-nt';
   origins: '*:*',
 })
 export class InitGameGateway {
-  @SubscribeMessage(CoreEvents.INIT_GAME)
+  @SubscribeMessage(EVENT_TYPES.INIT_GAME)
   handleInitGame(client: any, payload: any): string {
     return 'Hello world!';
   }
