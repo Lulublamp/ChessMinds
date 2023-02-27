@@ -4,6 +4,8 @@ import { eICreateRoomEvent, eIInitGameEvent, eIJoinQueueEvent, eILeaveRoomEvent,
 import { NAMESPACE_TYPES, MM_RANKED, MM_UNRANKED } from './Namespace';
 
 export type IRespond = eICreateRoomEvent | eILeaveRoomEvent | eIMatchMakingStateEvent | eIInitGameEvent;
+type Check<T , R , K>  = T extends R ? K : never;
+
 
 export class EventEmitter {
   
@@ -43,46 +45,20 @@ export class ClientEventEmitter<T extends NAMESPACE_TYPES> extends EventEmitter{
     this.type = type;
   }
 
-  private validateEmit(arg: NAMESPACE_TYPES): boolean{
+  private validateEmit(arg: any): boolean{
     if (!(this.type == arg)) {
       return false;
     }
     return true;
   }
 
-  public joinMatchMakingEvent(data: T extends MM_RANKED ? eIJoinQueueEvent : never) {
+  public joinMatchMakingEvent(data: Check<T , MM_RANKED , eIJoinQueueEvent>) {
     if (!this.validateEmit(NAMESPACE_TYPES.MM_RANKED)) return 
     this.send(EVENT_TYPES.JOIN_QUEUE_R, data);
   }
 
-  public leaveMatchMakingEvent(data: T extends MM_UNRANKED ? eIJoinQueueEvent : never) {
+  public leaveMatchMakingEvent(data: Check<T , MM_UNRANKED , eILeaveRoomEvent>) {
     if (!this.validateEmit(NAMESPACE_TYPES.MM_UNRANKED)) return 
     this.send(EVENT_TYPES.LEAVE_QUEUE_R, data);
   }
-
-  // public createRoomEvent(data: T extends MM_RANKED ? eICreateRoomEvent : never) {
-  //   this.validateEmit(data)
-  //   this.send(CoreEvents.JOIN_QUEUE_R, data);
-  // }
-
-  // public leaveRoomEvent(data: T extends MM_RANKED ? eICreateRoomEvent : never) {
-  //   this.send(CoreEvents.LEAVE_QUEUE_R, data);
-  // }
-
-  // public matchMakingStateEvent(data: eIMatchMakingStateEvent ) {
-  //   this.send(CoreEvents.MATCH_MAKING_STATE_R, data);
-  // }
-
-  // public initGameEvent(data: eIInitGameEvent ) {
-  //   this.send(CoreEvents.INIT_GAME, data);
-  // }
-
-  // public incomingCatchEvent(data: eICreateRoomEvent ) {
-  //   this.send(CoreEvents.INCOMING_CATCH, data);
-  // }
-
-  // public test(date: T extends null ? eICreateRoomEvent : never) {
-  //   this.validateEmit(date)
-  //   console.log('test' , date)
-  // }
 }
