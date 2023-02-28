@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { JoueurDto } from './DTO/joueurs.dto';
 import { Post, Body } from '@nestjs/common';
 import { JoueursService } from './joueurs.service';
@@ -6,8 +6,14 @@ import { JoueursService } from './joueurs.service';
 @Controller('joueurs')
 export class JoueursController {
   constructor(
-    private readonly joueursService: JoueursService,
-  ) {}
+    private readonly joueursService: JoueursService) {}
+
+    //si on veut recupere des infos sur un joueur 
+  @Get()
+  async retourneJoueur(@Body() joueur: JoueurDto) {
+    //const joueurs= await this.joueursService.findJoueur();
+    //return joueurs;
+  }
 
   @Post('inscription')
   inscriptionJoueur(@Body() joueur: JoueurDto) {
