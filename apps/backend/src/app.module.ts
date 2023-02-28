@@ -11,6 +11,7 @@ import { Rencontre } from './rencontre/entities/rencontre.entity';
 import { MatchMakingModule } from './match-making/match-making.module';
 import { AuthModule } from './auth/auth.module';
 import { MmRankedGateway } from './mm-ranked/mm-ranked.gateway';
+import { JoueursModule } from './joueurs/joueurs.module';
 
 @Module({
   imports: [
@@ -31,6 +32,7 @@ import { MmRankedGateway } from './mm-ranked/mm-ranked.gateway';
     }),
     MatchMakingModule,
     AuthModule,
+    JoueursModule,
   ],
   controllers: [AppController],
   providers: [AppService],
