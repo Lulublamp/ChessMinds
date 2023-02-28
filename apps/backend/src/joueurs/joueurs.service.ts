@@ -5,15 +5,16 @@ import { JoueurDto } from './DTO/joueurs.dto';
 import { Joueur } from './entities/joueur.entity';
 
 @Injectable()
-
 export class JoueursService {
   //injecter le repository de la table joueur
-  constructor(@InjectRepository(Joueur) private readonly joueursRepository: Repository<Joueur>) {}
+  constructor(
+    @InjectRepository(Joueur)
+    private readonly joueursRepository: Repository<Joueur>,
+  ) {}
 
   //enregistrer un joueur avec le Repository
   inscriptionJoueur(joueur: JoueurDto) {
-    const joueurInscrit = this.joueursRepository.create(joueur);  
+    const joueurInscrit = this.joueursRepository.create(joueur);
     return this.joueursRepository.save(joueurInscrit);
   }
-  
 }

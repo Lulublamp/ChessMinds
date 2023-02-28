@@ -13,8 +13,10 @@ export class JoueursController {
   inscriptionJoueur(@Body() joueur: JoueurDto) {
     try {
       const joueurInscrit = this.joueursService.inscriptionJoueur(joueur);
+      return joueurInscrit;
     } catch (error) {
-      
+      console.log(error)
+      return error;
     }
   }
   

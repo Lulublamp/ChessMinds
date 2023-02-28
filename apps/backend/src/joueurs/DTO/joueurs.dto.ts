@@ -21,6 +21,4 @@ export class JoueurDto {
   @IsNotEmpty()
   @IsString()
   motDePasse: string;
-
-  dateInscription: Date;
 }
