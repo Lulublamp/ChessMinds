@@ -68,7 +68,7 @@ export class ClientEventManager<T extends NAMESPACE_TYPES> extends EventEmitter{
       setter(() => dat);
       setTimeout(() => {
         setter(() => null);
-      }, 2000);
+      }, 10000);
     })
   }
   
