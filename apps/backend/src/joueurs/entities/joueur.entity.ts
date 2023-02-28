@@ -22,9 +22,6 @@ export class Joueur {
   tagJoueur: string;
 
   @Column({nullable:false})
-  loginJoueur: string;
-
-  @Column({nullable:false})
   motDePasse: string;
 
   @CreateDateColumn()

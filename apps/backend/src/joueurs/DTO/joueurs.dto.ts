@@ -6,17 +6,7 @@ export class JoueurDto {
   @IsEmail()
   adresseMail: string;
 
-  @IsNotEmpty()
-  @IsString()
-  pseudo: string;
-
-  @IsNotEmpty()
-  @IsString()
-  tagJoueur: string;
-
-  @IsNotEmpty()
-  @IsString()
-  loginJoueur: string;
+  pseudo?: string;
 
   @IsNotEmpty()
   @IsString()
