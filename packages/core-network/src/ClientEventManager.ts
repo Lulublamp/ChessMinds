@@ -35,11 +35,12 @@ export class ClientEventManager<T extends NAMESPACE_TYPES> extends EventEmitter{
 
   private type: T;
 
-  constructor(type: T) {
+  constructor(type: T , token: string) {
     const socket = io(`http://localhost:3001/${type}` , {
-      // extraHeaders: {
-      //   "access_token": 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hcmlhIiwic3ViIjoyLCJpYXQiOjE2NzczNDI5MDgsImV4cCI6MTY3Nzk0NzcwOH0.zBHir7nz76nCU2ez238FY1Px2bBvUxhGV0idj2vVKFY',
-      // },
+      transports: ['websocket'],
+      auth: {
+        'access_token': `Bearer ${token}`
+      }
     });
     super(socket);
     this.type = type;

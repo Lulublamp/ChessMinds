@@ -13,11 +13,6 @@ const TNetwork: FC = () => {
   const [elo , setElo] = useState<number>(0);
   const [match , setMatch] = useState<Math | null>(null);
 
-  function handleConnection(){
-    const clientEmitter = new ClientEventManager<MM_RANKED>(NAMESPACE_TYPES.MM_RANKED);
-    setClientEmitter(() => clientEmitter);
-  }
-
   function handleJoinQueue(name: string , elo: number){
     if(clientEmitter){
       const mockData: eIJoinQueueEvent = {
@@ -32,7 +27,7 @@ const TNetwork: FC = () => {
 
   useEffect(() => {
     if(clientEmitter) return;
-    const newClientEmitter = new ClientEventManager<MM_RANKED>(NAMESPACE_TYPES.MM_RANKED);
+    const newClientEmitter = new ClientEventManager<MM_RANKED>(NAMESPACE_TYPES.MM_RANKED , '');
     newClientEmitter.listenToInitGame(setMatch)
     setClientEmitter(() => newClientEmitter);
     
