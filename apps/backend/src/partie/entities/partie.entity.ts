@@ -25,4 +25,7 @@ export class Partie {
   @CreateDateColumn({nullable:false})
   dureePartie: number;
 
+  @CreateDateColumn({nullable:false})
+  datePartie: number;
+
 }
