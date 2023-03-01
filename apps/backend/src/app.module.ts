@@ -12,6 +12,7 @@ import { MatchMakingModule } from './match-making/match-making.module';
 import { AuthModule } from './auth/auth.module';
 import { MmRankedGateway } from './mm-ranked/mm-ranked.gateway';
 import { JoueursModule } from './joueurs/joueurs.module';
+import { ClassementModule } from './classement/classement.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { JoueursModule } from './joueurs/joueurs.module';
     MatchMakingModule,
     AuthModule,
     JoueursModule,
+    ClassementModule,
   ],
   controllers: [AppController],
   providers: [AppService],
