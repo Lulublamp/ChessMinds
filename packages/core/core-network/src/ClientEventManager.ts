@@ -64,14 +64,12 @@ export class ClientEventManager<T extends NAMESPACE_TYPES> extends EventEmitter{
     this.send(EVENT_TYPES.LEAVE_QUEUE_R, data);
   }
 
-  public listenToInitGame(data: Check<T , MM_RANKED , rICreateRoomEvent>) {
+  public listenToInitGameOnce(data: Check<T , MM_RANKED , any>) {
     if (!this.validateEmit(NAMESPACE_TYPES.MM_RANKED)) return 
     this.socket.on(EVENT_TYPES.INIT_GAME, (dat: any) => {
       console.log('data' , dat)
       data.setter(() => dat);
-      setTimeout(() => {
-        data.setter(() => !data.getter());
-      }, 10000);
+      this.socket.off(EVENT_TYPES.INIT_GAME);
     })
   }
   

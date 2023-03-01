@@ -1,7 +1,7 @@
-import { ChessGame } from "@TRPI/core";
 import { Socket } from "socket.io";
+import { ChessGame } from "../../../core-algo";
 
-export interface Player {
+export interface PPlayer {
   socket?: Socket;
   id: string;
   name: string;
@@ -22,10 +22,10 @@ export type MatchState = typeof MatchState[keyof typeof MatchState];
 
 
 export interface Match {
-  players: Player[];
+  players: PPlayer[];
   createdAt: Date;
   endedAt: Date | null;
-  winner: Player | null;
+  winner: PPlayer | null;
   state: MatchState;
   chessGame?: ChessGame 
 }
@@ -36,7 +36,7 @@ export class Queue {
   protected coupledPlayers: Match[] = [];
   protected maxPlayers: number;
   protected state: boolean;
-  protected players: Player[];
+  protected players: PPlayer[];
 
   constructor(maxPlayers: number) {
     this.players = [];
@@ -57,21 +57,21 @@ export class Queue {
     return true;
   }
 
-  isReadyToMatch(p : Player){
+  isReadyToMatch(p : PPlayer){
     return this.players.filter((player) => player.rank === p.rank).length > 0;
   }
 
-  addPlayer(player: Player): [string, Match] | number {
+  addPlayer(player: PPlayer): [string, Match] | number {
     player.rank = this.rankPlayers(player);
     const maybeMatch: [string , Match] | number = this.isReady() ? (this.isReadyToMatch(player) ? this.setMatch(player) : this.players.push(player))  : this.players.push(player);
     return maybeMatch;
   }
 
-  removePlayer(player: Player): void {
+  removePlayer(player: PPlayer): void {
     this.players = this.players.filter((p) => p.id !== player.id);
   }
 
-  setMatch(player: Player): [string, Match] {
+  setMatch(player: PPlayer): [string, Match] {
     const sameRank = this.players.filter((p) => p.rank === player.rank);
     let random = this.maxPlayers - sameRank.length;
     
@@ -101,9 +101,9 @@ export class Queue {
     return match;
   }
 
-  static buildMatch(player: Player[]){
+  static buildMatch(player: PPlayer[]){
     
-    const newChessGame = new ChessGame();
+    // const newChessGame = new ChessGame();
     
 
     const newMatch: Match = {
@@ -112,13 +112,13 @@ export class Queue {
       endedAt: null,
       winner: null,
       state: MatchState.waiting,
-      chessGame: newChessGame
+      // chessGame: newChessGame
     }
     return newMatch;
   }
 
   //modifier avec proposition de lucas + logarithmique un truc du genre
-  rankPlayers(player: Player): number | null {
+  rankPlayers(player: PPlayer): number | null {
     if (player.elo < 800){
       return 1;
     }else if (player.elo < 1000){
@@ -141,7 +141,7 @@ export class Queue {
     return this.coupledPlayers;
   }
 
-  getPlayers(): Player[] {
+  getPlayers(): PPlayer[] {
     return this.players;
   }
 

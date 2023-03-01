@@ -1,4 +1,4 @@
-import { Match, Player } from "../utils/Queue";
+import { Match, PPlayer } from "../utils/Queue";
 
 export interface eICreateRoomEvent{
   roomId: string;
@@ -18,5 +18,5 @@ export interface eIMatchMakingStateEvent {
   
 }
 
-export interface eIJoinQueueEvent extends Player{}
+export interface eIJoinQueueEvent extends PPlayer{}
   
