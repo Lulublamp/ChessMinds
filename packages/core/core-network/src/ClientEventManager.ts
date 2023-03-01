@@ -65,10 +65,12 @@ export class ClientEventManager<T extends NAMESPACE_TYPES> extends EventEmitter{
   }
 
   public listenToInitGameOnce(data: Check<T , MM_RANKED , any>) {
+    console.log('listenToInitGameOnce')
     if (!this.validateEmit(NAMESPACE_TYPES.MM_RANKED)) return 
     this.socket.on(EVENT_TYPES.INIT_GAME, (dat: any) => {
       console.log('data' , dat)
       data.setter(() => dat);
+      console.log('getter' , data.getter())
       this.socket.off(EVENT_TYPES.INIT_GAME);
     })
   }

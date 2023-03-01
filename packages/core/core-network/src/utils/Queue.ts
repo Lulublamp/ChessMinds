@@ -27,7 +27,7 @@ export interface Match {
   endedAt: Date | null;
   winner: PPlayer | null;
   state: MatchState;
-  chessGame?: ChessGame 
+  chessGame: ChessGame 
 }
 
 
@@ -64,6 +64,7 @@ export class Queue {
   addPlayer(player: PPlayer): [string, Match] | number {
     player.rank = this.rankPlayers(player);
     const maybeMatch: [string , Match] | number = this.isReady() ? (this.isReadyToMatch(player) ? this.setMatch(player) : this.players.push(player))  : this.players.push(player);
+    if (typeof maybeMatch === 'number') return -99;
     return maybeMatch;
   }
 
@@ -81,7 +82,7 @@ export class Queue {
         random = rand;
       }
     }
-
+    console.log('found');
     const newMatch: Match = Queue.buildMatch([sameRank[random], player]);
     this.coupledPlayers.push(newMatch);
     this.players = this.players.filter((p) => p.id !== sameRank[random].id && p.id !== player.id);
@@ -103,7 +104,7 @@ export class Queue {
 
   static buildMatch(player: PPlayer[]){
     
-    // const newChessGame = new ChessGame();
+    const newChessGame = new ChessGame();
     
 
     const newMatch: Match = {
@@ -112,7 +113,7 @@ export class Queue {
       endedAt: null,
       winner: null,
       state: MatchState.waiting,
-      // chessGame: newChessGame
+      chessGame: newChessGame
     }
     return newMatch;
   }

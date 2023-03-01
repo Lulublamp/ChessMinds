@@ -1,3 +1,4 @@
-* {
-  background-color: gray
+.TNetwork {
+  background-color: var(--couleur-principale);
+  
 }

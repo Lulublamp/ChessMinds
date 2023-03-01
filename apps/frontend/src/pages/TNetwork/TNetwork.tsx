@@ -1,7 +1,9 @@
 import * as React from "react";
 import { useState, FC, useEffect, useRef } from "react";
-import { ClientEventManager , MM_RANKED , NAMESPACE_TYPES , eIJoinQueueEvent, MM_UNRANKED, Match } from '@TRPI/core/core-network/index';
+import { ClientEventManager , MM_RANKED , NAMESPACE_TYPES , eIJoinQueueEvent, MM_UNRANKED, Match, EVENT_TYPES } from '@TRPI/core/core-network/index';
 import './TNetwork.css'
+import { ChessGame, ChessPiece } from "@TRPI/core/core-algo";
+import BoardG, { IBoardGProps } from "./BoardG";
 
 
 
@@ -10,6 +12,7 @@ const TNetwork: FC = () => {
   const [name , setName] = useState<string>("");
   const [elo , setElo] = useState<number>(0);
   const [match , setMatch] = useState<Match | null>(null);
+  const [board , setBoard] = useState<(ChessPiece | null)[][]>();
 
   function handleJoinQueue(name: string , elo: number){
     if(clientEmitter){
@@ -26,10 +29,11 @@ const TNetwork: FC = () => {
   useEffect(() => {
     if(clientEmitter) return;
     const newClientEmitter = new ClientEventManager<MM_RANKED>(NAMESPACE_TYPES.MM_RANKED , '');
-    newClientEmitter.listenToInitGameOnce({
-      setter: setMatch,
-      getter: match
+    newClientEmitter.socket.on(EVENT_TYPES.INIT_GAME , (match: Match) => {
+      console.log("match -> GO" , match);
+      setMatch(() => match);
     })
+    console.log("maybe event" , match);
     setClientEmitter(() => newClientEmitter);
     
     return () => {
@@ -38,6 +42,21 @@ const TNetwork: FC = () => {
       setClientEmitter(() => null);
     }
   },[])
+
+  useEffect(() => {
+
+    if (!match) return;
+    setMatch(() => match);
+
+    // setTimeout(() => 
+    //   setBoard(() => {
+    //     if(!match) return;
+    //     const current = match?.chessGame;
+    //     if (!current) return;
+    //     return current.getBoard().getBoard();
+  // }) , 15000)}, [match])
+    }, [match])
+
 
 
 
@@ -77,6 +96,8 @@ const TNetwork: FC = () => {
 
             <h1>Player 1 elo: {match.players[0].elo}</h1>
             <h1>Player 2 elo: {match.players[1].elo }</h1>
+            <BoardG _={match}>
+            </BoardG>
           </div>
         </>
       }
