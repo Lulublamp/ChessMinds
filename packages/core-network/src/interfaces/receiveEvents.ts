@@ -1,6 +1,7 @@
 import { eICreateRoomEvent } from "./emitEvents";
-import ChessGame  from "@TRPI/core";
+import { ChessGame }  from "@TRPI/core/index";
 
-export interface rICreateRoomEvent extends eICreateRoomEvent {
-  game: ChessGame;
+export interface rICreateRoomEvent {
+  setter: any,
+  getter: any
 }

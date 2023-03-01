@@ -2,6 +2,7 @@ import { EVENT_TYPES } from './Event';
 import { Socket , io} from "socket.io-client";
 import { eICreateRoomEvent, eIInitGameEvent, eIJoinQueueEvent, eILeaveRoomEvent, eIMatchMakingStateEvent } from './interfaces/emitEvents';
 import { NAMESPACE_TYPES, MM_RANKED, MM_UNRANKED } from './Namespace';
+import { rICreateRoomEvent } from './interfaces/receiveEvents';
 
 export type IRespond = eICreateRoomEvent | eILeaveRoomEvent | eIMatchMakingStateEvent | eIInitGameEvent;
 type Check<T , R , K>  = T extends R ? K : never;
@@ -58,17 +59,18 @@ export class ClientEventManager<T extends NAMESPACE_TYPES> extends EventEmitter{
     this.send(EVENT_TYPES.JOIN_QUEUE_R, data);
   }
 
-  public leaveMatchMakingEvent(data: Check<T , MM_UNRANKED , eILeaveRoomEvent>) {
-    if (!this.validateEmit(NAMESPACE_TYPES.MM_UNRANKED)) return 
+  public leaveMatchMakingEvent(data: Check<T , MM_RANKED , eILeaveRoomEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.MM_RANKED)) return 
     this.send(EVENT_TYPES.LEAVE_QUEUE_R, data);
   }
 
-  public listenToInitGame(setter: any) {
+  public listenToInitGame(data: Check<T , MM_RANKED , rICreateRoomEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.MM_RANKED)) return 
     this.socket.on(EVENT_TYPES.INIT_GAME, (dat: any) => {
       console.log('data' , dat)
-      setter(() => dat);
+      data.setter(() => dat);
       setTimeout(() => {
-        setter(() => null);
+        data.setter(() => !data.getter());
       }, 10000);
     })
   }

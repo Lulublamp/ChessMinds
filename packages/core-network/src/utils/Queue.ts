@@ -1,3 +1,4 @@
+import { ChessGame } from "@TRPI/core";
 import { Socket } from "socket.io";
 
 export interface Player {
@@ -23,9 +24,10 @@ export type MatchState = typeof MatchState[keyof typeof MatchState];
 export interface Match {
   players: Player[];
   createdAt: Date;
-  endedAt: Date;
+  endedAt: Date | null;
   winner: Player | null;
   state: MatchState;
+  chessGame?: ChessGame 
 }
 
 
@@ -71,29 +73,18 @@ export class Queue {
 
   setMatch(player: Player): [string, Match] {
     const sameRank = this.players.filter((p) => p.rank === player.rank);
-    console.log(sameRank);
     let random = this.maxPlayers - sameRank.length;
+    
     while (random > sameRank.length) {
       const rand = Math.floor(Math.random() * sameRank.length);
       if (rand !== random) {
         random = rand;
       }
     }
-    console.log('P1 : ' + sameRank[random].id + ' P2 : ' + player.id);
 
-    const newMatch: Match = {
-      players: [sameRank[random], player],
-      createdAt: new Date(),
-      endedAt: new Date(),
-      winner: null,
-      state: MatchState.playing,
-    }
+    const newMatch: Match = Queue.buildMatch([sameRank[random], player]);
     this.coupledPlayers.push(newMatch);
-    console.log('before filter : ')
-    console.log(this.players)
     this.players = this.players.filter((p) => p.id !== sameRank[random].id && p.id !== player.id);
-    console.log('after filter : ')
-    console.log(this.players)
     return [this.getRandomRoomId() , newMatch];
   }
   
@@ -108,6 +99,22 @@ export class Queue {
     console.log(match);
 
     return match;
+  }
+
+  static buildMatch(player: Player[]){
+    
+    const newChessGame = new ChessGame();
+    
+
+    const newMatch: Match = {
+      players: player,
+      createdAt: new Date(),
+      endedAt: null,
+      winner: null,
+      state: MatchState.waiting,
+      chessGame: newChessGame
+    }
+    return newMatch;
   }
 
   //modifier avec proposition de lucas + logarithmique un truc du genre
