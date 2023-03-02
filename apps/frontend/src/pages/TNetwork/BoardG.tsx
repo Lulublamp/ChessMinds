@@ -19,33 +19,7 @@ const BoardG: FC<{_: Match}> = (props: {_: Match}) : any => {
   props._.chessGame.
 
   return (
-    board
-    &&
-    <div id="BoardG">
-      {
-        board.map((row , i) => {
-          return (
-            <div className="row">
-              {
-                row.map((piece , j) => {
-                  return (
-                    <div className="square">
-                      {
-                        piece
-                        &&
-                        <div className="piece">
-                          {piece.toString()}
-                        </div>
-                      }
-                    </div>
-                  )
-                })
-              }
-            </div>
-          )
-        })
-      }
-    </div>
+   
   );
   
 };

@@ -1,8 +1,8 @@
 import * as React from "react";
 import { useState, FC, useEffect, useRef } from "react";
-import { ClientEventManager , MM_RANKED , NAMESPACE_TYPES , eIJoinQueueEvent, MM_UNRANKED, Match, EVENT_TYPES } from '@TRPI/core/core-network/index';
+import { ClientEventManager , MM_RANKED , NAMESPACE_TYPES , eIJoinQueueEvent, MM_UNRANKED, Match , MatchState, EVENT_TYPES } from '@TRPI/core/core-network/index';
 import './TNetwork.css'
-import { ChessGame, ChessPiece } from "@TRPI/core/core-algo";
+import { ChessBoard, ChessGame, ChessPiece } from "@TRPI/core/core-algo";
 import BoardG, { IBoardGProps } from "./BoardG";
 
 
@@ -11,8 +11,15 @@ const TNetwork: FC = () => {
   const [clientEmitter , setClientEmitter] = useState<ClientEventManager<MM_RANKED> | null>(null);
   const [name , setName] = useState<string>("");
   const [elo , setElo] = useState<number>(0);
-  const [match , setMatch] = useState<Match | null>(null);
-  const [board , setBoard] = useState<(ChessPiece | null)[][]>();
+  const [serializedMattch , ssetMatch] = useState<string>('');
+  const [board , setBoard] = useState<Match>({
+    chessGame: new ChessGame(),
+    players: [],
+    state: MatchState.waiting,
+    winner: null,
+    createdAt: new Date(),
+    endedAt: null
+  });
 
   function handleJoinQueue(name: string , elo: number){
     if(clientEmitter){
@@ -29,11 +36,13 @@ const TNetwork: FC = () => {
   useEffect(() => {
     if(clientEmitter) return;
     const newClientEmitter = new ClientEventManager<MM_RANKED>(NAMESPACE_TYPES.MM_RANKED , '');
-    newClientEmitter.socket.on(EVENT_TYPES.INIT_GAME , (match: Match) => {
-      console.log("match -> GO" , match);
-      setMatch(() => match);
+    const listeningPayload = {
+      setter: ssetMatch,
+    }
+    newClientEmitter.listenToInitGameOnce({
+      setter: ssetMatch,
     })
-    console.log("maybe event" , match);
+    console.log("maybe event" , serializedMattch);
     setClientEmitter(() => newClientEmitter);
     
     return () => {
@@ -42,11 +51,42 @@ const TNetwork: FC = () => {
       setClientEmitter(() => null);
     }
   },[])
+  
 
   useEffect(() => {
 
-    if (!match) return;
-    setMatch(() => match);
+    console.log("maybe event in useEffect" , serializedMattch);
+    if (!serializedMattch) return;
+    console.log("before change match")
+    const parsedMatch = JSON.parse(serializedMattch);
+    console.log(parsedMatch)
+
+    setBoard((board) => {
+      Object.assign(board , parsedMatch);
+      return board;
+    });
+    
+    if (!board) {
+      console.log("board is null")
+      return;
+    } 
+
+    console.log("after change match")
+    console.log(board)
+    
+
+
+    
+
+    // console.log("after change match use effect")
+    // console.log(board)
+    // console.log("after change match")
+    // board.chessGame.makeMove('b2' , 'b4');
+    // console.log(board.chessGame.getBoard().getBoard())
+    
+    return () => {
+      console.log("clean up function")
+    }
 
     // setTimeout(() => 
     //   setBoard(() => {
@@ -55,7 +95,7 @@ const TNetwork: FC = () => {
     //     if (!current) return;
     //     return current.getBoard().getBoard();
   // }) , 15000)}, [match])
-    }, [match])
+    }, [serializedMattch])
 
 
 
@@ -63,7 +103,7 @@ const TNetwork: FC = () => {
   return (
     <div id="TNetwork">
       {
-        !match ?
+        serializedMattch == ''?
 
         <>
         <input type="text" onChange={(event) => setName(() => event.target.value)}/>
@@ -73,15 +113,28 @@ const TNetwork: FC = () => {
           Join RankedMatchMaking
         </button>
         {
+          !serializedMattch
+          
+          ?
+
           <h1 style={
             {
               color: "red"
             }
           }>Match not found</h1>
+
+          :
+
+          <h1 style={{
+            color: "green"
+          }}>Match found</h1>
         }
         </>
 
         :
+
+
+        board.players.length != 0 &&
 
         <>
           <h1 style={{
@@ -89,15 +142,40 @@ const TNetwork: FC = () => {
           }}>Match found</h1>
 
           <div>
-            <h1>Match id: {match.players[0].id + match.players[1].id}</h1>
+            <h1>Match id: {board.players[0].id + board.players[1].id}</h1>
 
-            <h1>Player 1: {match.players[0].name}</h1>
-            <h1>Player 2: {match.players[1].name}</h1>
+            <h1>Player 1: {board.players[0].name}</h1>
+            <h1>Player 2: {board.players[1].name}</h1>
 
-            <h1>Player 1 elo: {match.players[0].elo}</h1>
-            <h1>Player 2 elo: {match.players[1].elo }</h1>
-            <BoardG _={match}>
-            </BoardG>
+            <h1>Player 1 elo: {board.players[0].elo}</h1>
+            <h1>Player 2 elo: {board.players[1].elo }</h1>
+            match.chessGame
+            &&
+            <div id="BoardG">
+              {
+                board.chessGame.getBoard().getBoard().map((row , i) => {
+                  return (
+                    <div className="row">
+                      {
+                        row.map((piece , j) => {
+                          return (
+                            <div className="square">
+                              {
+                                piece
+                                &&
+                                <div className="piece">
+                                  {piece.toString()}
+                                </div>
+                              }
+                            </div>
+                          )
+                        })
+                      }
+                    </div>
+                  )
+                })
+              }
+            </div>
           </div>
         </>
       }

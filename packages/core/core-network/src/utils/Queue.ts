@@ -12,7 +12,7 @@ export interface PPlayer {
 
 
 
-const MatchState = {
+export const MatchState = {
   waiting: 'waiting',
   playing: 'playing',
   ended: 'ended',
@@ -84,6 +84,7 @@ export class Queue {
     }
     console.log('found');
     const newMatch: Match = Queue.buildMatch([sameRank[random], player]);
+    newMatch.chessGame.makeMove('e2' ,'e4');
     this.coupledPlayers.push(newMatch);
     this.players = this.players.filter((p) => p.id !== sameRank[random].id && p.id !== player.id);
     return [this.getRandomRoomId() , newMatch];

@@ -3,6 +3,7 @@ import { Socket , io} from "socket.io-client";
 import { eICreateRoomEvent, eIInitGameEvent, eIJoinQueueEvent, eILeaveRoomEvent, eIMatchMakingStateEvent } from './interfaces/emitEvents';
 import { NAMESPACE_TYPES, MM_RANKED, MM_UNRANKED } from './Namespace';
 import { rICreateRoomEvent } from './interfaces/receiveEvents';
+import { Match } from './utils/Queue';
 
 export type IRespond = eICreateRoomEvent | eILeaveRoomEvent | eIMatchMakingStateEvent | eIInitGameEvent;
 type Check<T , R , K>  = T extends R ? K : never;
@@ -64,15 +65,15 @@ export class ClientEventManager<T extends NAMESPACE_TYPES> extends EventEmitter{
     this.send(EVENT_TYPES.LEAVE_QUEUE_R, data);
   }
 
-  public listenToInitGameOnce(data: Check<T , MM_RANKED , any>) {
-    console.log('listenToInitGameOnce')
+  public listenToInitGameOnce(data: Check<T , MM_RANKED , {setter: (arg: any) => any}>) {
+    console.log('init listner')
     if (!this.validateEmit(NAMESPACE_TYPES.MM_RANKED)) return 
-    this.socket.on(EVENT_TYPES.INIT_GAME, (dat: any) => {
+    this.socket.on(EVENT_TYPES.INIT_GAME, (dat: Match) => {
       console.log('data' , dat)
-      data.setter(() => dat);
-      console.log('getter' , data.getter())
-      this.socket.off(EVENT_TYPES.INIT_GAME);
+      console.log('there is a match !')
+      data.setter(() => JSON.stringify(dat));
     })
+    console.log('init listner -->end')
   }
   
 
