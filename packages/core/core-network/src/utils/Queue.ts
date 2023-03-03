@@ -1,5 +1,5 @@
 import { Socket } from "socket.io";
-import { ChessGame } from "../../../core-algo";
+import { ChessGame, Color, Player } from "../../../core-algo";
 
 export interface PPlayer {
   socket?: Socket;
@@ -7,6 +7,7 @@ export interface PPlayer {
   name: string;
   elo: number;
   rank?: number | null;
+  player?: Player;
 }
 
 
@@ -22,18 +23,20 @@ export type MatchState = typeof MatchState[keyof typeof MatchState];
 
 
 export interface Match {
+  matchId: string;
   players: PPlayer[];
   createdAt: Date;
   endedAt: Date | null;
   winner: PPlayer | null;
   state: MatchState;
-  chessGame: ChessGame 
+  currentTurn: PPlayer;
 }
 
 
 
 export class Queue {
   protected coupledPlayers: Match[] = [];
+  protected coupledGames: Map<string , ChessGame>;
   protected maxPlayers: number;
   protected state: boolean;
   protected players: PPlayer[];
@@ -42,6 +45,7 @@ export class Queue {
     this.players = [];
     this.maxPlayers = maxPlayers;
     this.state = true;
+    this.coupledGames = new Map();
   }
 
   isFull(): boolean {
@@ -84,8 +88,8 @@ export class Queue {
     }
     console.log('found');
     const newMatch: Match = Queue.buildMatch([sameRank[random], player]);
-    newMatch.chessGame.makeMove('e2' ,'e4');
     this.coupledPlayers.push(newMatch);
+    this.coupledGames.set(newMatch.matchId , new ChessGame());
     this.players = this.players.filter((p) => p.id !== sameRank[random].id && p.id !== player.id);
     return [this.getRandomRoomId() , newMatch];
   }
@@ -106,15 +110,16 @@ export class Queue {
   static buildMatch(player: PPlayer[]){
     
     const newChessGame = new ChessGame();
-    
-
+    player[0].player = newChessGame.getPlayer(Color.White)
+    player[1].player = newChessGame.getPlayer(Color.Black)
     const newMatch: Match = {
+      matchId: Math.random().toString(36).substr(2, 9),
       players: player,
       createdAt: new Date(),
       endedAt: null,
       winner: null,
       state: MatchState.waiting,
-      chessGame: newChessGame
+      currentTurn: Math.random() > 0.5 ? player[0] : player[1],
     }
     return newMatch;
   }

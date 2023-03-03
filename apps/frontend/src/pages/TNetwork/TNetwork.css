@@ -1,4 +1,12 @@
-.TNetwork {
-  background-color: var(--couleur-principale);
-  
+
+.Board {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.Board > .Row {
+  display: flex;
+  flex-direction: row;
 }

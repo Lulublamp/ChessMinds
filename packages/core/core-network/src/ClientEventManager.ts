@@ -69,9 +69,9 @@ export class ClientEventManager<T extends NAMESPACE_TYPES> extends EventEmitter{
     console.log('init listner')
     if (!this.validateEmit(NAMESPACE_TYPES.MM_RANKED)) return 
     this.socket.on(EVENT_TYPES.INIT_GAME, (dat: Match) => {
-      console.log('data' , dat)
+      console.log('Match object -->' , dat)
       console.log('there is a match !')
-      data.setter(() => JSON.stringify(dat));
+      data.setter(() => dat);
     })
     console.log('init listner -->end')
   }
