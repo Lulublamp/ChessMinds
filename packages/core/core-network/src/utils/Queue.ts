@@ -2,7 +2,7 @@ import { Socket } from "socket.io";
 import { ChessGame, Color, Player } from "../../../core-algo";
 
 export interface PPlayer {
-  socket?: Socket;
+  socket: string;
   id: string;
   name: string;
   elo: number;
@@ -66,8 +66,11 @@ export class Queue {
   }
 
   addPlayer(player: PPlayer): [string, Match] | number {
+    console.log('add player id : ' + player.socket);
     player.rank = this.rankPlayers(player);
-    const maybeMatch: [string , Match] | number = this.isReady() ? (this.isReadyToMatch(player) ? this.setMatch(player) : this.players.push(player))  : this.players.push(player);
+    const isReady = this.isReady();
+    const isReadyToMatch = this.isReadyToMatch(player);
+    const maybeMatch: [string , Match] | number = isReady ? (isReadyToMatch ? this.setMatch(player) : this.players.push(player)) : this.players.push(player);
     if (typeof maybeMatch === 'number') return -99;
     return maybeMatch;
   }
@@ -77,6 +80,7 @@ export class Queue {
   }
 
   setMatch(player: PPlayer): [string, Match] {
+    console.log('setting the match : ' + player.name)
     const sameRank = this.players.filter((p) => p.rank === player.rank);
     let random = this.maxPlayers - sameRank.length;
     
@@ -99,10 +103,10 @@ export class Queue {
   }
 
   static excludeSocket(match: Match): Match{
-    match.players.forEach((player) => {
-      delete player.socket;
-    });
-    console.log(match);
+    // match.players.forEach((player) => {
+    //   delete player.socket;
+    // });
+    // console.log(match);
 
     return match;
   }

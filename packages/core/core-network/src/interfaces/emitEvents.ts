@@ -18,5 +18,5 @@ export interface eIMatchMakingStateEvent {
   
 }
 
-export interface eIJoinQueueEvent extends PPlayer{}
+export interface eIJoinQueueEvent extends Omit<PPlayer , 'socket'>{}
   
