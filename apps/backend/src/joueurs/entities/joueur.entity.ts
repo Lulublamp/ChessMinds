@@ -2,6 +2,7 @@ import {
   Column, 
   CreateDateColumn, 
   Entity, 
+  ManyToMany, 
   PrimaryGeneratedColumn 
 } from "typeorm";
 
@@ -21,11 +22,12 @@ export class Joueur {
   tagJoueur: string;
 
   @Column({nullable:false})
-  loginJoueur: string;
-
-  @Column({nullable:false})
   motDePasse: string;
 
   @CreateDateColumn({ type: 'timestamp', default: 'CURRENT_TIMESTAMP', nullable: false})
   dateInscription: Date;
+
+  @ManyToMany(() => Joueur)
+  amis: Joueur[];
+
 }
