@@ -52,13 +52,12 @@ export class MmRankedGateway {
     if (typeof maybeRoom === 'number') return null;
     else {
       const [room, match] = maybeRoom;
-      this.sockets.forEach((socket) => {
-        if (socket.id === match.players[0].socket) {
-          socket.join(room);
-        } else if (socket.id === match.players[1].socket) {
-          socket.join(room);
-        }
-      });
+      this.sockets
+        .find((socket) => socket.id === match.players[0].socket)
+        .join(room);
+      this.sockets
+        .find((socket) => socket.id === match.players[1].socket)
+        .join(room);
       console.log('mm-ranked: Join Room : ' + room);
       this.server
         .in(room)
