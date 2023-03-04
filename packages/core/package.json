@@ -1,9 +1,14 @@
 {
   "name": "@TRPI/core",
   "version": "1.0.0",
-  "main": "index.ts",
   "license": "MIT",
   "private": true,
+  "main": "dist/index.js",
+  "types": "dist/index.js",
+  "scripts": {
+    "build": "tsc --build",
+    "dev": "tsc --watch"
+  },
   "devDependencies": {
     "eslint": "^7.32.0",
     "eslint-config-custom": "*",

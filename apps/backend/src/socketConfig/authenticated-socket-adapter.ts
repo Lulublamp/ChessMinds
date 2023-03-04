@@ -1,9 +1,9 @@
 /* eslint-disable prettier/prettier */
 import { IoAdapter } from '@nestjs/platform-socket.io';
 import { INestApplicationContext } from '@nestjs/common';
-import { Server } from 'socket.io';
 import { AuthService } from '../auth/auth.service';
-import { NAMESPACE_TYPES } from '@TRPI/core-nt';
+import { Nt } from '@TRPI/core';
+import { ServerOptions } from 'https';
 
 export class AuthenticatedSocketAdapter extends IoAdapter {
   private readonly authService: AuthService;
@@ -34,13 +34,13 @@ export class AuthenticatedSocketAdapter extends IoAdapter {
     }
   }
 
-  createIOServer(port: number, options?: any): any {
+  createIOServer(port: number, options?: ServerOptions): any {
     const server = super.createIOServer(port, options);
     server.use(async (socket: any, next) => {
       await this.validate(socket, next);
     });
-
-    server.of(NAMESPACE_TYPES.MM_RANKED).use(async (socket: any, next) => {
+    
+    server.of(Nt.NAMESPACE_TYPES.MM_RANKED).use(async (socket: any, next) => {
       console.log('mm-ranked: AuthenticatedSocketAdapter passed')
       // await this.validate(socket, next);
       next()

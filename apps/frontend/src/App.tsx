@@ -13,6 +13,7 @@ const App: FC = () => {
       <Routes>
         <Route path="/" element={<HomePage/>}/>
         <Route path="/SignUp" element={<SignUpPage/>}/>
+        <Route path="/test" element={<TNetwork/>}/>
       </Routes>
     </HashRouter>
   )

@@ -2,6 +2,8 @@ import { EVENT_TYPES } from './Event';
 import { Socket , io} from "socket.io-client";
 import { eICreateRoomEvent, eIInitGameEvent, eIJoinQueueEvent, eILeaveRoomEvent, eIMatchMakingStateEvent } from './interfaces/emitEvents';
 import { NAMESPACE_TYPES, MM_RANKED, MM_UNRANKED } from './Namespace';
+import { rICreateRoomEvent } from './interfaces/receiveEvents';
+import { Match } from './utils/Queue';
 
 export type IRespond = eICreateRoomEvent | eILeaveRoomEvent | eIMatchMakingStateEvent | eIInitGameEvent;
 type Check<T , R , K>  = T extends R ? K : never;
@@ -31,15 +33,16 @@ export class EventEmitter {
 }
 
 
-export class ClientEventEmitter<T extends NAMESPACE_TYPES> extends EventEmitter{
+export class ClientEventManager<T extends NAMESPACE_TYPES> extends EventEmitter{
 
   private type: T;
 
-  constructor(type: T) {
+  constructor(type: T , token: string) {
     const socket = io(`http://localhost:3001/${type}` , {
-      // extraHeaders: {
-      //   "access_token": 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Im1hcmlhIiwic3ViIjoyLCJpYXQiOjE2NzczNDI5MDgsImV4cCI6MTY3Nzk0NzcwOH0.zBHir7nz76nCU2ez238FY1Px2bBvUxhGV0idj2vVKFY',
-      // },
+      transports: ['websocket'],
+      auth: {
+        'access_token': `Bearer ${token}`
+      }
     });
     super(socket);
     this.type = type;
@@ -57,8 +60,24 @@ export class ClientEventEmitter<T extends NAMESPACE_TYPES> extends EventEmitter{
     this.send(EVENT_TYPES.JOIN_QUEUE_R, data);
   }
 
-  public leaveMatchMakingEvent(data: Check<T , MM_UNRANKED , eILeaveRoomEvent>) {
-    if (!this.validateEmit(NAMESPACE_TYPES.MM_UNRANKED)) return 
+  public leaveMatchMakingEvent(data: Check<T , MM_RANKED , eILeaveRoomEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.MM_RANKED)) return 
     this.send(EVENT_TYPES.LEAVE_QUEUE_R, data);
+  }
+
+  public listenToInitGameOnce(data: Check<T , MM_RANKED , {setter: (arg: any) => any}>) {
+    console.log('init listner')
+    if (!this.validateEmit(NAMESPACE_TYPES.MM_RANKED)) return 
+    this.socket.on(EVENT_TYPES.INIT_GAME, (dat: Match) => {
+      console.log('Match object -->' , dat)
+      console.log('there is a match !')
+      data.setter(() => dat);
+    })
+    console.log('init listner -->end')
+  }
+  
+
+  public close() {
+    this.socket.close();
   }
 }
