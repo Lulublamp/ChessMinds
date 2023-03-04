@@ -38,6 +38,43 @@ const TNetwork: FC = () => {
     }
   }
 
+  function renderPiece(piece: ChessPiece | null , indexI: number , indexJ: number){
+    if(!piece) {
+      return (
+        <div className="Piece">
+          <p>VIDE - {indexI} + {indexJ} </p>
+        </div>
+      )
+    };
+    return (
+      <div className="Piece">
+        <p>{piece.position}</p>
+      </div>
+    )
+  }
+
+  function renderRow(row: (ChessPiece | null)[] , i: number){
+    return row.map((piece , j) => {
+      return (
+        <div className="Square">
+          <p>{renderPiece(piece , i , j)}</p>
+        </div>
+      )
+    })
+  }
+
+  function renderBoard(Board: (ChessPiece | null)[][]){
+    Board.map((Row , i) => {
+      return (
+        <div className="Row">
+          {
+            renderRow(Row , i)            
+          }
+        </div>
+      )
+    })
+  }
+
   useEffect(() => {
     if(clientEmitter) return;
     const newClientEmitter = new ClientEventManager<MM_RANKED>(NAMESPACE_TYPES.MM_RANKED , '');
@@ -102,22 +139,10 @@ const TNetwork: FC = () => {
           </div>
           <div className="Board">
             {
-              game.getBoard().getBoard().map((row , i) => {
-                return (
-                  <div className="Row">
-                    {
-                      row.map((piece , j) => {
-                        return (
-                          <div className="Square">
-                            <p>{piece?.position}</p>
-                          </div>
-                        )
-                      })
-                    }
-                  </div>
-              )
-            })
-          }
+              <>
+                {renderBoard(game.getBoard().getBoard())}
+              </>  
+            }
           </div>
         </>
 
