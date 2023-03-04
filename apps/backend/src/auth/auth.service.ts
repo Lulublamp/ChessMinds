@@ -5,6 +5,14 @@ import { comparePassword } from 'src/utils/bcrypt';
 @Injectable()
 export class AuthService {
   joueursService: any;
+ /* joueursService: any;
+  validateToken(token: any) {
+    throw new Error('Method not implemented.');
+  }
+  login(user: any) {
+    throw new Error('Method not implemented.');
+  }
+  joueursService: any;
   constructor(private jwtService: JwtService) {}
 
   private readonly users = [
@@ -19,7 +27,7 @@ export class AuthService {
       password: 'guess',
     },
   ];
-
+*/
 
   async validateUser(username: string, motDePasse: string): Promise<any> {
     const joueurDB = await this.joueursService.findJoueurBy(username);
