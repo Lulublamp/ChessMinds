@@ -5,11 +5,11 @@ import {
   WebSocketGateway,
   WebSocketServer,
 } from '@nestjs/websockets';
-import { CoreEvents, CoreNameSpaces, Queue } from '@TRPI/core-nt';
+import { EVENT_TYPES, NAMESPACE_TYPES, Queue } from '@TRPI/core-nt';
 import { Server, Socket } from 'socket.io';
 
 @WebSocketGateway({
-  namespace: CoreNameSpaces.MM_RANKED,
+  namespace: NAMESPACE_TYPES.MM_RANKED,
   cors: true,
 })
 export class MmRankedGateway {
@@ -25,17 +25,15 @@ export class MmRankedGateway {
 
   handleConnection(client: Socket, ...args: any[]) {
     console.log('mm-ranked: Connection');
-    console.log(client.id);
   }
 
-  @SubscribeMessage(CoreEvents.JOIN_QUEUE_R)
+  @SubscribeMessage(EVENT_TYPES.JOIN_QUEUE_R)
   handleJoinQueue(@MessageBody() data: any, @ConnectedSocket() client) {
-    console.log(client);
     console.log('mm-ranked: Join Queue');
     const l = this.queue.getCoupledPlayers().length;
     this.queue.addPlayer(data);
     this.server.emit(
-      CoreEvents.MATCH_MAKING_STATE_R,
+      EVENT_TYPES.MATCH_MAKING_STATE_R,
       this.queue.getCoupledPlayers(),
     );
     l !== this.queue.getCoupledPlayers().length
@@ -48,12 +46,12 @@ export class MmRankedGateway {
         );
   }
 
-  @SubscribeMessage(CoreEvents.LEAVE_QUEUE_R)
+  @SubscribeMessage(EVENT_TYPES.LEAVE_QUEUE_R)
   handleLeaveQueue(@MessageBody() data: any) {
     console.log('mm-ranked: Leave Queue');
     this.queue.removePlayer(data);
     this.server.emit(
-      CoreEvents.MATCH_MAKING_STATE_R,
+      EVENT_TYPES.MATCH_MAKING_STATE_R,
       this.queue.getCoupledPlayers(),
     );
     console.log(

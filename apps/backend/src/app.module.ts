@@ -13,6 +13,7 @@ import { AuthModule } from './auth/auth.module';
 import { MmRankedGateway } from './mm-ranked/mm-ranked.gateway';
 import { JoueursModule } from './joueurs/joueurs.module';
 import { ClassementModule } from './classement/classement.module';
+import { InitGameGateway } from './init-game/init-game.gateway';
 
 @Module({
   imports: [

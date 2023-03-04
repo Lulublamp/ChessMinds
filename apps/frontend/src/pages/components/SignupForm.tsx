@@ -91,10 +91,10 @@ function SignupForm() {
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M17.5 21.0001H6.5C5.11929 21.0001 4 19.8808 4 18.5001C4 14.4194 10 14.5001 12 14.5001C14 14.5001 20 14.4194 20 18.5001C20 19.8808 18.8807 21.0001 17.5 21.0001Z"
-              stroke="#2A3072" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              stroke="#2A3072" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
             <path
               d="M12 11C14.2091 11 16 9.20914 16 7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7C8 9.20914 9.79086 11 12 11Z"
-              stroke="#2A3072" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              stroke="#2A3072" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </span>
       </div>
@@ -104,7 +104,7 @@ function SignupForm() {
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M15.8571 12C15.8571 14.1302 14.1302 15.8571 12 15.8571C9.86972 15.8571 8.14282 14.1302 8.14282 12C8.14282 9.86972 9.86972 8.14282 12 8.14282C14.1302 8.14282 15.8571 9.86972 15.8571 12ZM15.8571 12L15.8571 13.2857C15.8571 14.7059 17.0084 15.8571 18.4286 15.8571C19.3408 15.8571 20.1422 15.3821 20.5986 14.6658C20.8528 14.2671 21 13.7936 21 13.2857V12C21 7.02944 16.9706 3 12 3C7.02944 3 3 7.02944 3 12C3 16.9706 7.02944 21 12 21C13.9122 21 15.6851 20.4037 17.1429 19.3868"
-              stroke="#2A3072" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              stroke="#2A3072" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </span>
       </div>
@@ -114,7 +114,7 @@ function SignupForm() {
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M16 10.4298V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V10.4298M16 10.4298C14.9876 10.1268 13.6753 10 12 10C10.3247 10 9.01243 10.1268 8 10.4298M16 10.4298C18.2226 11.0952 19 12.6104 19 15.5C19 19.7059 17.3529 21 12 21C6.64706 21 5 19.7059 5 15.5C5 12.6104 5.77744 11.0952 8 10.4298"
-              stroke="#2A3072" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              stroke="#2A3072" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </span>
       </div>
@@ -124,7 +124,7 @@ function SignupForm() {
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path
               d="M16 10.4298V7C16 4.79086 14.2091 3 12 3C9.79086 3 8 4.79086 8 7V10.4298M16 10.4298C14.9876 10.1268 13.6753 10 12 10C10.3247 10 9.01243 10.1268 8 10.4298M16 10.4298C18.2226 11.0952 19 12.6104 19 15.5C19 19.7059 17.3529 21 12 21C6.64706 21 5 19.7059 5 15.5C5 12.6104 5.77744 11.0952 8 10.4298"
-              stroke="#2A3072" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+              stroke="#2A3072" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         </span>
       </div>
