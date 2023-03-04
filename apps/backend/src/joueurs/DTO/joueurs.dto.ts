@@ -1,5 +1,5 @@
 /* eslint-disable prettier/prettier */
-import { IsEmail, IsNotEmpty, IsString } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
 
 export class JoueurDto {
   @IsNotEmpty()
@@ -10,5 +10,8 @@ export class JoueurDto {
 
   @IsNotEmpty()
   @IsString()
+  @Matches(/^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*[_])[A-Za-z\d_]{8,}$/, {
+    message: 'Mot de passe trop faible',
+  })
   motDePasse: string;
 }
