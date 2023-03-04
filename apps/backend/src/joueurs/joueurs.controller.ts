@@ -29,6 +29,18 @@ export class JoueursController {
       return error;
     }
   }
+//Pas sur de ca du tout a check
+  @UsePipes(new ValidationPipe())
+  createAdresse(@Body() joueur: JoueurDto) {
+    try{
+      const joueurInscrit = this.joueursService.createAdresse(joueur);
+      return joueurInscrit;
+    }
+    catch (error){
+      console.log(error)
+      return error;
+    }
+  }
   
 //si on veut modifier le pseudo ou le mot de passe d'un joueur
   @Put('update')
