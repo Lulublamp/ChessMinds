@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseIntPipe, Put } from '@nestjs/common';
+import { Controller, Get, Param, ParseIntPipe, Put, UsePipes, ValidationPipe } from '@nestjs/common';
 import { JoueurDto } from './DTO/joueurs.dto';
 import { Post, Body } from '@nestjs/common';
 import { JoueursService } from './joueurs.service';
@@ -17,6 +17,8 @@ export class JoueursController {
 
   //si on veut inscrire un joueur
   @Post('inscription')
+  //permet de mettre un message d'erreur si une des infos du joueur qui est @noempty n'est pas remplie (fichier dto)
+  @UsePipes(new ValidationPipe())
   inscriptionJoueur(@Body() joueur: JoueurDto) {
     try {
       const joueurInscrit = this.joueursService.inscriptionJoueur(joueur);
