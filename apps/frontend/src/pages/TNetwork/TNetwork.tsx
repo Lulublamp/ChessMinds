@@ -13,6 +13,7 @@ const TNetwork: FC = () => {
   const [elo , setElo] = useState<number>(0);
   const [match , setMatch] = useState<Match | null>(null)
   const [game , setGame] = useState<ChessGame>(new ChessGame())
+  const [inQueue , setInQueue] = useState<boolean>(false)
 
   function handleJoinQueue(name: string , elo: number){
     if(clientEmitter){
@@ -23,6 +24,17 @@ const TNetwork: FC = () => {
       }
 
       clientEmitter.joinMatchMakingEvent(mockData)
+      setInQueue(() => true)
+    }
+  }
+
+  function handleLeaveQueue(userId: string | undefined){
+    if (!userId) return;
+    if(clientEmitter){
+      clientEmitter.leaveMatchMakingEvent({
+        userId: userId
+      })
+      setInQueue(() => false)
     }
   }
 
@@ -59,7 +71,7 @@ const TNetwork: FC = () => {
   return (
     <div id="TNetwork">
       {
-        match === null 
+        inQueue == false
         
         ?
 
@@ -73,6 +85,9 @@ const TNetwork: FC = () => {
           <h1 style={{color: "red"}}>Match not found</h1>
         </>
         : 
+
+        match ?
+
         <>
           <h1 style={{color: "green"}}>Match found</h1>
           <div className="Info">
@@ -104,6 +119,15 @@ const TNetwork: FC = () => {
             })
           }
           </div>
+        </>
+
+        :
+
+        <>
+          <h1 style={{color: "red"}}>Match not found</h1>
+          <button onClick={() => handleLeaveQueue(name)}>
+            Leave RankedMatchMaking
+          </button>
         </>
   
       }

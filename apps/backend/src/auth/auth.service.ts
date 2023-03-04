@@ -1,17 +1,10 @@
+/* eslint-disable @typescript-eslint/adjacent-overload-signatures */
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { comparePassword } from 'src/utils/bcrypt';
 
 @Injectable()
 export class AuthService {
-  joueursService: any;
- /* joueursService: any;
-  validateToken(token: any) {
-    throw new Error('Method not implemented.');
-  }
-  login(user: any) {
-    throw new Error('Method not implemented.');
-  }
   joueursService: any;
   constructor(private jwtService: JwtService) {}
 
@@ -27,7 +20,7 @@ export class AuthService {
       password: 'guess',
     },
   ];
-*/
+  /*
 
   async validateUser(username: string, motDePasse: string): Promise<any> {
     const joueurDB = await this.joueursService.findJoueurBy(username);
@@ -45,7 +38,8 @@ export class AuthService {
       return null;
     }
   }
-/*
+  */
+
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.users.find((user) => user.username === username);
     if (user && user.password === pass) {
@@ -72,5 +66,4 @@ export class AuthService {
     }
     return null;
   }
-  */
 }

@@ -75,8 +75,10 @@ export class Queue {
     return maybeMatch;
   }
 
-  removePlayer(player: PPlayer): void {
-    this.players = this.players.filter((p) => p.id !== player.id);
+  removePlayer(name: string, socketId: string): void {
+    console.log('remove player id : ' + socketId);
+    this.players = this.players.filter((player) => player.name !== name && player.socket !== socketId);
+    console.log('remove player id : ' + socketId + ' done -> ' + name);
   }
 
   setMatch(player: PPlayer): [string, Match] {
