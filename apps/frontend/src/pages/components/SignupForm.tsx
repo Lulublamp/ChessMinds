@@ -19,7 +19,9 @@ function SignupForm() {
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    // Envoyer les données à la base de données ou effectuer une validation supplémentaire ici
+    //Envoyer les données à la base de données ou effectuer une validation supplémentaire ici
+    
+    
     console.log(formData);
   };
 

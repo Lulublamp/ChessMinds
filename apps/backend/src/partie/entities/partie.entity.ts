@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import {
   CreateDateColumn,
   Entity,
@@ -16,13 +17,16 @@ export class Partie {
   @JoinColumn()
   idRencontre: Rencontre;
 
-  @CreateDateColumn({nullable:false})
+  @CreateDateColumn()
   heureDebut: number;
 
-  @CreateDateColumn({nullable:false})
+  @CreateDateColumn()
   heureFin: number;
 
-  @CreateDateColumn({nullable:false})
+  @CreateDateColumn()
   dureePartie: number;
+
+  @CreateDateColumn({nullable:false})
+  datePartie: number;
 
 }
