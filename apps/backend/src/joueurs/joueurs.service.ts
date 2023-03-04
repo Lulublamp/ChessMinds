@@ -22,6 +22,7 @@ export class JoueursService {
   inscriptionJoueur(joueur: JoueurDto) {
     //hashage du mot de passe
     const motDePasse= hashPassword(joueur.motDePasse);
+    
     const joueurInscrit = this.joueursRepository.create({...joueur,motDePasse});
     return this.joueursRepository.save(joueurInscrit);
   }

@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
+import { comparePassword } from 'src/utils/bcrypt';
 
 @Injectable()
 export class AuthService {
+  joueursService: any;
   constructor(private jwtService: JwtService) {}
 
   private readonly users = [
@@ -18,6 +20,24 @@ export class AuthService {
     },
   ];
 
+
+  async validateUser(username: string, motDePasse: string): Promise<any> {
+    const joueurDB = await this.joueursService.findJoueurBy(username);
+    if (joueurDB) {
+      const matched= await comparePassword(motDePasse, joueurDB.motDePasse);
+      if(matched){
+        console.log('Joueur valide avec succes');
+        return joueurDB;
+      }else{
+        console.log('Joueur non valide');
+        return null;
+      }
+    }else{
+      console.log('Joueur non valide');
+      return null;
+    }
+  }
+/*
   async validateUser(username: string, pass: string): Promise<any> {
     const user = await this.users.find((user) => user.username === username);
     if (user && user.password === pass) {
@@ -44,4 +64,5 @@ export class AuthService {
     }
     return null;
   }
+  */
 }

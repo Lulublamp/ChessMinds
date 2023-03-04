@@ -15,6 +15,7 @@ export class JoueursController {
     //return joueurs;
   }
 
+
   //si on veut inscrire un joueur
   @Post('inscription')
   //permet de mettre un message d'erreur si une des infos du joueur qui est @noempty n'est pas remplie (fichier dto)
@@ -28,6 +29,7 @@ export class JoueursController {
       return error;
     }
   }
+  
 //si on veut modifier le pseudo ou le mot de passe d'un joueur
   @Put('update')
   updateJoueur(
