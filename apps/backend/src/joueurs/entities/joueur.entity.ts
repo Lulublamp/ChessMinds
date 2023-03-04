@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { 
+  BeforeInsert,
   Column, 
   CreateDateColumn, 
   Entity, 
@@ -23,16 +24,25 @@ export class Joueur {
   tagJoueur: string;
 
   @Column({nullable:false})
+  fullpseudo: string;
+
+  @Column({nullable:false})
   motDePasse: string;
 
-<<<<<<< apps/backend/src/joueurs/entities/joueur.entity.ts
   @CreateDateColumn({nullable:false})
-=======
-  @CreateDateColumn()
->>>>>>> apps/backend/src/joueurs/entities/joueur.entity.ts
   dateInscription: Date;
 
   @ManyToMany(() => Joueur)
   amis: Joueur[];
+
+  @BeforeInsert()
+  generateTagJoueur() {
+    const randomNumber = Math.floor(Math.random() * 9000) + 1000;
+    this.tagJoueur = `#${randomNumber}`;
+  }
+  @BeforeInsert()
+  setFullName() {
+    this.fullpseudo = `${this.pseudo} ${this.tagJoueur}`;
+  }
 
 }

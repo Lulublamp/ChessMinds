@@ -10,7 +10,9 @@ export class JoueurDto {
   @IsEmail() // pour dire que ce qui entre en email doit etre sous forme d'email
   adresseMail: string;
 
-  pseudo?: string;
+  @IsNotEmpty()
+  @IsString()
+  pseudo: string;
 
   @IsNotEmpty()
   @IsString()
