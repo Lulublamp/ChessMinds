@@ -1,0 +1,80 @@
+
+
+.SignUp {
+  position: relative;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+}
+
+.SignUp>div:first-of-type {
+  height: 100%;
+  width: 55%;
+  background-color: var(--couleur-principale);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.SignUp>div:first-of-type img {
+  max-width: 545px;
+  max-height: 545px;
+  object-fit: cover;
+}
+
+.SignUp>div:last-of-type {
+  width: 45%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 36px;
+  background-color: #fff;
+}
+
+.SignUp>div:last-of-type>div:first-of-type {
+  width: 100%;
+  height: auto;
+  display: flex;
+  justify-content: end;
+}
+
+.SignUp>div:last-of-type>div:first-of-type button {
+  width: 270px;
+  height: 60px;
+  background-color: var(--couleur-important);
+  border-radius: 17px;
+  color: #fff;
+  font-size: 24px;
+  font-weight: bold;
+  border: none;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.SignUp h1 {
+  margin-top: 0px;
+  font-size: 32px;
+  font-weight: bold;
+  color: var(--couleur-important);
+  max-width: 450px;
+}
+
+.SignUp h1 span {
+  color: var(--couleur-texteInfos);
+  font-size: 55px;
+}
+
+.SignUp h2 {
+  font-size: 30px;
+  color: var(--couleur-texteInfos);
+  font-weight: bold;
+  margin-bottom: 28px;
+}
+
+.SignUp h3 {
+  font-size: 30px;
+  color: #000;
+  font-weight: bold;
+  margin-bottom: 39px;
+}

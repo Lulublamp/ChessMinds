@@ -3,19 +3,25 @@ import {
   Column, 
   CreateDateColumn, 
   Entity, 
-  PrimaryGeneratedColumn 
+  ManyToOne, 
+  PrimaryGeneratedColumn,
+  JoinColumn
 } from "typeorm";
+import { Joueur } from '../../joueurs/entities/joueur.entity';
 
 @Entity()
 export class Amis {
   @PrimaryGeneratedColumn()
   idAmis: number;
 
-  @Column({nullable: false})
-  idJoueur1: number;
 
-  @Column({nullable: false})
-  idJoueur2: number;
+  @ManyToOne(()=>Joueur,{nullable:false})
+  @JoinColumn()
+  idJoueur1: Joueur;
+
+  @ManyToOne(()=>Joueur,{nullable:false})
+  @JoinColumn()
+  idJoueur2: Joueur;
 
   @CreateDateColumn()
   dateDemande: Date;
