@@ -14,6 +14,11 @@ export interface eILeaveRoomEvent {
   userId: string;
 }
 
+export interface eIJoinLobbyEvent {
+  player: PPlayer;
+  code: string;
+}
+
 export interface eIMatchMakingStateEvent {
   
 }
