@@ -2,7 +2,6 @@ import * as React from "react";
 import { useState, FC, useEffect, useRef } from "react";
 import { ClientEventManager , MM_RANKED , NAMESPACE_TYPES , eIJoinQueueEvent, MM_UNRANKED, Match , MatchState, EVENT_TYPES } from '@TRPI/core/core-network/index';
 import { ChessBoard, ChessGame, ChessPiece, Color } from "@TRPI/core/core-algo";
-import BoardG, { IBoardGProps } from "./BoardG";
 import './TNetwork.css'
 
 
