@@ -13,6 +13,7 @@ const TNetwork: FC = () => {
   const [elo , setElo] = useState<number>(0);
   const [match , setMatch] = useState<Match | null>(null)
   const [game , setGame] = useState<ChessGame>(new ChessGame())
+  const [inQueue , setInQueue] = useState<boolean>(false)
 
   function handleJoinQueue(name: string , elo: number){
     if(clientEmitter){
@@ -23,7 +24,55 @@ const TNetwork: FC = () => {
       }
 
       clientEmitter.joinMatchMakingEvent(mockData)
+      setInQueue(() => true)
     }
+  }
+
+  function handleLeaveQueue(userId: string | undefined){
+    if (!userId) return;
+    if(clientEmitter){
+      clientEmitter.leaveMatchMakingEvent({
+        userId: userId
+      })
+      setInQueue(() => false)
+    }
+  }
+
+  function renderPiece(piece: ChessPiece | null , indexI: number , indexJ: number){
+    if(!piece) {
+      return (
+        <div className="Piece">
+          <p>VIDE - {indexI} + {indexJ} </p>
+        </div>
+      )
+    };
+    return (
+      <div className="Piece">
+        <p>{piece.position}</p>
+      </div>
+    )
+  }
+
+  function renderRow(row: (ChessPiece | null)[] , i: number){
+    return row.map((piece , j) => {
+      return (
+        <div className="Square">
+          <p>{renderPiece(piece , i , j)}</p>
+        </div>
+      )
+    })
+  }
+
+  function renderBoard(Board: (ChessPiece | null)[][]){
+    Board.map((Row , i) => {
+      return (
+        <div className="Row">
+          {
+            renderRow(Row , i)            
+          }
+        </div>
+      )
+    })
   }
 
   useEffect(() => {
@@ -59,7 +108,7 @@ const TNetwork: FC = () => {
   return (
     <div id="TNetwork">
       {
-        match === null 
+        inQueue == false
         
         ?
 
@@ -73,6 +122,9 @@ const TNetwork: FC = () => {
           <h1 style={{color: "red"}}>Match not found</h1>
         </>
         : 
+
+        match ?
+
         <>
           <h1 style={{color: "green"}}>Match found</h1>
           <div className="Info">
@@ -87,23 +139,20 @@ const TNetwork: FC = () => {
           </div>
           <div className="Board">
             {
-              game.getBoard().getBoard().map((row , i) => {
-                return (
-                  <div className="Row">
-                    {
-                      row.map((piece , j) => {
-                        return (
-                          <div className="Square">
-                            <p>{piece?.position}</p>
-                          </div>
-                        )
-                      })
-                    }
-                  </div>
-              )
-            })
-          }
+              <>
+                {renderBoard(game.getBoard().getBoard())}
+              </>  
+            }
           </div>
+        </>
+
+        :
+
+        <>
+          <h1 style={{color: "red"}}>Match not found</h1>
+          <button onClick={() => handleLeaveQueue(name)}>
+            Leave RankedMatchMaking
+          </button>
         </>
   
       }

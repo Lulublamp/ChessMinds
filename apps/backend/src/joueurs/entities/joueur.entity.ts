@@ -25,11 +25,7 @@ export class Joueur {
   @Column({nullable:false})
   motDePasse: string;
 
-<<<<<<< apps/backend/src/joueurs/entities/joueur.entity.ts
-  @CreateDateColumn({nullable:false})
-=======
   @CreateDateColumn()
->>>>>>> apps/backend/src/joueurs/entities/joueur.entity.ts
   dateInscription: Date;
 
   @ManyToMany(() => Joueur)

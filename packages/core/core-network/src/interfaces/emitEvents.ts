@@ -11,7 +11,7 @@ export interface eIInitGameEvent extends eICreateRoomEvent{
 }
 
 export interface eILeaveRoomEvent {
-
+  userId: string;
 }
 
 export interface eIMatchMakingStateEvent {
