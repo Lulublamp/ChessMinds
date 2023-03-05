@@ -2,7 +2,6 @@ import * as React from "react";
 import { useState, FC, useEffect, useRef } from "react";
 import { ClientEventManager , MM_RANKED , NAMESPACE_TYPES , eIJoinQueueEvent, MM_UNRANKED, Match , MatchState, EVENT_TYPES } from '@TRPI/core/core-network/index';
 import { ChessBoard, ChessGame, ChessPiece, Color } from "@TRPI/core/core-algo";
-import BoardG, { IBoardGProps } from "./BoardG";
 import './TNetwork.css'
 
 
@@ -14,6 +13,7 @@ const TNetwork: FC = () => {
   const [match , setMatch] = useState<Match | null>(null)
   const [game , setGame] = useState<ChessGame>(new ChessGame())
   const [inQueue , setInQueue] = useState<boolean>(false)
+  const [disponible , setDisponible] = useState<string[]>([])
 
   function handleJoinQueue(name: string , elo: number){
     if(clientEmitter){
@@ -38,11 +38,11 @@ const TNetwork: FC = () => {
     }
   }
 
-  function renderPiece(piece: ChessPiece | null , indexI: number , indexJ: number){
+  function renderPiece(piece: ChessPiece | null){
     if(!piece) {
       return (
         <div className="Piece">
-          <p>VIDE - {indexI} + {indexJ} </p>
+          <p>VIDE </p>
         </div>
       )
     };
@@ -53,26 +53,59 @@ const TNetwork: FC = () => {
     )
   }
 
-  function renderRow(row: (ChessPiece | null)[] , i: number){
-    return row.map((piece , j) => {
+  function renderRow(row: (ChessPiece | null)[]){
+    return row.map((piece) => {
       return (
         <div className="Square">
-          <p>{renderPiece(piece , i , j)}</p>
+          <p>{renderPiece(piece)}</p>
         </div>
       )
     })
   }
 
   function renderBoard(Board: (ChessPiece | null)[][]){
-    Board.map((Row , i) => {
+    Board.map((Row) => {
       return (
         <div className="Row">
           {
-            renderRow(Row , i)            
+            Row.map((piece) => {
+              return (
+                <div className="Square">
+                  <div>
+                    {
+                      piece ? 
+                      <p>{piece.position}</p>
+                      :
+                      <p>VIDE</p>
+                    }
+                  </div>
+                </div>
+              )
+            })       
           }
         </div>
       )
     })
+  }
+
+  function handleClickOnSquare(piece: ChessPiece | null){
+    const current: string[] = []
+    console.log("click")
+    piece?.getLegalMoves(game).map((move) => {
+      console.log(move)
+      const [x , y] = move.split('')
+      //convert x to number from letter from a
+      const xNumber =  (move.charCodeAt(0) - 97);
+      const yNumber = Number(y) - 1;
+      console.log(`handle ${xNumber}${yNumber}`)
+      console.log(disponible)
+      current.push(`${xNumber}${yNumber}`)
+      setDisponible(() => current)
+      console.log(disponible)
+    })
+    if (current.length == 0) {
+      setDisponible(() => current)
+    };
   }
 
   useEffect(() => {
@@ -89,6 +122,7 @@ const TNetwork: FC = () => {
     }
   },[])
   
+  
 
   useEffect(() => {
 
@@ -101,6 +135,10 @@ const TNetwork: FC = () => {
     }
 
     }, [match])
+
+  useEffect(() => {
+    console.log("disponible")
+  }, [disponible])
 
 
 
@@ -138,11 +176,39 @@ const TNetwork: FC = () => {
             <p>Tour : {match.currentTurn.name == name ? 'A moi' : 'A lui'}</p>
           </div>
           <div className="Board">
-            {
-              <>
-                {renderBoard(game.getBoard().getBoard())}
-              </>  
-            }
+            <> 
+              {
+                game.getBoard().getBoard().map((Row , i) => {
+                  return (
+                    <div key={`Row-${i}`} className="Row">
+                      {
+                        Row.map((piece , j) => {
+                          return (
+                            <div key={`Piece - ${j} , ${i}`} className="Square" onClick={() => handleClickOnSquare(piece)}>
+                              {
+                                piece ? 
+                                <p>{`${piece.position}`}</p>
+                                :
+                                <p>
+                                  {
+                                    disponible.includes(`${j}${i}`) ?
+                                    <p style={{backgroundColor: "red"}}>{`${j}${i}`}</p>
+                                    :
+                                    <p>{`${j}${i}`}</p>
+
+                                  }
+                                </p>
+                              }
+                            </div>
+                          )
+                        })       
+                      }
+                    </div>
+                  )
+                })
+              }
+            </>  
+          
           </div>
         </>
 

@@ -10,7 +10,11 @@ rules.push(
   },
   {
     test: /\.png/,
-    type: 'asset/resource'
+    loader: 'file-loader',
+    type: 'asset/resource',
+    options: {
+      name: '[name].[ext]',
+    }
   }
 );
 
@@ -19,7 +23,7 @@ export const rendererConfig: Configuration = {
     rules,
   },
   output: {
-    assetModuleFilename: 'assets/[name][ext]',
+    assetModuleFilename: 'images/[name][ext]',
   },
   plugins,
   resolve: {
