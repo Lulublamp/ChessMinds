@@ -1,7 +1,7 @@
 import * as React from "react";
 import { useState, FC, useEffect, useRef } from "react";
-import { ClientEventManager , MM_RANKED , NAMESPACE_TYPES , eIJoinQueueEvent, MM_UNRANKED, Match , MatchState, EVENT_TYPES } from '@TRPI/core/core-network/index';
-import { ChessBoard, ChessGame, ChessPiece, Color } from "@TRPI/core/core-algo";
+import { ClientEventManager , MM_RANKED , NAMESPACE_TYPES , eIJoinQueueEvent, MM_UNRANKED, Match , MatchState, EVENT_TYPES, PPlayer } from '@TRPI/core/core-network/index';
+import { ChessBoard, ChessGame, ChessPiece, Color, Player } from "@TRPI/core/core-algo";
 import './TNetwork.css'
 
 
@@ -10,7 +10,7 @@ const TNetwork: FC = () => {
   const [clientEmitter , setClientEmitter] = useState<ClientEventManager<MM_RANKED> | null>(null);
   const [name , setName] = useState<string>("");
   const [elo , setElo] = useState<number>(0);
-  const [match , setMatch] = useState<Match | null>(null)
+  const [match , setMatch] = useState<Match<PPlayer> | null>(null)
   const [game , setGame] = useState<ChessGame>(new ChessGame())
   const [inQueue , setInQueue] = useState<boolean>(false)
   const [disponible , setDisponible] = useState<string[]>([])

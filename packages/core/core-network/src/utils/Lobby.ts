@@ -1,13 +1,14 @@
 import { ChessGame, Color, Player } from "../../../core-algo";
 import { PPlayer, Match, Queue } from "./Queue";
+import { lobbyPlayer } from "../interfaces/emitEvents";
 
 
 
 export interface PrivateLobby {
   code: string;
-  host: PPlayer;
-  players: PPlayer[];
-  ready: [boolean, boolean];
+  host: lobbyPlayer;
+  players: lobbyPlayer[];
+  ready: { [key: string]: boolean};
   status: 'waiting' | 'playing' | 'ended';
 }
 
@@ -16,27 +17,28 @@ export class Lobby {
 
   constructor() {}
 
-  createLobby(host: PPlayer): PrivateLobby {
+  createLobby(host: lobbyPlayer): PrivateLobby {
     const code = this.generateCode();
     const lobby: PrivateLobby = {
       code,
       host,
-      players: [],
-      ready: [false, false],
+      players: [host],
+      ready: { [host.id]: false },
       status: 'waiting',
     };
     this.lobbies.push(lobby);
     return lobby;
   }
 
-  joinLobby(code: string, player: PPlayer): PrivateLobby | null {
+  joinLobby(code: string, player: lobbyPlayer): PrivateLobby | null {
     const lobby = this.lobbies.find((lobby) => lobby.code === code);
     if (!lobby) return null;
     lobby.players.push(player);
+    lobby.ready[player.id] = false;
     return lobby;
   }
 
-  leaveLobby(code: string, player: PPlayer): PrivateLobby | null {
+  leaveLobby(code: string, player: lobbyPlayer): PrivateLobby | null {
     const lobby = this.lobbies.find((lobby) => lobby.code === code);
     if (!lobby) return null;
     lobby.players = lobby.players.filter((p) => p.id !== player.id);
@@ -54,31 +56,43 @@ export class Lobby {
     return code;
   }
 
-  playerReady(player: PPlayer): PrivateLobby | null {
-    const lobby = this.lobbies.find((lobby) => {
-      return lobby.players.find((p) => p.id === player.id);
-    });
+  playerReady(code: string, player: lobbyPlayer): PrivateLobby | null {
+    console.log("Looking for lobby", code);
+    const lobby = this.lobbies.find((lobby) => lobby.code === code);
+    console.log("Ready in");
+    console.log(lobby);
     if (!lobby) return null;
-    const index = lobby.players.findIndex((p) => p.id === player.id);
-    lobby.ready[index] = true;
+    lobby.ready[player.id] = true;
     return lobby;
   }
 
-  playerUnready(player: PPlayer): PrivateLobby | null {
-    const lobby = this.lobbies.find((lobby) => {
-      return lobby.players.find((p) => p.id === player.id);
-    });
-    if (!lobby) return null;
-    const index = lobby.players.findIndex((p) => p.id === player.id);
-    lobby.ready[index] = false;
-    return lobby;
-  }
-
-  startGame(code: string): Match | null {
+  playerUnready(code: string, player: lobbyPlayer): PrivateLobby | null {
     const lobby = this.lobbies.find((lobby) => lobby.code === code);
     if (!lobby) return null;
-    const match = Queue.buildMatch(lobby.players);
+    lobby.ready[player.id] = false;
+    return lobby;
+  }
+
+  startGame(code: string): Match<lobbyPlayer> | null {
+    const lobby = this.lobbies.find((lobby) => lobby.code === code);
+    if (!lobby) return null;
+    if (lobby.players.length < 2) return null;
+    if (Object.values(lobby.ready).some((r) => !r)) return null;
+    const match = Lobby.buildMatch(lobby.players);
     lobby.status = 'playing';
+    return match;
+  }
+
+  static buildMatch(players: lobbyPlayer[]): Match<lobbyPlayer> {
+    const match: Match<lobbyPlayer> = {
+      matchId: Math.random().toString(36).substring(7),
+      players,
+      createdAt: new Date(),
+      endedAt: null,
+      winner: null,
+      state: 'waiting',
+      currentTurn: players[0],
+    };
     return match;
   }
 

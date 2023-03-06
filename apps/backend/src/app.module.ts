@@ -14,7 +14,6 @@ import { MmRankedGateway } from './mm-ranked/mm-ranked.gateway';
 import { JoueursModule } from './joueurs/joueurs.module';
 import { ClassementModule } from './classement/classement.module';
 import { InitGameGateway } from './init-game/init-game.gateway';
-import { PrivateLobbiesModule } from './private-lobbies/private-lobbies.module';
 
 @Module({
   imports: [
@@ -34,7 +33,6 @@ import { PrivateLobbiesModule } from './private-lobbies/private-lobbies.module';
       inject: [ConfigService],
     }),
     MatchMakingModule,
-    PrivateLobbiesModule,
     AuthModule,
     JoueursModule,
     ClassementModule,

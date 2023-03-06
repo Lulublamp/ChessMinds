@@ -6,9 +6,9 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Nt } from '@TRPI/core';
-import { eIJoinLobbyEvent, PPlayer } from '@TRPI/core/core-network';
+import {eIJoinLobbyEvent, PPlayer, eICreateLobbyEvent, lobbyPlayer, Match, PrivateLobby } from '@TRPI/core/core-network';
 import { Server, Socket } from 'socket.io';
-import { LobbiesService } from './private-lobbies.service';
+import { MatchMakingService } from 'src/match-making/match-making.service';
 
 @WebSocketGateway({
   namespace: Nt.NAMESPACE_TYPES.PRIVATE_LOBBY,
@@ -21,7 +21,7 @@ export class PrivateLobbiesGateway {
 
   private sockets: Socket[] = [];
 
-  constructor(private lobbiesService: LobbiesService) {}
+  constructor(private lobbiesService: MatchMakingService) {}
 
   handleConnection(client: Socket, ...args: any[]) {
     console.log('Lobbies: Connection : ' + client.id);
@@ -35,14 +35,14 @@ export class PrivateLobbiesGateway {
 
   @SubscribeMessage(Nt.EVENT_TYPES.CREATE_LOBBY)
   handleCreatePrivateLobby(
-    @MessageBody() data: Nt.PPlayer,
+    @MessageBody() data: eICreateLobbyEvent,
     @ConnectedSocket() client: Socket,
-  ): null {
+  ): PrivateLobby {
     console.log('Lobbies: Create Private Lobby');
-    data.socket = client.id;
     const lobby = this.lobbiesService.pLobby.createLobby(data);
+    console.log(lobby.code);
     client.join(lobby.code);
-    return null;
+    return lobby;
   }
 
 
@@ -80,7 +80,7 @@ export class PrivateLobbiesGateway {
     @ConnectedSocket() client: Socket,
   ): null {
     console.log('Lobbies: Start Private Lobby');
-    const match = this.lobbiesService.pLobby.startGame(data.code);
+    const match : Match<lobbyPlayer> = this.lobbiesService.pLobby.startGame(data.code);
     if(!match) return null;
     this.server
         .in(data.code)
@@ -90,26 +90,26 @@ export class PrivateLobbiesGateway {
 
   @SubscribeMessage(Nt.EVENT_TYPES.LOBBY_PLAYER_READY)
   handlePlayerReady(
-    @MessageBody() data: PPlayer,
+    @MessageBody() data: eIJoinLobbyEvent,
     @ConnectedSocket() client: Socket,
   ): null {
     console.log('Lobbies: Player Ready');
-    const lobby = this.lobbiesService.pLobby.playerReady(data);
+    const lobby = this.lobbiesService.pLobby.playerReady(data.code, data.player);
     this.server
-    .in(lobby.code)
+    .in(data.code)
     .emit(Nt.EVENT_TYPES.LOBBY_PLAYERS_UPDATE, lobby);
     return null;
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.LOBBY_PLAYER_UNREADY)
   handlePlayerUnready(
-    @MessageBody() data: PPlayer,
+    @MessageBody() data: eIJoinLobbyEvent,
     @ConnectedSocket() client: Socket,
   ): null {
     console.log('Lobbies: Player Unready');
-    const lobby = this.lobbiesService.pLobby.playerUnready(data);
+    const lobby = this.lobbiesService.pLobby.playerUnready(data.code, data.player);
     this.server
-    .in(lobby.code)
+    .in(data.code)
     .emit(Nt.EVENT_TYPES.LOBBY_PLAYERS_UPDATE, lobby);
     return null;
   }
