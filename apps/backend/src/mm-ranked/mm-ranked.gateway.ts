@@ -6,7 +6,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Nt } from '@TRPI/core';
-import { eILeaveRoomEvent } from '@TRPI/core/core-network';
+import { eILeaveRoomEvent, PPlayer } from '@TRPI/core/core-network';
 import { Server, Socket } from 'socket.io';
 import { MatchMakingService } from 'src/match-making/match-making.service';
 // EVENT_TYPES,
@@ -47,7 +47,7 @@ export class MmRankedGateway {
   ): null {
     console.log('mm-ranked: Join Nt.Queue');
     data.socket = client.id;
-    const maybeRoom: [string, Nt.Match] | number =
+    const maybeRoom: [string, Nt.Match<PPlayer>] | number =
       this.matchMakingService.queue.addPlayer(data);
     console.log('mm-ranked: Maybe Room : ' + maybeRoom);
     if (typeof maybeRoom === 'number') return null;

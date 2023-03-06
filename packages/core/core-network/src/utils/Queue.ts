@@ -1,5 +1,6 @@
 import { Socket } from "socket.io";
 import { ChessGame, Color, Player } from "../../../core-algo";
+import { lobbyPlayer } from "../interfaces/emitEvents";
 
 export interface PPlayer {
   socket: string;
@@ -22,20 +23,20 @@ export const MatchState = {
 export type MatchState = typeof MatchState[keyof typeof MatchState];
 
 
-export interface Match {
+export interface Match <T> {
   matchId: string;
-  players: PPlayer[];
+  players: (T extends PPlayer ? PPlayer : lobbyPlayer)[];
   createdAt: Date;
   endedAt: Date | null;
   winner: PPlayer | null;
   state: MatchState;
-  currentTurn: PPlayer;
+  currentTurn: (T extends PPlayer ? PPlayer : lobbyPlayer);
 }
 
 
 
 export class Queue {
-  protected coupledPlayers: Match[] = [];
+  protected coupledPlayers: Match<PPlayer>[] = [];
   protected coupledGames: Map<string , ChessGame>;
   protected maxPlayers: number;
   protected state: boolean;
@@ -65,12 +66,12 @@ export class Queue {
     return this.players.filter((player) => player.rank === p.rank).length > 0;
   }
 
-  addPlayer(player: PPlayer): [string, Match] | number {
+  addPlayer(player: PPlayer): [string, Match<PPlayer>] | number {
     console.log('add player id : ' + player.socket);
     player.rank = this.rankPlayers(player);
     const isReady = this.isReady();
     const isReadyToMatch = this.isReadyToMatch(player);
-    const maybeMatch: [string , Match] | number = isReady ? (isReadyToMatch ? this.setMatch(player) : this.players.push(player)) : this.players.push(player);
+    const maybeMatch: [string , Match<PPlayer>] | number = isReady ? (isReadyToMatch ? this.setMatch(player) : this.players.push(player)) : this.players.push(player);
     if (typeof maybeMatch === 'number') return -99;
     return maybeMatch;
   }
@@ -81,7 +82,7 @@ export class Queue {
     console.log('remove player id : ' + socketId + ' done -> ' + name);
   }
 
-  setMatch(player: PPlayer): [string, Match] {
+  setMatch(player: PPlayer): [string, Match<PPlayer>] {
     console.log('setting the match : ' + player.name)
     const sameRank = this.players.filter((p) => p.rank === player.rank);
     let random = this.maxPlayers - sameRank.length;
@@ -93,7 +94,7 @@ export class Queue {
       }
     }
     console.log('found');
-    const newMatch: Match = Queue.buildMatch([sameRank[random], player]);
+    const newMatch: Match<PPlayer> = Queue.buildMatch([sameRank[random], player]);
     this.coupledPlayers.push(newMatch);
     this.coupledGames.set(newMatch.matchId , new ChessGame());
     this.players = this.players.filter((p) => p.id !== sameRank[random].id && p.id !== player.id);
@@ -104,7 +105,7 @@ export class Queue {
     return Math.random().toString(36).substr(2, 9);
   }
 
-  static excludeSocket(match: Match): Match{
+  static excludeSocket(match: Match<PPlayer>): Match<PPlayer>{
     // match.players.forEach((player) => {
     //   delete player.socket;
     // });
@@ -118,7 +119,7 @@ export class Queue {
     const newChessGame = new ChessGame();
     player[0].player = newChessGame.getPlayer(Color.White)
     player[1].player = newChessGame.getPlayer(Color.Black)
-    const newMatch: Match = {
+    const newMatch: Match<PPlayer> = {
       matchId: Math.random().toString(36).substr(2, 9),
       players: player,
       createdAt: new Date(),
@@ -150,7 +151,7 @@ export class Queue {
     return null;
   }
 
-  getCoupledPlayers(): Match[] {
+  getCoupledPlayers(): Match<PPlayer>[] {
     return this.coupledPlayers;
   }
 
