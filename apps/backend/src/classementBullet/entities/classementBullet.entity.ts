@@ -9,9 +9,9 @@ import {
 import { Joueur } from '../../joueurs/entities/joueur.entity';
 
 @Entity()
-export class Classement {
+export class ClassementBullet {
   @PrimaryGeneratedColumn()
-  idClassement: number;
+  idClassementBullet: number;
 
   @OneToOne(() => Joueur, {nullable:false})
   @JoinColumn()
