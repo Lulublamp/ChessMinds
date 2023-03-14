@@ -1,0 +1,29 @@
+.downloadButton {
+  position: relative;
+  background-color: var(--couleur-important);
+  border-radius: 10px;
+  width: 350px;
+  height: auto;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.2s ease-in-out;
+}
+
+
+.downloadButton:hover svg {
+  transform: translateX(10px);
+}
+
+.downloadButton svg {
+  transition: transform 0.2s ease-in-out;
+}
+
+.downloadButton span {
+  font-size: 24px;
+  font-weight: 700;
+  line-height: 29.26px;
+  color: #fff;
+  margin: 25px 16px 25px 0px;
+}

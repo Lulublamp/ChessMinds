@@ -1,22 +1,36 @@
 import React from 'react';
-import Navbar from '../components/Navbar';
-import MainMenu from '../components/MainMenu';
-import InfoSection from '../components/InfoSection';
-import BottomSection from '../components/BottomSection';
 import "./HomePageStyle.css";
-
+import Logo from '../../components/Logo_Icon/Logo';
+import chessboardpng from '../../images/ChessBoard.png';
+import MainMenu from '../../components/Navigation/MainMenu';
+import SocialMedia from '../../components/Logo_Icon/SocialMedia';
+import DownloadButton from '../../components/Button/DownloadButton';
 
 function HomePage() {
   return (
-    <div className="HomePage">
-      <Navbar />
-      <main>
-        <h1>Relevez le défi de jouer aux échecs en ligne</h1>
-        <MainMenu />
-        <InfoSection />
-        <BottomSection />
-      </main>
-    </div>
+    <main>
+      <section className="homePage">
+        <div>
+          <h1>
+            <span>Chess</span>
+            <span>MINDS</span>
+          </h1>
+          <div className="chessBoardBackground">
+            <img src={chessboardpng} alt="ChessMinds" />
+          </div>
+          <MainMenu />
+        </div>
+        <div>
+          <div>
+            <div>
+              <SocialMedia />
+              <DownloadButton />
+            </div>
+            <Logo />
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }
 

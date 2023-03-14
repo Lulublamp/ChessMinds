@@ -1,4 +1,9 @@
-@import url("pages/color.css");
+@import url("color.css");
 :root {
   font-family: 'Montserrat', sans-serif;
+}
+
+*{
+  margin: 0;
+  padding: 0;
 }
