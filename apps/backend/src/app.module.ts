@@ -14,6 +14,14 @@ import { MmRankedGateway } from './mm-ranked/mm-ranked.gateway';
 import { JoueursModule } from './joueurs/joueurs.module';
 import { ClassementModule } from './classement/classement.module';
 import { InitGameGateway } from './init-game/init-game.gateway';
+import { ClassementBlitzModule } from './classement-blitz/classement-blitz.module';
+import { ClassementBulletModule } from './classement-bullet/classement-bullet.module';
+import { ClassementBulletModule } from './classement_bullet/classement_bullet.module';
+import { ClassementBulletController } from './classement_bullet/classement_bullet.controller';
+import { ClassementBulletController } from './classement_bullet/controllers/classement_bullet/classement_bullet.controller';
+import { ClassementBulletService } from './classement-bullet/services/classement-bullet/classement-bullet.service';
+import { ClassementBlitzModule } from './classement_blitz/classement_blitz.module';
+import { ClassementBulletModule } from './classement-bullet/classement-bullet.module';
 
 @Module({
   imports: [
@@ -36,8 +44,10 @@ import { InitGameGateway } from './init-game/init-game.gateway';
     AuthModule,
     JoueursModule,
     ClassementModule,
+    ClassementBlitzModule,
+    ClassementBulletModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [AppController, ClassementBulletController],
+  providers: [AppService, ClassementBulletService],
 })
 export class AppModule {}

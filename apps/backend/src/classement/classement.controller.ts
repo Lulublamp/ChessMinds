@@ -15,17 +15,17 @@ export class ClassementController {
   }
 
 //si on veut modifier le classement
- /* @Put('update')
+  @Put('update')
   updateClassement(
-    @Param('idJoueur', ParseIntPipe) idJoeur: number,
+    @Param('idJoueur', ParseIntPipe) idJoueur: number,
     @Body() classement: ClassementDto
   ) {
     try {
-      const classementUpdate = this.classementService.updateClassement(idJoeur,classement);
+      const classementUpdate = this.classementService.updateClassement(idJoueur,classement);
       return classementUpdate;
     }catch (error){
       console.log(error)
       return error;
     }
-  }*/
+  }
 }

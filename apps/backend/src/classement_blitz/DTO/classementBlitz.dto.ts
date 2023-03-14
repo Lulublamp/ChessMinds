@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { IsNotEmpty} from 'class-validator';
 
-export class ClassementDtoBlitz{
+export class ClassementBlitzDto{
   // a voir si on a besoin de l'idJoueur dans le DTO
   // Mais je pense que oui sinon on ne sait pas à qui on attribue le chanegemnt de ELO
   @IsNotEmpty()
