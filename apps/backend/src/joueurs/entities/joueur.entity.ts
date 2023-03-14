@@ -44,5 +44,4 @@ export class Joueur {
   setFullName() {
     this.fullpseudo = `${this.pseudo} ${this.tagJoueur}`;
   }
-
 }

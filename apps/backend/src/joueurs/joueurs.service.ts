@@ -8,36 +8,65 @@ import { Joueur } from './entities/joueur.entity';
 
 @Injectable()
 export class JoueursService {
+  /*updateJoueur(idJoueur: number | import("typeorm").FindOperator<number>) {
+    throw new Error('Method not implemented.');
+  }*/
   //injecter le repository de la table joueur
   constructor(
     @InjectRepository(Joueur)
     private readonly joueursRepository: Repository<Joueur>,
   ) {}
-  //retrouver un joueur avec le Repository
-  async findJoueur(idJoueur: number) {
-    return await this.joueursRepository.find();
-    //id du joueur fait une erreur je sais pas pk à voir ca
+  //Retrouver un joueur avec le Repository
+  async findJoueur(joueur: JoueurDto): Promise<Joueur> {
+    const joueurTrouve = await this.joueursRepository.findOneBy({ pseudo: joueur.pseudo });
+    if (!joueur) {
+      throw new Error(`Le joueur avec le pseudo ${joueur.pseudo} n'a pas été trouvé`);
+    }
+    return joueurTrouve;
   }
-
-  //enregistrer un joueur avec le Repository
-  async inscriptionJoueur(joueur: JoueurDto) {
-    //hashage du mot de passe
-    const motDePasse= hashPassword(joueur.motDePasse);
-    const joueurInscrit = this.joueursRepository.create({...joueur,motDePasse});
-    return await this.joueursRepository.save(joueurInscrit);
+  
+  //Enregistrer un joueur avec le Repository
+  async inscriptionJoueur(joueurDto: JoueurDto): Promise<Joueur> {
+    const joueur = new Joueur();
+    joueur.pseudo = joueurDto.pseudo;
+    joueur.adresseMail = joueurDto.adresseMail;
+    joueur.motDePasse = hashPassword(joueurDto.motDePasse);
+    return await this.joueursRepository.save(joueur);
   }
-
-//Pour s'assurer que l'adresse mail n'est pas déjà utilisée
+  
+  //Pour s'assurer que l'adresse mail n'est pas déjà utilisée
   async createAdresse(joueur: JoueurDto) {
     const existingUser = await this.joueursRepository.findOneBy({ adresseMail: joueur.adresseMail });
     if (existingUser) {
       throw new Error('Cette adresse mail est déjà utilisée');
     }
-    return this.joueursRepository.save(joueur);
   }
+  
   //modifier un joueur avec le Repository
-  updateJoueur(idJoueur:number, joueur: JoueurDto) {
-    const joueurUpdate = this.joueursRepository.update(idJoueur, joueur);
-    return joueurUpdate;
+  async modifierJoueur(joueurDto: JoueurDto) {
+    const joueur = await this.joueursRepository.findOneBy({pseudo: joueurDto.pseudo});
+    if (!joueur) {
+      throw new Error(`Le joueur avec l'ID ${joueurDto.pseudo} n'a pas été trouvé`);
+    }
+    // Si un nouveau mot de passe a été fourni, on le hash avant de le sauvegarder
+    if (joueurDto.motDePasse) {
+      joueur.motDePasse = hashPassword(joueurDto.motDePasse);
+    }
+    if(joueurDto.pseudo){
+      joueur.pseudo = joueurDto.pseudo;
+    }
+   
+    await this.joueursRepository.save(joueur);
+    return joueur;
   }
+  
+
+  /*
+  async updateJoueur(idJoueur: number, joueur: JoueurDto) {
+    const joueurUpdate = await this.joueursRepository.findOne(idJoueur);
+    if (joueurUpdate) {
+      const joueurUpdate = await this.joueursRepository.update(idJoueur, joueur);
+      return joueurUpdate;
+    }
+  }*/
 }
