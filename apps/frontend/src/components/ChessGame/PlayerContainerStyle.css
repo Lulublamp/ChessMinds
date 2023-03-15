@@ -1,0 +1,79 @@
+.playerContainer>div:first-of-type {
+  width: 100%;
+  height: 75px;
+  background-color: #fff;
+  border-radius: 15px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+}
+
+
+.playerContainer {
+  display: flex;
+}
+
+.whitePlayer {
+  flex-direction: column;
+}
+
+.blackPlayer {
+  flex-direction: column-reverse;
+}
+
+.playerContainer>div:first-of-type img {
+  width: 40px;
+  height: 40px;
+  margin-right: 25px;
+}
+
+.playerContainer>div:first-of-type>div:first-of-type {
+  display: flex;
+  flex-direction: row;
+}
+
+.playerContainer>div:first-of-type>div:first-of-type>div {
+  display: flex;
+  flex-direction: column;
+}
+
+.playerContainer>div:first-of-type span {
+  font-size: 14px;
+  font-weight: bold;
+  color: #000;
+}
+
+.playerContainer>div:first-of-type>div:nth-of-type(2) {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.playerContainer>div:first-of-type>div:nth-of-type(2) svg {
+  margin-right: 5px;
+}
+
+.playerContainer>div:last-of-type {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: 90%;
+  margin: 10px auto 0 auto;
+}
+
+.playerContainer>div:last-of-type>* {
+  margin-right: 0px;
+}
+
+.playerContainer>div:last-of-type span {
+  font-size: 25px;
+  font-weight: bold;
+  color: #fff;
+}
+
+
+.time {
+  font-size: 20px;
+}
