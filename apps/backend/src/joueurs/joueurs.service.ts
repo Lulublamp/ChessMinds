@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { create } from 'domain';
-import { hashPassword } from 'src/utils/bcrypt';
+import { comparePassword, hashPassword } from 'src/utils/bcrypt';
 import { Repository } from 'typeorm';
 import { JoueurDto } from './DTO/joueurs.dto';
 import { Joueur } from './entities/joueur.entity';
@@ -16,11 +16,12 @@ export class JoueursService {
     @InjectRepository(Joueur)
     private readonly joueursRepository: Repository<Joueur>,
   ) {}
+
   //Retrouver un joueur avec le Repository
   async findJoueur(joueur: JoueurDto): Promise<Joueur> {
-    const joueurTrouve = await this.joueursRepository.findOneBy({ pseudo: joueur.pseudo });
-    if (!joueur) {
-      throw new Error(`Le joueur avec le pseudo ${joueur.pseudo} n'a pas été trouvé`);
+    const joueurTrouve = await this.joueursRepository.findOneBy({ adresseMail: joueur.adresseMail });
+    if (joueurTrouve && comparePassword(joueur.motDePasse, joueurTrouve.motDePasse)) {
+      return joueurTrouve;
     }
     return joueurTrouve;
   }
@@ -49,7 +50,7 @@ export class JoueursService {
   async modifierJoueur(joueurDto: JoueurDto) {
     const joueur = await this.joueursRepository.findOneBy({pseudo: joueurDto.pseudo});
     if (!joueur) {
-      throw new Error(`Le joueur avec l'ID ${joueurDto.pseudo} n'a pas été trouvé`);
+      throw new Error(`Le joueur avec le pseudo ${joueurDto.pseudo} n'a pas été trouvé`);
     }
     // Si un nouveau mot de passe a été fourni, on le hash avant de le sauvegarder
     if (joueurDto.motDePasse) {
@@ -58,18 +59,10 @@ export class JoueursService {
     if(joueurDto.pseudo){
       joueur.pseudo = joueurDto.pseudo;
     }
-   
     await this.joueursRepository.save(joueur);
     return joueur;
   }
   
 
-  /*
-  async updateJoueur(idJoueur: number, joueur: JoueurDto) {
-    const joueurUpdate = await this.joueursRepository.findOne(idJoueur);
-    if (joueurUpdate) {
-      const joueurUpdate = await this.joueursRepository.update(idJoueur, joueur);
-      return joueurUpdate;
-    }
-  }*/
+
 }

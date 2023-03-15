@@ -24,7 +24,12 @@ export class JoueursController {
   //permet de mettre un message d'erreur si une des infos du joueur qui est @noempty n'est pas remplie (fichier dto)
   @UsePipes(new ValidationPipe())
   inscriptionJoueur(@Body() joueur: JoueurDto) {
-    return this.joueursService.inscriptionJoueur(joueur);
+    try{
+      return this.joueursService.inscriptionJoueur(joueur);
+    }catch (error){
+      console.log(error)
+      return error;
+    }
   }
 //Pas sur de ca du tout a check
   @UsePipes(new ValidationPipe())
@@ -42,7 +47,12 @@ export class JoueursController {
 //si on veut modifier le pseudo ou le mot de passe d'un joueur
 @Put('modifie')
   async modifierJoueur(@Body() joueurDto: JoueurDto) {
-    return this.joueursService.modifierJoueur(joueurDto);
+    try{
+      return this.joueursService.modifierJoueur(joueurDto);
+    }catch (error){
+      console.log(error)
+      return error;
+    }
   }
   
 }

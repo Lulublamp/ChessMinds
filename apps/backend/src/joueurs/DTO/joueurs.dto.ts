@@ -3,7 +3,6 @@ import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
 import { FindOperator, Unique } from 'typeorm';
 
 
-
 export class JoueurDto {
   @Unique(['adresseMail'])
   @IsNotEmpty()
