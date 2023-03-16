@@ -6,6 +6,8 @@ import PlayerContainer from '../../components/ChessGame/PlayerContainer';
 import Chat from '../../components/ChessGame/Chat';
 import MovesList from '../../components/ChessGame/TableCoups';
 import AbandonButton from '../../components/Button/AbandonButton';
+import ChessBoard from '../../components/ChessGame/ChessBoard';
+import { ChessGame } from '@TRPI/core/core-algo';
 
 const Game = () => {
   const movesData = [
@@ -14,6 +16,8 @@ const Game = () => {
     { turn: 3, white: 'd4', black: 'Nf6' },
     // Ajouter plus de coups...
   ];
+
+  const chessGame = new ChessGame();
 
   const PreviousMove = () => {
     console.log('Previous move');
@@ -31,6 +35,10 @@ const Game = () => {
     console.log('Propose Nulle');
   }
 
+  const onCaseClick = (row: number, col: number) => {
+    console.log('Case clicked');
+  }
+
   return (
     <section className="chessGame">
       <div className="leftContainer">
@@ -39,6 +47,7 @@ const Game = () => {
           playerName="Pseudo"
           playerScore={800}
           playerScorePieceValue={2}
+          time="10:00"
         />
         <Chat />
         <PlayerContainer
@@ -46,10 +55,14 @@ const Game = () => {
           playerName="Pseudo"
           playerScore={800}
           playerScorePieceValue={2}
+          time="10:00"
         />
       </div>
       <div className="chessBoard">
-
+        <ChessBoard 
+          chessGame={chessGame}
+          onCaseClick={onCaseClick}
+        />
       </div>
       <div className="rightContainer">
         <MovesList moves={movesData} />

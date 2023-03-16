@@ -1,10 +1,12 @@
 .chessGame {
-  width: 90%;
-  height: 100%;
+  width: 100%;
+  margin: auto;
+  height: calc(100vh - 100px);
   display: flex;
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
+  background-color: var(--couleur-principale);
 }
 
 .leftContainer {
@@ -28,3 +30,4 @@
   flex-direction: column;
   align-items: center;
 }
+

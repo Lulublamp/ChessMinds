@@ -5,6 +5,7 @@ import HomePage from "./pages/Home/HomePage";
 import TNetwork from "./pages/TNetwork/TNetwork";
 import TLobby from "./pages/TLobbies/TLobbies";
 import Navbar from "./components/Navigation/NavBar";
+import Game from "./pages/Game/Game";
 
 
 const App: FC = () => {
@@ -12,7 +13,7 @@ const App: FC = () => {
     <HashRouter>
       <Navbar />
       <Routes>
-        <Route path="/" element={<HomePage />} />
+        <Route path="/" element={<Game />} />
         <Route path="/test" element={<TNetwork />} />
         <Route path="/lobby" element={<TLobby />} />
       </Routes>
