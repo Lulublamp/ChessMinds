@@ -1,4 +1,5 @@
 import React from 'react';
+import { useState } from 'react';
 import './GameStyle.css';
 import GameControl from '../../components/ChessGame/GameControl';
 import NulleButtons from '../../components/Button/NulleButtons';
@@ -6,16 +7,17 @@ import PlayerContainer from '../../components/ChessGame/PlayerContainer';
 import Chat from '../../components/ChessGame/Chat';
 import MovesList from '../../components/ChessGame/TableCoups';
 import AbandonButton from '../../components/Button/AbandonButton';
-import ChessBoard from '../../components/ChessGame/ChessBoard';
-import { ChessGame } from '@TRPI/core/core-algo';
+import ChessBoardRenderer from '../../components/ChessGame/ChessBoard';
+import { ChessBoard, ChessGame, ChessPiece } from '@TRPI/core/core-algo';
 
 const Game = () => {
-  const movesData = [
+  var movesData = [
     { turn: 1, white: 'e4', black: 'c6' },
     { turn: 2, white: 'Nf3', black: 'd5' },
     { turn: 3, white: 'd4', black: 'Nf6' },
     // Ajouter plus de coups...
   ];
+
 
   const chessGame = new ChessGame();
 
@@ -33,10 +35,6 @@ const Game = () => {
 
   const ProposeNulle = () => {
     console.log('Propose Nulle');
-  }
-
-  const onCaseClick = (row: number, col: number) => {
-    console.log('Case clicked');
   }
 
   return (
@@ -58,10 +56,9 @@ const Game = () => {
           time="10:00"
         />
       </div>
-      <div className="chessBoard">
-        <ChessBoard 
+      <div className="chessBoardContainer">
+        <ChessBoardRenderer
           chessGame={chessGame}
-          onCaseClick={onCaseClick}
         />
       </div>
       <div className="rightContainer">
@@ -70,8 +67,8 @@ const Game = () => {
           onLeftClick={PreviousMove}
           onRightClick={NextMove}
         />
-        <AbandonButton onClick={Abandon}/>
-        <NulleButtons onClick={ProposeNulle}/>
+        <AbandonButton onClick={Abandon} />
+        <NulleButtons onClick={ProposeNulle} />
       </div>
     </section>
   );

@@ -17,10 +17,14 @@
   justify-content: space-between;
 }
 
-.chessBoard {
+.chessBoardContainer {
   width: 750px;
   height: 750px;
-  background-color: #d13131;
+  background-color: #FFFFFF;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
 }
 
 .rightContainer {

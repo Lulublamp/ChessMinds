@@ -127,7 +127,7 @@ export class ChessGame {
         this.blackPlayer.removePiece(toPiece);
       }
     }
-
+    
     // Réinitialiser les pions qui ont effectué un double pas au tour précédent
     this.pawnsWithDoubleMove.forEach((pawn) => {
       pawn.resetDoubleMove();
@@ -146,9 +146,38 @@ export class ChessGame {
     // Si le pion a fait un double pas, on l'ajoute à la liste des pions pouvant être capturés en passant
     if (
       fromPiece instanceof Pawn &&
-      Math.abs(fromPiece.position.charCodeAt(1) - to.charCodeAt(1)) === 2
+      Math.abs(from.charCodeAt(1) - to.charCodeAt(1)) === 2
     ) {
       this.pawnsWithDoubleMove.push(fromPiece);
+    }
+
+    // Vérifier si c'est une capture en passant
+    if (fromPiece instanceof Pawn) {
+      let y : number = +from[1] + (fromPiece.color === Color.White ? 1 : -1);
+      const diagonaleGauche = String.fromCharCode(from.charCodeAt(0) - 1) + y;
+      const diagonaleDroite = String.fromCharCode(from.charCodeAt(0) + 1) + y;
+      if (diagonaleGauche === to) {
+        const piece = this.board.getPieceAt(diagonaleGauche);
+        if (piece) {
+          this.board.setPieceAt(String.fromCharCode(from.charCodeAt(0) - 1) + from[1], null);
+          if (piece.color === Color.White) {
+            this.whitePlayer.removePiece(piece);
+          } else {
+            this.blackPlayer.removePiece(piece);
+          }
+        }
+      }
+      if (diagonaleDroite === to) {
+        const piece = this.board.getPieceAt(diagonaleDroite);
+        if (piece) {
+          this.board.setPieceAt(String.fromCharCode(from.charCodeAt(0) + 1) + from[1], null);
+          if (piece.color === Color.White) {
+            this.whitePlayer.removePiece(piece);
+          } else {
+            this.blackPlayer.removePiece(piece);
+          }
+        }
+      }
     }
 
     // Si le pion est sur la dernière rangée, on le transforme en reine
@@ -195,7 +224,7 @@ export class ChessGame {
     //Si le roi blanc a fait un petit roque, on déplace la tour
     if (
       fromPiece instanceof King &&
-      fromPiece.position === "e1" &&
+      from === "e1" &&
       to === "g1"
     ) {
       const rook = this.board.getPieceAt("h1");
@@ -207,7 +236,7 @@ export class ChessGame {
     //Si le roi blanc a fait un grand roque, on déplace la tour
     if (
       fromPiece instanceof King &&
-      fromPiece.position === "e1" &&
+      from === "e1" &&
       to === "c1"
     ) {
       const rook = this.board.getPieceAt("a1");
@@ -219,7 +248,7 @@ export class ChessGame {
     //Si le roi noir a fait un petit roque, on déplace la tour
     if (
       fromPiece instanceof King &&
-      fromPiece.position === "e8" &&
+      from === "e8" &&
       to === "g8"
     ) {
       const rook = this.board.getPieceAt("h8");
@@ -231,7 +260,7 @@ export class ChessGame {
     //Si le roi noir a fait un grand roque, on déplace la tour
     if (
       fromPiece instanceof King &&
-      fromPiece.position === "e8" &&
+      from === "e8" &&
       to === "c8"
     ) {
       const rook = this.board.getPieceAt("a8");
