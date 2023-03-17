@@ -3,6 +3,7 @@ import { useState, FC, useEffect, useRef } from "react";
 import { ClientEventManager , MM_RANKED , NAMESPACE_TYPES , eIJoinQueueEvent, MM_UNRANKED, Match , MatchState, EVENT_TYPES, PPlayer } from '@TRPI/core/core-network/index';
 import { ChessBoard, ChessGame, ChessPiece, Color, Player } from "@TRPI/core/core-algo";
 import './TNetwork.css'
+import { useNavigate } from "react-router-dom";
 
 
 
@@ -14,6 +15,7 @@ const TNetwork: FC = () => {
   const [game , setGame] = useState<ChessGame>(new ChessGame())
   const [inQueue , setInQueue] = useState<boolean>(false)
   const [disponible , setDisponible] = useState<string[]>([])
+  const navigate = useNavigate();
 
   function handleJoinQueue(name: string , elo: number){
     if(clientEmitter){
@@ -178,34 +180,35 @@ const TNetwork: FC = () => {
           <div className="Board">
             <> 
               {
-                game.getBoard().getBoard().map((Row , i) => {
-                  return (
-                    <div key={`Row-${i}`} className="Row">
-                      {
-                        Row.map((piece , j) => {
-                          return (
-                            <div key={`Piece - ${j} , ${i}`} className="Square" onClick={() => handleClickOnSquare(piece)}>
-                              {
-                                piece ? 
-                                <p>{`${piece.position}`}</p>
-                                :
-                                <p>
-                                  {
-                                    disponible.includes(`${j}${i}`) ?
-                                    <p style={{backgroundColor: "red"}}>{`${j}${i}`}</p>
-                                    :
-                                    <p>{`${j}${i}`}</p>
+                navigate("/")
+                // game.getBoard().getBoard().map((Row , i) => {
+                //   return (
+                //     <div key={`Row-${i}`} className="Row">
+                //       {
+                //         Row.map((piece , j) => {
+                //           return (
+                //             <div key={`Piece - ${j} , ${i}`} className="Square" onClick={() => handleClickOnSquare(piece)}>
+                //               {
+                //                 piece ? 
+                //                 <p>{`${piece.position}`}</p>
+                //                 :
+                //                 <p>
+                //                   {
+                //                     disponible.includes(`${j}${i}`) ?
+                //                     <p style={{backgroundColor: "red"}}>{`${j}${i}`}</p>
+                //                     :
+                //                     <p>{`${j}${i}`}</p>
 
-                                  }
-                                </p>
-                              }
-                            </div>
-                          )
-                        })       
-                      }
-                    </div>
-                  )
-                })
+                //                   }
+                //                 </p>
+                //               }
+                //             </div>
+                //           )
+                //         })       
+                //       }
+                //     </div>
+                //   )
+                // })
               }
             </>  
           
