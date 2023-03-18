@@ -1,5 +1,6 @@
 import { Color, ChessPiece } from "../pieces/ChessPiece";
 import { King } from "../pieces/King";
+import { ChessGame } from "./ChessGame";
 
 export class Player {
   color: Color;
@@ -15,7 +16,13 @@ export class Player {
   }
 
   removePiece(piece: ChessPiece) {
-    const index = this.pieces.indexOf(piece);
+    let index = 0;
+    for (let i = 0; i < this.pieces.length; i++) {
+      if (this.pieces[i].position === piece.position) {
+        index = i;
+        break;
+      }
+    }
     if (index !== -1) {
       this.pieces.splice(index, 1);
     }
@@ -31,7 +38,10 @@ export class Player {
 
   public copyPlayer(): Player {
     const newPlayer = new Player(this.color);
-    this.pieces.forEach((piece) => newPlayer.addPiece(piece.copyPiece()));
+    this.pieces.forEach((piece) => {
+      const newPiece = piece.copyPiece();
+      newPlayer.addPiece(newPiece);
+    });
     return newPlayer;
   }
 }

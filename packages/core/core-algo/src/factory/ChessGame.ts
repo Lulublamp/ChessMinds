@@ -309,7 +309,6 @@ export class ChessGame {
 
     const legalMoves = piece.getLegalMoves(this);
     const newLegalMoves: string[] = [];
-
     //parcourir les mouvements légaux et vérifier si on est encore en échec après le déplacement
     legalMoves.forEach((move) => {
       const copyGame = this.CopyGame();
