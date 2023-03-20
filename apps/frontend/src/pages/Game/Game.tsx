@@ -10,7 +10,7 @@ import AbandonButton from '../../components/Button/AbandonButton';
 import ChessBoardRenderer from '../../components/ChessGame/ChessBoard';
 import { ChessBoard, ChessGame, ChessPiece } from '@TRPI/core/core-algo';
 import FindPlayer from '../../components/ChessGame/FindPlayer';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 
 const Game = () => {
 
@@ -25,14 +25,26 @@ const Game = () => {
     // Ajouter plus de coups...
   ];
 
+  //get value from url
+  const [searchParams] = useSearchParams();
+  const RankedMode = searchParams.get('RankedMode');
+  const TimerMode = searchParams.get('TimerMode');
+  const Pseudo : string | null = searchParams.get('Pseudo');
+  const Elo = searchParams.get('Elo');
+  console.log("RankedMode : " + RankedMode);
+  console.log("TimerMode : " + TimerMode);
+  console.log("Pseudo : " + Pseudo);
+  console.log("Elo : " + Elo);
+
+
+
   const [PlayerIsFind, setFindPlayer] = useState(false);
 
   const PlayerFind = (_playerisWhite : boolean) => {
     setFindPlayer(true);
     playerisWhite = _playerisWhite;
   };
-
-
+  
     //PlayerFind after 2s A ENLEVER
   //setTimeout(PlayerFind, 2000);
 
@@ -60,13 +72,14 @@ const Game = () => {
   }
 
   if (!PlayerIsFind) {
+    //A MODIFER FAUX ECHIQUIER
     return <div>
       <FindPlayer onCancel={cancelMatchmaking}/>
       <section className="chessGame">
         <div className="leftContainer">
           <PlayerContainer
             isWhitePlayer={true}
-            playerName="Pseudo"
+            playerName = "Pseudo"
             playerScore={800}
             playerScorePieceValue={2}
             time="10:00"

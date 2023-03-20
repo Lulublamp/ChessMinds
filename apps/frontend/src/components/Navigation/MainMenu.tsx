@@ -6,7 +6,7 @@ import MenuButton from "../Button/MenuButton";
 import MatchMaking from '../../components/Navigation/Matchmaking';
 import "./MainMenuStyle.css";
 
-function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: () => void }) {
+function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedMode : string, TimerMode : string, Pseudo : string, Elo : number) => void }) {
 
   const [showSubMenu, setShowSubMenu] = useState(false);
   const [showMatchmaking, setShowMatchmaking] = useState(false);
@@ -27,11 +27,13 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: () => vo
     setShowMatchmaking(false);
   };
 
-  const handleMatchmaking = (RankedMode : string, TimerMode : string) => {
+  const handleMatchmaking = (RankedMode : string, TimerMode : string, Pseudo : string, Elo : number) => {
     //ICI A MODIFER POUR ENVOYER LES DONNEES AU SERVEUR
     console.log("RankedMode : " + RankedMode);
     console.log("TimerMode : " + TimerMode);
-    handleMatchmakingClick();
+    console.log("Pseudo : " + Pseudo);
+    console.log("Elo : " + Elo);
+    handleMatchmakingClick(RankedMode, TimerMode, Pseudo, Elo);
     handleClose();
   };
 

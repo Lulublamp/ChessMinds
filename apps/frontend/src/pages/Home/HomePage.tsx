@@ -10,8 +10,12 @@ import { useNavigate } from 'react-router-dom';
 function HomePage() {
 
   const navigate = useNavigate();
-  const handleMatchmakingClick = () => {
-    navigate('/Game');
+  const handleMatchmakingClick = (RankedMode : string, TimerMode : string, Pseudo : string, Elo : number) => {
+    navigate({
+      pathname: '/Game',
+      search: '?RankedMode=' + RankedMode + '&TimerMode=' + TimerMode + '&Pseudo=' + Pseudo + '&Elo=' + Elo,
+    });
+    
   }
 
   return (

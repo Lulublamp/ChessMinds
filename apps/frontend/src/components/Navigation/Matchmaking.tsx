@@ -3,13 +3,15 @@ import './MatchMaking.css';
 
 interface MatchMakingProps {
   onCancel: () => void;
-  onPlay: (RankedMode: string, TimerMode: string) => void;
+  onPlay: (RankedMode: string, TimerMode: string, Pseudo : string, Elo : number) => void;
 }
 
 const MatchMaking: React.FC<MatchMakingProps> = ({ onCancel, onPlay }) => {
 
   const [RankedMode, setRankedMode] = React.useState('Ranked');
   const [TimerMode, setTimerMode] = React.useState('bullet');
+  const [Elo, setElo] = React.useState(100);
+  const [Pseudo, setPseudo] = React.useState('pseudo');
 
   const timeModeBulletRef = React.useRef<HTMLDivElement>(null);
   const timeModeBlitzRef = React.useRef<HTMLDivElement>(null);
@@ -28,10 +30,20 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ onCancel, onPlay }) => {
     event.currentTarget.classList.add('timeModeHover');
   };
   
+  const handleEloChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setElo(parseInt(event.target.value));
+  };
+
+  const handlePseudoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setPseudo(event.target.value);
+  };
+
   return (
     <div className="Matchmaking">
       <div className="Matchmaking-container">
         <h2>Matchmaking</h2>
+        <input type="text" onChange={handlePseudoChange}/>
+        <input type="number" name="elo" onChange={handleEloChange} />
         <div className="Mode-container">
           <div>
             <input type="radio" name="Mode" id="Ranked" value="Ranked"
@@ -78,7 +90,7 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ onCancel, onPlay }) => {
             <span>1 min</span>
           </div>
         </div>
-        <button className="PlayButton" onClick={() => onPlay(RankedMode, TimerMode)}>Jouer</button>
+        <button className="PlayButton" onClick={() => onPlay(RankedMode, TimerMode, Pseudo, Elo)}>Jouer</button>
         <button className="cancel-btn" onClick={onCancel}>
           <svg width="21" height="22" viewBox="0 0 21 22" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path fillRule='evenodd' clipRule={"evenodd"}
