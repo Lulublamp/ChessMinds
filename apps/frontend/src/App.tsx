@@ -9,7 +9,7 @@ import Game from "./pages/Game/Game";
 const App: FC = () => {
   return (
     <HashRouter>
-      <Navbar />{" "}
+      {/* <Navbar />{" "} */}
       {/* Peut être vaut mieux mettre la navbar que dans quelquqe 
                       component et pas global comme ça
                   */}
