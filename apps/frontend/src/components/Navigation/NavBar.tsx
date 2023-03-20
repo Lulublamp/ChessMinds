@@ -11,10 +11,6 @@ function Navbar() {
     setShowConnexion(true);
   };
 
-  const ClosePopupConnexion = () => {
-    setShowConnexion(false);
-  };
-
   return (
     <nav className="navbar">
       <div className="navbar__container">
