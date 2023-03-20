@@ -10,7 +10,6 @@ import { Partie } from './partie/entities/partie.entity';
 import { Rencontre } from './rencontre/entities/rencontre.entity';
 import { MatchMakingModule } from './network/match-making/match-making.module';
 import { AuthModule } from './auth/auth.module';
-import { MmRankedGateway } from './mm-ranked/mm-ranked.gateway';
 import { JoueursModule } from './joueurs/joueurs.module';
 import { ClassementModule } from './classement/classement.module';
 import { InitGameGateway } from './init-game/init-game.gateway';
@@ -42,6 +41,6 @@ import { PrivateGameService } from './network/private-game/private-game.service'
     ClassementModule,
   ],
   controllers: [AppController],
-  providers: [AppService, MatchMakingGateway, MmRankedService, MmUnrankedService, PrivateGameService],
+  providers: [AppService, MatchMakingModule],
 })
 export class AppModule {}

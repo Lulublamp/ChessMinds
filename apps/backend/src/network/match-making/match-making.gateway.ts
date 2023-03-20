@@ -12,6 +12,7 @@ import {
   MMPlayer,
 } from '@TRPI/core/core-network';
 import { Server, Socket } from 'socket.io';
+
 import { MatchMakingService } from './match-making.service';
 
 @WebSocketGateway({
@@ -38,17 +39,18 @@ export class MatchMakingGateway {
   handleDisconnect(client: Socket) {
     console.log('match-making: Disconnect : ' + client.id);
     this.sockets = this.sockets.filter((socket) => socket.id !== client.id);
+    this.matchMakingService.queue.removePlayerFromQueue(client.id);
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.JOIN_QUEUE)
   handleJoinQueue(
-    @MessageBody() joinQueuPayload: eIJoinQueueEvent,
+    @MessageBody() joinQueuPayload: Nt.eIJoinQueueEvent,
     @ConnectedSocket() client: Socket,
   ) {
     const { options } = joinQueuPayload;
-    const optionQuery: MMPlayer = joinQueuPayload;
+    const optionQuery: Nt.MMPlayer = joinQueuPayload;
     optionQuery.socketId = client.id;
-    if (options.mode === MATCHMAKING_MODE.PRIVATE) {
+    if (options.mode === Nt.MATCHMAKING_MODE.PRIVATE) {
       console.log('error: private game not implemented in queue');
       return;
     }
@@ -56,7 +58,7 @@ export class MatchMakingGateway {
     const maybeGame = this.matchMakingService.queue.addPlayerToQueue(
       optionQuery,
       client,
-      options.mode,
+      options,
     );
 
     if (typeof maybeGame === 'number') {
