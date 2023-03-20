@@ -6,6 +6,7 @@ import MenuButton from "../Button/MenuButton";
 import MatchMaking from '../../components/Navigation/Matchmaking';
 
 // import Connexion from '../../components/Navigation/Connexion';
+// import Connexion from '../../components/Navigation/Inscription';
 
 import "./MainMenuStyle.css";
 
@@ -45,6 +46,9 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
     return <MatchMaking onCancel={ClosePopupMatchMaking} onPlay={handleMatchmaking} />
   }
   // if(showConnexion) {
+  //   return <Connexion onCancel={ClosePopupConnexion} />
+  // }
+  // if(showInscription) {
   //   return <Connexion onCancel={ClosePopupConnexion} />
   // }
   else {
