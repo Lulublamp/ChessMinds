@@ -14,9 +14,6 @@ import { JoueursModule } from './joueurs/joueurs.module';
 import { ClassementModule } from './classement/classement.module';
 import { InitGameGateway } from './init-game/init-game.gateway';
 import { MatchMakingGateway } from './network/match-making/match-making.gateway';
-import { MmRankedService } from './network/mm-ranked/mm-ranked.service';
-import { MmUnrankedService } from './network/mm-unranked/mm-unranked.service';
-import { PrivateGameService } from './network/private-game/private-game.service';
 
 @Module({
   imports: [

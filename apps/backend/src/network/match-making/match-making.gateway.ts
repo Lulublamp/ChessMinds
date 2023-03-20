@@ -31,7 +31,7 @@ export class MatchMakingGateway {
     console.log('match-making: Init');
   }
 
-  handleConnection(client: Socket, ...args: any[]) {
+  handleConnection(client: Socket) {
     console.log('match-making: Connection : ' + client.id);
     this.sockets.push(client);
   }
@@ -48,15 +48,15 @@ export class MatchMakingGateway {
     @ConnectedSocket() client: Socket,
   ) {
     const { options } = joinQueuPayload;
-    const optionQuery: Nt.MMPlayer = joinQueuPayload;
-    optionQuery.socketId = client.id;
+    const playerPayload: Nt.MMPlayer = joinQueuPayload;
+    playerPayload.socketId = client.id;
     if (options.mode === Nt.MATCHMAKING_MODE.PRIVATE) {
       console.log('error: private game not implemented in queue');
       return;
     }
 
     const maybeGame = this.matchMakingService.queue.addPlayerToQueue(
-      optionQuery,
+      playerPayload,
       client,
       options,
     );

@@ -10,8 +10,8 @@ import {
   eICreateLobbyWithReturnEvent,
   lobbyPlayer,
 } from "./interfaces/emitEvents";
-import { MATCH_MAKING, NAMESPACE_TYPES } from "./Namespace";
-import { rICreateRoomEvent } from "./interfaces/receiveEvents";
+import { IN_GAME, MATCH_MAKING, NAMESPACE_TYPES } from "./Namespace";
+import { rICreateRoomEvent, rIIncomingGameEvent } from "./interfaces/receiveEvents";
 import { IGame, Match, PPlayer } from "./utils/Queue";
 import { PrivateLobby } from "./utils/Lobby";
 
@@ -82,25 +82,20 @@ export class ClientEventManager<
   }
 
   public listenToIncomingMatch(
-    data: Check<
-      T,
-      MATCH_MAKING,
-      {
-        gameSetter: (arg: any) => any;
-        beginSetter: (arg: any) => any;
-        colorSetter: (arg: any) => any;
-        currentColor: string;
-      }
-    >
+    payload: Check<T, MATCH_MAKING, rIIncomingGameEvent>
   ) {
     if (!this.validateEmit(NAMESPACE_TYPES.MATCH_MAKING)) return;
     this.socket.on(EVENT_TYPES.INCOMING_CATCH, (game: IGame) => {
       console.log("there is a match !");
-      data.gameSetter(() => game);
-      data.colorSetter(() =>
-        game.white_player.name == data.currentColor ? true : false
+      payload.gameSetter(() => game);
+      payload.colorSetter(() =>
+        game.white_player.name == payload.name ? true : false
       );
-      data.beginSetter(() => true);
+      payload.triggerSetter(() => true);
+      payload.currentClientManager.close()
+      payload.disconnect(() => null)
+      const gameManager = new ClientEventManager<IN_GAME>(NAMESPACE_TYPES.IN_GAME , "")
+      payload.nextGameManager(() => gameManager)
     });
   }
 

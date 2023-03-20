@@ -11,13 +11,15 @@ import ChessBoardRenderer from '../../components/ChessGame/ChessBoard';
 import { ChessBoard, ChessGame, ChessPiece } from '@TRPI/core/core-algo';
 import FindPlayer from '../../components/ChessGame/FindPlayer';
 import { useNavigate, useSearchParams } from "react-router-dom";
-import { ClientEventManager, eIJoinQueueEvent, IGame, MATCHMAKING_MODE, MATCHMAKING_MODES_OPTIONS, MATCH_MAKING, NAMESPACE_TYPES } from '@TRPI/core/core-network';
+import { ClientEventManager, eIJoinQueueEvent, IGame, IN_GAME, MATCHMAKING_MODE, MATCHMAKING_MODES_TIMERS, MATCH_MAKING, NAMESPACE_TYPES } from '@TRPI/core/core-network';
+import { rIIncomingGameEvent } from '@TRPI/core/core-network/src/interfaces/receiveEvents';
 
 const Game = () => {
 
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [clientManager , setClientManager] = useState<ClientEventManager<MATCH_MAKING> | null>(null);
+  const [gameManager, setGameManager] = useState<ClientEventManager<IN_GAME> | null>(null);
   const [playerisWhite , setPlayerisWhite] = useState(false);
   const [_game , set_Game] = useState<IGame | null>(null);
   
@@ -49,17 +51,23 @@ const Game = () => {
       elo: parseInt(elo),
       options: {
         mode: mode as MATCHMAKING_MODE,
-        modeOption: {
-          style: timer as MATCHMAKING_MODES_OPTIONS
-        }
+        timer: timer as MATCHMAKING_MODES_TIMERS
       }
-
-
-
-
     }
+
+    
+    
+    const listeningPayload: rIIncomingGameEvent = {
+      gameSetter: set_Game,
+      triggerSetter: setFindPlayer,
+      colorSetter: setPlayerisWhite,
+      currentClientManager: newClientManager,
+      disconnect: setClientManager,
+      nextGameManager: setGameManager,
+      name: ps
+    }
+    newClientManager.listenToIncomingMatch(listeningPayload)
     newClientManager.joinMatchMakingEvent(payload)
-    newClientManager.listenToIncomingMatch({gameSetter: set_Game , beginSetter: setFindPlayer , colorSetter: setPlayerisWhite, currentColor: ps})
     setClientManager(() => newClientManager);
     console.log('mounted');
 
@@ -152,16 +160,16 @@ const Game = () => {
         <div className="leftContainer">
           <PlayerContainer
             isWhitePlayer={true}
-            playerName={playerisWhite ? _game.white_player.name : _game.black_player.name}
-            playerScore={playerisWhite ? _game.white_player.elo : _game.black_player.elo}
+            playerName={!playerisWhite ? _game.white_player.name : _game.black_player.name}
+            playerScore={!playerisWhite ? _game.white_player.elo : _game.black_player.elo}
             playerScorePieceValue={2}
             time="10:00"
           />
           <Chat />
           <PlayerContainer
             isWhitePlayer={false}
-            playerName={!playerisWhite ? _game.white_player.name : _game.black_player.name}
-            playerScore={!playerisWhite ? _game.white_player.elo : _game.black_player.elo}
+            playerName={playerisWhite ? _game.white_player.name : _game.black_player.name}
+            playerScore={playerisWhite ? _game.white_player.elo : _game.black_player.elo}
             playerScorePieceValue={2}
             time="10:00"
           />
