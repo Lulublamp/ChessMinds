@@ -8,12 +8,16 @@ import { Classement } from './classement/entities/classement.entity';
 import { Joueur } from './joueurs/entities/joueur.entity';
 import { Partie } from './partie/entities/partie.entity';
 import { Rencontre } from './rencontre/entities/rencontre.entity';
-import { MatchMakingModule } from './match-making/match-making.module';
+import { MatchMakingModule } from './network/match-making/match-making.module';
 import { AuthModule } from './auth/auth.module';
 import { MmRankedGateway } from './mm-ranked/mm-ranked.gateway';
 import { JoueursModule } from './joueurs/joueurs.module';
 import { ClassementModule } from './classement/classement.module';
 import { InitGameGateway } from './init-game/init-game.gateway';
+import { MatchMakingGateway } from './network/match-making/match-making.gateway';
+import { MmRankedService } from './network/mm-ranked/mm-ranked.service';
+import { MmUnrankedService } from './network/mm-unranked/mm-unranked.service';
+import { PrivateGameService } from './network/private-game/private-game.service';
 
 @Module({
   imports: [
@@ -26,7 +30,7 @@ import { InitGameGateway } from './init-game/init-game.gateway';
         port: configService.get('MYSQL_PORT') || 3306,
         username: configService.get('MYSQL_USER') || 'root',
         database: configService.get('MYSQL_DATABASE') || 'chess-bdd',
-        entities: [Joueur,Rencontre,Partie,Classement],
+        entities: [Joueur, Rencontre, Partie, Classement],
         autoLoadEntities: true,
         synchronize: true,
       }),
@@ -38,6 +42,6 @@ import { InitGameGateway } from './init-game/init-game.gateway';
     ClassementModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, MatchMakingGateway, MmRankedService, MmUnrankedService, PrivateGameService],
 })
 export class AppModule {}

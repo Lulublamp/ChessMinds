@@ -1,6 +1,7 @@
 import { Socket } from "socket.io";
 import { ChessGame, Color, Player } from "../../../core-algo";
-import { lobbyPlayer } from "../interfaces/emitEvents";
+import { lobbyPlayer, MMPlayer } from "../interfaces/emitEvents";
+import { MATCHMAKING_MODE } from "../Namespace";
 
 export interface PPlayer {
   socket: string;
@@ -34,105 +35,78 @@ export interface Match <T> {
 }
 
 
+export interface Game{
+  matchId: string;
+  white_player: MMPlayer;
+  black_player: MMPlayer;
+  createdAt: Date;
+  winnder: string
+}
+
+
 
 export class Queue {
-  protected coupledPlayers: Match<PPlayer>[] = [];
+
+  protected queueCanal: Map<string, Game[]>;
+  protected playerCanal: Map<string, MMPlayer[]>;
+  protected socketMap: Map<string , string>;
   protected coupledGames: Map<string , ChessGame>;
   protected maxPlayers: number;
   protected state: boolean;
-  protected players: PPlayer[];
 
   constructor(maxPlayers: number) {
-    this.players = [];
     this.maxPlayers = maxPlayers;
     this.state = true;
     this.coupledGames = new Map();
+    this.queueCanal = new Map();
+    this.playerCanal = new Map();
+    this.socketMap = new Map();
+    this.queueCanal.set(MATCHMAKING_MODE.RANKED , []);
+    this.queueCanal.set(MATCHMAKING_MODE.UNRANKED , []);
+    this.queueCanal.set(MATCHMAKING_MODE.PRIVATE , []);
+    this.playerCanal.set(MATCHMAKING_MODE.RANKED , []);
+    this.playerCanal.set(MATCHMAKING_MODE.UNRANKED , []);
+    this.playerCanal.set(MATCHMAKING_MODE.PRIVATE , []);
   }
 
-  isFull(): boolean {
-    return this.players.length >= this.maxPlayers;
+  
+
+
+
+  isReadyToMatch(p : MMPlayer , mode: MATCHMAKING_MODE = MATCHMAKING_MODE.RANKED): boolean{
+    if (!this.playerCanal.has(mode)) return false;
+    const sameRank = this.playerCanal.get(mode)?.filter((player) => player.rank === p.rank);
+    if (!sameRank) return false;
+    return sameRank.length > 0;
   }
 
-  isEmpty(): boolean {
-    return this.players.length <= 0;
-  }
-
-  isReady(): boolean {
-    if (this.isEmpty()) return false;
-    return true;
-  }
-
-  isReadyToMatch(p : PPlayer){
-    return this.players.filter((player) => player.rank === p.rank).length > 0;
-  }
-
-  addPlayer(player: PPlayer): [string, Match<PPlayer>] | number {
-    console.log('add player id : ' + player.socket);
-    player.rank = this.rankPlayers(player);
-    const isReady = this.isReady();
-    const isReadyToMatch = this.isReadyToMatch(player);
-    const maybeMatch: [string , Match<PPlayer>] | number = isReady ? (isReadyToMatch ? this.setMatch(player) : this.players.push(player)) : this.players.push(player);
-    if (typeof maybeMatch === 'number') return -99;
-    return maybeMatch;
-  }
-
-  removePlayer(name: string, socketId: string): void {
-    console.log('remove player id : ' + socketId);
-    this.players = this.players.filter((player) => player.name !== name && player.socket !== socketId);
-    console.log('remove player id : ' + socketId + ' done -> ' + name);
-  }
-
-  setMatch(player: PPlayer): [string, Match<PPlayer>] {
-    console.log('setting the match : ' + player.name)
-    const sameRank = this.players.filter((p) => p.rank === player.rank);
-    let random = this.maxPlayers - sameRank.length;
-    
-    while (random > sameRank.length) {
-      const rand = Math.floor(Math.random() * sameRank.length);
-      if (rand !== random) {
-        random = rand;
-      }
+  static BuildGame(firstPlayer: MMPlayer, secondPlayer: MMPlayer): Game {
+    let random = Math.floor(Math.random() * 2);
+    const white_player = random === 0 ? firstPlayer : secondPlayer;
+    const black_player = random === 0 ? secondPlayer : firstPlayer;
+    const matchId = this.generateMatchId(firstPlayer, secondPlayer);
+    const game: Game = {
+      matchId,
+      white_player,
+      black_player,
+      createdAt: new Date(),
+      winnder: '',
     }
-    console.log('found');
-    const newMatch: Match<PPlayer> = Queue.buildMatch([sameRank[random], player]);
-    this.coupledPlayers.push(newMatch);
-    this.coupledGames.set(newMatch.matchId , new ChessGame());
-    this.players = this.players.filter((p) => p.id !== sameRank[random].id && p.id !== player.id);
-    return [this.getRandomRoomId() , newMatch];
+
+    return game;
   }
+
+  static generateMatchId(firstPlayer: MMPlayer, secondPlayer: MMPlayer): string {
+    return firstPlayer.id + secondPlayer.id;
+  }
+
   
   getRandomRoomId(): string {
     return Math.random().toString(36).substr(2, 9);
   }
 
-  static excludeSocket(match: Match<PPlayer>): Match<PPlayer>{
-    // match.players.forEach((player) => {
-    //   delete player.socket;
-    // });
-    // console.log(match);
-
-    return match;
-  }
-
-  static buildMatch(player: PPlayer[]){
-    
-    const newChessGame = new ChessGame();
-    player[0].player = newChessGame.getPlayer(Color.White)
-    player[1].player = newChessGame.getPlayer(Color.Black)
-    const newMatch: Match<PPlayer> = {
-      matchId: Math.random().toString(36).substr(2, 9),
-      players: player,
-      createdAt: new Date(),
-      endedAt: null,
-      winner: null,
-      state: MatchState.waiting,
-      currentTurn: Math.random() > 0.5 ? player[0] : player[1],
-    }
-    return newMatch;
-  }
-
   //modifier avec proposition de lucas + logarithmique un truc du genre
-  rankPlayers(player: PPlayer): number | null {
+  rankPlayers(player: MMPlayer): number | null {
     if (player.elo < 800){
       return 1;
     }else if (player.elo < 1000){
@@ -149,16 +123,39 @@ export class Queue {
       return 7;
     }
     return null;
-  }
-
-  getCoupledPlayers(): Match<PPlayer>[] {
-    return this.coupledPlayers;
-  }
-
-  getPlayers(): PPlayer[] {
-    return this.players;
-  }
-
-
+  }  
   
+  addPlayerToQueue(player: MMPlayer, socket: Socket , mode: MATCHMAKING_MODE): Game | number {
+    if (!this.playerCanal.has(mode)) return -99;
+    player.rank = this.rankPlayers(player);
+    const isReadyToMatch = this.isReadyToMatch(player , mode);
+    if (!isReadyToMatch) {
+      this.playerCanal.get(mode)?.push(player);
+      return -99;
+    }
+
+
+    const sameRank = this.playerCanal.get(mode)?.filter((p) => p.rank === player.rank)
+
+    if (!sameRank) return -99;
+    let random = this.maxPlayers - sameRank.length;
+    
+    while (random > sameRank.length) {
+      const rand = Math.floor(Math.random() * sameRank.length);
+      if (rand !== random) {
+        random = rand;
+      }
+    }
+
+    const targetedPlayer = sameRank[random];
+
+    const game = Queue.BuildGame(targetedPlayer, player);
+    this.coupledGames.set(game.matchId , new ChessGame());
+    this.queueCanal.get(mode)?.push(game);
+    this.playerCanal.get(mode)?.filter((p) => p.id != targetedPlayer.id && p.id != player.id);
+
+    return game;
+  }
+
+
 }

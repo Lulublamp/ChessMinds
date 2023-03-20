@@ -1,3 +1,4 @@
+import { JoinQueuOption } from "../MatchMaking";
 import { Match, PPlayer } from "../utils/Queue";
 
 
@@ -10,7 +11,11 @@ export interface eILeaveRoomEvent {
   userId: string;
 }
 
-export type lobbyPlayer = Omit<Omit<PPlayer, 'elo'> , 'socket'> 
+export type lobbyPlayer = Omit<Omit<PPlayer, 'elo'> , 'socket'>
+
+export type MMPlayer = Omit<PPlayer , 'socket'> & {
+  socketId?: string;
+}
 
 export interface eICreateLobbyEvent extends lobbyPlayer {
 }
@@ -29,5 +34,6 @@ export interface eIMatchMakingStateEvent {
   
 }
 
-export interface eIJoinQueueEvent extends Omit<PPlayer , 'socket'>{}
-  
+export interface eIJoinQueueEvent extends MMPlayer{
+  options: JoinQueuOption
+}
