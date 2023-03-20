@@ -16,6 +16,8 @@ const Game = () => {
 
   const navigate = useNavigate();
   
+  var playerisWhite = true;
+
   var movesData = [
     { turn: 1, white: 'e4', black: 'c6' },
     { turn: 2, white: 'Nf3', black: 'd5' },
@@ -25,12 +27,14 @@ const Game = () => {
 
   const [PlayerIsFind, setFindPlayer] = useState(false);
 
-  const PlayerFind = () => {
+  const PlayerFind = (_playerisWhite : boolean) => {
     setFindPlayer(true);
+    playerisWhite = _playerisWhite;
   };
 
+
     //PlayerFind after 2s A ENLEVER
-  setTimeout(PlayerFind, 2000);
+  //setTimeout(PlayerFind, 2000);
 
   const cancelMatchmaking = () => {
     console.log('cancelMatchmaking');
@@ -117,7 +121,7 @@ const Game = () => {
         <div className="chessBoardContainer">
           <ChessBoardRenderer
             chessGame={chessGame}
-            PlayerisWhite = {true}
+            PlayerisWhite = {playerisWhite}
           />
         </div>
         <div className="rightContainer">
