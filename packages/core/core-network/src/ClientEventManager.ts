@@ -55,6 +55,7 @@ export class ClientEventManager<
   T extends NAMESPACE_TYPES
 > extends EventEmitter {
   private type: T;
+  private matchId: string | null = null
 
   constructor(type: T, token: string) {
     console.log("Connecting socket : ", token);
@@ -95,8 +96,18 @@ export class ClientEventManager<
       payload.currentClientManager.close()
       payload.disconnect(() => null)
       const gameManager = new ClientEventManager<IN_GAME>(NAMESPACE_TYPES.IN_GAME , "")
+      gameManager.attach(game.matchId)
       payload.nextGameManager(() => gameManager)
     });
+  }
+
+  public attach(matchId: Check<T , IN_GAME , string>){
+    this.matchId = matchId
+  }
+
+  public networkMove(data: Check<T , IN_GAME , {from: string, to: string}>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.send(EVENT_TYPES.MAKE_MOVE , data);
   }
 
   // public joinMatchMakingEvent(data: Check<T , MM_RANKED , eIJoinQueueEvent>) {

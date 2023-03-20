@@ -12,8 +12,7 @@ import { MatchMakingModule } from './network/match-making/match-making.module';
 import { AuthModule } from './auth/auth.module';
 import { JoueursModule } from './joueurs/joueurs.module';
 import { ClassementModule } from './classement/classement.module';
-import { InitGameGateway } from './init-game/init-game.gateway';
-import { MatchMakingGateway } from './network/match-making/match-making.gateway';
+import { InGameModule } from './network/in-game/in-game.module';
 
 @Module({
   imports: [
@@ -36,6 +35,7 @@ import { MatchMakingGateway } from './network/match-making/match-making.gateway'
     AuthModule,
     JoueursModule,
     ClassementModule,
+    InGameModule,
   ],
   controllers: [AppController],
   providers: [AppService, MatchMakingModule],

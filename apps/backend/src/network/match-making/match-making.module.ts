@@ -8,5 +8,6 @@ import { PrivateGameService } from '../private-game/private-game.service';
   imports: [],
   controllers: [],
   providers: [MatchMakingService , MatchMakingGateway  , PrivateGameService],
+  exports: [MatchMakingService],
 })
 export class MatchMakingModule {}
