@@ -12,9 +12,6 @@ import {
   MMPlayer,
 } from '@TRPI/core/core-network';
 import { Server, Socket } from 'socket.io';
-import { MmRankedService } from '../mm-ranked/mm-ranked.service';
-import { MmUnrankedService } from '../mm-unranked/mm-unranked.service';
-import { PrivateGameService } from '../private-game/private-game.service';
 import { MatchMakingService } from './match-making.service';
 
 @WebSocketGateway({
