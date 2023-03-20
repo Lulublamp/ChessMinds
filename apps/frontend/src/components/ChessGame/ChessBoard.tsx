@@ -31,8 +31,8 @@ const ChessBoardRenderer: React.FC<ChessBoardProps> = ({ chessGame, PlayerisWhit
     let board: ChessBoard = chessGame.getBoard();
     let coordinate: string = String.fromCharCode("a".charCodeAt(0) + row) + (8 - col);
     let piece: ChessPiece | null = board.getPieceAt(coordinate);
-    if (PlayerisWhite && piece?.color === Color.Black) return;
-    if (!PlayerisWhite && piece?.color === Color.White) return;
+    if (PlayerisWhite && (piece?.color === Color.Black && !legalMoves.includes(coordinate))) return;
+    if (!PlayerisWhite && (piece?.color === Color.White && !legalMoves.includes(coordinate))) return;
 
     if (legalMoves.includes(coordinate) && selectedCase !== null) {
       if (PlayerisWhite && chessGame.getCurrentTurn() === Color.Black) return;
