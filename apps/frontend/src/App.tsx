@@ -2,7 +2,7 @@ import { FC } from "react";
 import { HashRouter, Routes, Route } from "react-router-dom";
 import TNetwork from "./pages/TNetwork/TNetwork";
 import TLobby from "./pages/TLobbies/TLobbies";
-import Navbar from "./components/Navigation/NavBar";
+// import Navbar from "./components/Navigation/NavBar";
 import HomePage from "./pages/Home/HomePage";
 import Game from "./pages/Game/Game";
 

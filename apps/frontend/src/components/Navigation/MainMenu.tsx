@@ -4,6 +4,10 @@ import learnIcon from "../../images/LearnIcon.png";
 import leaderboardIcon from "../../images/LeaderboardIcon.png";
 import MenuButton from "../Button/MenuButton";
 import MatchMaking from '../../components/Navigation/Matchmaking';
+
+import Connexion from '../../components/Navigation/Connexion';
+import Inscription from '../../components/Navigation/Inscription';
+
 import "./MainMenuStyle.css";
 
 function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedMode : string, TimerMode : string, Pseudo : string, Elo : number) => void }) {
@@ -27,6 +31,26 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
     setShowMatchmaking(false);
   };
 
+
+
+
+  const [showInscription, setShowInscription] = useState(false);
+  const OpenPopupInscription = () => {
+    setShowInscription(true);
+  };
+  const ClosePopupInscription = () => {
+    setShowInscription(false);
+  };
+
+  const [showConnexion, setShowConnexion] = useState(false);
+  const OpenPopupConnexion = () => {
+    setShowConnexion(true);
+  };
+  const ClosePopupConnexion = () => {
+    setShowConnexion(false);
+  };
+
+
   const handleMatchmaking = (RankedMode : string, TimerMode : string, Pseudo : string, Elo : number) => {
     //ICI A MODIFER POUR ENVOYER LES DONNEES AU SERVEUR
     console.log("RankedMode : " + RankedMode);
@@ -39,6 +63,12 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
 
   if (showMatchmaking) {
     return <MatchMaking onCancel={ClosePopupMatchMaking} onPlay={handleMatchmaking} />
+  }
+  if(showConnexion) {
+    return <Connexion onCancel={ClosePopupConnexion} />
+  }
+  if(showInscription) {
+    return <Inscription onCancel={ClosePopupConnexion} />
   }
   else {
     return (

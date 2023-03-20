@@ -1,8 +1,16 @@
 import React from 'react';
 import "./NavBarStyle.css";
 import Logo from '../Logo_Icon/Logo';
+import Connexion from '../../components/Navigation/Connexion';
+
 
 function Navbar() {
+  const [showConnexion, setShowConnexion] = React.useState(false);
+
+  const OpenPopupConnexion = () => {
+    setShowConnexion(true);
+  };
+
   return (
     <nav className="navbar">
       <div className="navbar__container">
@@ -22,7 +30,7 @@ function Navbar() {
           </div>
         </div>
         <div className="navbar__right">
-          <button className="navbar__button">Connexion</button>
+          <button className="navbar__button" onClick={OpenPopupConnexion}>Connexion</button>
         </div>
       </div>
     </nav>

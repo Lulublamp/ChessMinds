@@ -1,0 +1,150 @@
+.ConnexionIncrip {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(10, 10, 10, 0.5);
+    z-index: 10;
+    
+}
+  
+.ConnexionIncrip-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #F5F5F5;
+    border-radius: 20px;
+    width: 430px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+  
+.ConnexionIncrip h2{
+    font-size: 25px;
+    font-weight: bold;
+    color: #000;
+    margin-top: 55px;
+    margin-bottom: 35px;
+    padding: 0 35px;
+
+    /* position: absolute;
+    width: 357px;
+    height: 61.58px;
+    left: 541px;
+    top: 395.34px; */
+
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 25px;
+    line-height: 30px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+
+    color: #000000;
+  }
+  
+.ConnexionIncrip h3{
+    color: #000;
+    font-size: 20px;
+    border-bottom: solid 1px #000;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+
+.InputForm {
+    width: 337px;
+    height: 42.08px;
+    margin: 0 0 20px 0;
+    display: flex;
+    align-items: center;
+
+    border-radius: 5px;
+    background: #FFFFFF;
+    box-shadow: inset 0px 1px 6px rgba(0, 0, 0, 0.25);
+}
+
+.InputForm input {
+    border: none;
+    padding: 0 20px;
+    width: 337px;
+    height: 42.08px;
+    background: none;
+
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 13px;
+    line-height: 15px;
+    color: #C4C4C4;
+}
+
+
+.show-mdp-btn {
+    background-color: inherit;
+    cursor: pointer;
+    border: none;
+    margin: 0 10px;
+}
+
+
+.Form-ConnexionIncrip p {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 12px;
+    line-height: 14px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+
+    color: #255186;
+    font-stretch: 100;
+    margin: 0 0 15px 0;
+    cursor: pointer;
+}
+
+.Form-ConnexionIncrip p:hover {
+    color: #c82828;
+}
+
+.Form-ConnexionIncrip {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.PlayButton{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 175px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: #D73324;
+    cursor: pointer;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    margin: 20px 0px 40px 0px;
+}
+  
+.cancel-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    background-color: inherit;
+    cursor: pointer;
+    border: none;
+}
