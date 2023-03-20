@@ -13,9 +13,9 @@ export const MainRenderer = (root: HTMLElement , windowContext: ClientApi | null
       container = root
       ReactDOM.createRoot(root).render(
         <WindowContext.Provider value={windowContext}>
-          <React.StrictMode>
+          {/* <React.StrictMode> */}
             <App/>
-          </React.StrictMode>
+          {/* </React.StrictMode> */}
         </WindowContext.Provider >
       )
     }

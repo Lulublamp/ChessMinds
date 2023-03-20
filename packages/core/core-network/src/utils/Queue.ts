@@ -46,6 +46,28 @@ export class Queue {
   protected coupledGames: Map<string , ChessGame> = new Map<string , ChessGame>();
   protected socketMap: Map<string, string>;
 
+  get gamesList(): IGame[] {
+    return this.games;
+  }
+
+  public mutateGameSocketId(matchId: string , socketId: string , name: string) {
+    const game = this.games.find(game => game.matchId === matchId)
+    const isBlack = game!.black_player.name === name;
+    isBlack ? game!.black_player.socketId = socketId : game!.white_player.socketId = socketId;
+  }
+
+  get queueList(): MMPlayer[] {
+    return this.queue;
+  }
+
+  get coupledGamesList(): Map<string , ChessGame> {
+    return this.coupledGames;
+  }
+
+  get socketMapList(): Map<string, string> {
+    return this.socketMap;
+  }
+
 
   protected maxPlayers: number;
   protected state: boolean;
@@ -138,6 +160,7 @@ export class Queue {
       return -2;
     }
     const game = Queue.BuildGame(player, matchPlayer! , mode);
+    this.coupledGames.set(game.matchId , new ChessGame());
     this.games.push(game);
     this.queue = this.queue.filter(
       (p) => p.id !== matchPlayer!.id && p.id !== player.id

@@ -1,3 +1,4 @@
+import { ChessGame } from "../../../core-algo";
 import { ClientEventManager } from "../ClientEventManager";
 import { IN_GAME, MATCH_MAKING } from "../Namespace";
 import { IGame } from "../utils/Queue";
@@ -20,4 +21,9 @@ export interface rIIncomingGameEvent {
   currentClientManager: ClientEventManager<MATCH_MAKING>;
   nextGameManager: ReactSetterOrNull<ClientEventManager<IN_GAME>>;
   name: string;
+}
+
+export interface rINetworkMoveEvent {
+  _forceUpdate: ReactSetter<number>;
+  chessGame: ChessGame
 }

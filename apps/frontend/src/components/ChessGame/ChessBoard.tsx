@@ -1,30 +1,49 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
-import { ChessGame, ChessPiece, ChessBoard } from "@TRPI/core/core-algo";
+import { ChessGame, ChessPiece, ChessBoard, Color } from "@TRPI/core/core-algo";
 import DisplayPiece from "./DisplayPiece";
 import "./ChessBoardStyle.css";
+import { ClientEventManager, IN_GAME } from "@TRPI/core/core-network";
 
 interface ChessBoardProps {
   chessGame: ChessGame;
+  gameManager?: ClientEventManager<IN_GAME>
   PlayerisWhite: boolean;
 }
 
-const ChessBoardRenderer: React.FC<ChessBoardProps> = ({ chessGame, PlayerisWhite }) => {
+const ChessBoardRenderer: React.FC<ChessBoardProps> = ({ chessGame, PlayerisWhite , gameManager}) => {
 
   const chessBoard = chessGame.getBoard();
   const [selectedCase, setSelectedCase] = useState<{ row: number, col: number } | null>(null);
   const [legalMoves, setLegalMoves] = useState<string[]>([]);
+  const [_fu , forceUpdate] = useState(0);
+  
+  
+  
+  useEffect(() => {
+    gameManager?.listenToNetworkMove({
+      _forceUpdate: forceUpdate,
+      chessGame: chessGame
+    })
+  }, [])
 
   const onCaseClick = (row: number, col: number) => {
     let board: ChessBoard = chessGame.getBoard();
     let coordinate: string = String.fromCharCode("a".charCodeAt(0) + row) + (8 - col);
     let piece: ChessPiece | null = board.getPieceAt(coordinate);
+    if (PlayerisWhite && piece?.color === Color.Black) return;
+    if (!PlayerisWhite && piece?.color === Color.White) return;
 
     if (legalMoves.includes(coordinate) && selectedCase !== null) {
+      if (PlayerisWhite && chessGame.getCurrentTurn() === Color.Black) return;
+      if (!PlayerisWhite && chessGame.getCurrentTurn() === Color.White) return;
       let from = String.fromCharCode("a".charCodeAt(0) + selectedCase.row) + (8 - selectedCase.col);
       let to = coordinate;
       //A MODIFIER POUR QUE LE MOUVEMENT SOIT ENVOYER AU SERVEUR
-      chessGame.makeMove(from, to);
+      gameManager?.networkMove({
+        from, to
+      });
+      // chessGame.makeMove(from, to);
       setSelectedCase(null);
       setLegalMoves([]);
       return;

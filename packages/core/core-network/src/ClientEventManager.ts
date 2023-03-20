@@ -11,7 +11,7 @@ import {
   lobbyPlayer,
 } from "./interfaces/emitEvents";
 import { IN_GAME, MATCH_MAKING, NAMESPACE_TYPES } from "./Namespace";
-import { rICreateRoomEvent, rIIncomingGameEvent } from "./interfaces/receiveEvents";
+import { rICreateRoomEvent, rIIncomingGameEvent, rINetworkMoveEvent } from "./interfaces/receiveEvents";
 import { IGame, Match, PPlayer } from "./utils/Queue";
 import { PrivateLobby } from "./utils/Lobby";
 
@@ -20,6 +20,7 @@ export type IRespond =
   | eIMatchMakingStateEvent
   | eIInitGameEvent;
 type Check<T, R, K> = T extends R ? K : never;
+type CheckArgs<T , R> = T extends never ? never : R
 
 export class EventEmitter {
   readonly socket: Socket;
@@ -96,18 +97,30 @@ export class ClientEventManager<
       payload.currentClientManager.close()
       payload.disconnect(() => null)
       const gameManager = new ClientEventManager<IN_GAME>(NAMESPACE_TYPES.IN_GAME , "")
-      gameManager.attach(game.matchId)
+      gameManager.attach(game.matchId , payload.name)
       payload.nextGameManager(() => gameManager)
     });
   }
 
-  public attach(matchId: Check<T , IN_GAME , string>){
+  public attach(matchId: Check<T , IN_GAME , string> , name: CheckArgs<typeof matchId , string>){
     this.matchId = matchId
+    this.send(EVENT_TYPES.ATTACH , {matchId , name})
   }
 
   public networkMove(data: Check<T , IN_GAME , {from: string, to: string}>) {
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
-    this.send(EVENT_TYPES.MAKE_MOVE , data);
+    this.send(EVENT_TYPES.MAKE_MOVE , {matchId: this.matchId , ...data});
+  }
+
+  public listenToNetworkMove(payload: Check<T , IN_GAME , rINetworkMoveEvent>){
+    if (this.matchId == null) return
+    console.log('listen to network move')
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.socket.on(EVENT_TYPES.MOVES , (from: string , to:string) => {
+      console.log('move received' , from , to)
+      payload.chessGame.makeMove(from , to)
+      payload._forceUpdate((x) => x+1)
+    });
   }
 
   // public joinMatchMakingEvent(data: Check<T , MM_RANKED , eIJoinQueueEvent>) {

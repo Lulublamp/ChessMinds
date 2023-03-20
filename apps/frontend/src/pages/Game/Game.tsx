@@ -73,6 +73,7 @@ const Game = () => {
 
     return () => {
       console.log('unmounting...');
+      gameManager?.close();
       newClientManager.close()
     }
 
@@ -178,6 +179,7 @@ const Game = () => {
           <ChessBoardRenderer
             chessGame={chessGame}
             PlayerisWhite = {playerisWhite}
+            gameManager={gameManager as ClientEventManager<IN_GAME>}
           />
         </div>
         <div className="rightContainer">

@@ -33,3 +33,9 @@ export interface eIMatchMakingStateEvent {}
 export interface eIJoinQueueEvent extends MMPlayer {
   options: JoinQueuOption;
 }
+
+export interface eIMakeMoveEvent {
+  matchId: string,
+  from: string,
+  to: string,
+}
