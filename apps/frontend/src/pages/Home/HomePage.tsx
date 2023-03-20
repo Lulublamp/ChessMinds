@@ -5,8 +5,19 @@ import chessboardpng from '../../images/ChessBoard.png';
 import MainMenu from '../../components/Navigation/MainMenu';
 import SocialMedia from '../../components/Logo_Icon/SocialMedia';
 import DownloadButton from '../../components/Button/DownloadButton';
+import { useNavigate } from 'react-router-dom';
 
 function HomePage() {
+
+  const navigate = useNavigate();
+  const handleMatchmakingClick = (RankedMode : string, TimerMode : string, Pseudo : string, Elo : number) => {
+    navigate({
+      pathname: '/Game',
+      search: '?RankedMode=' + RankedMode + '&TimerMode=' + TimerMode + '&Pseudo=' + Pseudo + '&Elo=' + Elo,
+    });
+    
+  }
+
   return (
     <main>
       <section className="homePage">
@@ -18,7 +29,9 @@ function HomePage() {
           <div className="chessBoardBackground">
             <img src={chessboardpng} alt="ChessMinds" />
           </div>
-          <MainMenu />
+          <MainMenu
+            handleMatchmakingClick={handleMatchmakingClick} 
+          />
         </div>
         <div>
           <div>
