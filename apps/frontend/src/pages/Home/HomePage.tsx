@@ -5,9 +5,15 @@ import chessboardpng from '../../images/ChessBoard.png';
 import MainMenu from '../../components/Navigation/MainMenu';
 import SocialMedia from '../../components/Logo_Icon/SocialMedia';
 import DownloadButton from '../../components/Button/DownloadButton';
+import { useNavigate } from 'react-router-dom';
 
+function HomePage() {
 
-function HomePage({ handleMatchmakingClick }: { handleMatchmakingClick: () => void }) {
+  const navigate = useNavigate();
+  const handleMatchmakingClick = () => {
+    navigate('/Game');
+  }
+
   return (
     <main>
       <section className="homePage">

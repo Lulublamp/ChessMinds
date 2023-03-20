@@ -38,7 +38,7 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ onCancel, onPlay }) => {
               checked={RankedMode === 'Ranked'}
               onChange={handleRankedModeChange}
             />
-            <label htmlFor="Ranked">Solo</label>
+            <label htmlFor="Ranked">Ranked</label>
           </div>
           <div>
             <input type="radio" name="Mode" id="Unranked" value="Unranked"

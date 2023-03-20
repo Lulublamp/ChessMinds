@@ -10,9 +10,12 @@ import AbandonButton from '../../components/Button/AbandonButton';
 import ChessBoardRenderer from '../../components/ChessGame/ChessBoard';
 import { ChessBoard, ChessGame, ChessPiece } from '@TRPI/core/core-algo';
 import FindPlayer from '../../components/ChessGame/FindPlayer';
+import { useNavigate } from "react-router-dom";
 
-const Game = ({ cancelMatchMackingClick }: { cancelMatchMackingClick: () => void }) => {
+const Game = () => {
 
+  const navigate = useNavigate();
+  
   var movesData = [
     { turn: 1, white: 'e4', black: 'c6' },
     { turn: 2, white: 'Nf3', black: 'd5' },
@@ -31,7 +34,7 @@ const Game = ({ cancelMatchMackingClick }: { cancelMatchMackingClick: () => void
 
   const cancelMatchmaking = () => {
     console.log('cancelMatchmaking');
-    cancelMatchMackingClick();
+    navigate('/');
   };
 
   const chessGame = new ChessGame();

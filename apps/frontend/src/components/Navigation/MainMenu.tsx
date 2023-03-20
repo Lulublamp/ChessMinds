@@ -28,6 +28,7 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: () => vo
   };
 
   const handleMatchmaking = (RankedMode : string, TimerMode : string) => {
+    //ICI A MODIFER POUR ENVOYER LES DONNEES AU SERVEUR
     console.log("RankedMode : " + RankedMode);
     console.log("TimerMode : " + TimerMode);
     handleMatchmakingClick();
