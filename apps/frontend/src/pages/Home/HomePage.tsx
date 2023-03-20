@@ -6,7 +6,8 @@ import MainMenu from '../../components/Navigation/MainMenu';
 import SocialMedia from '../../components/Logo_Icon/SocialMedia';
 import DownloadButton from '../../components/Button/DownloadButton';
 
-function HomePage() {
+
+function HomePage({ handleMatchmakingClick }: { handleMatchmakingClick: () => void }) {
   return (
     <main>
       <section className="homePage">
@@ -18,7 +19,9 @@ function HomePage() {
           <div className="chessBoardBackground">
             <img src={chessboardpng} alt="ChessMinds" />
           </div>
-          <MainMenu />
+          <MainMenu
+            handleMatchmakingClick={handleMatchmakingClick} 
+          />
         </div>
         <div>
           <div>

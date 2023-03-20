@@ -6,9 +6,10 @@ import "./ChessBoardStyle.css";
 
 interface ChessBoardProps {
   chessGame: ChessGame;
+  PlayerisWhite: boolean;
 }
 
-const ChessBoardRenderer: React.FC<ChessBoardProps> = ({ chessGame}) => {
+const ChessBoardRenderer: React.FC<ChessBoardProps> = ({ chessGame, PlayerisWhite }) => {
 
   const chessBoard = chessGame.getBoard();
   const [selectedCase, setSelectedCase] = useState<{ row: number, col: number } | null>(null);
@@ -16,9 +17,9 @@ const ChessBoardRenderer: React.FC<ChessBoardProps> = ({ chessGame}) => {
 
   const onCaseClick = (row: number, col: number) => {
     let board: ChessBoard = chessGame.getBoard();
-    let coordinate : string = String.fromCharCode("a".charCodeAt(0) + row) + (8 - col);
+    let coordinate: string = String.fromCharCode("a".charCodeAt(0) + row) + (8 - col);
     let piece: ChessPiece | null = board.getPieceAt(coordinate);
-    
+
     if (legalMoves.includes(coordinate) && selectedCase !== null) {
       let from = String.fromCharCode("a".charCodeAt(0) + selectedCase.row) + (8 - selectedCase.col);
       let to = coordinate;
@@ -46,7 +47,7 @@ const ChessBoardRenderer: React.FC<ChessBoardProps> = ({ chessGame}) => {
     const rowName = String.fromCharCode("a".charCodeAt(0) + row);
     const rowCoordsClassName = `row-coordinates ${row % 2 === col % 2 ? "blackText" : "whiteText"}`;
     const colCoordsClassName = `col-coordinates ${row % 2 === col % 2 ? "blackText" : "whiteText"}`;
-    const piece : ChessPiece | null  = chessBoard.getPieceAt(rowName+colName);
+    const piece: ChessPiece | null = chessBoard.getPieceAt(rowName + colName);
 
     return (
       <div
@@ -69,8 +70,15 @@ const ChessBoardRenderer: React.FC<ChessBoardProps> = ({ chessGame}) => {
   const renderRow = (row: number) => {
     const cases = [];
 
-    for (let col = 0; col < 8; col++) {
-      cases.push(renderCase(row, col));
+    if (PlayerisWhite) {
+      for (let col = 0; col < 8; col++) {
+        cases.push(renderCase(row, col));
+      }
+    }
+    else {
+      for (let col = 7; col >= 0; col--) {
+        cases.push(renderCase(row, col));
+      }
     }
 
     return (
@@ -79,13 +87,20 @@ const ChessBoardRenderer: React.FC<ChessBoardProps> = ({ chessGame}) => {
       </div>
     );
   };
-  
+
 
   const renderBoard = () => {
     const rows = [];
 
-    for (let row = 0; row < 8; row++) {
-      rows.push(renderRow(row));
+    if (PlayerisWhite) {
+      for (let row = 0; row < 8; row++) {
+        rows.push(renderRow(row));
+      }
+    }
+    else {
+      for (let row = 7; row >= 0; row--) {
+        rows.push(renderRow(row));
+      }
     }
 
     return rows;
