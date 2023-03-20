@@ -7,9 +7,12 @@ import HomePage from "./pages/Home/HomePage";
 import Game from "./pages/Game/Game";
 
 const App: FC = () => {
-  
   return (
     <HashRouter>
+      <Navbar />{" "}
+      {/* Peut être vaut mieux mettre la navbar que dans quelquqe 
+                      component et pas global comme ça
+                  */}
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/Game" element={<Game />} />
@@ -17,7 +20,7 @@ const App: FC = () => {
         <Route path="/lobby" element={<TLobby />} />
       </Routes>
     </HashRouter>
-  )
+  );
 };
 
 export default App;
