@@ -1,8 +1,7 @@
 import { ChessPiece } from '@TRPI/core/core-algo';
 import { ClientEventManager, MATCH_MAKING, IN_GAME, IGame } from '@TRPI/core/core-network';
-import { ReactSetter, ReactSetterOrNull } from '@TRPI/core/core-network/src/interfaces/receiveEvents';
+import { Move, ReactSetter } from '@TRPI/core/core-network/src/interfaces/receiveEvents';
 import React, { createContext, useContext, useState } from 'react';
-import { Move } from '../components/ChessGame/TableCoups';
 
 
 type MaybeCM = ClientEventManager<MATCH_MAKING> | null;

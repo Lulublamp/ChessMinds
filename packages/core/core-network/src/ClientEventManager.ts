@@ -126,7 +126,6 @@ export class ClientEventManager<
 
       payload.chessGame.makeMove(from , to)
       
-      console.log('move made -> moves data updated')
       let thisMove: Move | null = null;
       if (payload.movesData.length == 0){
         thisMove = {
@@ -157,15 +156,12 @@ export class ClientEventManager<
         }
       }
         
-      console.log('this move' , thisMove)
-      console.log('moves data' , payload.movesData)
       payload.setMovesData((current) => {
         currentTurn == 'black' ? current.pop() : null
         const moveAfter = [...current , thisMove!]
         payload.movesData = moveAfter 
         return moveAfter
       })
-      console.log('moves data updated' , payload.movesData)
     });
   }
 
