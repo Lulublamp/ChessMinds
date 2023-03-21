@@ -22,6 +22,11 @@
   color: #fff;
 }
 
+.coupsContainer .piece, .coupsContainer .piece img {
+  width: 32px;
+  height: 32px;
+}
+
 .coupsContainer>div>div:nth-of-type(2),
 .coupsContainer>div>div:nth-of-type(3) {
   width: calc(50% - 25px);

@@ -11,6 +11,10 @@ function Navbar() {
     setShowConnexion(true);
   };
 
+  const ClosePopupConnexion = () => {
+    setShowConnexion(false);
+  };
+  
   return (
     <nav className="navbar">
       <div className="navbar__container">
@@ -30,7 +34,11 @@ function Navbar() {
           </div>
         </div>
         <div className="navbar__right">
-          <button className="navbar__button" onClick={OpenPopupConnexion}>Connexion</button>
+          <button className="navbar__button" onClick={OpenPopupConnexion  }>Connexion</button>
+          <Connexion 
+            onCancel={ClosePopupConnexion}          
+            show={showConnexion} 
+          />
         </div>
       </div>
     </nav>

@@ -8,7 +8,7 @@ import Chat from '../../components/ChessGame/Chat';
 import MovesList from '../../components/ChessGame/TableCoups';
 import AbandonButton from '../../components/Button/AbandonButton';
 import ChessBoardRenderer from '../../components/ChessGame/ChessBoard';
-import { ChessBoard, ChessGame, ChessPiece } from '@TRPI/core/core-algo';
+import { ChessBoard, ChessGame, Pawn, Color, ChessPiece } from '@TRPI/core/core-algo';
 import FindPlayer from '../../components/ChessGame/FindPlayer';
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ClientEventManager, eIJoinQueueEvent, IGame, IN_GAME, MATCHMAKING_MODE, MATCHMAKING_MODES_TIMERS, MATCH_MAKING, NAMESPACE_TYPES } from '@TRPI/core/core-network';
@@ -23,20 +23,10 @@ const Game = () => {
   const [playerisWhite , setPlayerisWhite] = useState(false);
   const [_game , set_Game] = useState<IGame | null>(null);
   
-
-  
-
-  var movesData = [
-    { turn: 1, white: 'e4', black: 'c6' },
-    { turn: 2, white: 'Nf3', black: 'd5' },
-    { turn: 3, white: 'd4', black: 'Nf6' },
-    // Ajouter plus de coups...
+  var movesData : {turn : number, white : string | null, whitePiece : ChessPiece | null, black : string | null, blackPiece : ChessPiece | null}[] =[
   ];
 
-  //get value from url
   
-  
-
   useEffect(() => {
     if (clientManager) return;
     const mode = searchParams.get('RankedMode')?.toLowerCase();

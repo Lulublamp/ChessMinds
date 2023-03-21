@@ -6,9 +6,13 @@ import './ConnexionIncrip.css';
 
 interface ConnexionProps {
     onCancel: () => void;
+    show : boolean;
 }
 
-const Connexion: React.FC<ConnexionProps> = ({ onCancel }) => {
+const Connexion: React.FC<ConnexionProps> = ({ onCancel, show }) => {
+    if (!show) {
+        return null;
+    }
     return (
     <div className="ConnexionIncrip">
         <div className="ConnexionIncrip-container">
@@ -17,13 +21,13 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel }) => {
                 <InputForm 
                     id="e-mail" 
                     iconeInput={false}
-                    valueInput="Adresse e-mail"
+                    placeHolder="Adresse mail"
                 />
                 <div>
                     <InputForm 
                         id="MDP" 
                         iconeInput={true}
-                        valueInput="Mot de passe"
+                        placeHolder="Mot de passe"
                     />
                     <p>Mot de passe oublié ?</p>
                 </div>

@@ -1,8 +1,7 @@
 .ConnexionIncrip {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    left: 0;
+    top: 0;
     width: 100vw;
     height: 100vh;
     background-color: rgba(10, 10, 10, 0.5);
@@ -31,13 +30,6 @@
     margin-top: 55px;
     margin-bottom: 35px;
     padding: 0 35px;
-
-    /* position: absolute;
-    width: 357px;
-    height: 61.58px;
-    left: 541px;
-    top: 395.34px; */
-
     font-family: 'Montserrat';
     font-style: normal;
     font-weight: 700;
@@ -65,7 +57,7 @@
     margin: 0 0 20px 0;
     display: flex;
     align-items: center;
-
+    border: solid 1px #000;
     border-radius: 5px;
     background: #FFFFFF;
     box-shadow: inset 0px 1px 6px rgba(0, 0, 0, 0.25);
@@ -77,15 +69,22 @@
     width: 337px;
     height: 42.08px;
     background: none;
-
     font-family: 'Montserrat';
     font-style: normal;
     font-weight: 400;
     font-size: 13px;
     line-height: 15px;
-    color: #C4C4C4;
+    color: #000;
+    border-radius: 5px;
 }
 
+.InputForm input::placeholder {
+    color: #000;
+}
+
+.InputForm input:focus {
+    outline: none;
+}
 
 .show-mdp-btn {
     background-color: inherit;
