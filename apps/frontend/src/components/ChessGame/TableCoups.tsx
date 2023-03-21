@@ -2,14 +2,8 @@ import React from 'react';
 import './TableCoupsStyle.css';
 import { ChessPiece } from "@TRPI/core/core-algo";
 import DisplayPiece from "./DisplayPiece";
+import { Move } from '@TRPI/core/core-network/src/interfaces/receiveEvents';
 
-interface Move {
-  turn: number;
-  white: string | null;
-  whitePiece: ChessPiece | null;
-  black: string | null;
-  blackPiece: ChessPiece | null;
-}
 
 interface MovesListProps {
   moves: Move[];
