@@ -6,11 +6,14 @@ import './ConnexionIncrip.css';
 
 interface ConnexionProps {
     onCancel: () => void;
-    show : boolean;
+    showConnexion : boolean;
+    changeConnexion: () => void;
 }
 
-const Connexion: React.FC<ConnexionProps> = ({ onCancel, show }) => {
-    if (!show) {
+
+
+const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeConnexion }) => {
+    if (!showConnexion) {
         return null;
     }
     return (
@@ -32,7 +35,7 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, show }) => {
                     <p>Mot de passe oublié ?</p>
                 </div>
                 <button className="PlayButton">Se connecter</button>
-                <p>Pas de compte ? Incrivez-vous ici</p>
+                <p onClick={changeConnexion}>Pas de compte ? Incrivez-vous ici</p>
             </div>
             
             <CancelButton onCancel={onCancel}/>

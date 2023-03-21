@@ -2,10 +2,12 @@ import React from 'react';
 import "./NavBarStyle.css";
 import Logo from '../Logo_Icon/Logo';
 import Connexion from '../../components/Navigation/Connexion';
+import Inscription from './Inscription';
 
 
 function Navbar() {
   const [showConnexion, setShowConnexion] = React.useState(false);
+  const [showInscription, setShowInscription] = React.useState(false);
 
   const OpenPopupConnexion = () => {
     setShowConnexion(true);
@@ -13,6 +15,20 @@ function Navbar() {
 
   const ClosePopupConnexion = () => {
     setShowConnexion(false);
+  };
+
+  const ChangeInscriptionToConnexion = () => {
+    setShowInscription(false);
+    setShowConnexion(true);
+  };
+
+  const ChangeConnexionToInscription = () => {
+    setShowInscription(true);
+    setShowConnexion(false);
+  };
+
+  const ClosePopupInscription = () => {
+    setShowInscription(false);
   };
   
   return (
@@ -34,11 +50,17 @@ function Navbar() {
           </div>
         </div>
         <div className="navbar__right">
-          <button className="navbar__button" onClick={OpenPopupConnexion  }>Connexion</button>
+          <button className="navbar__button" onClick={OpenPopupConnexion}>Connexion</button>
           <Connexion 
             onCancel={ClosePopupConnexion}          
-            show={showConnexion} 
+            showConnexion={showConnexion} 
+            changeConnexion={ChangeConnexionToInscription}
           />
+          <Inscription 
+            onCancel={ClosePopupInscription}  
+            showInscription={showInscription}
+            changeInscription={ChangeInscriptionToConnexion}
+          /> 
         </div>
       </div>
     </nav>

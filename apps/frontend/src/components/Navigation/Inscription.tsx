@@ -6,10 +6,15 @@ import './ConnexionIncrip.css';
 
 interface InscriptionProps {
     onCancel: () => void;
+    showInscription : boolean;
+    changeInscription: () => void;
 }
 
-const Inscription: React.FC<InscriptionProps> = ({ onCancel }) => {
 
+const Inscription: React.FC<InscriptionProps> = ({ onCancel, showInscription, changeInscription}) => {
+    if (!showInscription) {
+        return null;
+    }
     return (
     <div className="ConnexionIncrip">
         <div className="ConnexionIncrip-container">
@@ -18,25 +23,25 @@ const Inscription: React.FC<InscriptionProps> = ({ onCancel }) => {
                 <InputForm 
                     id="e-mail" 
                     iconeInput={false}
-                    valueInput="Adresse e-mail"
+                    placeHolder="Adresse e-mail"
                 />
                 <InputForm 
                     id="pseudo" 
                     iconeInput={false}
-                    valueInput="Pseudo"
+                    placeHolder="Pseudo"
                 />
                 <InputForm 
                     id="MDP" 
                     iconeInput={true}
-                    valueInput="Mot de passe"
+                    placeHolder="Mot de passe"
                 />
                 <InputForm 
                     id="ConfirmMDP" 
                     iconeInput={false}
-                    valueInput="Confirmation du mot de passe"
+                    placeHolder="Confirmation du mot de passe"
                 />
                 <button className="PlayButton">Se connecter</button>
-                <p>Vous avez déjà un compte ? Se connecter</p>
+                <p onClick={changeInscription}>Vous avez déjà un compte ? Se connecter</p>
             </div>
             
             <CancelButton onCancel={onCancel}/>

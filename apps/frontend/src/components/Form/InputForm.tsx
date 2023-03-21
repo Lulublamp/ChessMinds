@@ -23,16 +23,14 @@ const InputForm: FC<InputProps> = ({ id, iconeInput, placeHolder, clickIcone }) 
       </div>
     );
   }
-  else {
-    return (
-      <div id={id}>
-        <label className="InputForm">
-          <input type="text" placeholder={placeHolder}/>
-        </label>
-      </div>
-    );
-  }
-  
+
+  return (
+    <div id={id}>
+      <label className="InputForm">
+        <input type="text" placeholder={placeHolder}/>
+      </label>
+    </div>
+  );
 };
 
 export default InputForm;
