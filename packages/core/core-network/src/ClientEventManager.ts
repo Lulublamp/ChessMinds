@@ -27,8 +27,15 @@ type CheckArgs<T , R> = T extends never ? never : R
 export class EventEmitter {
   readonly socket: Socket;
 
-  constructor(socket: Socket) {
-    this.socket = socket;
+  constructor(socketNameSpace: NAMESPACE_TYPES , token: string) {
+    console.log("Connecting socket : ", token);
+    this.socket = io(`http://localhost:3001/${socketNameSpace}`, {
+      transports: ["websocket"],
+      auth: {
+        access_token: `Bearer ${token}`,
+      },
+      reconnectionAttempts: 3,
+    });
   }
 
   private _send(event: EVENT_TYPES, data: IRespond) {
@@ -61,15 +68,7 @@ export class ClientEventManager<
   private matchId: string | null = null
 
   constructor(type: T, token: string) {
-    console.log("Connecting socket : ", token);
-    const socket = io(`http://localhost:3001/${type}`, {
-      transports: ["websocket"],
-      auth: {
-        access_token: `Bearer ${token}`,
-      },
-      reconnectionAttempts: 3,
-    });
-    super(socket);
+    super(type , token);
     this.type = type;
   }
 

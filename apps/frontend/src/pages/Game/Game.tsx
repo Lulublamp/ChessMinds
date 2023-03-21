@@ -5,14 +5,14 @@ import GameControl from '../../components/ChessGame/GameControl';
 import NulleButtons from '../../components/Button/NulleButtons';
 import PlayerContainer from '../../components/ChessGame/PlayerContainer';
 import Chat from '../../components/ChessGame/Chat';
-import MovesList, { Move } from '../../components/ChessGame/TableCoups';
+import MovesList from '../../components/ChessGame/TableCoups';
 import AbandonButton from '../../components/Button/AbandonButton';
 import ChessBoardRenderer from '../../components/ChessGame/ChessBoard';
 import { ChessBoard, ChessGame, Pawn, Color, ChessPiece } from '@TRPI/core/core-algo';
 import FindPlayer from '../../components/ChessGame/FindPlayer';
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ClientEventManager, eIJoinQueueEvent, IGame, IN_GAME, MATCHMAKING_MODE, MATCHMAKING_MODES_TIMERS, MATCH_MAKING, NAMESPACE_TYPES } from '@TRPI/core/core-network';
-import { rIIncomingGameEvent } from '@TRPI/core/core-network/src/interfaces/receiveEvents';
+import { Move, rIIncomingGameEvent } from '@TRPI/core/core-network/src/interfaces/receiveEvents';
 import { GameContext } from '../../contexts/GameContext';
 
 const Game = () => {

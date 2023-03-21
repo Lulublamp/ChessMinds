@@ -1,7 +1,7 @@
-import { FC } from "react";
+// import { FC } from "react";
+import * as React from "react"
 import { HashRouter, Routes, Route } from "react-router-dom";
-import TNetwork from "./pages/TNetwork/TNetwork";
-import TLobby from "./pages/TLobbies/TLobbies";
+import { FC } from "react";
 // import Navbar from "./components/Navigation/NavBar";
 import HomePage from "./pages/Home/HomePage";
 import Game from "./pages/Game/Game";
@@ -16,8 +16,6 @@ const App: FC = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/Game" element={<Game />} />
-        <Route path="/test" element={<TNetwork />} />
-        <Route path="/lobby" element={<TLobby />} />
       </Routes>
     </HashRouter>
   );

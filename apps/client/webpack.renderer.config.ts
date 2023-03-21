@@ -8,14 +8,7 @@ rules.push(
     test: /\.css$/,
     use: [{ loader: "style-loader" }, { loader: "css-loader" }],
   },
-  {
-    test: /\.png/,
-    loader: 'file-loader',
-    type: 'asset/resource',
-    options: {
-      name: '[name].[ext]',
-    }
-  }
+  
 );
 
 export const rendererConfig: Configuration = {
