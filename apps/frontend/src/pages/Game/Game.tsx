@@ -5,7 +5,7 @@ import GameControl from '../../components/ChessGame/GameControl';
 import NulleButtons from '../../components/Button/NulleButtons';
 import PlayerContainer from '../../components/ChessGame/PlayerContainer';
 import Chat from '../../components/ChessGame/Chat';
-import MovesList from '../../components/ChessGame/TableCoups';
+import MovesList, { Move } from '../../components/ChessGame/TableCoups';
 import AbandonButton from '../../components/Button/AbandonButton';
 import ChessBoardRenderer from '../../components/ChessGame/ChessBoard';
 import { ChessBoard, ChessGame, Pawn, Color, ChessPiece } from '@TRPI/core/core-algo';
@@ -13,6 +13,7 @@ import FindPlayer from '../../components/ChessGame/FindPlayer';
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ClientEventManager, eIJoinQueueEvent, IGame, IN_GAME, MATCHMAKING_MODE, MATCHMAKING_MODES_TIMERS, MATCH_MAKING, NAMESPACE_TYPES } from '@TRPI/core/core-network';
 import { rIIncomingGameEvent } from '@TRPI/core/core-network/src/interfaces/receiveEvents';
+import { GameContext } from '../../contexts/GameContext';
 
 const Game = () => {
 
@@ -20,15 +21,15 @@ const Game = () => {
   const [searchParams] = useSearchParams();
   const [clientManager , setClientManager] = useState<ClientEventManager<MATCH_MAKING> | null>(null);
   const [gameManager, setGameManager] = useState<ClientEventManager<IN_GAME> | null>(null);
+  const [movesData , setMovesData] = useState<Move[]>([]);
   const [playerisWhite , setPlayerisWhite] = useState(false);
   const [_game , set_Game] = useState<IGame | null>(null);
-  
-  var movesData : {turn : number, white : string | null, whitePiece : ChessPiece | null, black : string | null, blackPiece : ChessPiece | null}[] =[
-  ];
-
+  const [chessGame, setChessGame] = useState<ChessGame | null>(null);
+  const findChessGame = new ChessGame();
   
   useEffect(() => {
     if (clientManager) return;
+    setChessGame(() => new ChessGame());
     const mode = searchParams.get('RankedMode')?.toLowerCase();
     const timer = searchParams.get('TimerMode');
     const ps = searchParams.get('Pseudo');
@@ -44,9 +45,6 @@ const Game = () => {
         timer: timer as MATCHMAKING_MODES_TIMERS
       }
     }
-
-    
-    
     const listeningPayload: rIIncomingGameEvent = {
       gameSetter: set_Game,
       triggerSetter: setFindPlayer,
@@ -87,7 +85,6 @@ const Game = () => {
     navigate('/');
   };
 
-  const chessGame = new ChessGame();
 
   const PreviousMove = () => {
     console.log('Previous move');
@@ -104,10 +101,22 @@ const Game = () => {
   const ProposeNulle = () => {
     console.log('Propose Nulle');
   }
-
+  
   if (!PlayerIsFind) {
     //A MODIFER FAUX ECHIQUIER
-    return <div>
+    return (
+      <GameContext.Provider value={{
+        clientManager,
+        gameManager,
+        playerIsWhite: playerisWhite,
+        _game,
+        movesData,
+        setClientManager,
+        setMovesData,
+        setGameManager,
+        set_Game
+      }}>
+      <div>
       <FindPlayer onCancel={cancelMatchmaking}/>
       <section className="chessGame">
         <div className="leftContainer">
@@ -129,8 +138,7 @@ const Game = () => {
         </div>
         <div className="chessBoardContainer">
           <ChessBoardRenderer
-            chessGame={chessGame}
-            PlayerisWhite = {true}
+            chessGame={findChessGame}
           />
         </div>
         <div className="rightContainer">
@@ -144,9 +152,22 @@ const Game = () => {
         </div>
       </section>
       </div>
+      </GameContext.Provider>
+    )
   }
   else if (_game){
     return (
+      <GameContext.Provider value={{
+        clientManager,
+        gameManager,
+        playerIsWhite: playerisWhite,
+        _game,
+        movesData,
+        setClientManager,
+        setMovesData,
+        setGameManager,
+        set_Game
+      }}>
       <section className="chessGame">
         <div className="leftContainer">
           <PlayerContainer
@@ -167,9 +188,7 @@ const Game = () => {
         </div>
         <div className="chessBoardContainer">
           <ChessBoardRenderer
-            chessGame={chessGame}
-            PlayerisWhite = {playerisWhite}
-            gameManager={gameManager as ClientEventManager<IN_GAME>}
+            chessGame={chessGame!}
           />
         </div>
         <div className="rightContainer">
@@ -182,6 +201,7 @@ const Game = () => {
           <NulleButtons onClick={ProposeNulle} />
         </div>
       </section>
+      </GameContext.Provider>
     );
   }
 }

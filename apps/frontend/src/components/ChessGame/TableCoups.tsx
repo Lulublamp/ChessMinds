@@ -3,7 +3,7 @@ import './TableCoupsStyle.css';
 import { ChessPiece } from "@TRPI/core/core-algo";
 import DisplayPiece from "./DisplayPiece";
 
-interface Move {
+export interface Move {
   turn: number;
   white: string | null;
   whitePiece: ChessPiece | null;

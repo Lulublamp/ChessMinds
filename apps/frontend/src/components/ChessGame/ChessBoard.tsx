@@ -4,39 +4,54 @@ import { ChessGame, ChessPiece, ChessBoard, Color } from "@TRPI/core/core-algo";
 import DisplayPiece from "./DisplayPiece";
 import "./ChessBoardStyle.css";
 import { ClientEventManager, IN_GAME } from "@TRPI/core/core-network";
+import { useGameManager, useMovesData, usePlayerIsWhite } from "../../contexts/GameContext";
 
 interface ChessBoardProps {
   chessGame: ChessGame;
-  gameManager?: ClientEventManager<IN_GAME>
-  PlayerisWhite: boolean;
 }
 
-const ChessBoardRenderer: React.FC<ChessBoardProps> = ({ chessGame, PlayerisWhite , gameManager}) => {
+const ChessBoardRenderer: React.FC<ChessBoardProps> = ({ chessGame }) => {
 
   const chessBoard = chessGame.getBoard();
+  const playerIsWhite = usePlayerIsWhite()
+  const [gameManager , setGameManager] = useGameManager();
+  const [movesData , setMovesData] = useMovesData();
+
+
   const [selectedCase, setSelectedCase] = useState<{ row: number, col: number } | null>(null);
   const [legalMoves, setLegalMoves] = useState<string[]>([]);
-  const [_fu , forceUpdate] = useState(0);
+  const [_fu , _forceUpdate] = useState(0);
   
   
   
   useEffect(() => {
     gameManager?.listenToNetworkMove({
-      _forceUpdate: forceUpdate,
-      chessGame: chessGame
+      _forceUpdate,
+      chessGame,
+      setMovesData,
+      movesData,
     })
   }, [])
+
+  useEffect(() => {
+    console.log('force updating');
+  }, [_fu])
+
+
+  useEffect(() => {
+    console.log('updating moves data');
+  }, [movesData])
 
   const onCaseClick = (row: number, col: number) => {
     let board: ChessBoard = chessGame.getBoard();
     let coordinate: string = String.fromCharCode("a".charCodeAt(0) + row) + (8 - col);
     let piece: ChessPiece | null = board.getPieceAt(coordinate);
-    if (PlayerisWhite && (piece?.color === Color.Black && !legalMoves.includes(coordinate))) return;
-    if (!PlayerisWhite && (piece?.color === Color.White && !legalMoves.includes(coordinate))) return;
+    if (playerIsWhite && (piece?.color === Color.Black && !legalMoves.includes(coordinate))) return;
+    if (!playerIsWhite && (piece?.color === Color.White && !legalMoves.includes(coordinate))) return;
 
     if (legalMoves.includes(coordinate) && selectedCase !== null) {
-      if (PlayerisWhite && chessGame.getCurrentTurn() === Color.Black) return;
-      if (!PlayerisWhite && chessGame.getCurrentTurn() === Color.White) return;
+      if (playerIsWhite && chessGame.getCurrentTurn() === Color.Black) return;
+      if (!playerIsWhite && chessGame.getCurrentTurn() === Color.White) return;
       let from = String.fromCharCode("a".charCodeAt(0) + selectedCase.row) + (8 - selectedCase.col);
       let to = coordinate;
       //A MODIFIER POUR QUE LE MOUVEMENT SOIT ENVOYER AU SERVEUR
@@ -89,7 +104,7 @@ const ChessBoardRenderer: React.FC<ChessBoardProps> = ({ chessGame, PlayerisWhit
   const renderRow = (row: number) => {
     const cases = [];
 
-    if (PlayerisWhite) {
+    if (playerIsWhite) {
       for (let col = 0; col < 8; col++) {
         cases.push(renderCase(row, col));
       }
@@ -111,7 +126,7 @@ const ChessBoardRenderer: React.FC<ChessBoardProps> = ({ chessGame, PlayerisWhit
   const renderBoard = () => {
     const rows = [];
 
-    if (PlayerisWhite) {
+    if (playerIsWhite) {
       for (let row = 0; row < 8; row++) {
         rows.push(renderRow(row));
       }

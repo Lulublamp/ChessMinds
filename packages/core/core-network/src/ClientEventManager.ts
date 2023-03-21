@@ -11,9 +11,11 @@ import {
   lobbyPlayer,
 } from "./interfaces/emitEvents";
 import { IN_GAME, MATCH_MAKING, NAMESPACE_TYPES } from "./Namespace";
-import { rICreateRoomEvent, rIIncomingGameEvent, rINetworkMoveEvent } from "./interfaces/receiveEvents";
+import { Move, rICreateRoomEvent, rIIncomingGameEvent, rINetworkMoveEvent } from "./interfaces/receiveEvents";
 import { IGame, Match, PPlayer } from "./utils/Queue";
 import { PrivateLobby } from "./utils/Lobby";
+import { Color } from "../../core-algo";
+
 
 export type IRespond =
   | eILeaveRoomEvent
@@ -115,11 +117,55 @@ export class ClientEventManager<
   public listenToNetworkMove(payload: Check<T , IN_GAME , rINetworkMoveEvent>){
     if (this.matchId == null) return
     console.log('listen to network move')
+
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
     this.socket.on(EVENT_TYPES.MOVES , (from: string , to:string) => {
       console.log('move received' , from , to)
+      const currentTurn = payload.chessGame.getCurrentTurn() == Color.White ? 'white' : 'black'
+
+
       payload.chessGame.makeMove(from , to)
-      payload._forceUpdate((x) => x+1)
+      
+      console.log('move made -> moves data updated')
+      let thisMove: Move | null = null;
+      if (payload.movesData.length == 0){
+        thisMove = {
+          turn: 1,
+          white: to,
+          whitePiece: payload.chessGame.getBoard().getPieceAt(to),
+          black: null,
+          blackPiece: null
+        }
+      } else {
+        const lastMove = payload.movesData[payload.movesData.length - 1]
+        if (lastMove.black == null){
+          thisMove = {
+            turn: lastMove.turn,
+            white: lastMove.white,
+            whitePiece: lastMove.whitePiece,
+            black: to,
+            blackPiece: payload.chessGame.getBoard().getPieceAt(to)
+          }
+        }else{
+          thisMove = {
+            turn: lastMove.turn + 1,
+            white: to,
+            whitePiece: payload.chessGame.getBoard().getPieceAt(to),
+            black: null,
+            blackPiece: null
+          }
+        }
+      }
+        
+      console.log('this move' , thisMove)
+      console.log('moves data' , payload.movesData)
+      payload.setMovesData((current) => {
+        currentTurn == 'black' ? current.pop() : null
+        const moveAfter = [...current , thisMove!]
+        payload.movesData = moveAfter 
+        return moveAfter
+      })
+      console.log('moves data updated' , payload.movesData)
     });
   }
 
