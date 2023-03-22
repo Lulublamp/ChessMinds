@@ -8,11 +8,11 @@ interface ConnexionProps {
     onCancel: () => void;
     showConnexion : boolean;
     changeConnexion: () => void;
+    changeMDPOublie: () => void;
 }
 
 
-
-const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeConnexion }) => {
+const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeConnexion, changeMDPOublie }) => {
     if (!showConnexion) {
         return null;
     }
@@ -34,7 +34,7 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
                         placeHolder="Mot de passe"
                         type='password'
                     />
-                    <p>Mot de passe oublié ?</p>
+                    <p onClick={changeMDPOublie}>Mot de passe oublié ?</p>
                 </div>
                 <button className="PlayButton">Se connecter</button>
                 <p onClick={changeConnexion}>Pas de compte ? Incrivez-vous ici</p>
@@ -46,11 +46,3 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
     );
 };
 export default Connexion;
-
-
-
-
-
-
-
-

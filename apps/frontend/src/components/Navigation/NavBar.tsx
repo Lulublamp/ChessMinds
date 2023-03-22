@@ -1,13 +1,15 @@
 import React from 'react';
 import "./NavBarStyle.css";
 import Logo from '../Logo_Icon/Logo';
-import Connexion from '../../components/Navigation/Connexion';
+import Connexion from './Connexion';
 import Inscription from './Inscription';
+import MDPOublie from './MDPOublie';
 
 
 function Navbar() {
   const [showConnexion, setShowConnexion] = React.useState(false);
   const [showInscription, setShowInscription] = React.useState(false);
+  const [showMDPOublie, setShowMDPOublie] = React.useState(false);
 
   const OpenPopupConnexion = () => {
     setShowConnexion(true);
@@ -15,6 +17,14 @@ function Navbar() {
 
   const ClosePopupConnexion = () => {
     setShowConnexion(false);
+  };
+
+  const ClosePopupInscription = () => {
+    setShowInscription(false);
+  };
+
+  const ClosePopupMDPOublie = () => {
+    setShowMDPOublie(false);
   };
 
   const ChangeInscriptionToConnexion = () => {
@@ -27,9 +37,21 @@ function Navbar() {
     setShowConnexion(false);
   };
 
-  const ClosePopupInscription = () => {
-    setShowInscription(false);
+  const ChangeConnexionToMDPOublie = () => {
+    setShowMDPOublie(true);
+    setShowConnexion(false);
   };
+
+  const ChangeMDPOublieToConnexion = () => {
+    setShowMDPOublie(false);
+    setShowConnexion(true);
+  };
+
+  const ChangeMDPOublieToInscription = () => {
+    setShowMDPOublie(false);
+    setShowInscription(true);
+  };
+
   
   return (
     <nav className="navbar">
@@ -55,12 +77,19 @@ function Navbar() {
             onCancel={ClosePopupConnexion}          
             showConnexion={showConnexion} 
             changeConnexion={ChangeConnexionToInscription}
+            changeMDPOublie={ChangeConnexionToMDPOublie}
           />
           <Inscription 
             onCancel={ClosePopupInscription}  
             showInscription={showInscription}
             changeInscription={ChangeInscriptionToConnexion}
           /> 
+          <MDPOublie
+            onCancel={ClosePopupMDPOublie}
+            showMDPOublie={showMDPOublie}  
+            changeConnexion={ChangeMDPOublieToConnexion}
+            changeInscription={ChangeMDPOublieToInscription}
+          />
         </div>
       </div>
     </nav>

@@ -10,7 +10,6 @@ interface InscriptionProps {
     changeInscription: () => void;
 }
 
-
 const Inscription: React.FC<InscriptionProps> = ({ onCancel, showInscription, changeInscription}) => {
     if (!showInscription) {
         return null;
@@ -55,11 +54,3 @@ const Inscription: React.FC<InscriptionProps> = ({ onCancel, showInscription, ch
 };
 
 export default Inscription;
-
-
-
-
-
-
-
-
