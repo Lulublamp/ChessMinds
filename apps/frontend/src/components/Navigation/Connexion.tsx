@@ -25,12 +25,14 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
                     id="e-mail" 
                     iconeInput={false}
                     placeHolder="Adresse mail"
+                    type='text'
                 />
                 <div>
                     <InputForm 
                         id="MDP" 
                         iconeInput={true}
                         placeHolder="Mot de passe"
+                        type='password'
                     />
                     <p>Mot de passe oublié ?</p>
                 </div>
