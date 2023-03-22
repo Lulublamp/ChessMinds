@@ -43,7 +43,7 @@ const Inscription: React.FC<InscriptionProps> = ({ onCancel, showInscription, ch
                     placeHolder="Confirmation du mot de passe"
                     type='password'
                 />
-                <button className="PlayButton">Se connecter</button>
+                <button className="PlayButton">S'inscrire</button>
                 <p onClick={changeInscription}>Vous avez déjà un compte ? Se connecter</p>
             </div>
             
