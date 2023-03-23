@@ -5,25 +5,27 @@ import { JoueursService } from './joueurs.service';
 
 @Controller('joueurs')
 export class JoueursController {
-  constructor(
-    private readonly joueursService: JoueursService) {}
+  constructor(private readonly joueursService: JoueursService) {}
 
-    //si on veut recupere des infos sur un joueur 
+  //si on veut recupere des infos sur un joueur 
   @Get()
-  async retourneJoueur(@Body() joueur: JoueurDto) {
-    //const joueurs= await this.joueursService.findJoueur();
-    //return joueurs;
+  async retrouverJoueur(@Param('joueur') joueur: JoueurDto){
+    try {
+      const joueurTrouve = await this.joueursService.findJoueur(joueur);
+      return joueurTrouve;
+    }catch (error){
+      console.log("Le joueur n'existe pas")
+      return error;
+    }
   }
-
 
   //si on veut inscrire un joueur
   @Post('inscription')
   //permet de mettre un message d'erreur si une des infos du joueur qui est @noempty n'est pas remplie (fichier dto)
   @UsePipes(new ValidationPipe())
   inscriptionJoueur(@Body() joueur: JoueurDto) {
-    try {
-      const joueurInscrit = this.joueursService.inscriptionJoueur(joueur);
-      return joueurInscrit;
+    try{
+      return this.joueursService.inscriptionJoueur(joueur);
     }catch (error){
       console.log(error)
       return error;
@@ -43,17 +45,14 @@ export class JoueursController {
   }
   
 //si on veut modifier le pseudo ou le mot de passe d'un joueur
-  @Put('update')
-  updateJoueur(
-    @Param('idJoueur', ParseIntPipe) idJoueur: number, 
-    @Body() joueur: JoueurDto
-  ) {
-    try {
-      const joueurUpdate = this.joueursService.updateJoueur(idJoueur,joueur);
-      return joueurUpdate;
+@Put('modifie')
+  async modifierJoueur(@Body() joueurDto: JoueurDto) {
+    try{
+      return this.joueursService.modifierJoueur(joueurDto);
     }catch (error){
       console.log(error)
       return error;
     }
   }
+  
 }
