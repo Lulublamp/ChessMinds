@@ -8,6 +8,12 @@ import {
 } from 'typeorm';
 import { Joueur } from '../../joueurs/entities/joueur.entity';
 
+export enum TypePartie {
+  RAPIDE = 'ELORapide',
+  BULLET = 'ELOBullet',
+  BLITZ = 'ELOBlitz',
+}
+
 @Entity()
 export class Classement {
   @PrimaryGeneratedColumn()

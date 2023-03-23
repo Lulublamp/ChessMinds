@@ -17,12 +17,10 @@ export class ClassementService {
     private readonly classementRepository: Repository<Classement>,
   ) {}
 
-  async findClassement(mode: 'asc' | 'desc'): Promise<Classement[]> {
-    return await this.classementRepository.find(
-      {order: {ELO: mode}},
-    );
-  }
-/*
+  // async findClassement(mode: 'asc' | 'desc'): Promise<Classement[]> {
+  //   return await this.classementRepository.find({ order: { ELO: mode } });
+  // }
+  /*
   //modifier le classement
   updateClassement(idJoueur:number,ELO: ClassementDto) {
     const classementUpdate = this.classementRepository.update(idJoueur, ELO);

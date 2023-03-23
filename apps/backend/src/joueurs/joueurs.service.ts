@@ -1,6 +1,14 @@
+
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { create } from 'domain';
+import { resolve } from 'path';
+import {
+  AlreadyFriends,
+  PlayerAlreadyExists,
+  PlayerNotCreated,
+  PlayerNotFound,
+} from 'src/errors/bErrors';
 import { comparePassword, hashPassword } from 'src/utils/bcrypt';
 import { Repository } from 'typeorm';
 import { JoueurDto } from './DTO/joueurs.dto';
@@ -8,61 +16,81 @@ import { Joueur } from './entities/joueur.entity';
 
 @Injectable()
 export class JoueursService {
-  /*updateJoueur(idJoueur: number | import("typeorm").FindOperator<number>) {
-    throw new Error('Method not implemented.');
-  }*/
-  //injecter le repository de la table joueur
   constructor(
     @InjectRepository(Joueur)
     private readonly joueursRepository: Repository<Joueur>,
   ) {}
 
-  //Retrouver un joueur avec le Repository
-  async findJoueur(joueur: JoueurDto): Promise<Joueur> {
-    const joueurTrouve = await this.joueursRepository.findOneBy({ adresseMail: joueur.adresseMail });
-    if (joueurTrouve && comparePassword(joueur.motDePasse, joueurTrouve.motDePasse)) {
-      return joueurTrouve;
+  async inscriptionJoueur(joueurDto: JoueurDto): Promise<Joueur> {
+    try {
+      const newJoueur = this.joueursRepository.create(joueurDto);
+      return await this.joueursRepository.save(newJoueur);
+    } catch (error) {
+      console.log(error.name);
+      if (error.name === 'QueryFailedError') {
+        throw new PlayerAlreadyExists();
+      }
+
+      throw new PlayerNotCreated();
     }
+  }
+
+  async findJoueurByEmail(
+    email: Pick<JoueurDto, 'adresseMail'>,
+  ): Promise<Joueur> {
+    const joueurTrouve = await this.joueursRepository.findOneBy({
+      adresseMail: email.adresseMail,
+    });
+
+    if (!joueurTrouve) {
+      throw new PlayerNotFound();
+    }
+
     return joueurTrouve;
   }
-  
-  //Pour s'assurer que l'adresse mail n'est pas déjà utilisée
-  async createAdresse(joueur: JoueurDto) {
-    const existingUser = await this.joueursRepository.findOneBy({ adresseMail: joueur.adresseMail });
-    if (existingUser) {
-      throw new Error('Cette adresse mail est déjà utilisée');
+
+  async findJoueurByPseudo(query: Pick<Joueur, 'fullpseudo'>): Promise<Joueur> {
+    const joueurTrouve = await this.joueursRepository.findOneBy({
+      fullpseudo: query.fullpseudo,
+    });
+
+    if (!joueurTrouve) {
+      throw new PlayerNotFound();
     }
+
+    return joueurTrouve;
   }
 
-  //Enregistrer un joueur avec le Repository
-  async inscriptionJoueur(joueurDto: JoueurDto): Promise<Joueur> {
-    const joueur = new Joueur();
-    joueur.pseudo = joueurDto.pseudo;
-    //verifier que l'adresse mail n'est pas déjà utilisée avant de créer le joueur
-    await this.createAdresse(joueurDto);
-    joueur.adresseMail = joueurDto.adresseMail;
-    joueur.motDePasse = hashPassword(joueurDto.motDePasse);
-    return await this.joueursRepository.save(joueur);
-  }
-  
-  
-  //modifier un joueur avec le Repository
-  async modifierJoueur(joueurDto: JoueurDto) {
-    const joueur = await this.joueursRepository.findOneBy({pseudo: joueurDto.pseudo});
-    if (!joueur) {
-      throw new Error(`Le joueur avec le pseudo ${joueurDto.pseudo} n'a pas été trouvé`);
-    }
-    // Si un nouveau mot de passe a été fourni, on le hash avant de le sauvegarder
-    if (joueurDto.motDePasse) {
-      joueur.motDePasse = hashPassword(joueurDto.motDePasse);
-    }
-    if(joueurDto.pseudo){
-      joueur.pseudo = joueurDto.pseudo;
-    }
-    await this.joueursRepository.save(joueur);
-    return joueur;
-  }
-  
+  async addFriend(email: string, fullpseudo: string) {
+    const joueur = await this.findJoueurByEmail({ adresseMail: email });
+    const maybeFriend = await this.findJoueurByPseudo({
+      fullpseudo: fullpseudo,
+    });
 
+    console.log(joueur.amis);
 
+    if (!joueur.amis) {
+      joueur.amis = [];
+    }
+
+    if (!maybeFriend.amis) {
+      maybeFriend.amis = [];
+    }
+
+    if (joueur.amis.includes(maybeFriend)) throw new AlreadyFriends();
+
+    console.log(joueur.amis);
+
+    joueur.amis.push(maybeFriend);
+    maybeFriend.amis.push(joueur);
+    try {
+      await this.joueursRepository.save(joueur);
+      await this.joueursRepository.save(maybeFriend);
+
+      console.log('Friend added');
+    } catch (error) {
+      console.log(error);
+      throw new Error('Could not add friend');
+    }
+  }
 }

@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -14,14 +13,7 @@ import { MmRankedGateway } from './mm-ranked/mm-ranked.gateway';
 import { JoueursModule } from './joueurs/joueurs.module';
 import { ClassementModule } from './classement/classement.module';
 import { InitGameGateway } from './init-game/init-game.gateway';
-import { ClassementBlitzModule } from './classement-blitz/classement-blitz.module';
-import { ClassementBulletModule } from './classement-bullet/classement-bullet.module';
-import { ClassementBulletModule } from './classement_bullet/classement_bullet.module';
-import { ClassementBulletController } from './classement_bullet/classement_bullet.controller';
-import { ClassementBulletController } from './classement_bullet/controllers/classement_bullet/classement_bullet.controller';
-import { ClassementBulletService } from './classement-bullet/services/classement-bullet/classement-bullet.service';
-import { ClassementBlitzModule } from './classement_blitz/classement_blitz.module';
-import { ClassementBulletModule } from './classement-bullet/classement-bullet.module';
+import { JoueurSubscriber } from './joueurs/entities/joueur.subscriber';
 
 @Module({
   imports: [
@@ -35,6 +27,7 @@ import { ClassementBulletModule } from './classement-bullet/classement-bullet.mo
         username: configService.get('MYSQL_USER') || 'root',
         database: configService.get('MYSQL_DATABASE') || 'chess-bdd',
         entities: [Joueur,Rencontre,Partie,Classement],
+        subscribers: [JoueurSubscriber],
         autoLoadEntities: true,
         synchronize: true,
       }),
@@ -44,10 +37,8 @@ import { ClassementBulletModule } from './classement-bullet/classement-bullet.mo
     AuthModule,
     JoueursModule,
     ClassementModule,
-    ClassementBlitzModule,
-    ClassementBulletModule,
   ],
-  controllers: [AppController, ClassementBulletController],
-  providers: [AppService, ClassementBulletService],
+  controllers: [AppController],
+  providers: [AppService],
 })
 export class AppModule {}

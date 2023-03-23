@@ -4,6 +4,7 @@ import {
   Column, 
   CreateDateColumn, 
   Entity, 
+  JoinTable, 
   ManyToMany, 
   PrimaryGeneratedColumn 
 } from "typeorm";
@@ -14,10 +15,10 @@ export class Joueur {
   @PrimaryGeneratedColumn()
   idJoueur: number;
 
-  @Column({nullable: false})
+  @Column({nullable: false , unique: true})
   adresseMail: string;
 
-  @Column()
+  @Column({nullable:false})
   pseudo: string;
 
   @Column({nullable:false})
@@ -29,23 +30,10 @@ export class Joueur {
   @Column({nullable:false})
   motDePasse: string;
 
-<<<<<<< apps/backend/src/joueurs/entities/joueur.entity.ts
   @CreateDateColumn()
-=======
-  @CreateDateColumn({nullable:false})
->>>>>>> apps/backend/src/joueurs/entities/joueur.entity.ts
   dateInscription: Date;
 
-  @ManyToMany(() => Joueur)
-  amis: Joueur[];
-
-  @BeforeInsert()
-  generateTagJoueur() {
-    const randomNumber = Math.floor(Math.random() * 9000) + 1000;
-    this.tagJoueur = `#${randomNumber}`;
-  }
-  @BeforeInsert()
-  setFullName() {
-    this.fullpseudo = `${this.pseudo} ${this.tagJoueur}`;
-  }
+  @ManyToMany(() => Joueur , (user) => user.amis )
+  @JoinTable()
+  amis: Joueur[]; 
 }
