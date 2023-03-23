@@ -17,6 +17,24 @@ export class Classement {
   @JoinColumn()
   idJoueur: Joueur;
 
+  //Pour partie Rapide
   @Column({nullable:false})
-  ELO: number;
+  ELOMaxRapide: number;
+
+  @Column({nullable:false})
+  ELORapide: number;
+
+  //Pour partie Bullet
+  @Column({nullable:false})
+  ELOMaxBullet: number;
+
+  @Column({nullable:false})
+  ELOBullet: number;
+
+  //Pour partie Blitz
+  @Column({nullable:false})
+  ELOMaxBlitz: number;
+
+  @Column({nullable:false})
+  ELOBlitz: number;
 }

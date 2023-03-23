@@ -6,25 +6,26 @@ import { Classement } from './entities/classement.entity';
 
 @Injectable()
 export class ClassementService {
+  updateClassement(idJoueur: number, classement: ClassementDto) {
+    throw new Error('Method not implemented.');
+  }
+  /*updateClassement(idJoueur: number, classement: ClassementDto) {
+    throw new Error('Method not implemented.');
+  }*/
   constructor(
     @InjectRepository(Classement)
     private readonly classementRepository: Repository<Classement>,
   ) {}
 
-  //retrouver le classment
-    //on utilise l'idJoeur pour retrouver le classement
-    //en soit on cherche le classement d'un joueur
-    //donc logique qu'on chereche avec l'id du joueur 
-    //a demander avis a l'equipe
-  async findClassement(idJoueur: number) {
-    return await this.classementRepository.find();
+  async findClassement(mode: 'asc' | 'desc'): Promise<Classement[]> {
+    return await this.classementRepository.find(
+      {order: {ELO: mode}},
+    );
   }
-
+/*
   //modifier le classement
-  /*
-  updateClassement(idJoueur:number,classement: ClassementDto) {
-    const classementUpdate = this.classementRepository.update(idJoueur, classement);
+  updateClassement(idJoueur:number,ELO: ClassementDto) {
+    const classementUpdate = this.classementRepository.update(idJoueur, ELO);
     return classementUpdate;
   }*/
-
 }

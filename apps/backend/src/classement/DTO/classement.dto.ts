@@ -9,4 +9,7 @@ export class ClassementDto {
 
   @IsNotEmpty()
   ELO: number;
+
+ /* @IsNotEmpty()
+  ELOMax: number;*/
 }

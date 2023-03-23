@@ -6,6 +6,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Nt } from '@TRPI/core';
+import { eILeaveRoomEvent, PPlayer } from '@TRPI/core/core-network';
 import { Server, Socket } from 'socket.io';
 import { MatchMakingService } from 'src/match-making/match-making.service';
 // EVENT_TYPES,
@@ -46,7 +47,7 @@ export class MmRankedGateway {
   ): null {
     console.log('mm-ranked: Join Nt.Queue');
     data.socket = client.id;
-    const maybeRoom: [string, Nt.Match] | number =
+    const maybeRoom: [string, Nt.Match<PPlayer>] | number =
       this.matchMakingService.queue.addPlayer(data);
     console.log('mm-ranked: Maybe Room : ' + maybeRoom);
     if (typeof maybeRoom === 'number') return null;
@@ -75,16 +76,11 @@ export class MmRankedGateway {
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.LEAVE_QUEUE_R)
-  handleLeaveQueue(@MessageBody() data: any) {
-    console.log('mm-ranked: Leave Queue');
-    this.matchMakingService.queue.removePlayer(data);
-    this.server.emit(
-      Nt.EVENT_TYPES.MATCH_MAKING_STATE_R,
-      this.matchMakingService.queue.getCoupledPlayers(),
-    );
-    console.log(
-      'mm-ranked: Remove Player : ' +
-        JSON.stringify(this.matchMakingService.queue.getPlayers()),
-    );
+  handleLeaveQueue(
+    @MessageBody() data: eILeaveRoomEvent,
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log('mm-ranked: Leave Nt.Queue');
+    this.matchMakingService.queue.removePlayer(data.userId, client.id);
   }
 }
