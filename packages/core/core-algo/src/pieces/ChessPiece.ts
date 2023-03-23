@@ -102,3 +102,5 @@ export abstract class ChessPiece {
     return new (this.constructor as any)(this.color, this.position);
   }
 }
+
+
