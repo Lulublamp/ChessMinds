@@ -14,7 +14,7 @@ import { IN_GAME, MATCH_MAKING, NAMESPACE_TYPES } from "./Namespace";
 import { Move, rICreateRoomEvent, rIIncomingGameEvent, rINetworkMoveEvent } from "./interfaces/receiveEvents";
 import { IGame, Match, PPlayer } from "./utils/Queue";
 import { PrivateLobby } from "./utils/Lobby";
-import { Color } from "../../core-algo";
+import { ChessBoard, Color } from "../../core-algo";
 
 
 export type IRespond =
@@ -91,6 +91,7 @@ export class ClientEventManager<
     this.socket.on(EVENT_TYPES.INCOMING_CATCH, (game: IGame) => {
       console.log("there is a match !");
       payload.gameSetter(() => game);
+    
       payload.colorSetter(() =>
         game.white_player.name == payload.name ? true : false
       );
@@ -112,19 +113,21 @@ export class ClientEventManager<
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
     this.send(EVENT_TYPES.MAKE_MOVE , {matchId: this.matchId , ...data});
   }
-
+  
   public listenToNetworkMove(payload: Check<T , IN_GAME , rINetworkMoveEvent>){
     if (this.matchId == null) return
     console.log('listen to network move')
 
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
     this.socket.on(EVENT_TYPES.MOVES , (from: string , to:string) => {
-      console.log('move received' , from , to)
-      const currentTurn = payload.chessGame.getCurrentTurn() == Color.White ? 'white' : 'black'
-
-
-      payload.chessGame.makeMove(from , to)
+      console.log('move received' , from , to);
       
+      payload.chessGame.setBoard(payload.boardHistory[payload.boardHistory.length - 1]);
+      const currentTurn = payload.chessGame.getCurrentTurn() == Color.White ? 'white' : 'black';
+      payload.chessGame.makeMove(from , to);
+      payload.boardHistory.push(payload.chessGame.getBoard().copyBoard());
+      payload.setCurrentIndex(payload.boardHistory.length - 1);
+
       let thisMove: Move | null = null;
       if (payload.movesData.length == 0){
         thisMove = {
@@ -161,76 +164,9 @@ export class ClientEventManager<
         payload.movesData = moveAfter 
         return moveAfter
       })
+
     });
   }
-
-  // public joinMatchMakingEvent(data: Check<T , MM_RANKED , eIJoinQueueEvent>) {
-  //   if (!this.validateEmit(NAMESPACE_TYPES.MM_RANKED)) return
-  //   this.send(EVENT_TYPES.JOIN_QUEUE_R, data);
-  // }
-
-  // public leaveMatchMakingEvent(data: Check<T , MM_RANKED , eILeaveRoomEvent>) {
-  //   if (!this.validateEmit(NAMESPACE_TYPES.MM_RANKED)) return
-  //   this.send(EVENT_TYPES.LEAVE_QUEUE_R, data);
-  // }
-
-  // public listenToInitGameOnce(data: Check<T , MM_RANKED , {setter: (arg: any) => any}>) {
-  //   console.log('init listner')
-  //   if (!this.validateEmit(NAMESPACE_TYPES.MM_RANKED)) return
-  //   this.socket.on(EVENT_TYPES.INIT_GAME, (dat: Match<PPlayer>) => {
-  //     console.log('Match object -->' , dat)
-  //     console.log('there is a match !')
-  //     data.setter(() => dat);
-  //   })
-  //   console.log('init listner -->end')
-  // }
-
-  // //Lobbby events
-  // public createLobbyEvent(data: Check<T , PRIVATE_LOBBY , eICreateLobbyWithReturnEvent>) {
-  //   if (!this.validateEmit(NAMESPACE_TYPES.PRIVATE_LOBBY)) return
-  //   this.sendWithCallback(EVENT_TYPES.CREATE_LOBBY, data , (response: any) => {
-  //     data.setter(response);
-  //   });
-  // }
-
-  // public joinLobbyEvent(data: Check<T , PRIVATE_LOBBY , eIJoinLobbyEvent>) {
-  //   if (!this.validateEmit(NAMESPACE_TYPES.PRIVATE_LOBBY)) return
-  //   this.send(EVENT_TYPES.JOIN_LOBBY, data);
-  // }
-
-  // public leaveLobbyEvent(data: Check<T , PRIVATE_LOBBY , eIJoinLobbyEvent>) {
-  //   if (!this.validateEmit(NAMESPACE_TYPES.PRIVATE_LOBBY)) return
-  //   this.send(EVENT_TYPES.LEAVE_LOBBY, data);
-  // }
-
-  // public playerReadyEvent(data: Check<T , PRIVATE_LOBBY , eIJoinLobbyEvent>) {
-  //   if (!this.validateEmit(NAMESPACE_TYPES.PRIVATE_LOBBY)) return
-  //   this.send(EVENT_TYPES.LOBBY_PLAYER_READY, data);
-  // }
-
-  // public playerUnreadyEvent(data: Check<T , PRIVATE_LOBBY , eIJoinLobbyEvent>) {
-  //   if (!this.validateEmit(NAMESPACE_TYPES.PRIVATE_LOBBY)) return
-  //   this.send(EVENT_TYPES.LOBBY_PLAYER_UNREADY, data);
-  // }
-
-  // public startGameEvent(data: Check<T , PRIVATE_LOBBY , eIJoinLobbyEvent>) {
-  //   if (!this.validateEmit(NAMESPACE_TYPES.PRIVATE_LOBBY)) return
-  //   this.send(EVENT_TYPES.LOBBY_START_GAME, data);
-  // }
-
-  // public listenToUpdatePlayers(data: Check<T , PRIVATE_LOBBY , {setter: (arg: any) => any}>) {
-  //   if (!this.validateEmit(NAMESPACE_TYPES.PRIVATE_LOBBY)) return
-  //   this.socket.on(EVENT_TYPES.LOBBY_PLAYERS_UPDATE, (dat: Match<lobbyPlayer>) => {
-  //     data.setter(() => dat);
-  //   })
-  // }
-
-  // public listenToStartGame(data: Check<T , PRIVATE_LOBBY , {setter: (arg: any) => any}>) {
-  //   if (!this.validateEmit(NAMESPACE_TYPES.PRIVATE_LOBBY)) return
-  //   this.socket.on(EVENT_TYPES.LOBBY_START_GAME, (dat: Match<lobbyPlayer>) => {
-  //     data.setter(() => dat);
-  //   })
-  // }
 
   public close() {
     this.socket.close();

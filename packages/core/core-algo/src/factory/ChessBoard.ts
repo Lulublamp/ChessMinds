@@ -15,15 +15,17 @@ export class ChessBoard {
     return this.board;
   }
 
+  public setBoard(board: (ChessPiece | null)[][]): void {
+    this.board = board;
+  }
+
   public copyBoard(): ChessBoard {
     const newBoard = new ChessBoard();
-
     for (let row = 0; row < 8; row++) {
       for (let col = 0; col < 8; col++) {
         newBoard.board[row][col] = this.board[row][col]?.copyPiece() ?? null;
       }
     }
-
     return newBoard;
   }
 

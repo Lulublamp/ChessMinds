@@ -15,6 +15,10 @@ export class Player {
     this.pieces.push(piece);
   }
 
+  resetPieces() {
+    this.pieces = [];
+  }
+
   removePiece(piece: ChessPiece) {
     let index = 0;
     for (let i = 0; i < this.pieces.length; i++) {

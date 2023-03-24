@@ -5,8 +5,8 @@ import PlayerIconTEMPORAIRE from "../../images/IconPlayer.png";
 
 interface PlayerContainerProps {
   isWhitePlayer: boolean;
-  playerName: string;
-  playerScore: number;
+  playerName: string | undefined;
+  playerScore: number | undefined;
   playerScorePieceValue: number;
   time: string;
 }

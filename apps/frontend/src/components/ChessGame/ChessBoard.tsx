@@ -4,7 +4,7 @@ import { ChessGame, ChessPiece, ChessBoard, Color } from "@TRPI/core/core-algo";
 import DisplayPiece from "./DisplayPiece";
 import "./ChessBoardStyle.css";
 import { ClientEventManager, IN_GAME } from "@TRPI/core/core-network";
-import { useGameManager, useMovesData, usePlayerIsWhite } from "../../contexts/GameContext";
+import { useGameManager, useMovesData, usePlayerIsWhite, useIndex, useBoardHistory} from "../../contexts/GameContext";
 
 interface ChessBoardProps {
   chessGame: ChessGame;
@@ -16,20 +16,21 @@ const ChessBoardRenderer: React.FC<ChessBoardProps> = ({ chessGame }) => {
   const playerIsWhite = usePlayerIsWhite()
   const [gameManager , setGameManager] = useGameManager();
   const [movesData , setMovesData] = useMovesData();
-
+  const [currentIndex , setCurrentIndex] = useIndex();
+  const [boardHistory , setBoardHistory] = useBoardHistory();
 
   const [selectedCase, setSelectedCase] = useState<{ row: number, col: number } | null>(null);
   const [legalMoves, setLegalMoves] = useState<string[]>([]);
   const [_fu , _forceUpdate] = useState(0);
-  
-  
   
   useEffect(() => {
     gameManager?.listenToNetworkMove({
       _forceUpdate,
       chessGame,
       setMovesData,
+      setCurrentIndex,
       movesData,
+      boardHistory,
     })
   }, [])
 
@@ -54,7 +55,6 @@ const ChessBoardRenderer: React.FC<ChessBoardProps> = ({ chessGame }) => {
       if (!playerIsWhite && chessGame.getCurrentTurn() === Color.White) return;
       let from = String.fromCharCode("a".charCodeAt(0) + selectedCase.row) + (8 - selectedCase.col);
       let to = coordinate;
-      //A MODIFIER POUR QUE LE MOUVEMENT SOIT ENVOYER AU SERVEUR
       gameManager?.networkMove({
         from, to
       });

@@ -1,4 +1,4 @@
-import { ChessGame, ChessPiece } from "../../../core-algo";
+import { ChessBoard, ChessGame, ChessPiece } from "../../../core-algo";
 import { ClientEventManager } from "../ClientEventManager";
 import { IN_GAME, MATCH_MAKING } from "../Namespace";
 import { IGame } from "../utils/Queue";
@@ -35,5 +35,7 @@ export interface rINetworkMoveEvent {
   _forceUpdate: ReactSetter<number>;
   chessGame: ChessGame
   movesData: Move[]
+  boardHistory: ChessBoard[]
   setMovesData: ReactSetter<Move[]>
+  setCurrentIndex : ReactSetter<number>
 }

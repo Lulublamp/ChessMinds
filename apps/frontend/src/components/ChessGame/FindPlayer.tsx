@@ -3,9 +3,11 @@ import './FindPlayer.css';
 
 interface FindPlayerProps {
   onCancel: () => void;
+  show: boolean;
 }
 
-const FindPlayer: React.FC<FindPlayerProps> = ({ onCancel }) => {
+const FindPlayer: React.FC<FindPlayerProps> = ({ onCancel, show }) => {
+  if(!show) return null;
   return (
     <div className="findPlayer">
       <div className="search-container">
