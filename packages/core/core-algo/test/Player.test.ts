@@ -67,7 +67,7 @@ describe("Player", () => {
 
     test("returns null if the player does not have a king", () => {
       player.addPiece(pawn);
-      expect(player.getKing()).toBeNull();
+      expect(player.getKing()).toBeUndefined();
     });
   });
 
