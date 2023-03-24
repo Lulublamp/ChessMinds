@@ -122,10 +122,11 @@ export class ClientEventManager<
     this.socket.on(EVENT_TYPES.MOVES , (from: string , to:string) => {
       console.log('move received' , from , to);
       
-      payload.chessGame.setBoard(payload.boardHistory[payload.boardHistory.length - 1]);
+      payload.chessGame.setBoard(payload.boardHistory[payload.boardHistory.length - 1].copyBoard());
       const currentTurn = payload.chessGame.getCurrentTurn() == Color.White ? 'white' : 'black';
       payload.chessGame.makeMove(from , to);
       payload.boardHistory.push(payload.chessGame.getBoard().copyBoard());
+      console.log('board history' , payload.boardHistory);
       payload.setCurrentIndex(payload.boardHistory.length - 1);
 
       let thisMove: Move | null = null;
