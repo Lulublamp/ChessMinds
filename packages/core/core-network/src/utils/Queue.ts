@@ -145,7 +145,7 @@ export class Queue {
 
   addPlayerToQueue(
     player: MMPlayer,
-    socket: Socket,
+    socket: string,
     mode: JoinQueuOption
   ): IGame | number {
     if (this.queue.length >= this.maxPlayers) {
@@ -156,7 +156,7 @@ export class Queue {
     const [isReadyToMatch, matchPlayer] = this.isReadyToMatch(player, mode);
     if (!isReadyToMatch) {
       this.queue.push(player);
-      this.socketMap.set(player.id, socket.id);
+      this.socketMap.set(player.id, socket);
       return -2;
     }
     const game = Queue.BuildGame(player, matchPlayer! , mode);

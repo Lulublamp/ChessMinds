@@ -156,7 +156,6 @@ describe("Pawn", () => {
   });
 });
 
-
 describe("Knight", () => {
   let game: ChessGame;
   let knight: Knight;
