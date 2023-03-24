@@ -4,35 +4,37 @@ import { ChessGame, ChessPiece, ChessBoard, Color } from "@TRPI/core/core-algo";
 import DisplayPiece from "./DisplayPiece";
 import "./ChessBoardStyle.css";
 import { ClientEventManager, IN_GAME } from "@TRPI/core/core-network";
-import { useGameManager, useMovesData, usePlayerIsWhite, useIndex, useBoardHistory} from "../../contexts/GameContext";
+import { useGameManager, useMovesData, usePlayerIsWhite, useIndex, useBoardHistory,useChessGame, useGame}  from "../../contexts/GameContext";
 
-interface ChessBoardProps {
-  chessGame: ChessGame;
-}
 
-const ChessBoardRenderer: React.FC<ChessBoardProps> = ({ chessGame }) => {
 
-  const chessBoard = chessGame.getBoard();
+const ChessBoardRenderer: React.FC = () => {
+
   const playerIsWhite = usePlayerIsWhite()
   const [gameManager , setGameManager] = useGameManager();
   const [movesData , setMovesData] = useMovesData();
   const [currentIndex , setCurrentIndex] = useIndex();
   const [boardHistory , setBoardHistory] = useBoardHistory();
+  const [chessGame , setChessGame] = useChessGame();
+  const [_game , set_Game] = useGame();
 
   const [selectedCase, setSelectedCase] = useState<{ row: number, col: number } | null>(null);
   const [legalMoves, setLegalMoves] = useState<string[]>([]);
   const [_fu , _forceUpdate] = useState(0);
   
   useEffect(() => {
+    console.log('updating game manager');
+    console.log(chessGame);
     gameManager?.listenToNetworkMove({
       _forceUpdate,
-      chessGame,
+      chessGame : chessGame!,
       setMovesData,
       setCurrentIndex,
       movesData,
       boardHistory,
     })
-  }, [])
+    console.log(gameManager);
+  }, [_game])
 
   useEffect(() => {
     console.log('force updating');
@@ -44,15 +46,15 @@ const ChessBoardRenderer: React.FC<ChessBoardProps> = ({ chessGame }) => {
   }, [movesData])
 
   const onCaseClick = (row: number, col: number) => {
-    let board: ChessBoard = chessGame.getBoard();
+    let board: ChessBoard = chessGame!.getBoard();
     let coordinate: string = String.fromCharCode("a".charCodeAt(0) + row) + (8 - col);
     let piece: ChessPiece | null = board.getPieceAt(coordinate);
     if (playerIsWhite && (piece?.color === Color.Black && !legalMoves.includes(coordinate))) return;
     if (!playerIsWhite && (piece?.color === Color.White && !legalMoves.includes(coordinate))) return;
 
     if (legalMoves.includes(coordinate) && selectedCase !== null) {
-      if (playerIsWhite && chessGame.getCurrentTurn() === Color.Black) return;
-      if (!playerIsWhite && chessGame.getCurrentTurn() === Color.White) return;
+      if (playerIsWhite && chessGame!.getCurrentTurn() === Color.Black) return;
+      if (!playerIsWhite && chessGame!.getCurrentTurn() === Color.White) return;
       let from = String.fromCharCode("a".charCodeAt(0) + selectedCase.row) + (8 - selectedCase.col);
       let to = coordinate;
       gameManager?.networkMove({
@@ -70,7 +72,7 @@ const ChessBoardRenderer: React.FC<ChessBoardProps> = ({ chessGame }) => {
       return;
     }
     setSelectedCase({ row: row, col: col });
-    const moves = chessGame.getLegalMovesForPieceAt(coordinate);
+    const moves = chessGame!.getLegalMovesForPieceAt(coordinate);
     setLegalMoves(moves);
   }
 
@@ -81,7 +83,7 @@ const ChessBoardRenderer: React.FC<ChessBoardProps> = ({ chessGame }) => {
     const rowName = String.fromCharCode("a".charCodeAt(0) + row);
     const rowCoordsClassName = `row-coordinates ${row % 2 === col % 2 ? "blackText" : "whiteText"}`;
     const colCoordsClassName = `col-coordinates ${row % 2 === col % 2 ? "blackText" : "whiteText"}`;
-    const piece: ChessPiece | null = chessBoard.getPieceAt(rowName + colName);
+    const piece: ChessPiece | null = chessGame!.getBoard().getPieceAt(rowName + colName);
 
     return (
       <div

@@ -1,4 +1,4 @@
-import { ChessBoard, ChessPiece } from '@TRPI/core/core-algo';
+import { ChessBoard, ChessGame, ChessPiece } from '@TRPI/core/core-algo';
 import { ClientEventManager, MATCH_MAKING, IN_GAME, IGame } from '@TRPI/core/core-network';
 import { Move, ReactSetter } from '@TRPI/core/core-network/src/interfaces/receiveEvents';
 import React, { createContext, useContext, useState } from 'react';
@@ -17,6 +17,7 @@ interface GameContextData {
   movesData: Move[];
   boardHistory: ChessBoard[];
   currentIndex: number;
+  chessGame: ChessGame;
   setGameManager: ReactSetter<MaybeGM>;
   setClientManager: ReactSetter<MaybeCM>;
   setMovesData: ReactSetter<Move[]>;
@@ -67,4 +68,9 @@ export const useIndex = (): [number, ReactSetter<number>] => {
 export const useBoardHistory = (): [ChessBoard[], ReactSetter<ChessBoard[]>] => {
   const { boardHistory } = useGameContext();
   return [boardHistory, () => { }];
+}
+
+export const useChessGame = (): [ChessGame | null, ReactSetter<ChessGame | null>] => {
+  const { chessGame} = useGameContext();
+  return [chessGame, () => { }];
 }

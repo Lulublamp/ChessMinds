@@ -26,14 +26,14 @@ const Game = () => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [playerisWhite, setPlayerisWhite] = useState(false);
   const [_game, set_Game] = useState<IGame | null>(null);
-  const [chessGame, setChessGame] = useState<ChessGame | null>(null);
+  const [chessGame, setChessGame] = useState<ChessGame | null>(new ChessGame());
   const findChessGame = new ChessGame();
 
   useEffect(() => {
     if (clientManager) return;
-    setChessGame(() => new ChessGame());
+    //setChessGame(() => new ChessGame());
     setBoardHistory(() => [findChessGame.getBoard().copyBoard()]);
-    
+
     const mode = searchParams.get('RankedMode')?.toLowerCase();
     const timer = searchParams.get('TimerMode');
     const ps = searchParams.get('Pseudo');
@@ -86,9 +86,9 @@ const Game = () => {
 
   const PreviousMove = () => {
     console.log('Previous move');
-    console.log(boardHistory,currentIndex);
+    console.log(boardHistory, currentIndex);
     if (boardHistory.length > 0 && currentIndex > 0) {
-      const newBoard = boardHistory[currentIndex  - 1];
+      const newBoard = boardHistory[currentIndex - 1];
       chessGame?.setBoard(newBoard);
       setCurrentIndex(currentIndex - 1);
     }
@@ -96,7 +96,7 @@ const Game = () => {
 
   const NextMove = () => {
     console.log('Next move');
-    console.log(boardHistory,currentIndex);
+    console.log(boardHistory, currentIndex);
     if (boardHistory.length > 0 && currentIndex < boardHistory.length - 1) {
       const newBoard = boardHistory[currentIndex + 1];
       chessGame?.setBoard(newBoard);
@@ -112,61 +112,60 @@ const Game = () => {
     console.log('Propose Nulle');
   }
 
-  if(_game){
-    return (
-      <GameContext.Provider value={{
-        clientManager,
-        gameManager,
-        playerIsWhite: playerisWhite,
-        _game,
-        movesData,
-        boardHistory,
-        currentIndex,
-        setClientManager,
-        setMovesData,
-        setGameManager,
-        set_Game,
-        setCurrentIndex
-      }}>
-        <FindPlayer onCancel={cancelMatchmaking}
-          show={!PlayerIsFind}
-        />
-        <section className="chessGame">
-          <div className="leftContainer">
-            <PlayerContainer
-              isWhitePlayer={true}
-              playerName={_game ? !playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
-              playerScore={_game ? !playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
-              playerScorePieceValue={2}
-              time="10:00"
-            />
-            <Chat />
-            <PlayerContainer
-              isWhitePlayer={false}
-              playerName={_game ? playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
-              playerScore={_game ? playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
-              playerScorePieceValue={2}
-              time="10:00"
-            />
-          </div>
-          <div className="chessBoardContainer">
-            <ChessBoardRenderer
-              chessGame={_game ? chessGame! : findChessGame}
-            />
-          </div>
-          <div className="rightContainer">
-            <MovesList moves={movesData} />
-            <GameControl
-              onLeftClick={PreviousMove}
-              onRightClick={NextMove}
-            />
-            <AbandonButton onClick={Abandon} />
-            <NulleButtons onClick={ProposeNulle} />
-          </div>
-        </section>
-      </GameContext.Provider>
-    );
-  }
+  return (
+    <GameContext.Provider value={{
+      clientManager : clientManager,
+      gameManager,
+      playerIsWhite: playerisWhite,
+      _game,
+      movesData,
+      boardHistory,
+      currentIndex,
+      chessGame : chessGame!,
+      setClientManager,
+      setMovesData,
+      setGameManager,
+      set_Game,
+      setCurrentIndex
+    }}>
+      <FindPlayer onCancel={cancelMatchmaking}
+        show={!PlayerIsFind}
+      />
+      <section className="chessGame">
+        <div className="leftContainer">
+          <PlayerContainer
+            isWhitePlayer={true}
+            playerName={_game ? !playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
+            playerScore={_game ? !playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
+            playerScorePieceValue={2}
+            time="10:00"
+          />
+          <Chat />
+          <PlayerContainer
+            isWhitePlayer={false}
+            playerName={_game ? playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
+            playerScore={_game ? playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
+            playerScorePieceValue={2}
+            time="10:00"
+          />
+        </div>
+        <div className="chessBoardContainer">
+          <ChessBoardRenderer
+          />
+        </div>
+        <div className="rightContainer">
+          <MovesList moves={movesData} />
+          <GameControl
+            onLeftClick={PreviousMove}
+            onRightClick={NextMove}
+          />
+          <AbandonButton onClick={Abandon} />
+          <NulleButtons onClick={ProposeNulle} />
+        </div>
+      </section>
+    </GameContext.Provider>
+  );
+
 }
 
 export default Game;
