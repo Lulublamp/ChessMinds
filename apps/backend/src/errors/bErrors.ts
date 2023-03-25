@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { HttpException, HttpStatus } from '@nestjs/common';
-
+//TABLE JOUEUR
 export class PlayerNotFound extends HttpException {
   constructor() {
     super('Player not found', HttpStatus.NOT_FOUND);
@@ -22,5 +22,12 @@ export class PlayerNotCreated extends HttpException {
 export class AlreadyFriends extends HttpException {
   constructor() {
     super('Already friends', HttpStatus.CONFLICT);
+  }
+}
+
+//TABLE CLASSEMENT
+export class ClassementNotFound extends HttpException {
+  constructor() {
+    super('Classement not found', HttpStatus.NOT_FOUND);
   }
 }
