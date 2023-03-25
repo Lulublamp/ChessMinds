@@ -2,10 +2,6 @@ import {
   Controller,
   Get,
   Param,
-  ParseIntPipe,
-  Put,
-  UsePipes,
-  ValidationPipe,
 } from '@nestjs/common';
 import { JoueurDto } from './DTO/joueurs.dto';
 import { Post, Body } from '@nestjs/common';

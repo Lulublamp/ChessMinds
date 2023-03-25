@@ -1,7 +1,7 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Connection, EntitySubscriberInterface, EventSubscriber, InsertEvent, Repository} from 'typeorm';
+import { EntitySubscriberInterface, EventSubscriber, InsertEvent, Repository} from 'typeorm';
 import { Joueur } from './joueur.entity';
 
 @Injectable()

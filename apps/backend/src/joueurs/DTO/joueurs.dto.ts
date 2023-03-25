@@ -1,4 +1,3 @@
-
 /* eslint-disable prettier/prettier */
 import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
 
