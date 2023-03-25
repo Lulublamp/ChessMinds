@@ -73,19 +73,7 @@ export class ClassementService {
   
     async updateELO(idClassement: Pick<Classement, 'idClassement'>, typePartie: TypePartie, elo: number): Promise<Classement> {
     const classement = await this.classementRepository.findOneBy(idClassement);
-    switch(typePartie) {
-      case TypePartie.RAPIDE:
-        classement.ELORapide = elo;
-        break;
-      case TypePartie.BULLET:
-        classement.ELOBullet = elo;
-        break;
-      case TypePartie.BLITZ:
-        classement.ELOBlitz = elo;
-        break;
-      default:
-        throw new Error(`Type de partie invalide: ${typePartie}`);
-    }
+    classement[typePartie] = elo;
     return await this.classementRepository.save(classement);
   }
 }
