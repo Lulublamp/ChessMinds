@@ -51,7 +51,9 @@
 }
 
 
+
 .InputForm {
+
     width: 337px;
     height: 42.08px;
     margin: 0 0 20px 0;
@@ -92,32 +94,56 @@
     margin: 0 10px;
 }
 
+#MdpDiv {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
 
-.Form-ConnexionIncrip p {
+
+.Form-ConnexionIncrip {
     font-family: 'Montserrat';
     font-style: normal;
-    font-weight: 400;
     font-size: 12px;
     line-height: 14px;
 
     display: flex;
     flex-direction: column;
-    align-items: flex-end;
-
-    color: #255186;
-    font-stretch: 100;
-    margin: 0 0 15px 0;
-    cursor: pointer;
-}
-
-.Form-ConnexionIncrip p:hover {
-    color: #c82828;
-}
-
-.Form-ConnexionIncrip {
-    display: flex;
-    flex-direction: column;
     align-items: center;
+    width: 100%;
+}
+
+
+.Erreur {
+    color: #000000;
+    background-color: #f64c3d;
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: block;
+    margin: 10px 15% 10px 15%;
+    font-weight: 700;
+    text-align: center;
+}
+
+.ErreurHide {
+    display: none;
+}
+
+
+.link {
+    cursor: pointer;
+    color: #255186;
+    margin: 0 0 20px 0;
+    font-weight: 400;
+}
+
+.link:hover {
+    color: #D73324;
+}
+
+
+.ErreurValeur .InputForm  {
+    border: 2px solid red;
 }
 
 

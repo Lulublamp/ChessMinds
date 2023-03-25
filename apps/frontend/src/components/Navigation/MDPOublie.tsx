@@ -21,15 +21,19 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showMDPOublie, changeCo
         <div className="ConnexionIncrip-container">
             <h2>Vous avez oublié votre mot de passe ?</h2>
             <div className="Form-ConnexionIncrip" >
-                <InputForm 
-                    id="e-mail" 
-                    iconeInput={false}
-                    placeHolder="Saisir un e-mail"
-                    type='text'
-                />
+                <div className={true ? "ErreurValeur" : ""}>
+                    <InputForm 
+                        id="e-mail" 
+                        iconeInput={false}
+                        placeHolder="Saisir un e-mail"
+                        type='text'
+                    />
+                </div>
+                
+                <p className={true ? "Erreur" : "ErreurHide"}>L'adresse mail est associée à aucun compte ! Veuillez réessayer</p>
                 <button className="PlayButton">Valider</button>
-                <p onClick={changeConnexion}>Vous avez déjà un compte ? Se connecter</p>
-                <p onClick={changeInscription}>Pas de compte ? Incrivez-vous ici</p>
+                <p className="link" onClick={changeConnexion}>Vous avez déjà un compte ? Se connecter</p>
+                <p className="link" onClick={changeInscription}>Pas de compte ? Incrivez-vous ici</p>
             </div>
             
             <CancelButton onCancel={onCancel}/>

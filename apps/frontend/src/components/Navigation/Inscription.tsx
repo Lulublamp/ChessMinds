@@ -19,32 +19,38 @@ const Inscription: React.FC<InscriptionProps> = ({ onCancel, showInscription, ch
         <div className="ConnexionIncrip-container">
             <h2>Inscrit toi dès maintenant pour jouer à Chess Minds</h2>
             <div className="Form-ConnexionIncrip" >
-                <InputForm 
-                    id="e-mail" 
-                    iconeInput={false}
-                    placeHolder="Adresse e-mail"
-                    type='text'
-                />
-                <InputForm 
-                    id="pseudo" 
-                    iconeInput={false}
-                    placeHolder="Pseudo"
-                    type='text'
-                />
-                <InputForm 
-                    id="MDP" 
-                    iconeInput={true}
-                    placeHolder="Mot de passe"
-                    type='password'
-                />
-                <InputForm 
-                    id="ConfirmMDP" 
-                    iconeInput={false}
-                    placeHolder="Confirmation du mot de passe"
-                    type='password'
-                />
+                <div>
+                    <div className={true ? "ErreurValeur" : ""}>
+                        <InputForm 
+                            id="e-mail" 
+                            iconeInput={false}
+                            placeHolder="Adresse e-mail"
+                            type='text'
+                        />
+                    </div>
+                    
+                    <InputForm 
+                        id="pseudo" 
+                        iconeInput={false}
+                        placeHolder="Pseudo"
+                        type='text'
+                    />
+                    <InputForm 
+                        id="MDP" 
+                        iconeInput={true}
+                        placeHolder="Mot de passe"
+                        type='password'
+                    />
+                    <InputForm 
+                        id="ConfirmMDP" 
+                        iconeInput={false}
+                        placeHolder="Confirmation du mot de passe"
+                        type='password'
+                    />
+                </div>
+                <p className={true ? "Erreur" : "ErreurHide"}>L'adresse mail est dèja utilisé ! Veuillez réessayer</p>
                 <button className="PlayButton">S'inscrire</button>
-                <p onClick={changeInscription}>Vous avez déjà un compte ? Se connecter</p>
+                <p className="link" onClick={changeInscription}>Vous avez déjà un compte ? Se connecter</p>
             </div>
             
             <CancelButton onCancel={onCancel}/>

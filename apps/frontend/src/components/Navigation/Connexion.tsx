@@ -9,10 +9,11 @@ interface ConnexionProps {
     showConnexion : boolean;
     changeConnexion: () => void;
     changeMDPOublie: () => void;
+    ErreurConnexion: boolean;
 }
 
 
-const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeConnexion, changeMDPOublie }) => {
+const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeConnexion, changeMDPOublie, ErreurConnexion }) => {
     if (!showConnexion) {
         return null;
     }
@@ -21,23 +22,28 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
         <div className="ConnexionIncrip-container">
             <h2>Connecte toi pour jouer à Chess Minds</h2>
             <div className="Form-ConnexionIncrip" >
-                <InputForm 
-                    id="e-mail" 
-                    iconeInput={false}
-                    placeHolder="Adresse mail"
-                    type='text'
-                />
-                <div>
-                    <InputForm 
-                        id="MDP" 
-                        iconeInput={true}
-                        placeHolder="Mot de passe"
-                        type='password'
-                    />
-                    <p onClick={changeMDPOublie}>Mot de passe oublié ?</p>
+                <div className={ErreurConnexion ? "ErreurValeur" : ""}>
+                    <div>
+                        <InputForm 
+                            id="e-mail" 
+                            iconeInput={false}
+                            placeHolder="Adresse mail"
+                            type='text'
+                        />
+                    </div>
+                    <div id='MdpDiv'>
+                        <InputForm 
+                            id="MDP" 
+                            iconeInput={true}
+                            placeHolder="Mot de passe"
+                            type='password'
+                        />
+                        <p className="link" onClick={changeMDPOublie}>Mot de passe oublié ?</p>
+                    </div>
                 </div>
+                <p className={ErreurConnexion ? "Erreur" : "ErreurHide"}>L'adresse mail ou le mot de passe est faux ! Veuillez réessayer</p>
                 <button className="PlayButton">Se connecter</button>
-                <p onClick={changeConnexion}>Pas de compte ? Incrivez-vous ici</p>
+                <p className="link" onClick={changeConnexion}>Pas de compte ? Incrivez-vous ici</p>
             </div>
             
             <CancelButton onCancel={onCancel}/>
