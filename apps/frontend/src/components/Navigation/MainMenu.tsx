@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import playIcon from "../../images/PlayIcon.png";
 import learnIcon from "../../images/LearnIcon.png";
-import leaderboardIcon from "../../images/LeaderboardIcon.png";
+import leaderboardIcon from "../../images/LeaderBoardIcon.png";
 import MenuButton from "../Button/MenuButton";
 import MatchMaking from '../../components/Navigation/Matchmaking';
 
