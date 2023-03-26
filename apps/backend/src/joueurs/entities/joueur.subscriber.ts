@@ -1,6 +1,6 @@
 /* eslint-disable prettier/prettier */
 import { Injectable } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectConnection, InjectRepository } from '@nestjs/typeorm';
 import { PlayerNotFound } from 'src/errors/bErrors';
 import { Connection, EntitySubscriberInterface, EventSubscriber, InsertEvent, Repository} from 'typeorm';
 import { JoueursService } from '../joueurs.service';
@@ -11,7 +11,7 @@ import { Joueur } from './joueur.entity';
 export class JoueurSubscriber implements EntitySubscriberInterface<Joueur> {
 
   constructor(private readonly joueurService: JoueursService,
-              private connection: Connection) {
+              @InjectConnection() private connection: Connection) {
     connection.subscribers.push(this);
   }
 
