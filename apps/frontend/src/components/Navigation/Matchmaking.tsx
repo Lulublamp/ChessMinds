@@ -1,5 +1,5 @@
 import React from 'react';
-import './MatchMaking.css';
+import './Matchmaking.css';
 
 interface MatchMakingProps {
   onCancel: () => void;
