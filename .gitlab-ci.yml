@@ -1,8 +1,10 @@
 ---
 stages:
+  - ssh-prepare
   - server
   - front
   - deploy
+
 ssh-prepare:
   trigger:
     include:
