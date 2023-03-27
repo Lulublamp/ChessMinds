@@ -1,0 +1,21 @@
+stages:
+  - ssh
+  - build
+  - deploy
+
+ssh:
+  stage: ssh
+  script:
+    - echo 'ssh test'
+
+build:
+  stage: build
+  script:
+   - echo 'build test'
+
+deploy:
+  stage: deploy
+  script:
+    - echo 'deploy test'
+  only:
+    - master
