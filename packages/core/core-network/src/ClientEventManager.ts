@@ -1,3 +1,4 @@
+/* eslint-disable turbo/no-undeclared-env-vars */
 import { EVENT_TYPES } from "./Event";
 import { Socket, io } from "socket.io-client";
 import {
@@ -32,7 +33,7 @@ export class EventEmitter {
 
   constructor(socketNameSpace: NAMESPACE_TYPES , token: string) {
     console.log("Connecting socket : ", token);
-    // eslint-disable-next-line turbo/no-undeclared-env-vars
+    console.log(`connect to ${process.env.SERVER}${socketNameSpace}`)
     this.socket = io(`${process.env.SERVER}${socketNameSpace}`, {
       transports: ["websocket"],
       auth: {
