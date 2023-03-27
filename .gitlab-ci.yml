@@ -1,6 +1,5 @@
 stages:
   - ssh-prepare
-  - ssh-connect
   - server
   - front
   - deploy
@@ -17,10 +16,6 @@ ssh-prepare:
     - echo $SSH_PRIVATE_KEY > ~/private.pem
     - chmod 600 ~/private.pem
 
-ssh-connect:
-  stage: ssh-connecet
-  script:
-    ssh vmProjetIntegrateur0-0
 
 
 deploy:
