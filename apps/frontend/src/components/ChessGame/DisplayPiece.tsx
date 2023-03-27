@@ -1,17 +1,17 @@
 import { ChessPiece, Color } from "@TRPI/core/core-algo";
 import React from "react";
-import WhitePawn from "../../images/Pieces/WhitePawn.svg";
-import WhiteRook from "../../images/Pieces/WhiteRook.svg";
-import WhiteKnight from "../../images/Pieces/WhiteKnight.svg";
-import WhiteBishop from "../../images/Pieces/WhiteBishop.svg";
-import WhiteQueen from "../../images/Pieces/WhiteQueen.svg";
-import WhiteKing from "../../images/Pieces/WhiteKing.svg";
-import BlackPawn from "../../images/Pieces/BlackPawn.svg";
-import BlackRook from "../../images/Pieces/BlackRook.svg";
-import BlackKnight from "../../images/Pieces/BlackKnight.svg";
-import BlackBishop from "../../images/Pieces/BlackBishop.svg";
-import BlackQueen from "../../images/Pieces/BlackQueen.svg";
-import BlackKing from "../../images/Pieces/BlackKing.svg";
+import WhitePawn from "../../images/Pieces/WhitePawn.png";
+import WhiteRook from "../../images/Pieces/WhiteRook.png";
+import WhiteKnight from "../../images/Pieces/WhiteKnight.png";
+import WhiteBishop from "../../images/Pieces/WhiteBishop.png";
+import WhiteQueen from "../../images/Pieces/WhiteQueen.png";
+import WhiteKing from "../../images/Pieces/WhiteKing.png";
+import BlackPawn from "../../images/Pieces/BlackPawn.png";
+import BlackRook from "../../images/Pieces/BlackRook.png";
+import BlackKnight from "../../images/Pieces/BlackKnight.png";
+import BlackBishop from "../../images/Pieces/BlackBishop.png";
+import BlackQueen from "../../images/Pieces/BlackQueen.png";
+import BlackKing from "../../images/Pieces/BlackKing.png";
 
 interface DisplayPieceProps {
   pieceName: ChessPiece | null;
