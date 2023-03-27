@@ -34,7 +34,7 @@ const Game = () => {
     //setChessGame(() => new ChessGame());
     setBoardHistory(() => [findChessGame.getBoard().copyBoard()]);
 
-    const mode = searchParams.get('RankedModee')?.toLowerCase();
+    const mode = searchParams.get('RankedModeee')?.toLowerCase();
     const timer = searchParams.get('TimerMode');
     const ps = searchParams.get('Pseudo');
     const elo = searchParams.get('Elo');

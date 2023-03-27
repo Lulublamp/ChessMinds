@@ -7,10 +7,16 @@ stages:
 
 ssh-prepare:
   stage: ssh-prepare
-  trigger:
-    include:
-      - local: ./prepare.yml
-    strategy: depend
+  script:
+    - echo 'ssh-connection'
+    - apt-get update && apt-get upgrade
+    - apt-get install openssh-client
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    - echo '' > ~/.ssh/config
+    - cp artifacts/config ~/.ssh/config
+    - cat ~/.ssh/config
+    - echo $SSH_PRIVATE_KEY > ~/private.pem
+    - chmod 600 ~/private.pem
 
 
 deploy:
