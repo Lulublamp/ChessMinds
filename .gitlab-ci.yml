@@ -18,7 +18,7 @@ ssh-prepare:
     - chmod 600 ~/private.pem
 
 ssh-connect:
-  stage: ssh-prepare
+  stage: ssh-connecet
   script:
     ssh vmProjetIntegrateur0-0
 
