@@ -1,17 +1,27 @@
 stages:
-  - ssh
-  - build
+  - ssh-prepare
+  - ssh-connect
+  - server
+  - front
   - deploy
 
-ssh:
-  stage: ssh
+ssh-prepare:
+  stage: ssh-prepare
   script:
     - echo 'ssh test'
+    - apt-get update && apt-get install -y openssh-client
+    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+    - cat '' > ~/.ssh/config
+    - cp artifacts/config ~/.ssh/config
+    - cat ~/.ssh/config
+    - echo $SSH_PRIVATE_KEY > ~/private.pem
+    - chmod 600 ~/private.pem
 
-build:
-  stage: build
+ssh-connect:
+  stage: ssh-prepare
   script:
-   - echo 'build test'
+    ssh vmProjetIntegrateur0-0
+
 
 deploy:
   stage: deploy
@@ -19,3 +29,22 @@ deploy:
     - echo 'deploy test'
   only:
     - master
+
+
+server:
+  stage: server
+  script:
+    - ssh vmProjetIntegrateurgrp0-1
+    - echo 'server build'
+  only:
+    changes:
+      - "apps/backend/**/*"
+
+front:
+  stage: front
+  script:
+    - ssh vmProjetIntegrateurgrp0-1
+    - echo 'front build'
+  only:
+    changes:
+      - "apps/frontend/**/*"
