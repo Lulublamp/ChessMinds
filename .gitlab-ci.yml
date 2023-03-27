@@ -4,19 +4,10 @@ stages:
   - front
   - deploy
 ssh-prepare:
-  variables:
-    PREPARE: |
-      function PREPARE() {
-        - echo 'ssh-connection'
-        - apt-get update && apt-get upgrade
-        - apt-get install openssh-client
-        - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-        - echo '' > ~/.ssh/config
-        - cp artifacts/config ~/.ssh/config
-        - cat ~/.ssh/config
-        - echo $SSH_PRIVATE_KEY > ~/private.pem
-        - chmod 600 ~/private.pem
-      }
+  trigger:
+    include:
+      - local: ./prepare.yml
+    strategy: depend
 deploy:
   stage: deploy
   script:
@@ -34,10 +25,10 @@ server:
 front:
   stage: front
   script:
-    - source <(echo "$PREPARE")>
-    - PREPARE
     - ssh vmProjetIntegrateurgrp0-1
     - echo 'front build'
   only:
     changes:
       - apps/frontend/**/*
+  dependencies:
+    - ssh-prepare
