@@ -10,7 +10,7 @@ ssh-prepare:
     - echo 'ssh test'
     - apt-get update && apt-get install -y openssh-client
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-    - cat '' > ~/.ssh/config
+    - echo '' > ~/.ssh/config
     - cp artifacts/config ~/.ssh/config
     - cat ~/.ssh/config
     - echo $SSH_PRIVATE_KEY > ~/private.pem
