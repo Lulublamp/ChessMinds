@@ -9,15 +9,15 @@ ssh-prepare:
   stage: ssh-prepare
   script:
     - echo 'ssh-connection'
-    - apt-get update
-    - apt-get upgrade -y
+    - apt update
+    - apt upgrade -y
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
     - echo '' > ~/.ssh/config
     - cp artifacts/config ~/.ssh/config
     - cat ~/.ssh/config
     - echo $SSH_PRIVATE_KEY > ~/private.pem
     - chmod 600 ~/private.pem
-    - apt-get install openssh-client
+    - apt install openssh-client
 
 
 deploy:
