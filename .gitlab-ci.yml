@@ -6,8 +6,7 @@ stages:
   - deploy
 
 ssh-prepare:
-  stage:
-    - echo 'stagin prepare'
+  stage: ssh-prepare
   trigger:
     include:
       - local: ./prepare.yml
