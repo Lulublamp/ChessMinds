@@ -1,12 +1,9 @@
+---
 stages:
   - server
   - front
   - deploy
-
 ssh-prepare:
-  # Déclarer la fonction comme fonction de shell
-  # Vous pouvez inclure autant de fonctions que vous le souhaitez
-  # séparées par des points-virgules.
   variables:
     PREPARE: |
       function PREPARE() {
@@ -20,14 +17,12 @@ ssh-prepare:
         - echo $SSH_PRIVATE_KEY > ~/private.pem
         - chmod 600 ~/private.pem
       }
-
 deploy:
   stage: deploy
   script:
     - echo 'deploy test'
   only:
     - master
-
 server:
   stage: server
   script:
@@ -35,9 +30,7 @@ server:
     - echo 'server build'
   only:
     changes:
-      - "apps/backend/**/*"
-
-
+      - apps/backend/**/*
 front:
   stage: front
   script:
@@ -47,5 +40,4 @@ front:
     - echo 'front build'
   only:
     changes:
-      - "apps/frontend/**/*"
-  
+      - apps/frontend/**/*
