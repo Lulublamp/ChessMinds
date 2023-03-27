@@ -9,7 +9,7 @@ ssh-prepare:
   stage: ssh-prepare
   trigger:
     include:
-      - local: ./prepare.yml
+      - local: ./.prepare.yml
     strategy: depend
 
 
