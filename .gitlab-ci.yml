@@ -4,16 +4,22 @@ stages:
   - deploy
 
 ssh-prepare:
-  script:
-    - echo 'ssh-connection'
-    - apt-get update && apt-get upgrade
-    - apt-get install openssh-client
-    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-    - echo '' > ~/.ssh/config
-    - cp artifacts/config ~/.ssh/config
-    - cat ~/.ssh/config
-    - echo $SSH_PRIVATE_KEY > ~/private.pem
-    - chmod 600 ~/private.pem
+  # Déclarer la fonction comme fonction de shell
+  # Vous pouvez inclure autant de fonctions que vous le souhaitez
+  # séparées par des points-virgules.
+  variables:
+    PREPARE: |
+      function PREPARE() {
+        - echo 'ssh-connection'
+        - apt-get update && apt-get upgrade
+        - apt-get install openssh-client
+        - mkdir -p ~/.ssh && chmod 700 ~/.ssh
+        - echo '' > ~/.ssh/config
+        - cp artifacts/config ~/.ssh/config
+        - cat ~/.ssh/config
+        - echo $SSH_PRIVATE_KEY > ~/private.pem
+        - chmod 600 ~/private.pem
+      }
 
 deploy:
   stage: deploy
@@ -30,16 +36,16 @@ server:
   only:
     changes:
       - "apps/backend/**/*"
-  dependencies:
-    - ssh-prepare
+
 
 front:
   stage: front
   script:
+    - source <(echo "$PREPARE")>
+    - PREPARE
     - ssh vmProjetIntegrateurgrp0-1
     - echo 'front build'
   only:
     changes:
       - "apps/frontend/**/*"
-  dependencies:
-    - ssh-prepare
+  
