@@ -9,7 +9,8 @@ ssh-prepare:
   stage: ssh-prepare
   script:
     - echo 'ssh-connection'
-    - apt-get update && apt-get upgrade -y
+    - apt-get update
+    - apt-get upgrade -y
     - apt-get install openssh-client
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
     - echo '' > ~/.ssh/config
