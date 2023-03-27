@@ -38,7 +38,7 @@ server:
 front:
   stage: front
   script:
-    - sudo apt-get install openssh-client
+    - apt-get install openssh-client
     - ssh vmProjetIntegrateurgrp0-1
     - echo 'front build'
   only:
