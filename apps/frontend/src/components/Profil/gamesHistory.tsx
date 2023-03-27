@@ -1,7 +1,7 @@
 import React from 'react';
 import './gamesHistory.css';
 
-function PartieHistorique(props) {
+function PartieHistorique(props: { player1: any; player2: any; elo1: any; elo2: any; result: any; nbCoups: any; date: any; }) {
     const { player1, player2, elo1, elo2, result, nbCoups, date } = props;
 
     let resultClass = "";
@@ -28,25 +28,25 @@ function PartieHistorique(props) {
     );
 }
 
-function trierPartiesParDate(parties) {
-    parties.sort((partieA, partieB) => {
-      const dateA = new Date(partieA.match_played_date);
-      const dateB = new Date(partieB.match_played_date);
-      return dateB - dateA;
-    });
-    return parties;
-  }
+// function trierPartiesParDate(parties: any[]) {
+//     parties.sort((partieA: { match_played_date: string | number | Date; }, partieB: { match_played_date: string | number | Date; }) => {
+//       const dateA = new Date(partieA.match_played_date);
+//       const dateB = new Date(partieB.match_played_date);
+//       return dateB - dateA;
+//     });
+//     return parties;
+//   }
 
 
-function HistoriqueParties(props) {
+function HistoriqueParties(props: { parties: any; }) {
     const { parties } = props;
 
     //trier les parties par date et ne garder que les 6 dernières
-    const derniereParties = trierPartiesParDate(parties).slice(-6);
+    // const derniereParties = trierPartiesParDate(parties).slice(-6);
 
     return (
         <div className="historique-parties">
-            {derniereParties.map((partie, index) => (
+            {[].map((partie: { username_player1: any; username_player2: any; elo_player1_me: any; elo_player2: any; match_result: any; nb_coups: any; match_played_date: any; }, index: any) => (
                 <PartieHistorique
                     key={index}
                     player1={partie.username_player1}
@@ -62,7 +62,7 @@ function HistoriqueParties(props) {
     );
 }
 
-function Historique(props) {
+function Historique(props: { parties: any; }) {
     const { parties } = props;
     // parties est un tableau d'objets, chaque objet représente une partie
 

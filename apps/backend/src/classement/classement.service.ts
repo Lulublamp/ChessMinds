@@ -12,10 +12,10 @@ export class ClassementService {
   ) {}
 
   //retrouver le classment
-    //on utilise l'idJoeur pour retrouver le classement
-    //en soit on cherche le classement d'un joueur
-    //donc logique qu'on chereche avec l'id du joueur 
-    //a demander avis a l'equipe
+  //on utilise l'idJoeur pour retrouver le classement
+  //en soit on cherche le classement d'un joueur
+  //donc logique qu'on chereche avec l'id du joueur
+  //a demander avis a l'equipe
   async findClassement(idJoueur: number) {
     return await this.classementRepository.find();
   }
@@ -26,5 +26,4 @@ export class ClassementService {
     const classementUpdate = this.classementRepository.update(idJoueur, classement);
     return classementUpdate;
   }*/
-
 }

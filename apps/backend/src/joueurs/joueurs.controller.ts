@@ -1,20 +1,26 @@
-import { Controller, Get, Param, ParseIntPipe, Put, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Param,
+  ParseIntPipe,
+  Put,
+  UsePipes,
+  ValidationPipe,
+} from '@nestjs/common';
 import { JoueurDto } from './DTO/joueurs.dto';
 import { Post, Body } from '@nestjs/common';
 import { JoueursService } from './joueurs.service';
 
 @Controller('joueurs')
 export class JoueursController {
-  constructor(
-    private readonly joueursService: JoueursService) {}
+  constructor(private readonly joueursService: JoueursService) {}
 
-    //si on veut recupere des infos sur un joueur 
+  //si on veut recupere des infos sur un joueur
   @Get()
   async retourneJoueur(@Body() joueur: JoueurDto) {
     //const joueurs= await this.joueursService.findJoueur();
     //return joueurs;
   }
-
 
   //si on veut inscrire un joueur
   @Post('inscription')
@@ -24,35 +30,34 @@ export class JoueursController {
     try {
       const joueurInscrit = this.joueursService.inscriptionJoueur(joueur);
       return joueurInscrit;
-    }catch (error){
-      console.log(error)
+    } catch (error) {
+      console.log(error);
       return error;
     }
   }
-//Pas sur de ca du tout a check
+  //Pas sur de ca du tout a check
   @UsePipes(new ValidationPipe())
   createAdresse(@Body() joueur: JoueurDto) {
-    try{
+    try {
       const joueurInscrit = this.joueursService.createAdresse(joueur);
       return joueurInscrit;
-    }
-    catch (error){
-      console.log(error)
+    } catch (error) {
+      console.log(error);
       return error;
     }
   }
-  
-//si on veut modifier le pseudo ou le mot de passe d'un joueur
+
+  //si on veut modifier le pseudo ou le mot de passe d'un joueur
   @Put('update')
   updateJoueur(
-    @Param('idJoueur', ParseIntPipe) idJoueur: number, 
-    @Body() joueur: JoueurDto
+    @Param('idJoueur', ParseIntPipe) idJoueur: number,
+    @Body() joueur: JoueurDto,
   ) {
     try {
-      const joueurUpdate = this.joueursService.updateJoueur(idJoueur,joueur);
+      const joueurUpdate = this.joueursService.updateJoueur(idJoueur, joueur);
       return joueurUpdate;
-    }catch (error){
-      console.log(error)
+    } catch (error) {
+      console.log(error);
       return error;
     }
   }

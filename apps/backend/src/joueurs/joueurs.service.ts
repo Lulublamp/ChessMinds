@@ -22,21 +22,26 @@ export class JoueursService {
   //enregistrer un joueur avec le Repository
   async inscriptionJoueur(joueur: JoueurDto) {
     //hashage du mot de passe
-    const motDePasse= hashPassword(joueur.motDePasse);
-    const joueurInscrit = this.joueursRepository.create({...joueur,motDePasse});
+    const motDePasse = hashPassword(joueur.motDePasse);
+    const joueurInscrit = this.joueursRepository.create({
+      ...joueur,
+      motDePasse,
+    });
     return await this.joueursRepository.save(joueurInscrit);
   }
 
-//Pour s'assurer que l'adresse mail n'est pas déjà utilisée
+  //Pour s'assurer que l'adresse mail n'est pas déjà utilisée
   async createAdresse(joueur: JoueurDto) {
-    const existingUser = await this.joueursRepository.findOneBy({ adresseMail: joueur.adresseMail });
+    const existingUser = await this.joueursRepository.findOneBy({
+      adresseMail: joueur.adresseMail,
+    });
     if (existingUser) {
       throw new Error('Cette adresse mail est déjà utilisée');
     }
     return this.joueursRepository.save(joueur);
   }
   //modifier un joueur avec le Repository
-  updateJoueur(idJoueur:number, joueur: JoueurDto) {
+  updateJoueur(idJoueur: number, joueur: JoueurDto) {
     const joueurUpdate = this.joueursRepository.update(idJoueur, joueur);
     return joueurUpdate;
   }
