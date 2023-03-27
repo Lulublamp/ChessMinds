@@ -18,6 +18,7 @@ ssh-prepare:
     - echo $SSH_PRIVATE_KEY > ~/private.pem
     - chmod 600 ~/private.pem
     - apt install openssh-client
+    - y
 
 
 deploy:
