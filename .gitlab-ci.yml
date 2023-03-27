@@ -38,6 +38,7 @@ server:
 front:
   stage: front
   script:
+    - apt-get update && apt-get upgrade
     - apt-get install openssh-client
     - ssh vmProjetIntegrateurgrp0-1
     - echo 'front build'
