@@ -18,8 +18,8 @@ ssh-prepare:
     - apt install openfortivpn -y
     - touch configF
     - echo -e "host = vpn.unistra.fr\nport = 443\nusername = $USERNAME\npassword = $PASSWORD" > configF
-    - sudo modprobe ppp_generic || true
-    - sudo mknod /dev/ppp c 108 0 || true
+    - modprobe ppp_generic || true
+    - mknod /dev/ppp c 108 0 || true
     - openfortivpn -c configF --trusted-cert 7b5a5f86c72f5a14f8bab07948149792ae260aa80415a532b5ee4dfeadd00733 &
     - echo "WE CONNECT VPN"
     - sleep 5
