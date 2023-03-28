@@ -11,6 +11,17 @@ interface InscriptionProps {
 }
 
 const Inscription: React.FC<InscriptionProps> = ({ onCancel, showInscription, changeInscription}) => {
+    
+    const [ErreurInscription, setErreurInscription] = React.useState(true);
+
+    const ShowErreur = () => {
+        setErreurInscription(true);
+    };
+
+    const HideErreur = () => {
+        setErreurInscription(false);
+    };
+    
     if (!showInscription) {
         return null;
     }
@@ -20,7 +31,7 @@ const Inscription: React.FC<InscriptionProps> = ({ onCancel, showInscription, ch
             <h2>Inscrit toi dès maintenant pour jouer à Chess Minds</h2>
             <div className="Form-ConnexionIncrip" >
                 <div>
-                    <div className={true ? "ErreurValeur" : ""}>
+                    <div className={ErreurInscription ? "ErreurValeur" : ""}>
                         <InputForm 
                             id="e-mail" 
                             iconeInput={false}
@@ -48,7 +59,7 @@ const Inscription: React.FC<InscriptionProps> = ({ onCancel, showInscription, ch
                         type='password'
                     />
                 </div>
-                <p className={true ? "Erreur" : "ErreurHide"}>L'adresse mail est dèja utilisé ! Veuillez réessayer</p>
+                <p className={ErreurInscription ? "Erreur" : "ErreurHide"}>L'adresse mail est dèja utilisé ! Veuillez réessayer</p>
                 <button className="PlayButton">S'inscrire</button>
                 <p className="link" onClick={changeInscription}>Vous avez déjà un compte ? Se connecter</p>
             </div>

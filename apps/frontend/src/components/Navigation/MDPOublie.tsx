@@ -13,6 +13,17 @@ interface ConnexionProps {
 
 
 const Connexion: React.FC<ConnexionProps> = ({ onCancel, showMDPOublie, changeConnexion, changeInscription }) => {
+    
+    const [ErreurMDPOublie, setErreurMDPOublie] = React.useState(false);
+
+    const ShowErreur = () => {
+        setErreurMDPOublie(true);
+    };
+
+    const HideErreur = () => {
+        setErreurMDPOublie(false);
+    };
+    
     if (!showMDPOublie) {
         return null;
     }
@@ -21,7 +32,7 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showMDPOublie, changeCo
         <div className="ConnexionIncrip-container">
             <h2>Vous avez oublié votre mot de passe ?</h2>
             <div className="Form-ConnexionIncrip" >
-                <div className={true ? "ErreurValeur" : ""}>
+                <div className={ErreurMDPOublie ? "ErreurValeur" : ""}>
                     <InputForm 
                         id="e-mail" 
                         iconeInput={false}
@@ -30,7 +41,7 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showMDPOublie, changeCo
                     />
                 </div>
                 
-                <p className={true ? "Erreur" : "ErreurHide"}>L'adresse mail est associée à aucun compte ! Veuillez réessayer</p>
+                <p className={ErreurMDPOublie ? "Erreur" : "ErreurHide"}>L'adresse mail est associée à aucun compte ! Veuillez réessayer</p>
                 <button className="PlayButton">Valider</button>
                 <p className="link" onClick={changeConnexion}>Vous avez déjà un compte ? Se connecter</p>
                 <p className="link" onClick={changeInscription}>Pas de compte ? Incrivez-vous ici</p>

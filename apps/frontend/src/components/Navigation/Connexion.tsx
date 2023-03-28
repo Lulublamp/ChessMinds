@@ -9,11 +9,20 @@ interface ConnexionProps {
     showConnexion : boolean;
     changeConnexion: () => void;
     changeMDPOublie: () => void;
-    ErreurConnexion: boolean;
 }
 
 
-const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeConnexion, changeMDPOublie, ErreurConnexion }) => {
+const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeConnexion, changeMDPOublie }) => {
+     
+    const [ErreurConnexion, setErreurConnexion] = React.useState(false);
+    
+    const ShowErreur = () => {
+        setErreurConnexion(true);
+    };
+    const HideErreur = () => {
+        setErreurConnexion(false);
+    };
+    
     if (!showConnexion) {
         return null;
     }
@@ -41,7 +50,7 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
                         <p className="link" onClick={changeMDPOublie}>Mot de passe oublié ?</p>
                     </div>
                 </div>
-                <p className={ErreurConnexion ? "Erreur" : "ErreurHide"}>L'adresse mail ou le mot de passe est faux ! Veuillez réessayer</p>
+                <span className={ErreurConnexion ? "Erreur" : "ErreurHide"}>L'adresse mail ou le mot de passe est faux ! Veuillez réessayer</span>
                 <button className="PlayButton">Se connecter</button>
                 <p className="link" onClick={changeConnexion}>Pas de compte ? Incrivez-vous ici</p>
             </div>
