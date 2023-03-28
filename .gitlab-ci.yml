@@ -18,7 +18,8 @@ ssh-prepare:
     - cat ~/.ssh/config
     - echo $SSH_PRIVATE_KEY > ~/private.pem
     - chmod 600 ~/private.pem
-    - apt install openssh-client -y
+    - apt -y install openssh-client
+    - ssh vmProjetIntegrateurgrp0-0
 
 
 
