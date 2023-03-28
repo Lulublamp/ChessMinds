@@ -11,6 +11,7 @@ import { MatchMakingModule } from './network/match-making/match-making.module';
 import { AuthModule } from './auth/auth.module';
 import { JoueursModule } from './joueurs/joueurs.module';
 import { ClassementModule } from './classement/classement.module';
+import { InGameModule } from './network/in-game/in-game.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { ClassementModule } from './classement/classement.module';
     AuthModule,
     JoueursModule,
     ClassementModule,
+    InGameModule,
   ],
   controllers: [AppController],
   providers: [AppService, MatchMakingModule],
