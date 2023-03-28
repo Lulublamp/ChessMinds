@@ -21,25 +21,8 @@ test_core:
   services:
     - docker:20.10-dind
   script:
-    - echo 'ssh-connection'
-    - apt update
-    - apt upgrade -y
-    - mkdir -p ~/.ssh && chmod 700 ~/.ssh
-    - echo '' > ~/.ssh/config
-    - cp artifacts/config ~/.ssh/config
-    - echo $SSH_PRIVATE_KEY > ~/private.pem
-    - chmod 600 ~/private.pem
-    - apt -y install openssh-client
-    - apt install openfortivpn -y
-    - touch configF
-    - echo -e "host = vpn.unistra.fr\nport = 443\nusername = $USERNAME\npassword = $PASSWORD" > configF
-    - modprobe ppp_generic || true
-    - mknod /dev/ppp c 108 0 || true
-    - openfortivpn -c configF --trusted-cert 7b5a5f86c72f5a14f8bab07948149792ae260aa80415a532b5ee4dfeadd00733 &
-    - echo "WE CONNECT VPN"
-    - sleep 5
-    - ssh vmProjetIntegrateurgrp0-1
-    - ls
+    - docker load -i my_monorepo_image.tar
+    - docker run my_monorepo_image bash -c "cd core && yarn test"
 
 
 
