@@ -9,10 +9,11 @@ interface ConnexionProps {
     showConnexion : boolean;
     changeConnexion: () => void;
     changeMDPOublie: () => void;
+    changeStatusUer: () => void;
 }
 
 
-const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeConnexion, changeMDPOublie }) => {
+const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeConnexion, changeMDPOublie, changeStatusUer }) => {
      
     const [ErreurConnexion, setErreurConnexion] = React.useState(false);
 
@@ -27,6 +28,7 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
     if (!showConnexion) {
         return null;
     }
+
     return (
     <div className="ConnexionIncrip">
         <div className="ConnexionIncrip-container">
