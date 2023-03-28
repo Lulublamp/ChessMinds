@@ -1,4 +1,4 @@
-import { Module, OnModuleInit } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
@@ -11,8 +11,6 @@ import { MatchMakingModule } from './network/match-making/match-making.module';
 import { AuthModule } from './auth/auth.module';
 import { JoueursModule } from './joueurs/joueurs.module';
 import { ClassementModule } from './classement/classement.module';
-import { InitGameGateway } from './init-game/init-game.gateway';
-import { JoueurSubscriber } from './joueurs/entities/joueur.subscriber';
 
 @Module({
   imports: [
@@ -35,7 +33,6 @@ import { JoueurSubscriber } from './joueurs/entities/joueur.subscriber';
     AuthModule,
     JoueursModule,
     ClassementModule,
-    InGameModule,
   ],
   controllers: [AppController],
   providers: [AppService, MatchMakingModule],
