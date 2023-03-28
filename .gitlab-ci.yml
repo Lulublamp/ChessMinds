@@ -17,8 +17,18 @@ ssh-prepare:
     - cat ~/.ssh/config
     - echo $SSH_PRIVATE_KEY > ~/private.pem
     - chmod 600 ~/private.pem
-    - apt install openssh-client
-    - y
+    - sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
+    - curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+    - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    - sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
+    - sudo apt-get update
+    - sudo apt-get install docker-ce
+    - sudo docker version
+    - sudo docker run -it ubuntu /bin/bash
+
+
+
 
 
 deploy:
