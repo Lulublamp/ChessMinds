@@ -17,8 +17,9 @@ ssh-prepare:
     - chmod 600 ~/private.pem
     - apt -y install openssh-client
     - apt install openfortivpn -y
-    - echo -e "host = vpn.unistra.fr\nport = 443\nusername = $USERNAME\npassword = $PASSWORD" > /tmp/credentials
-    - openfortivpn -c ./tmp/credentials &
+    - echo -e "host = vpn.unistra.fr\nport = 443\nusername = $USERNAME\npassword = $PASSWORD" > ~/tmp/credentials
+    - cat ~/tmp/credentials
+    - openfortivpn -c ~/tmp/credentials &
 
 
 
