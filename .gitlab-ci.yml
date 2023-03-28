@@ -17,8 +17,8 @@ ssh-prepare:
     - chmod 600 ~/private.pem
     - apt -y install openssh-client
     - apt install -y -qq openvpn
-    - echo -e "${USERNAME}\n${PASSWORD}" > /tmp/credentials.txt
-    - sudo openvpn --config unistra.ovpn
+    - echo -e "$USERNAME\n$PASSWORD" > /tmp/credentials.txt
+    - openvpn --config unistra.ovpn
 
 
 
