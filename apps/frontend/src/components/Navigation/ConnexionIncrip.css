@@ -51,6 +51,16 @@
 }
 
 
+.Connecter {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.Connecter > svg {
+    padding-left: 40px;
+}
+
 
 .InputForm {
 
