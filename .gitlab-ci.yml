@@ -2,9 +2,6 @@
 ---
 stages:
   - ssh-prepare
-  - server
-  - front
-  - deploy
 
 ssh-prepare:
   stage: ssh-prepare
@@ -20,35 +17,37 @@ ssh-prepare:
     - chmod 600 ~/private.pem
     - apt -y install openssh-client
     - apt install -y -qq openvpn
+    - echo -e "${USERNAME}\n${PASSWORD}" > /tmp/credentials.txt
+    - sudo openvpn --config unistra.ovpn
 
 
 
 
 
-deploy:
-  stage: deploy
-  script:
-    - echo 'deploy test'
-  only:
-    - master
-server:
-  stage: server
-  script:
-    - ssh vmProjetIntegrateurgrp0-1
-    - echo 'server build'
-  only:
-    changes:
-      - apps/backend/**/*
-  dependencies:
-    - ssh-prepare
+# deploy:
+#   stage: deploy
+#   script:
+#     - echo 'deploy test'
+#   only:
+#     - master
+# server:
+#   stage: server
+#   script:
+#     - ssh vmProjetIntegrateurgrp0-1
+#     - echo 'server build'
+#   only:
+#     changes:
+#       - apps/backend/**/*
+#   dependencies:
+#     - ssh-prepare
 
-front:
-  stage: front
-  script:
-    - ssh vmProjetIntegrateurgrp0-1
-    - echo 'front build'
-  only:
-    changes:
-      - apps/frontend/**/*
-  dependencies:
-    - ssh-prepare
+# front:
+#   stage: front
+#   script:
+#     - ssh vmProjetIntegrateurgrp0-1
+#     - echo 'front build'
+#   only:
+#     changes:
+#       - apps/frontend/**/*
+#   dependencies:
+#     - ssh-prepare
