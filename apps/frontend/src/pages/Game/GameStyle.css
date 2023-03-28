@@ -1,0 +1,37 @@
+.chessGame {
+  width: 100%;
+  margin: auto;
+  height: calc(100vh - 100px);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  background-color: var(--couleur-principale);
+}
+
+.leftContainer {
+  width: 300px;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.chessBoardContainer {
+  width: 750px;
+  height: 750px;
+  background-color: #FFFFFF;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+}
+
+.rightContainer {
+  width: 280px;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+

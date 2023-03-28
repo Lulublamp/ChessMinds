@@ -7,9 +7,8 @@ import { Classement } from './classement/entities/classement.entity';
 import { Joueur } from './joueurs/entities/joueur.entity';
 import { Partie } from './partie/entities/partie.entity';
 import { Rencontre } from './rencontre/entities/rencontre.entity';
-import { MatchMakingModule } from './match-making/match-making.module';
+import { MatchMakingModule } from './network/match-making/match-making.module';
 import { AuthModule } from './auth/auth.module';
-import { MmRankedGateway } from './mm-ranked/mm-ranked.gateway';
 import { JoueursModule } from './joueurs/joueurs.module';
 import { ClassementModule } from './classement/classement.module';
 import { InitGameGateway } from './init-game/init-game.gateway';
@@ -36,8 +35,9 @@ import { JoueurSubscriber } from './joueurs/entities/joueur.subscriber';
     AuthModule,
     JoueursModule,
     ClassementModule,
+    InGameModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, MatchMakingModule],
 })
 export class AppModule {}

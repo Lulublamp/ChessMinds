@@ -1,218 +1,119 @@
-main{
+main {
     width: 100%;
-    height: calc(100vh - 100px);
+    height: calc(100vh - 98px);
     background-color: var(--couleur-principale);
     display: flex;
     justify-content: center;
 }
 
-.HomePage > h1{
-    font-size: 38px;
-    font-weight: bold;
-    max-width: 520px;
-    color: #fff;
-    text-align: center;
-    margin-top: 45px;
+h1 {
+    width: 276px;
+    height: 125px;
+    position: relative;
+    overflow: hidden;
+    position: relative;
+    cursor: default;
+    margin-right: 95px;
+    margin-top: 25px;
 }
 
-.bottomSection{
+h1>span:first-of-type {
+    width: 200px;
+    color: #fff;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    font-weight: Bold;
+    font-size: 64px;
+    text-align: center;
+}
+
+h1>span:last-of-type {
+    width: 229px;
+    position: absolute;
+    top: 47px;
+    left: 47px;
+    font-weight: Bold;
+    font-size: 64px;
+    text-align: center;
+    background: linear-gradient(to right, rgba(0, 124, 239, 1), rgba(0, 221, 216, 1));
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.homePage {
+    width: 100%;
+    height: 100%;
+}
+
+.homePage>div:first-of-type {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.homePage>div:last-of-type {
     position: absolute;
     bottom: 0;
     width: 100%;
-    height: 462px;
+    height: 45%;
     background-color: #fff;
     border-radius: 80px 80px 0 0;
-    z-index: 1;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
 }
 
-.menuPrincipale{
+.homePage>div:last-of-type>div {
+    margin: 44px auto 0 auto;
+    width: 89.7%;
+    height: 80%;
+    max-height: 368px;
+    position: relative;
+}
+
+.homePage>div:last-of-type>div>div:first-of-type {
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    justify-content: end;
     position: absolute;
-    bottom: 41%;
-    left: 50%;
-    transform: translateX(-50%) translateY(50%);
-    z-index: 2;
-    background: var(--couleur-principale);
-    width: 450px;
-    height: 510px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    border-radius: 30px;
+    bottom: 28px;
+
 }
 
-.menuPrincipale ul{
-    width: 95%;
-    height: 95%;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    background-color: var(--couleur-secondaire);
-    border-radius: 30px;
+.homePage>div:last-of-type>div>div:first-of-type>div:first-of-type {
+    margin-bottom: 29px;
+    margin-left: -5px;
 }
 
-.menuPrincipale li{
-    list-style: none;
-    width: 325px;
-    height: 75px;
-    background-color: var(--couleur-principale);
-    border-radius: 23px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    filter: drop-shadow(0px 4px 4px #000000a6);
-    transition: all 0.1s ease-in-out;
-}
 
-.menuPrincipale li:hover{
-    background-color: #333e4b;
-}
-
-.menuPrincipale li:first-of-type{
-    background-color: var(--couleur-important);
-}
-
-.menuPrincipale li:first-of-type:hover{
-    background-color: rgb(255, 62, 45);
-}
-
-.menuPrincipale li button{
-    width: 100%;
-    height: 100%;
-    color: #fff;
-    text-decoration: none;
-    background-color: transparent;
-    border: none;
-    font-size: 28px;
-    color: #fff;
-    font-weight: bold;
-    cursor: pointer;
-}
-
-.bottomSection > div:last-of-type img{
+.homePage>div:last-of-type>div>img {
     width: 368px;
     height: 368px;
-}
-
-.bottomSection > div:first-of-type{
-    width: 353px;
-    height: 316px;
-}
-
-.bottomSection > div:first-of-type > div{
-    display: flex;
-    flex-direction: column;
-    align-items: start;
-    margin-top: 42px;
-}
-
-.bottomSection > div:first-of-type > div span{
-    font-size: 18px;
-    font-weight: 600;
-    color: var(--couleur-texteInfos);
-    border: solid 1px var(--couleur-texteInfos);
-    border-radius: 42px;
-    padding: 8px 20px;
-    margin-bottom: 21px;
-}
-
-.bottomSection > div:first-of-type > div > div{
-    display: flex;
-    flex-direction: row;
-    margin-top: 80px;
-}
-
-.bottomSection > div:first-of-type > div > div > div{
-    width: 50px;
-    height: 50px;
-    background-color: var(--couleur-texteInfos);
-    border-radius: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-right: 8px;
-    cursor: pointer;
-}
-
-.bottomSection > div:first-of-type > a{
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-    width: 350px;
-    height: 80px;
-    background-color: var(--couleur-important);
-    color: #fff;
-    font-size: 24px;
-    font-weight: bold;
-    text-decoration: none;
-    border-radius: 10px;
-    margin-top: 30px;
-    transition: all 0.3s ease;
-}
-
-.bottomSection > div:first-of-type > a:hover{
-    width: 370px;
-}
-
-.bottomSection > div:first-of-type > a:hover svg{
-    transform: translateX(5px);
-}
-
-.info{
     position: absolute;
-    top: calc(48% - 100px);
-    width: 100%;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
+    right: 0;
 }
 
-.info > div:first-of-type{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-}
-
-.info > div:first-of-type > div{
-    width: 40px;
-    height: 40px;
-    background-color: var(--couleur-important);
-    border-radius: 100%;
+.chessBoardBackground {
+    position: absolute;
+    top: 55%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-10deg);
+    width: auto;
+    height: auto;
+    padding: 8px;
+    background-color: var(--couleur-texteInfos);
+    border-radius: 30px;
+    border: solid 2px #fff;
     display: flex;
     justify-content: center;
     align-items: center;
 }
 
-.info > div:first-of-type span{
-    color: #fff;
-    font-size: 18px;
-    margin-left: 8px;
+.chessBoardBackground>img {
+    width: 465px;
+    height: auto;
 }
 
-.info > div:last-of-type{
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-    align-items: start;
-}
-
-.info > div:last-of-type p{
-    font-size: 18px;
-    font-weight: 600;
-    color: #fff;
-    max-width: 210px;
-    margin-bottom: 3px;
-}
-
-.info > div:last-of-type span{
-    background-color: var(--couleur-important);
-    height: 4px;
-    width: 70px;
-    border-radius: 26px;
+.subMenu_play{
+    display: none;
 }

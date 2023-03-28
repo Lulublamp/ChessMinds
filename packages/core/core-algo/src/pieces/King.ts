@@ -79,11 +79,18 @@ export class King extends ChessPiece {
     gameCopy.getBoard().movePiece(this.position, destination);
 
     // Vérifier si le roi est en échec sur le nouveau plateau
-    const opponent = gameCopy.getPlayer(
-      this.color === Color.White ? Color.Black : Color.White
-    );
-    const opponentPieces = opponent.getPieces();
-
+    const board = gameCopy.getBoard();
+    const oppenentColor = this.color === Color.White ? Color.Black : Color.White;
+    const opponentPieces = [];
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        const piece = board.getPieceAt(`${String.fromCharCode(97 + i)}${j + 1}`);
+        if (piece !== null && piece.color === oppenentColor) {
+          opponentPieces.push(piece);
+        }
+      }
+    }
+  
     for (let i = 0; i < opponentPieces.length; i++) {
       if (opponentPieces[i].isValidMove(destination, gameCopy)) {
         return true;

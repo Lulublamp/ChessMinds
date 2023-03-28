@@ -29,10 +29,11 @@ export const rules: Required<ModuleOptions>['rules'] = [
     },
   },
   {
-    test: /\.(png|jpe?g|gif|jp2|webp)$/,
+    test: /\.(png|jpe?g|gif|jp2|webp|svg)$/,
     loader: 'file-loader',
     options: {
       name: '[name].[ext]',
+      outputPath: 'images/',
     },
   },
 ];
