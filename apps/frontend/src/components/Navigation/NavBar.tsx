@@ -78,7 +78,6 @@ function Navbar() {
             showConnexion={showConnexion} 
             changeConnexion={ChangeConnexionToInscription}
             changeMDPOublie={ChangeConnexionToMDPOublie}
-            ErreurConnexion={false}
           />
           <Inscription 
             onCancel={ClosePopupInscription}  
