@@ -57,7 +57,7 @@ export class MatchMakingGateway {
 
     const maybeGame = this.matchMakingService.queue.addPlayerToQueue(
       playerPayload,
-      client,
+      client.id,
       options,
     );
 

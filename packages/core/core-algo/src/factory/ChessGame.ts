@@ -32,6 +32,13 @@ export class ChessGame {
     this.initializePieces();
   }
 
+  public vierge() {
+    this.board = new ChessBoard();
+    this.whitePlayer = new Player(Color.White);
+    this.blackPlayer = new Player(Color.Black);
+    this.currentTurn = Color.White;
+  }
+
   // Initialise le plateau de jeu avec les pièces aux positions initiales
   //A REVOIR en plus propre
   private initializePieces() {
