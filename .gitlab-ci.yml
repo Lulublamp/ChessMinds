@@ -12,15 +12,15 @@ ssh-prepare:
     - mkdir -p ~/.ssh && chmod 700 ~/.ssh
     - echo '' > ~/.ssh/config
     - cp artifacts/config ~/.ssh/config
-    - cat ~/.ssh/config
     - echo $SSH_PRIVATE_KEY > ~/private.pem
     - chmod 600 ~/private.pem
     - apt -y install openssh-client
     - apt install openfortivpn -y
     - touch configF
     - echo -e "host = vpn.unistra.fr\nport = 443\nusername = $USERNAME\npassword = $PASSWORD" > configF
-    - cat configF
     - openfortivpn -c configF &
+    - echo "WE CONNECT VPN"
+    - sleep 5
 
 
 
