@@ -40,17 +40,17 @@ export class AuthenticatedSocketAdapter extends IoAdapter {
       await this.validate(socket, next);
     });
     
-    server.of(Nt.NAMESPACE_TYPES.MM_RANKED).use(async (socket: any, next) => {
-      console.log('mm-ranked: AuthenticatedSocketAdapter passed')
-      // await this.validate(socket, next);
-      next()
-    });
+    // server.of(Nt.NAMESPACE_TYPES.MM_RANKED).use(async (socket: any, next) => {
+    //   console.log('mm-ranked: AuthenticatedSocketAdapter passed')
+    //   // await this.validate(socket, next);
+    //   next()
+    // });
 
-    server.of(Nt.NAMESPACE_TYPES.PRIVATE_LOBBY).use(async (socket: any, next) => {
-      console.log('mm-ranked: AuthenticatedSocketAdapter passed')
-      // await this.validate(socket, next);
-      next()
-    });
+    // server.of(Nt.NAMESPACE_TYPES.PRIVATE_LOBBY).use(async (socket: any, next) => {
+    //   console.log('mm-ranked: AuthenticatedSocketAdapter passed')
+    //   // await this.validate(socket, next);
+    //   next()
+    // });
 
 
     return server;

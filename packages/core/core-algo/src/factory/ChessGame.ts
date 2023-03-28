@@ -18,7 +18,7 @@ export class ChessGame {
   //Cela pourrait être utile dans le cas où la logique du jeu est modifiée pour autoriser plus d'un pion à effectuer un double déplacement, par exemple
   //si on implemente un jeu d'echecs a 4 joueurs
   private pawnsWithDoubleMove: Pawn[] = []; // les pions qui ont fait un double déplacement au tour précédent pour pouvoir les capturer en passant
-
+  
   private QueenSideCastlingWhite: boolean = true; // le roque à gauche est-il possible pour le joeur blanc ?
   private KingSideCastlingWhite: boolean = true; // le roque à droite est-il possible pour le joeur blanc ?
   private QueenSideCastlingBlack: boolean = true; // le roque à gauche est-il possible pour le joueur noir ?
@@ -128,6 +128,21 @@ export class ChessGame {
       }
     }
 
+    // Vérifier si c'est une capture en passant si c'est le cas, on supprime la pièce capturée
+    if (fromPiece instanceof Pawn && !toPiece && Math.abs(from.charCodeAt(0) - to.charCodeAt(0)) === 1) {
+      const direction = fromPiece.color === Color.White ? -1 : 1;
+      const lastMovePosition = to[0] + (parseInt(to[1]) + direction);
+      const capturedPawn = this.pawnsWithDoubleMove.find(pawn => pawn.position === lastMovePosition);
+      if (capturedPawn) {
+        this.board.setPieceAt(lastMovePosition, null);
+        if (capturedPawn.color === Color.White) {
+          this.whitePlayer.removePiece(capturedPawn);
+        } else {
+          this.blackPlayer.removePiece(capturedPawn);
+        }
+      }
+    }
+    
     // Réinitialiser les pions qui ont effectué un double pas au tour précédent
     this.pawnsWithDoubleMove.forEach((pawn) => {
       pawn.resetDoubleMove();
@@ -146,10 +161,11 @@ export class ChessGame {
     // Si le pion a fait un double pas, on l'ajoute à la liste des pions pouvant être capturés en passant
     if (
       fromPiece instanceof Pawn &&
-      Math.abs(fromPiece.position.charCodeAt(1) - to.charCodeAt(1)) === 2
+      Math.abs(from.charCodeAt(1) - to.charCodeAt(1)) === 2
     ) {
       this.pawnsWithDoubleMove.push(fromPiece);
     }
+
 
     // Si le pion est sur la dernière rangée, on le transforme en reine
     if (fromPiece instanceof Pawn && (to[1] === "1" || to[1] === "8")) {
@@ -195,7 +211,7 @@ export class ChessGame {
     //Si le roi blanc a fait un petit roque, on déplace la tour
     if (
       fromPiece instanceof King &&
-      fromPiece.position === "e1" &&
+      from === "e1" &&
       to === "g1"
     ) {
       const rook = this.board.getPieceAt("h1");
@@ -207,7 +223,7 @@ export class ChessGame {
     //Si le roi blanc a fait un grand roque, on déplace la tour
     if (
       fromPiece instanceof King &&
-      fromPiece.position === "e1" &&
+      from === "e1" &&
       to === "c1"
     ) {
       const rook = this.board.getPieceAt("a1");
@@ -219,7 +235,7 @@ export class ChessGame {
     //Si le roi noir a fait un petit roque, on déplace la tour
     if (
       fromPiece instanceof King &&
-      fromPiece.position === "e8" &&
+      from === "e8" &&
       to === "g8"
     ) {
       const rook = this.board.getPieceAt("h8");
@@ -231,7 +247,7 @@ export class ChessGame {
     //Si le roi noir a fait un grand roque, on déplace la tour
     if (
       fromPiece instanceof King &&
-      fromPiece.position === "e8" &&
+      from === "e8" &&
       to === "c8"
     ) {
       const rook = this.board.getPieceAt("a8");
@@ -246,6 +262,24 @@ export class ChessGame {
 
   public getBoard(): ChessBoard {
     return this.board;
+  }
+
+  public setBoard(board: ChessBoard) {
+    this.board = board;
+    this.whitePlayer.resetPieces();
+    this.blackPlayer.resetPieces();
+    for (let i = 0; i < 8; i++) {
+      for (let j = 0; j < 8; j++) {
+        const piece = this.board.getPieceAt(String.fromCharCode(97 + i) + (j + 1));
+        if (piece) {
+          if (piece.color === Color.White) {
+            this.whitePlayer.addPiece(piece);
+          } else {
+            this.blackPlayer.addPiece(piece);
+          }
+        }
+      }
+    }
   }
 
   public canRoqueKingSide(color: Color): boolean {
@@ -275,12 +309,13 @@ export class ChessGame {
   public getLegalMovesForPieceAt(position: string): string[] {
     const piece = this.board.getPieceAt(position);
     if (!piece) {
+      console.log(this.board);
+      console.log(position);
       throw new Error("No piece at the specified position");
     }
 
     const legalMoves = piece.getLegalMoves(this);
     const newLegalMoves: string[] = [];
-
     //parcourir les mouvements légaux et vérifier si on est encore en échec après le déplacement
     legalMoves.forEach((move) => {
       const copyGame = this.CopyGame();

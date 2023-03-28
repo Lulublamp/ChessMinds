@@ -1,0 +1,13 @@
+.gameControl {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: row;
+  margin: 5px auto;
+  justify-content: center;
+  align-items: center;
+}
+
+.gameControl svg {
+  cursor: pointer;
+}

@@ -1,0 +1,11 @@
+.result {
+    color: white;
+}
+
+.result-win {
+    color: green;
+}
+
+.result-lose {
+    color: red;
+}

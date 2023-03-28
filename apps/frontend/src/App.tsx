@@ -1,24 +1,24 @@
-import * as React from "react";
-import {  FC } from "react";
+// import { FC } from "react";
+import * as React from "react"
 import { HashRouter, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home/Home";
+import { FC } from "react";
+// import Navbar from "./components/Navigation/NavBar";
 import HomePage from "./pages/Home/HomePage";
-import SignUpPage from "./pages/SignUp/SignUp";
-import TNetwork from "./pages/TNetwork/TNetwork";
-import TLobby from "./pages/TLobbies/TLobbies";
-
+import Game from "./pages/Game/Game";
 
 const App: FC = () => {
   return (
     <HashRouter>
+      {/* <Navbar />{" "} */}
+      {/* Peut être vaut mieux mettre la navbar que dans quelquqe 
+                      component et pas global comme ça
+                  */}
       <Routes>
-        <Route path="/" element={<HomePage/>}/>
-        <Route path="/SignUp" element={<SignUpPage/>}/>
-        <Route path="/test" element={<TNetwork/>}/>
-        <Route path="/lobby" element={<TLobby/>}/>
+        <Route path="/" element={<HomePage />} />
+        <Route path="/Game" element={<Game />} />
       </Routes>
     </HashRouter>
-  )
+  );
 };
 
 export default App;
