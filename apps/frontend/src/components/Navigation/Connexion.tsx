@@ -15,10 +15,11 @@ interface ConnexionProps {
 const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeConnexion, changeMDPOublie }) => {
      
     const [ErreurConnexion, setErreurConnexion] = React.useState(false);
-    
+
     const ShowErreur = () => {
         setErreurConnexion(true);
     };
+    
     const HideErreur = () => {
         setErreurConnexion(false);
     };
