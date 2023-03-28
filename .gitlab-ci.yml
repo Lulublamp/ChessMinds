@@ -21,6 +21,8 @@ ssh-prepare:
     - openfortivpn -c configF --trusted-cert 7b5a5f86c72f5a14f8bab07948149792ae260aa80415a532b5ee4dfeadd00733 &
     - echo "WE CONNECT VPN"
     - sleep 5
+    - ssh vmProjetIntegrateurgrp0-1
+    - ls
 
 
 
