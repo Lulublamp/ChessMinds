@@ -3,7 +3,7 @@ before_script:
   - export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
   - nvm install 19.6.0
   - nvm use 19.6.0
-  - rm -r ~/BUILDS || true
+  - rm -r ./BUILDS || true
 
 
 stages:
@@ -26,12 +26,12 @@ cache:
 build_core:
   stage: build
   script:
-    - mkdir ~/BUILDS && mkdir ~/BUILDS/core && mkdir ~/BUILDS/core/dist
+    - mkdir ./BUILDS && mkdir ./BUILDS/core && mkdir ./BUILDS/core/dist
     - yarn install --frozen-lockfile
     - yarn workspace @TRPI/core build
   artifacts:
     paths:
-      - ~/BUILDS/core/dist
+      - ./BUILDS/core/dist
 
 build_backend:
   stage: build
@@ -41,19 +41,19 @@ build_backend:
     - yarn workspace @TRPI/backend build
   artifacts:
     paths:
-      - BUILDS/backend/dist
+      . BUILDS/backend/dist
 
 build_frontend:
   stage: build
   needs: ["build_core"]
   script:
-    - mkdir ~/BUILDS && mkdir ~/BUILDS/frontend && mkdir ~/BUILDS/frontend/dist
+    - mkdir ./BUILDS && mkdir ./BUILDS/frontend && mkdir ./BUILDS/frontend/dist
     - yarn install --frozen-lockfile
     - yarn workspace @TRPI/frontend build
-    - cp -r ./apps/frontend/dist ~/BUILDS/frontend/dist
+    - cp -r ./apps/frontend/dist ./BUILDS/frontend/dist
   artifacts:
     paths:
-      - ~/BUILDS/frontend/dist
+      - ./BUILDS/frontend/dist
 
 deploy_backend:
   stage: deploy
@@ -73,4 +73,4 @@ deploy_frontend:
   script:
     - sudo -u ubuntu screen -S frontend -X quit || true
     - sudo -u ubuntu screen -dmS frontend
-    - sudo -u ubuntu screen -S frontend -X stuff "cd ~/BUILDS/frontend/dist; npx serve -l 1000$(printf '\r')"
+    - sudo -u ubuntu screen -S frontend -X stuff "cd ./BUILDS/frontend/dist; npx serve -l 1000$(printf '\r')"
