@@ -29,7 +29,7 @@ frontend:
 backend:
   stage: build
   script:
-    - yarn workspace @TRPI/backed build
+    - yarn workspace @TRPI/backend build
     - rm -R ./backend-build && mkdir ./backend-build/
     - cp -r ./apps/backend/dist  ./backend-build/ || true
     - echo "backend build"
