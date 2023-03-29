@@ -7,7 +7,7 @@ job1:
     - ls
     - echo "test"
     - echo "test 2 ?"
-    - sudo -u ubuntu screen -S depS -X stuff "Test modification depS, je suis déco du vpn waaa si ça marche je pète mon crane"
+    - sudo -u ubuntu screen -S depS -X stuff "Test modification depS je suis déco du vpn waaa si ça marche je pète mon crane"
     # - sleep 1
     # - cat /tmp/output.txt
     # - rm /tmp/output.txt
