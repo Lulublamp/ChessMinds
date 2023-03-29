@@ -7,7 +7,7 @@ job1:
     - ls
     - echo "test"
     - echo "test 2 ?"
-    - screen -S depS -X stuff "ls^M"
+    - sudo -u ubuntu screen -S depS -X stuff "ls^M"
 
 
 # image: node:19.6
