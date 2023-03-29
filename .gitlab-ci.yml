@@ -15,42 +15,30 @@ before_script:
   - ls ./core-build
 
 stages:
-  - build
-  - deploy
+  - production
+  - predev
 
-frontend:
-  stage: build
+predev:
+  stage: predev
+  only:
+    - pre-dev
   script:
-    - yarn workspace @TRPI/frontend build
-    - rm -R ./front-build && mkdir front-build/
-    - cp -r ./apps/frontend/dist  ./front-build/ || true
-    - echo "front build"
-    - ls ./front-build
-
-backend:
-  stage: build
-  script:
-    - echo $CI_PIPELINE_SUCCESS
-    - echo $CI_COMMIT_BRANCH
-    - yarn workspace @TRPI/backend build
-    - rm -R ./backend-build && mkdir ./backend-build/
-    - cp -r ./apps/backend/dist  ./backend-build/ || true
-    - echo "backend build"
-    - ls ./backend-build
+    - export RELEASE_BRANCH_NAME="release-$(printf '%02d' $((10#${CI_COMMIT_REF_NAME#release-}+1)))"
+    - yarn workspace @TRPI/core run test --cov
 
 
-deploy:
-  stage: deploy
-  rules:
-    - if: '$CI_PIPELINE_SUCCESS && $CI_COMMIT_BRANCH == "test/dep"'
+
+production:
+  stage: production
+  only:
+    - dev
   script:
     - export RELEASE_BRANCH_NAME="release-$(printf '%02d' $((10#${CI_COMMIT_REF_NAME#release-}+1)))"
     - git checkout -b $RELEASE_BRANCH_NAME
-    - find . -maxdepth 1 -type f ! -name 'core-build' ! -name 'frontend-build' ! -name 'backend-build' ! -name 'client-build' -delete
-    - find . -maxdepth 1 -type d ! -name '.' ! -name 'core-build' ! -name 'frontend-build' ! -name 'backend-build' ! -name 'client-build' -exec rm -rf {} \;
-    - cp -r ./core-build ./frontend-build ./backend-build ./client-build ./
+    - yarn workspace @TRPI/frontend build
+    - yarn workspace @TRPI/backend build
     - git add .
-    - git commit -m "Release build ${CI_COMMIT_SHORT_SHA}"
+    - git commit -m "New release ${CI_COMMIT_SHORT_SHA}"
     - git push origin $RELEASE_BRANCH_NAME
 
 # backend:
