@@ -2,7 +2,7 @@ import React from 'react';
 import InputForm from "../Form/InputForm";
 import CancelButton from "../Button/CancelButton";
 import './ConnexionIncrip.css';
-
+import axios from 'axios';
 
 interface ConnexionProps {
     onCancel: () => void;
@@ -32,6 +32,32 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showMDPOublie, changeCo
 
     if (!showMDPOublie) {
         return null;
+    }
+
+    const[mail, setMail] = React.useState('mail');
+    const handleMail = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setMail(event.target.value);
+    };
+
+    function checkMDPOublie(){
+        axios.get('http://localhost:5173/cherche/:email',{
+            params: {
+                mail: mail
+            }
+        })
+        .then(function (response) {
+            console.log(response);
+            if(response.data == "ok"){
+                ShowMessEnvoyer();
+                HideErreur();
+            }else{
+                ShowErreur();
+                HideMessEnvoyer();
+            }   
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
     }
     return (
     <div className="ConnexionIncrip">
