@@ -68,9 +68,9 @@ const Inscription: React.FC<InscriptionProps> = ({ onCancel, showInscription, ch
     }
     return (
     <div className="ConnexionIncrip">
-        <div className="ConnexionIncrip-container">
+        <div>
             <h2>Inscrit toi dès maintenant pour jouer à Chess Minds</h2>
-            <div className="Form-ConnexionIncrip" >
+            <div>
                 <div>
                     <div className={ErreurInscription ? "ErreurValeur" : ""}>
                         <InputForm 

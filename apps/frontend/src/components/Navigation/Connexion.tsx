@@ -57,9 +57,9 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
     }
     return (
     <div className="ConnexionIncrip">
-        <div className="ConnexionIncrip-container">
+        <div>
             <h2>Connecte toi pour jouer à Chess Minds</h2>
-            <div className="Form-ConnexionIncrip" >
+            <div>
                 <div className={ErreurConnexion ? "ErreurValeur" : ""}>
                     <div>
                         <InputForm 
