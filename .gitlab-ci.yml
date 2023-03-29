@@ -16,6 +16,7 @@ before_script:
 
 stages:
   - build
+  - deploy
 
 frontend:
   stage: build
@@ -34,6 +35,21 @@ backend:
     - cp -r ./apps/backend/dist  ./backend-build/ || true
     - echo "backend build"
     - ls ./backend-build
+
+
+deploy:
+  stage: deploy
+  rules:
+    - if: '$CI_PIPELINE_SUCCESS && $CI_COMMIT_BRANCH == "master"'
+  script:
+    - export RELEASE_BRANCH_NAME="release-$(printf '%02d' $((10#${CI_COMMIT_REF_NAME#release-}+1)))"
+    - git checkout -b $RELEASE_BRANCH_NAME
+    - find . -maxdepth 1 -type f ! -name 'core-build' ! -name 'frontend-build' ! -name 'backend-build' ! -name 'client-build' -delete
+    - find . -maxdepth 1 -type d ! -name '.' ! -name 'core-build' ! -name 'frontend-build' ! -name 'backend-build' ! -name 'client-build' -exec rm -rf {} \;
+    - cp -r ./core-build ./frontend-build ./backend-build ./client-build ./
+    - git add .
+    - git commit -m "Release build ${CI_COMMIT_SHORT_SHA}"
+    - git push origin $RELEASE_BRANCH_NAME
 
 # backend:
 #   stage: build
