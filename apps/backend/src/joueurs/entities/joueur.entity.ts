@@ -1,8 +1,10 @@
 /* eslint-disable prettier/prettier */
 import { 
+  BeforeInsert,
   Column, 
   CreateDateColumn, 
   Entity, 
+  JoinTable, 
   ManyToMany, 
   PrimaryGeneratedColumn 
 } from "typeorm";
@@ -13,14 +15,17 @@ export class Joueur {
   @PrimaryGeneratedColumn()
   idJoueur: number;
 
-  @Column({nullable: false})
+  @Column({nullable: false , unique: true})
   adresseMail: string;
 
-  @Column()
+  @Column({nullable:false})
   pseudo: string;
 
   @Column({nullable:false})
   tagJoueur: string;
+
+  @Column({nullable:false})
+  fullpseudo: string;
 
   @Column({nullable:false})
   motDePasse: string;
@@ -28,7 +33,7 @@ export class Joueur {
   @CreateDateColumn()
   dateInscription: Date;
 
-  @ManyToMany(() => Joueur)
-  amis: Joueur[];
-
+  @ManyToMany(() => Joueur , (user) => user.amis )
+  @JoinTable()
+  amis: Joueur[]; 
 }
