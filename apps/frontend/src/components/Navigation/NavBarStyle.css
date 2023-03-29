@@ -14,7 +14,7 @@
     align-items: center;
 }
 
-.navbar__container {
+.navbar > div {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -23,50 +23,49 @@
     margin: auto;
 }
 
-.navbar__left {
+.navbar > div > div {
     display: flex;
     align-items: center;
 }
 
-.navbar__logo {
+.navbar > div > div > a {
     text-decoration: none;
     margin-right: 55px;
 }
 
-.navbar__logo img {
+.navbar > div > div > a > img {
     width: 65px;
     height: 65px;
 }
 
-.navbar__list {
+.navbar > div > div > ul {
     list-style: none;
     margin: 0;
     padding: 0;
     display: flex;
 }
 
-.navbar__item {
+.navbar > div > div > ul > li {
     margin-right: 40px;
 }
 
-.navbar__item a {
+.navbar > div > div > ul > li > a {
     color: #fff;
     text-decoration: none;
     position: relative;
 }
-
-.navbar__item a::before {
+.navbar > div > div > ul > li > a::before {
     height: 2px;
     transform: scaleX(0);
     transform-origin: bottom right;
 }
 
-.navbar__item a:hover::before {
+.navbar > div > div > ul > li > a:hover::before {
     transform: scaleX(1);
     transform-origin: bottom left;
 }
 
-.navbar__item a::before {
+.navbar > div > div > ul > li > a::before {
     content: " ";
     display: block;
     position: absolute;
@@ -76,12 +75,8 @@
     transition: transform .3s ease;
 }
 
-.navbar__right {
-    display: flex;
-    align-items: center;
-}
 
-.navbar__button {
+.navbar > div > div > div > button {
     background-color: var(--couleur-important);
     color: #fff;
     border: none;
@@ -93,20 +88,20 @@
     margin-left: 20px;
 }
 
-.navbar .hamburgerMenu{
+.navbar > div > div:first-child > div {
     display: none;
 }
 
 @media (max-width: 768px) {
-    .navbar__container {
+    .navbar > div {
         flex-direction: row;
     }
 
-    .navbar__logo,.navbar__list{
+    .navbar > div > div > a, .navbar > div > div > ul{
         display: none;
     }
 
-    .navbar .hamburgerMenu{
+    .navbar > div > div:first-child > div {
         display: block;
         cursor: pointer;
     }
@@ -119,4 +114,15 @@
 .navbar button {
     text-decoration: none;
     cursor: pointer;
+}
+
+
+.Connecter {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.Connecter > svg {
+    padding-left: 40px;
 }

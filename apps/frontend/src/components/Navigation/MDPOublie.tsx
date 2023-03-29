@@ -62,9 +62,9 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showMDPOublie, changeCo
     }
     return (
     <div className="ConnexionIncrip">
-        <div className="ConnexionIncrip-container">
+        <div>
             <h2>Vous avez oublié votre mot de passe ?</h2>
-            <div className="Form-ConnexionIncrip" >
+            <div>
                 <div className={ErreurMDPOublie ? "ErreurValeur" : ""}>
                     <InputForm 
                         id="e-mail" 

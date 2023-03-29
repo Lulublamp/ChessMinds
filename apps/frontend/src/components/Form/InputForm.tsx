@@ -1,4 +1,6 @@
 import React, { FC } from "react";
+import './InputForm.css';
+
 
 interface InputProps {
   id: string;
@@ -26,9 +28,9 @@ const InputForm: FC<InputProps> = ({ id, iconeInput, placeHolder, type, onChange
   if (iconeInput) {
     return (
       <div id={id}>
-        <label className="InputForm">
+        <label>
           <input type={showPassword ? 'text' : 'password'} placeholder={placeHolder} onChange={onChange}/>
-          <button className="show-mdp-btn" onClick={toggleShowPassword}>
+          <button onClick={toggleShowPassword}>
             {showPassword ? IconeShow : IconeHide }
           </button> 
         </label>
@@ -37,7 +39,7 @@ const InputForm: FC<InputProps> = ({ id, iconeInput, placeHolder, type, onChange
   }
   return (
     <div id={id}>
-      <label className="InputForm">
+      <label>
         <input type={type} placeholder={placeHolder} onChange={onChange}/>
       </label>
     </div>
