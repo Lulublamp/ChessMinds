@@ -34,7 +34,7 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
     };
 
     function checkConnexion(){
-        axios.get('/*URL*/',{
+        axios.post('http://localhost:5173/cherche/:email',{
             params: {
                 mail: mail,
                 mdp: mdp
