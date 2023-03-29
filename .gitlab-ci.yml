@@ -5,6 +5,10 @@ before_script:
   - curl -sL https://deb.nodesource.com/setup_19.x | bash -
   - apt-get install -y nodejs
   - yarn install -y
+  - mkdir front-build/
+  - mkdir core-build/
+  - mkdir backend-build/
+  - mkdir client-build/
 
 stages:
   - build
@@ -13,6 +17,11 @@ frontend:
   stage: build
   script:
     - yarn workspace @TRPI/frontend build
+    - rm -R ./front-build && mkdir front-build/
+    - cp -r ./apps/frontend/dist  ./front-build/ || true
+    - echo "front build"
+    - ls
+    - ls ./front-build
 
 # backend:
 #   stage: build
