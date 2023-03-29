@@ -39,8 +39,6 @@ backend:
 
 deploy:
   stage: deploy
-  rules:
-    - if: '$CI_PIPELINE_SUCCESS && $CI_COMMIT_BRANCH == "test/dep"'
   script:
     - export RELEASE_BRANCH_NAME="release-$(printf '%02d' $((10#${CI_COMMIT_REF_NAME#release-}+1)))"
     - git checkout -b $RELEASE_BRANCH_NAME
