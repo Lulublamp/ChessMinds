@@ -10,14 +10,21 @@ interface ConnexionProps {
     changeConnexion: () => void;
     changeMDPOublie: () => void;
     changeStatusUer: () => void;
+    statusUser: boolean;
 }
 
 
-const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeConnexion, changeMDPOublie, changeStatusUer }) => {
-     
+const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeConnexion, changeMDPOublie, changeStatusUer, statusUser}) => {
     const [ErreurConnexion, setErreurConnexion] = React.useState(false);
-    const [mail, setMail] = React.useState('mail');
+    const ShowErreur = () => {
+        setErreurConnexion(true);
+    };
+    const HideErreur = () => {
+        setErreurConnexion(false);
+    };
+
     //verfier connexion
+    const [mail, setMail] = React.useState('mail');
     const handleMail = (event: React.ChangeEvent<HTMLInputElement>) => {
         setMail(event.target.value);
     };
@@ -36,9 +43,10 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
         .then(function (response) {
             console.log(response);
             if(response.data == "ok"){
-                changeStatusUer();
+                changeStatusUer;
+                HideErreur;
             }else{
-                ShowErreur();
+                ShowErreur;
             }
         })
         .catch(function (error) {
@@ -46,15 +54,8 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
         });
     }
 
-    const ShowErreur = () => {
-        setErreurConnexion(true);
-    };
     
-    const HideErreur = () => {
-        setErreurConnexion(false);
-    };
-    
-    if (!showConnexion) {
+    if (!showConnexion || statusUser) {
         return null;
     }
 
@@ -70,7 +71,7 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
                             iconeInput={false}
                             placeHolder="Adresse mail"
                             type='text'
-                            //onChange={handleMail}
+                            onChange={handleMail}
                         />
                     </div>
                     <div id='MdpDiv'>
@@ -79,13 +80,13 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
                             iconeInput={true}
                             placeHolder="Mot de passe"
                             type='password'
-                            //onChange={handleMdp}
+                            onChange={handleMdp}
                         />
                         <p className="link" onClick={changeMDPOublie}>Mot de passe oublié ?</p>
                     </div>
                 </div>
                 <span className={ErreurConnexion ? "Erreur" : "ErreurHide"}>L'adresse mail ou le mot de passe est faux ! Veuillez réessayer</span>
-                <button className="PlayButton">Se connecter</button>
+                <button className="PlayButton" onClick={checkConnexion}>Se connecter</button>
                 <p className="link" onClick={changeConnexion}>Pas de compte ? Incrivez-vous ici</p>
             </div>
             

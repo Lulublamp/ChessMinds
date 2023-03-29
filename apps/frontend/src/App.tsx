@@ -7,13 +7,10 @@ import HomePage from "./pages/Home/HomePage";
 import Game from "./pages/Game/Game";
 
 const App: FC = () => {
-
   const [UserConnecter, setConnexion] = React.useState(false);
-
   const ConnexionOn = () => {
     setConnexion(true);
   };
-
   const ConnexionOff = () => {
     setConnexion(false);
   };
@@ -21,9 +18,9 @@ const App: FC = () => {
   return (
     <HashRouter>
       <Navbar
-        Connecter={UserConnecter}
-        changeConnexionOn={ConnexionOn}
-        changeConnexionOff={ConnexionOff}
+        // Connecter={UserConnecter}
+        // changeConnexionOn={ConnexionOn}
+        // changeConnexionOff={ConnexionOff}
       />  {/* Peut être vaut mieux mettre la navbar que dans quelquqe 
                       component et pas global comme ça  */}
       <Routes>

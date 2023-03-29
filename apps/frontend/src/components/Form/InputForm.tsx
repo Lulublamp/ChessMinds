@@ -5,9 +5,10 @@ interface InputProps {
   iconeInput: boolean;
   placeHolder?: string;
   type: string;
+  onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const InputForm: FC<InputProps> = ({ id, iconeInput, placeHolder, type }) => {
+const InputForm: FC<InputProps> = ({ id, iconeInput, placeHolder, type, onChange }) => {
   const [showPassword, setShowPassword] = React.useState(false);
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -26,7 +27,7 @@ const InputForm: FC<InputProps> = ({ id, iconeInput, placeHolder, type }) => {
     return (
       <div id={id}>
         <label className="InputForm">
-          <input type={showPassword ? 'text' : 'password'} placeholder={placeHolder}/>
+          <input type={showPassword ? 'text' : 'password'} placeholder={placeHolder} onChange={onChange}/>
           <button className="show-mdp-btn" onClick={toggleShowPassword}>
             {showPassword ? IconeShow : IconeHide }
           </button> 
@@ -37,7 +38,7 @@ const InputForm: FC<InputProps> = ({ id, iconeInput, placeHolder, type }) => {
   return (
     <div id={id}>
       <label className="InputForm">
-        <input type={type} placeholder={placeHolder}/>
+        <input type={type} placeholder={placeHolder} onChange={onChange}/>
       </label>
     </div>
   );

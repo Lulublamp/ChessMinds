@@ -12,8 +12,8 @@
     "start:all": "turbo run start:all",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "run:client" : "turbo run run:client",
-    "run:web" : "turbo run run:web"
+    "run:client": "turbo run run:client",
+    "run:web": "turbo run run:web"
   },
   "devDependencies": {
     "eslint-config-custom": "*",
@@ -24,7 +24,8 @@
     "node": ">=14.20.0"
   },
   "dependencies": {
-    "@nestjs/cli": "^9.2.0"
+    "@nestjs/cli": "^9.2.0",
+    "axios": "^1.3.4"
   },
   "packageManager": "yarn@1.22.19"
 }
