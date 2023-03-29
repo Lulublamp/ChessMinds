@@ -1,107 +1,57 @@
 stages:
-  - test-stage
+  - build
+  - deploy
 
-job1:
-  stage: test-stage
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - node_modules/
+
+build_core:
+  stage: build
   script:
-    - ls
-    - echo "test"
-    - echo "test 2 ?"
-    - sudo -u ubuntu screen -S depS -X stuff "Test modification depS je suis déco du vpn waaa si ça marche je pète mon crane"
-    # - sleep 1
-    # - cat /tmp/output.txt
-    # - rm /tmp/output.txt
+    - yarn install --frozen-lockfile
+    - yarn workspace @TRPI/core build
+  artifacts:
+    paths:
+      - BUILD/core/dist
 
+build_backend:
+  stage: build
+  needs: ["build_core"]
+  script:
+    - yarn install --frozen-lockfile
+    - yarn workspace @TRPI/backend build
+  artifacts:
+    paths:
+      - BUILD/backend/dist
 
-# image: node:19.6
+build_frontend:
+  stage: build
+  needs: ["build_core"]
+  script:
+    - yarn install --frozen-lockfile
+    - yarn workspace @TRPI/frontend build
+  artifacts:
+    paths:
+      - BUILD/frontend/dist
 
-# before_script:
-#   - apt-get update && apt-get install -y curl
-#   - curl -sL https://deb.nodesource.com/setup_19.x | bash -
-#   - apt-get install -y nodejs
-#   - yarn install -y
-#   - mkdir front-build/
-#   - mkdir core-build/
-#   - mkdir backend-build/
-#   - mkdir client-build/
-#   - yarn workspace @TRPI/core build
-#   - cp -r ./packages/core/dist ./core-build/ || true
-#   - echo "core build"
-#   - ls ./core-build
+deploy_backend:
+  stage: deploy
+  only:
+    - dev
+  needs: ["build_backend"]
+  script:
+    - sudo -u ubuntu screen -S backend -X quit || true
+    - sudo -u ubuntu screen -dmS backend
+    - echo 'deploiement du backend pas disponible pour l'instant
 
-# stages:
-#   - production
-#   - predev
-
-# predev:
-#   stage: predev
-#   only:
-#     - pre-dev
-#   script:
-#     - export RELEASE_BRANCH_NAME="release-$(printf '%02d' $((10#${CI_COMMIT_REF_NAME#release-}+1)))"
-#     - yarn workspace @TRPI/core run test --cov
-
-
-
-# production:
-#   stage: production
-#   only:
-#     - dev
-#   script:
-#     - export RELEASE_BRANCH_NAME="release-$(printf '%02d' $((10#${CI_COMMIT_REF_NAME#release-}+1)))"
-#     - git checkout -b $RELEASE_BRANCH_NAME
-#     - yarn workspace @TRPI/frontend build
-#     - yarn workspace @TRPI/backend build
-#     - git add .
-#     - git commit -m "New release ${CI_COMMIT_SHORT_SHA}"
-#     - git push origin $RELEASE_BRANCH_NAME
-
-# backend:
-#   stage: build
-#   script:
-#     - cd backend
-#     - yarn install
-#     - yarn build
-
-# client:
-#   stage: build
-#   script:
-#     - cd client
-#     - yarn install
-#     - yarn build
-
-# core:
-#   stage: build
-#   script:
-#     - cd core
-#     - yarn install
-#     - yarn build
-
-
-# deploy:
-#   stage: deploy
-#   script:
-#     - echo 'deploy test'
-#   only:
-#     - master
-# server:
-#   stage: server
-#   script:
-#     - ssh vmProjetIntegrateurgrp0-1
-#     - echo 'server build'
-#   only:
-#     changes:
-#       - apps/backend/**/*
-#   dependencies:
-#     - ssh-prepare
-
-# front:
-#   stage: front
-#   script:
-#     - ssh vmProjetIntegrateurgrp0-1
-#     - echo 'front build'
-#   only:
-#     changes:
-#       - apps/frontend/**/*
-#   dependencies:
-#     - ssh-prepare
+deploy_frontend:
+  stage: deploy
+  only:
+    - dev
+  needs: ["build_frontend"]
+  script:
+    - sudo -u ubuntu screen -S frontend -X quit || true
+    - sudo -u ubuntu screen -dmS frontend
+    - sudo -u ubuntu screen -S frontend -X stuff "cd BUILD/frontend/dist; npx serve -l 1000$(printf '\r')"
