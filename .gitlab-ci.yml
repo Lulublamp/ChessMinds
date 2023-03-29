@@ -10,18 +10,25 @@ stages:
   - deploy
 
 cache:
-  key: ${CI_COMMIT_REF_SLUG}
+  key: ${CI_COMMIT_REF_SLUG}-dependencies
   paths:
     - node_modules/
+    - apps/backend/node_modules/
+    - apps/client/node_modules/
+    - apps/frontend/node_modules/
+    - packages/core/node_modules/
+    - packages/eslint-config-custom/node_modules/
+  policy: pull-push
 
 build_core:
   stage: build
   script:
+    - mkdir ~/BUILDS && mkdir ~/BUILDS/core && mkdir ~/BUILDS/core/dist
     - yarn install --frozen-lockfile
     - yarn workspace @TRPI/core build
   artifacts:
     paths:
-      - BUILDS/core/dist
+      - ~/BUILDS/core/dist
 
 build_backend:
   stage: build
@@ -37,11 +44,12 @@ build_frontend:
   stage: build
   needs: ["build_core"]
   script:
+    - mkdir ~/BUILDS && mkdir ~/BUILDS/frontend && mkdir ~/BUILDS/frontend/dist
     - yarn install --frozen-lockfile
     - yarn workspace @TRPI/frontend build
   artifacts:
     paths:
-      - BUILDS/frontend/dist
+      - ~/BUILDS/frontend/dist
 
 deploy_backend:
   stage: deploy
@@ -61,4 +69,4 @@ deploy_frontend:
   script:
     - sudo -u ubuntu screen -S frontend -X quit || true
     - sudo -u ubuntu screen -dmS frontend
-    - sudo -u ubuntu screen -S frontend -X stuff "cd BUILDS/frontend/dist; npx serve -l 1000$(printf '\r')"
+    - sudo -u ubuntu screen -S frontend -X stuff "cd ~/BUILDS/frontend/dist; npx serve -l 1000$(printf '\r')"
