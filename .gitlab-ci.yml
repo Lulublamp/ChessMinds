@@ -49,7 +49,14 @@ install_dependencies:
       - packages/core/node_modules/
       - packages/eslint-config-custom/node_modules/
     policy: pull-push
-    untracked: true    
+    untracked: true
+    only:
+      changes:
+        - apps/backend/package.json
+        - apps/client/package.json
+        - apps/frontend/package.json
+        - packages/core/package.json
+        - packages/eslint-config-custom/package.json
 
 
 
@@ -63,27 +70,26 @@ build_core:
     paths:
       - ./BUILDS/core/dist
 
-# build_backend:
-#   stage: build
-#   needs: ["build_core"]
-#   script:
-#     # - yarn install --frozen-lockfile
-#     - yarn workspace @TRPI/backend build
-#   artifacts:
-#     paths:
-#       - ./BUILDS/backend/dist
+build_backend:
+  stage: build
+  needs: ["build_core"]
+  script:
+    - yarn workspace @TRPI/backend build
+  artifacts:
+    paths:
+      - ./BUILDS/backend/dist
 
-# build_frontend:
-#   stage: build
-#   needs: ["build_core"]
-#   script:
-#     - mkdir ./BUILDS && mkdir ./BUILDS/frontend && mkdir ./BUILDS/frontend/dist
-#     - yarn install --frozen-lockfile
-#     - yarn workspace @TRPI/frontend build
-#     - cp -r ./apps/frontend/dist ./BUILDS/frontend/dist
-#   artifacts:
-#     paths:
-#       - ./BUILDS/frontend/dist
+build_frontend:
+  stage: build
+  needs: ["build_core"]
+  script:
+    - mkdir ./BUILDS && mkdir ./BUILDS/frontend && mkdir ./BUILDS/frontend/dist
+    # - yarn install --frozen-lockfile
+    - yarn workspace @TRPI/frontend build
+    - cp -r ./apps/frontend/dist ./BUILDS/frontend/dist
+  artifacts:
+    paths:
+      - ./BUILDS/frontend/dist
 
 # deploy_backend:
 #   stage: deploy
