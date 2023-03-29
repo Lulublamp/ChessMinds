@@ -21,6 +21,7 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showMDPOublie, changeCo
         setErreurMDPOublie(false);
     };
     
+    
     if (!showMDPOublie) {
         return null;
     }
