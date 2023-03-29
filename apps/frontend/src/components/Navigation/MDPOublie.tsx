@@ -30,10 +30,6 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showMDPOublie, changeCo
     };
     
 
-    if (!showMDPOublie) {
-        return null;
-    }
-
     const[mail, setMail] = React.useState('mail');
     const handleMail = (event: React.ChangeEvent<HTMLInputElement>) => {
         setMail(event.target.value);
@@ -58,6 +54,11 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showMDPOublie, changeCo
         .catch(function (error) {
             console.log(error);
         });
+    };
+
+
+    if (!showMDPOublie) {
+        return null;
     }
     return (
     <div className="ConnexionIncrip">
@@ -70,11 +71,12 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showMDPOublie, changeCo
                         iconeInput={false}
                         placeHolder="Saisir un e-mail"
                         type='text'
+                        onChange={handleMail}
                     />
                 </div>
                 <p className={MDPEnvoyer ? "MDPEnvoie" : "Hide"}>Votre nouveau mot de passe vous a été envoyé dans votre boîte mail</p>
                 <p className={ErreurMDPOublie ? "Erreur" : "Hide"}>L'adresse mail est associée à aucun compte ! Veuillez réessayer</p>
-                <button className="PlayButton">Valider</button>
+                <button className="PlayButton" onClick={checkMDPOublie}>Valider</button>
                 <p className="link" onClick={changeConnexion}>Vous avez déjà un compte ? Se connecter</p>
                 <p className="link" onClick={changeInscription}>Pas de compte ? Incrivez-vous ici</p>
             </div>
