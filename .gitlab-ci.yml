@@ -14,7 +14,7 @@ build_core:
     - yarn workspace @TRPI/core build
   artifacts:
     paths:
-      - BUILD/core/dist
+      - BUILDS/core/dist
 
 build_backend:
   stage: build
@@ -24,7 +24,7 @@ build_backend:
     - yarn workspace @TRPI/backend build
   artifacts:
     paths:
-      - BUILD/backend/dist
+      - BUILDS/backend/dist
 
 build_frontend:
   stage: build
@@ -34,7 +34,7 @@ build_frontend:
     - yarn workspace @TRPI/frontend build
   artifacts:
     paths:
-      - BUILD/frontend/dist
+      - BUILDS/frontend/dist
 
 deploy_backend:
   stage: deploy
@@ -54,4 +54,4 @@ deploy_frontend:
   script:
     - sudo -u ubuntu screen -S frontend -X quit || true
     - sudo -u ubuntu screen -dmS frontend
-    - sudo -u ubuntu screen -S frontend -X stuff "cd BUILD/frontend/dist; npx serve -l 1000$(printf '\r')"
+    - sudo -u ubuntu screen -S frontend -X stuff "cd BUILDS/frontend/dist; npx serve -l 1000$(printf '\r')"
