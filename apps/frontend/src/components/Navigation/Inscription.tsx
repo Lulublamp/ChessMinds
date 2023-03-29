@@ -8,9 +8,11 @@ interface InscriptionProps {
     onCancel: () => void;
     showInscription : boolean;
     changeInscription: () => void;
+    changeStatusUer: () => void;
+    statusUser: boolean;
 }
 
-const Inscription: React.FC<InscriptionProps> = ({ onCancel, showInscription, changeInscription}) => {
+const Inscription: React.FC<InscriptionProps> = ({ onCancel, showInscription, changeInscription, changeStatusUer, statusUser}) => {
     
     const [ErreurInscription, setErreurInscription] = React.useState(true);
     const ShowErreur = () => {
@@ -20,7 +22,7 @@ const Inscription: React.FC<InscriptionProps> = ({ onCancel, showInscription, ch
         setErreurInscription(false);
     };
     
-    if (!showInscription) {
+    if (!showInscription || statusUser) {
         return null;
     }
     return (
