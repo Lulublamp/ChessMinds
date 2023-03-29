@@ -4,6 +4,7 @@ stages:
 job1:
   stage: test-stage
   script:
+    - ls
     - echo "test"
 
 
