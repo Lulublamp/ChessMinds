@@ -6,8 +6,6 @@ import Inscription from './Inscription';
 import MDPOublie from './MDPOublie';
 
 
-
-
 function Navbar() {
   const [showConnexion, setShowConnexion] = React.useState(false);
   const [showInscription, setShowInscription] = React.useState(false);
@@ -71,23 +69,24 @@ function Navbar() {
   <div>
     <button className="navbar__button" onClick={OpenPopupConnexion}>Connexion</button>
     <Connexion 
-            onCancel={ClosePopupConnexion}          
-            showConnexion={showConnexion} 
-            changeConnexion={ChangeConnexionToInscription}
-            changeMDPOublie={ChangeConnexionToMDPOublie}
-            changeStatusUer={UserCoDeco}
-          />
-          <Inscription 
-            onCancel={ClosePopupInscription}  
-            showInscription={showInscription}
-            changeInscription={ChangeInscriptionToConnexion}
-          /> 
-          <MDPOublie
-            onCancel={ClosePopupMDPOublie}
-            showMDPOublie={showMDPOublie}  
-            changeConnexion={ChangeMDPOublieToConnexion}
-            changeInscription={ChangeMDPOublieToInscription}
-          />
+      onCancel={ClosePopupConnexion}          
+      showConnexion={showConnexion} 
+      changeConnexion={ChangeConnexionToInscription}
+      changeMDPOublie={ChangeConnexionToMDPOublie}
+      changeStatusUer={UserCoDeco}
+      statusUser={UserConnecter}
+    />
+    <Inscription 
+      onCancel={ClosePopupInscription}  
+      showInscription={showInscription}
+      changeInscription={ChangeInscriptionToConnexion}
+    /> 
+    <MDPOublie
+      onCancel={ClosePopupMDPOublie}
+      showMDPOublie={showMDPOublie}  
+      changeConnexion={ChangeMDPOublieToConnexion}
+      changeInscription={ChangeMDPOublieToInscription}
+    />
   </div>
   
 

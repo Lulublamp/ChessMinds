@@ -13,13 +13,10 @@ interface ConnexionProps {
 
 
 const Connexion: React.FC<ConnexionProps> = ({ onCancel, showMDPOublie, changeConnexion, changeInscription }) => {
-    
     const [ErreurMDPOublie, setErreurMDPOublie] = React.useState(false);
-
     const ShowErreur = () => {
         setErreurMDPOublie(true);
     };
-
     const HideErreur = () => {
         setErreurMDPOublie(false);
     };

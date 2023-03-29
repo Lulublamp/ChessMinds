@@ -13,11 +13,9 @@ interface InscriptionProps {
 const Inscription: React.FC<InscriptionProps> = ({ onCancel, showInscription, changeInscription}) => {
     
     const [ErreurInscription, setErreurInscription] = React.useState(true);
-
     const ShowErreur = () => {
         setErreurInscription(true);
     };
-
     const HideErreur = () => {
         setErreurInscription(false);
     };
