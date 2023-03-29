@@ -41,7 +41,7 @@ build_backend:
     - yarn workspace @TRPI/backend build
   artifacts:
     paths:
-      . BUILDS/backend/dist
+      - ./BUILDS/backend/dist
 
 build_frontend:
   stage: build
