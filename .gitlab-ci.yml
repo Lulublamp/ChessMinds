@@ -7,8 +7,10 @@ job1:
     - ls
     - echo "test"
     - echo "test 2 ?"
-    - sudo -u ubuntu screen -S depS -X stuff "ls > output.txt^M"
-    - cat output.txt
+    - sudo -u ubuntu screen -S depS -X stuff "ls > /tmp/output.txt^M"
+    - sleep 1
+    - cat /tmp/output.txt
+    - rm /tmp/output.txt
 
 
 # image: node:19.6
