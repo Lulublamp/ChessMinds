@@ -135,7 +135,19 @@
     text-align: center;
 }
 
-.ErreurHide {
+.MDPEnvoie {
+    color: #000000;
+    background-color: #77d884;
+    padding: 10px 15px;
+    border-radius: 5px;
+    display: block;
+    margin: 10px 15% 10px 15%;
+    font-weight: 700;
+    text-align: center;
+}
+
+
+.Hide {
     display: none;
 }
 

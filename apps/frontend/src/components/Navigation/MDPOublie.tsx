@@ -20,8 +20,16 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showMDPOublie, changeCo
     const HideErreur = () => {
         setErreurMDPOublie(false);
     };
+
+    const [MDPEnvoyer, setEnvoie] = React.useState(false);
+    const ShowMessEnvoyer = () => {
+        setEnvoie(true);
+    };
+    const HideMessEnvoyer = () => {
+        setEnvoie(false);
+    };
     
-    
+
     if (!showMDPOublie) {
         return null;
     }
@@ -38,8 +46,8 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showMDPOublie, changeCo
                         type='text'
                     />
                 </div>
-                
-                <p className={ErreurMDPOublie ? "Erreur" : "ErreurHide"}>L'adresse mail est associée à aucun compte ! Veuillez réessayer</p>
+                <p className={MDPEnvoyer ? "MDPEnvoie" : "Hide"}>Votre nouveau mot de passe vous a été envoyé dans votre boîte mail</p>
+                <p className={ErreurMDPOublie ? "Erreur" : "Hide"}>L'adresse mail est associée à aucun compte ! Veuillez réessayer</p>
                 <button className="PlayButton">Valider</button>
                 <p className="link" onClick={changeConnexion}>Vous avez déjà un compte ? Se connecter</p>
                 <p className="link" onClick={changeInscription}>Pas de compte ? Incrivez-vous ici</p>
