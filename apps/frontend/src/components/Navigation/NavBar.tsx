@@ -74,14 +74,12 @@ function Navbar() {
       changeConnexion={ChangeConnexionToInscription}
       changeMDPOublie={ChangeConnexionToMDPOublie}
       changeStatusUer={UserCoDeco}
-      statusUser={UserConnecter}
     />
     <Inscription 
       onCancel={ClosePopupInscription}  
       showInscription={showInscription}
-      changeInscription={ChangeInscriptionToConnexion}*
+      changeInscription={ChangeInscriptionToConnexion}
       changeStatusUer={UserCoDeco}
-      statusUser={UserConnecter}
     /> 
     <MDPOublie
       onCancel={ClosePopupMDPOublie}

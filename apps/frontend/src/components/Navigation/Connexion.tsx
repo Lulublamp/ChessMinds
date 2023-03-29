@@ -10,24 +10,22 @@ interface ConnexionProps {
     changeConnexion: () => void;
     changeMDPOublie: () => void;
     changeStatusUer: () => void;
-    statusUser: boolean;
 }
 
 
-const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeConnexion, changeMDPOublie, changeStatusUer, statusUser}) => {
+const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeConnexion, changeMDPOublie, changeStatusUer}) => {
     const [ErreurConnexion, setErreurConnexion] = React.useState(false);
     const ShowErreur = () => {
         setErreurConnexion(true);
     };
-    const HideErreur = () => {
-        setErreurConnexion(false);
-    };
+
 
     //verfier connexion
     const [mail, setMail] = React.useState('mail');
     const handleMail = (event: React.ChangeEvent<HTMLInputElement>) => {
         setMail(event.target.value);
     };
+    
     const [mdp, setMdp] = React.useState('mdp');
     const handleMdp = (event: React.ChangeEvent<HTMLInputElement>) => {
         setMdp(event.target.value);
@@ -43,10 +41,9 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
         .then(function (response) {
             console.log(response);
             if(response.data == "ok"){
-                changeStatusUer;
-                HideErreur;
+                changeStatusUer();
             }else{
-                ShowErreur;
+                ShowErreur();
             }
         })
         .catch(function (error) {
@@ -55,10 +52,9 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
     }
 
     
-    if (!showConnexion || statusUser) {
+    if (!showConnexion) {
         return null;
     }
-
     return (
     <div className="ConnexionIncrip">
         <div className="ConnexionIncrip-container">

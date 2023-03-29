@@ -9,29 +9,21 @@ interface InscriptionProps {
     showInscription : boolean;
     changeInscription: () => void;
     changeStatusUer: () => void;
-    statusUser: boolean;
 }
 
-const Inscription: React.FC<InscriptionProps> = ({ onCancel, showInscription, changeInscription, changeStatusUer, statusUser}) => {
-    
-    const [ErreurInscription, setErreurInscription] = React.useState(true);
+const Inscription: React.FC<InscriptionProps> = ({ onCancel, showInscription, changeInscription, changeStatusUer}) => {
+    const [ErreurInscription, setErreurInscription] = React.useState(false);
     const ShowErreur = () => {
         setErreurInscription(true);
-    };
-    const HideErreur = () => {
-        setErreurInscription(false);
-    };
+    };    
     
-    if (!showInscription || statusUser) {
-        return null;
-    }
 
     //verifier Inscription
     const [mail, setMail]= React.useState('mail');
     const handleMail = (event: React.ChangeEvent<HTMLInputElement>) => {
         setMail(event.target.value);
     };
-   
+
     const [pseudo, setPseudo]= React.useState('pseudo');
     const handlePseudo = (event: React.ChangeEvent<HTMLInputElement>) => {
         setPseudo(event.target.value);
@@ -60,7 +52,7 @@ const Inscription: React.FC<InscriptionProps> = ({ onCancel, showInscription, ch
             .then(function (response) {
                 console.log(response);
                 if(response.data == "ok"){
-                    changeInscription;
+                    changeStatusUer();
                 }else{
                     ShowErreur();
                 }
@@ -70,6 +62,10 @@ const Inscription: React.FC<InscriptionProps> = ({ onCancel, showInscription, ch
             });
     }
 
+
+    if (!showInscription) {
+        return null;
+    }
     return (
     <div className="ConnexionIncrip">
         <div className="ConnexionIncrip-container">
