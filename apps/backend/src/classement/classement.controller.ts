@@ -5,8 +5,7 @@ import { Classement} from './entities/classement.entity';
 
 @Controller('classement')
 export class ClassementController {
-  constructor(
-    private readonly classementService: ClassementService) {}
+  constructor(private readonly classementService: ClassementService) {}
 
 //si on veut recupere classement
   @Get('chercher/:id')

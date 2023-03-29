@@ -7,6 +7,6 @@ import { Classement } from './entities/classement.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Classement])],
   controllers: [ClassementController],
-  providers: [ClassementService]
+  providers: [ClassementService],
 })
 export class ClassementModule {}

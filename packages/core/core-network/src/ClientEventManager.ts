@@ -1,3 +1,4 @@
+/* eslint-disable turbo/no-undeclared-env-vars */
 import { EVENT_TYPES } from "./Event";
 import { Socket, io } from "socket.io-client";
 import {
@@ -15,6 +16,10 @@ import { Move, rICreateRoomEvent, rIIncomingGameEvent, rINetworkMoveEvent } from
 import { IGame, Match, PPlayer } from "./utils/Queue";
 import { PrivateLobby } from "./utils/Lobby";
 import { ChessBoard, Color } from "../../core-algo";
+import * as dotenv from "dotenv"
+
+dotenv.config()
+console.log(process.env)
 
 
 export type IRespond =
@@ -29,7 +34,8 @@ export class EventEmitter {
 
   constructor(socketNameSpace: NAMESPACE_TYPES , token: string) {
     console.log("Connecting socket : ", token);
-    this.socket = io(`http://localhost:3001/${socketNameSpace}`, {
+    console.log(`connect to ${process.env.SERVER}${socketNameSpace}`)
+    this.socket = io(`${process.env.SERVER}${socketNameSpace}`, {
       transports: ["websocket"],
       auth: {
         access_token: `Bearer ${token}`,

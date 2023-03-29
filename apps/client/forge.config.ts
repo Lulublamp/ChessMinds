@@ -11,7 +11,11 @@ import { rendererConfig } from './webpack.renderer.config';
 const config: ForgeConfig = {
   packagerConfig: {},
   rebuildConfig: {},
-  makers: [new MakerSquirrel({}), new MakerZIP({}, ['darwin']), new MakerRpm({}), new MakerDeb({})],
+  makers: [
+    new MakerZIP({}, ["darwin" , "linux" , "win32"]),
+    new MakerRpm({}),
+    new MakerDeb({}),
+  ],
   plugins: [
     new WebpackPlugin({
       devContentSecurityPolicy: `default-src * self blob: data: gap:; style-src * self 'unsafe-inline' blob: data: gap:; script-src * 'self' 'unsafe-eval' 'unsafe-inline' blob: data: gap:; object-src * 'self' blob: data: gap:; img-src * self 'unsafe-inline' blob: data: gap:; connect-src self * 'unsafe-inline' blob: data: gap:; frame-src * self blob: data: gap:;`,
@@ -20,11 +24,11 @@ const config: ForgeConfig = {
         config: rendererConfig,
         entryPoints: [
           {
-            html: '../frontend/index.html',
-            js: './src/renderer.ts',
-            name: 'main_window',
+            html: "../frontend/index.html",
+            js: "./src/renderer.ts",
+            name: "main_window",
             preload: {
-              js: './electron/preload.ts',
+              js: "./electron/preload.ts",
             },
           },
         ],

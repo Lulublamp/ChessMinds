@@ -4,7 +4,7 @@ import './friend.css';
 
 //TODO: changer svg suivant si connecté ou non
 
-function Friend(props) {
+function Friend(props: { friend: any; }) {
     const { friend } = props;
     return (
         <div className="friend" key={friend.id}>
@@ -23,18 +23,18 @@ function Friend(props) {
     );
 }
 
-function FriendsList(props) {
+function FriendsList(props: { friends: any; }) {
     const { friends } = props;
 
     //Afficher les amis connectés en premier, si il y en a moins de 5, 
     //afficher les amis non connectés, affichage total de 5 amis
 
-    const connectedFriends = friends.filter((friend) => friend.isOnline);
+    const connectedFriends = friends.filter((friend: { isOnline: any; }) => friend.isOnline);
 
     const displayedFriends = connectedFriends.slice(0, 5);
 
     const remainingFriendsCount = 5 - displayedFriends.length;
-    const remainingFriends = friends.filter((friend) => !friend.isOnline && !displayedFriends.includes(friend)).slice(0, remainingFriendsCount);
+    const remainingFriends = friends.filter((friend: { isOnline: any; }) => !friend.isOnline && !displayedFriends.includes(friend)).slice(0, remainingFriendsCount);
 
     const friendsToDisplay = [...displayedFriends, ...remainingFriends];
 

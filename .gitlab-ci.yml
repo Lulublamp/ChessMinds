@@ -1,0 +1,92 @@
+image: node:19.6
+
+before_script:
+  - apt-get update && apt-get install -y curl
+  - curl -sL https://deb.nodesource.com/setup_19.x | bash -
+  - apt-get install -y nodejs
+  - yarn install -y
+  - mkdir front-build/
+  - mkdir core-build/
+  - mkdir backend-build/
+  - mkdir client-build/
+  - yarn workspace @TRPI/core build
+  - cp -r ./packages/core/dist ./core-build/ || true
+  - echo "core build"
+  - ls ./core-build
+
+stages:
+  - production
+  - predev
+
+predev:
+  stage: predev
+  only:
+    - pre-dev
+  script:
+    - export RELEASE_BRANCH_NAME="release-$(printf '%02d' $((10#${CI_COMMIT_REF_NAME#release-}+1)))"
+    - yarn workspace @TRPI/core run test --cov
+
+
+
+production:
+  stage: production
+  only:
+    - dev
+  script:
+    - export RELEASE_BRANCH_NAME="release-$(printf '%02d' $((10#${CI_COMMIT_REF_NAME#release-}+1)))"
+    - git checkout -b $RELEASE_BRANCH_NAME
+    - yarn workspace @TRPI/frontend build
+    - yarn workspace @TRPI/backend build
+    - git add .
+    - git commit -m "New release ${CI_COMMIT_SHORT_SHA}"
+    - git push origin $RELEASE_BRANCH_NAME
+
+# backend:
+#   stage: build
+#   script:
+#     - cd backend
+#     - yarn install
+#     - yarn build
+
+# client:
+#   stage: build
+#   script:
+#     - cd client
+#     - yarn install
+#     - yarn build
+
+# core:
+#   stage: build
+#   script:
+#     - cd core
+#     - yarn install
+#     - yarn build
+
+
+# deploy:
+#   stage: deploy
+#   script:
+#     - echo 'deploy test'
+#   only:
+#     - master
+# server:
+#   stage: server
+#   script:
+#     - ssh vmProjetIntegrateurgrp0-1
+#     - echo 'server build'
+#   only:
+#     changes:
+#       - apps/backend/**/*
+#   dependencies:
+#     - ssh-prepare
+
+# front:
+#   stage: front
+#   script:
+#     - ssh vmProjetIntegrateurgrp0-1
+#     - echo 'front build'
+#   only:
+#     changes:
+#       - apps/frontend/**/*
+#   dependencies:
+#     - ssh-prepare
