@@ -2,7 +2,7 @@ import React from 'react';
 import InputForm from "../Form/InputForm";
 import CancelButton from "../Button/CancelButton";
 import './ConnexionIncrip.css';
-
+import axios from 'axios';
 
 interface ConnexionProps {
     onCancel: () => void;
@@ -16,6 +16,35 @@ interface ConnexionProps {
 const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeConnexion, changeMDPOublie, changeStatusUer }) => {
      
     const [ErreurConnexion, setErreurConnexion] = React.useState(false);
+    const [mail, setMail] = React.useState('mail');
+    //verfier connexion
+    const handleMail = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setMail(event.target.value);
+    };
+    const [mdp, setMdp] = React.useState('mdp');
+    const handleMdp = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setMdp(event.target.value);
+    };
+
+    function checkConnexion(){
+        axios.get('/*URL*/',{
+            params: {
+                mail: mail,
+                mdp: mdp
+            }
+        })
+        .then(function (response) {
+            console.log(response);
+            if(response.data == "ok"){
+                changeStatusUer();
+            }else{
+                ShowErreur();
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    }
 
     const ShowErreur = () => {
         setErreurConnexion(true);
@@ -41,6 +70,7 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
                             iconeInput={false}
                             placeHolder="Adresse mail"
                             type='text'
+                            //onChange={handleMail}
                         />
                     </div>
                     <div id='MdpDiv'>
@@ -49,6 +79,7 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
                             iconeInput={true}
                             placeHolder="Mot de passe"
                             type='password'
+                            //onChange={handleMdp}
                         />
                         <p className="link" onClick={changeMDPOublie}>Mot de passe oublié ?</p>
                     </div>
