@@ -1,30 +1,40 @@
+image: node:19.6
+
+before_script:
+  - apt-get update && apt-get install -y curl
+  - curl -sL https://deb.nodesource.com/setup_19.x | bash -
+  - apt-get install -y nodejs
+  - npm install -g yarn
+  - yarn install -y
 
 stages:
   - build
-  - test
 
-build_docker_image:
+frontend:
   stage: build
-  image: docker:20.10
-  services:
-    - docker:20.10-dind
   script:
-    - docker build -t my_monorepo_image .
-    - docker save my_monorepo_image -o my_monorepo_image.tar
-  artifacts:
-    paths:
-      - my_monorepo_image.tar
+    - yarn workspace @TRPI/frontend build
 
-test_core:
-  stage: test
-  image: docker:20.10
-  services:
-    - docker:20.10-dind
-  script:
-    - docker load -i my_monorepo_image.tar
-    - docker run my_monorepo_image bash -c "cd core && yarn test"
+# backend:
+#   stage: build
+#   script:
+#     - cd backend
+#     - yarn install
+#     - yarn build
 
+# client:
+#   stage: build
+#   script:
+#     - cd client
+#     - yarn install
+#     - yarn build
 
+# core:
+#   stage: build
+#   script:
+#     - cd core
+#     - yarn install
+#     - yarn build
 
 
 # deploy:
