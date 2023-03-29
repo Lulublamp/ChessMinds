@@ -3,6 +3,7 @@ before_script:
   - export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
   - nvm install 19.6.0
   - nvm use 19.6.0
+  - rm -r ~/BUILDS || true
 
 
 stages:
@@ -49,6 +50,7 @@ build_frontend:
     - mkdir ~/BUILDS && mkdir ~/BUILDS/frontend && mkdir ~/BUILDS/frontend/dist
     - yarn install --frozen-lockfile
     - yarn workspace @TRPI/frontend build
+    - cp -r ./apps/frontend/dist ~/BUILDS/frontend/dist
   artifacts:
     paths:
       - ~/BUILDS/frontend/dist
