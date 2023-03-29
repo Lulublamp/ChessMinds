@@ -50,13 +50,13 @@ install_dependencies:
       - packages/eslint-config-custom/node_modules/
     policy: pull-push
     untracked: true
-    only:
-      changes:
-        - apps/backend/package.json
-        - apps/client/package.json
-        - apps/frontend/package.json
-        - packages/core/package.json
-        - packages/eslint-config-custom/package.json
+  only:
+    changes:
+      - apps/backend/package.json
+      - apps/client/package.json
+      - apps/frontend/package.json
+      - packages/core/package.json
+      - packages/eslint-config-custom/package.json
 
 
 
