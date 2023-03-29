@@ -9,6 +9,10 @@ before_script:
   - mkdir core-build/
   - mkdir backend-build/
   - mkdir client-build/
+  - yarn workspace @TRPI/core build
+  - cp -r ./packages/core/dist ./core-build/ || true
+  - echo "core build"
+  - ls ./core-build
 
 stages:
   - build
@@ -20,8 +24,16 @@ frontend:
     - rm -R ./front-build && mkdir front-build/
     - cp -r ./apps/frontend/dist  ./front-build/ || true
     - echo "front build"
-    - ls
     - ls ./front-build
+
+backend:
+  stage: build
+  script:
+    - yarn workspace @TRPI/backed build
+    - rm -R ./backend-build && mkdir ./backend-build/
+    - cp -r ./apps/backend/dist  ./backend-build/ || true
+    - echo "backend build"
+    - ls ./backend-build
 
 # backend:
 #   stage: build
