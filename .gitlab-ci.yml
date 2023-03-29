@@ -6,6 +6,7 @@ job1:
   script:
     - ls
     - echo "test"
+    - echo "test 2 ?"
 
 
 # image: node:19.6
