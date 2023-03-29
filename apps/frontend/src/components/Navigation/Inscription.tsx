@@ -60,7 +60,7 @@ const Inscription: React.FC<InscriptionProps> = ({ onCancel, showInscription, ch
             .catch(function (error) {
                 console.log(error);
             });
-    }
+    };
 
 
     if (!showInscription) {
@@ -104,7 +104,7 @@ const Inscription: React.FC<InscriptionProps> = ({ onCancel, showInscription, ch
                         onChange={handleConfirmMdp}
                     />
                 </div>
-                <p className={ErreurInscription ? "Erreur" : "ErreurHide"}>L'adresse mail est dèja utilisé ! Veuillez réessayer</p>
+                <p className={ErreurInscription ? "Erreur" : "Hide"}>L'adresse mail est dèja utilisé ! Veuillez réessayer</p>
                 <button className="PlayButton" onClick={checkInscription}>S'inscrire</button>
                 <p className="link" onClick={changeInscription}>Vous avez déjà un compte ? Se connecter</p>
             </div>

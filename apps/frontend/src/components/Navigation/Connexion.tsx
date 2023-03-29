@@ -25,7 +25,7 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
     const handleMail = (event: React.ChangeEvent<HTMLInputElement>) => {
         setMail(event.target.value);
     };
-    
+
     const [mdp, setMdp] = React.useState('mdp');
     const handleMdp = (event: React.ChangeEvent<HTMLInputElement>) => {
         setMdp(event.target.value);
@@ -49,7 +49,7 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
         .catch(function (error) {
             console.log(error);
         });
-    }
+    };
 
     
     if (!showConnexion) {
@@ -81,7 +81,7 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
                         <p className="link" onClick={changeMDPOublie}>Mot de passe oublié ?</p>
                     </div>
                 </div>
-                <span className={ErreurConnexion ? "Erreur" : "ErreurHide"}>L'adresse mail ou le mot de passe est faux ! Veuillez réessayer</span>
+                <span className={ErreurConnexion ? "Erreur" : "Hide"}>L'adresse mail ou le mot de passe est faux ! Veuillez réessayer</span>
                 <button className="PlayButton" onClick={checkConnexion}>Se connecter</button>
                 <p className="link" onClick={changeConnexion}>Pas de compte ? Incrivez-vous ici</p>
             </div>
