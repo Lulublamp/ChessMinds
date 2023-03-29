@@ -5,5 +5,5 @@ import {
 
 export interface JoinQueuOption {
   mode: MATCHMAKING_MODE;
-  timer: MATCHMAKING_MODES_TIMERS;
+  timer: MATCHMAKING_MODES_TIM
 }
