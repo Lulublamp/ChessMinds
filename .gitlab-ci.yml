@@ -96,7 +96,7 @@ deploy_backend:
     - ls -la
     - sudo -u ubuntu screen -S backend -X quit || true
     - sudo -u ubuntu screen -dmS backend
-    - sudo -u ubuntu screen -S backend -X stuff "cd ./BUILDS/backend/dist/dist; yarn start:prod$(printf '\r')"
+    - sudo -u ubuntu screen -S backend -X stuff "cd ./BUILDS/backend/dist/; node dist/main"
 
 deploy_frontend:
   stage: deploy
