@@ -49,8 +49,6 @@ install_dependencies:
       - packages/core/package.json
       - packages/eslint-config-custom/package.json
 
-
-
 build_core:
   stage: build
   only:
