@@ -54,7 +54,6 @@ build_core:
   stage: build
   script:
     - mkdir ./BUILDS && mkdir ./BUILDS/core && mkdir ./BUILDS/core/dist
-    # - yarn install --frozen-lockfile
     - yarn workspace @TRPI/core build
   artifacts:
     paths:
@@ -78,22 +77,26 @@ build_frontend:
   needs: ["build_core"]
   script:
     - mkdir ./BUILDS/frontend && mkdir ./BUILDS/frontend/dist
-    # - yarn install --frozen-lockfile
     - yarn workspace @TRPI/frontend build
     - cp -r ./apps/frontend/dist ./BUILDS/frontend/dist
   artifacts:
     paths:
       - ./BUILDS/frontend/dist
 
-# deploy_backend:
-#   stage: deploy
-#   only:
-#     - dev
-#   needs: ["build_backend"]
-#   script:
-#     - sudo -u ubuntu screen -S backend -X quit || true
-#     - sudo -u ubuntu screen -dmS backend
-#     - echo 'deploiement du backend pas disponible pour l'instant
+deploy_backend:
+  stage: deploy
+  only:
+    - dev
+  needs: 
+    - job: build_backend
+      artifacts: true
+  dependencies:
+    - build_backend
+  script:
+    - ls -la
+    - sudo -u ubuntu screen -S backend -X quit || true
+    - sudo -u ubuntu screen -dmS backend
+    - sudo -u ubuntu screen -S backend -X stuff "cd ./BUILDS/backend; yarn start:prod$(printf '\r')"
 
 deploy_frontend:
   stage: deploy
@@ -101,10 +104,6 @@ deploy_frontend:
     - dev
   needs: 
     - job: build_frontend
-      artifacts: true
-    - job: build_backend
-      artifacts: true
-    - job: build_core
       artifacts: true
   dependencies:
     - build_frontend
