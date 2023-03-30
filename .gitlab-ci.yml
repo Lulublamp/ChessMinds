@@ -109,7 +109,7 @@ deploy_backend:
     - sudo -u ubuntu screen -S backend -X stuff "echo 'MYSQL_USER=$MYSQL_USER' >> ./apps/backend/.env$(printf '\r')"
     - sudo -u ubuntu screen -S backend -X stuff "echo 'MYSQL_PASSWORD=$MYSQL_PASSWORD' >> ./apps/backend/.env$(printf '\r')"
     - sudo -u ubuntu screen -S backend -X stuff "echo 'MYSQL_DATABASE=$MYSQL_DATABASE' >> ./apps/backend/.env$(printf '\r')"
-    - sudo -u ubuntu screen -S backend -X stuff "cd ./BUILDS/backend/dist/; node dist/main$(printf '\r')"
+    - sudo -u ubuntu screen -S backend -X stuff "ls -la && cat .env && cd ./BUILDS/backend/dist/; node dist/main$(printf '\r')"
 
 deploy_frontend:
   stage: deploy
