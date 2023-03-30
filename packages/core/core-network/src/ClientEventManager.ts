@@ -16,10 +16,7 @@ import { Move, rICreateRoomEvent, rIIncomingGameEvent, rINetworkMoveEvent } from
 import { IGame, Match, PPlayer } from "./utils/Queue";
 import { PrivateLobby } from "./utils/Lobby";
 import { ChessBoard, Color } from "../../core-algo";
-import * as dotenv from "dotenv"
 
-dotenv.config()
-console.log(process.env)
 
 
 export type IRespond =
@@ -34,8 +31,9 @@ export class EventEmitter {
 
   constructor(socketNameSpace: NAMESPACE_TYPES , token: string) {
     console.log("Connecting socket : ", token);
-    console.log(`connect to ${process.env.SERVER}${socketNameSpace}`)
-    this.socket = io(`${process.env.SERVER}${socketNameSpace}`, {
+    const serve = "http://localhost:3001"
+    console.log(`connect to ${serve}/${socketNameSpace}`)
+    this.socket = io(`${serve}/${socketNameSpace}`, {
       transports: ["websocket"],
       auth: {
         access_token: `Bearer ${token}`,
