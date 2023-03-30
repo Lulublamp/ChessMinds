@@ -92,12 +92,12 @@ build_frontend:
 #     - sudo -u ubuntu screen -dmS backend
 #     - echo 'deploiement du backend pas disponible pour l'instant
 
-# deploy_frontend:
-#   stage: deploy
-#   only:
-#     - dev
-#   needs: ["build_frontend"]
-#   script:
-#     - sudo -u ubuntu screen -S frontend -X quit || true
-#     - sudo -u ubuntu screen -dmS frontend
-#     - sudo -u ubuntu screen -S frontend -X stuff "cd ./BUILDS/frontend/dist; npx serve -l 1000$(printf '\r')"
+deploy_frontend:
+  stage: deploy
+  only:
+    - dev
+  needs: ["build_frontend"]
+  script:
+    - sudo -u ubuntu screen -S frontend -X quit || true
+    - sudo -u ubuntu screen -dmS frontend
+    - sudo -u ubuntu screen -S frontend -X stuff "cd ./BUILDS/frontend/dist; npx serve -l 1000$(printf '\r')"
