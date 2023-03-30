@@ -53,7 +53,8 @@ install_dependencies:
 build_core:
   stage: build
   only:
-  - dev
+    - /^dev$/
+    - /^staging$/
   script:
     - mkdir ./BUILDS && mkdir ./BUILDS/core && mkdir ./BUILDS/core/dist
     - yarn workspace @TRPI/core build
@@ -64,7 +65,8 @@ build_core:
 build_backend:
   stage: build
   only:
-  - dev
+    - /^dev$/
+    - /^staging$/
   needs: 
     - job: build_core
       artifacts: true
@@ -79,7 +81,8 @@ build_backend:
 build_frontend:
   stage: build
   only:
-  - dev
+    - /^dev$/
+    - /^staging$/
   needs: ["build_core"]
   script:
     - mkdir ./BUILDS/frontend && mkdir ./BUILDS/frontend/dist
@@ -102,11 +105,11 @@ deploy_backend:
     - ls -la
     - sudo -u ubuntu screen -S backend -X quit || true
     - sudo -u ubuntu screen -dmS backend
-    - echo "MYSQL_HOST=$MYSQL_HOST" >> ./apps/backend/.env
-    - echo "MYSQL_PORT=$MYSQL_PORT" >> ./apps/backend/.env
-    - echo "MYSQL_USER=$MYSQL_USER" >> ./apps/backend/.env
-    - echo "MYSQL_PASSWORD=$MYSQL_PASSWORD" >> ./apps/backend/.env
-    - echo "MYSQL_DATABASE=$MYSQL_DATABASE" >> ./apps/backend/.env
+    - sudo -u ubuntu screen -S backend -X stuff "echo 'MYSQL_HOST=$MYSQL_HOST' >> ./apps/backend/.env$(printf '\r')"
+    - sudo -u ubuntu screen -S backend -X stuff "echo 'MYSQL_PORT=$MYSQL_PORT' >> ./apps/backend/.env$(printf '\r')"
+    - sudo -u ubuntu screen -S backend -X stuff "echo 'MYSQL_USER=$MYSQL_USER' >> ./apps/backend/.env$(printf '\r')"
+    - sudo -u ubuntu screen -S backend -X stuff "echo 'MYSQL_PASSWORD=$MYSQL_PASSWORD' >> ./apps/backend/.env$(printf '\r')"
+    - sudo -u ubuntu screen -S backend -X stuff "echo 'MYSQL_DATABASE=$MYSQL_DATABASE' >> ./apps/backend/.env$(printf '\r')"
     - sudo -u ubuntu screen -S backend -X stuff "cd ./BUILDS/backend/dist/; node dist/main$(printf '\r')"
 
 deploy_frontend:
