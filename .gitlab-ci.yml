@@ -5,6 +5,7 @@ before_script:
   - nvm use 19.6.0
   - rm -r ./BUILDS || true
 
+
 stages:
   - .pre
   - build
@@ -22,6 +23,7 @@ cache:
     - packages/eslint-config-custom/node_modules/
   policy: pull-push
   untracked: true
+
 
 install_dependencies:
   stage: .pre
@@ -47,55 +49,43 @@ install_dependencies:
       - packages/core/package.json
       - packages/eslint-config-custom/package.json
 
-.build_template: &build_cache
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}-builds
-    paths:
-      - ./BUILDS/
-    policy: pull-push
+
 
 build_core:
   stage: build
-  <<: *build_cache
   script:
-    - mkdir -p ./BUILDS/core/dist
+    - mkdir ./BUILDS && mkdir ./BUILDS/core && mkdir ./BUILDS/core/dist
+    # - yarn install --frozen-lockfile
     - yarn workspace @TRPI/core build
+  artifacts:
+    paths:
+      - ./BUILDS/core/dist
 
 build_backend:
   stage: build
-  <<: *build_cache
-  needs: ["build_core"]
+  needs: 
+    - job: build_core
+      artifacts: true
   script:
-    - mkdir -p ./BUILDS/backend/dist
+    - mkdir ./BUILDS && mkdir ./BUILDS/backend && mkdir ./BUILDS/backend/dist
     - yarn workspace @TRPI/backend build
     - cp -r ./apps/backend/dist ./BUILDS/backend/dist
+  artifacts:
+    paths:
+      - ./BUILDS/backend/dist
 
 build_frontend:
   stage: build
-  <<: *build_cache
   needs: ["build_core"]
   script:
-    - mkdir -p ./BUILDS/frontend/dist
+    - mkdir ./BUILDS && mkdir ./BUILDS/frontend && mkdir ./BUILDS/frontend/dist
+    # - yarn install --frozen-lockfile
     - yarn workspace @TRPI/frontend build
     - cp -r ./apps/frontend/dist ./BUILDS/frontend/dist
-
-deploy_frontend:
-  stage: deploy
-  only:
-    - dev
-  needs: ["build_frontend"]
-  cache:
-    key: ${CI_COMMIT_REF_SLUG}-builds
+  artifacts:
     paths:
-      - ./BUILDS/
-    policy: pull
-  script:
-    - pwd
-    - ls -la ./BUILDS
-    - ls -la ./BUILDS/frontend
-    - sudo -u ubuntu screen -S frontend -X quit || true
-    - sudo -u ubuntu screen -dmS frontend
-    - sudo -u ubuntu screen -S frontend -X stuff "cd ./BUILDS/frontend/dist; npx serve -l 1000$(printf '\r')"
+      - ./BUILDS/frontend/dist
+
 # deploy_backend:
 #   stage: deploy
 #   only:
@@ -105,3 +95,22 @@ deploy_frontend:
 #     - sudo -u ubuntu screen -S backend -X quit || true
 #     - sudo -u ubuntu screen -dmS backend
 #     - echo 'deploiement du backend pas disponible pour l'instant
+
+deploy_frontend:
+  stage: deploy
+  only:
+    - dev
+  needs: 
+    - job: build_frontend
+      artifacts: true
+    - job: build_backend
+      artifacts: true
+    - job: build_core
+      artifacts: true
+  dependencies:
+    - build_frontend
+  script:
+    - ls -la
+    - sudo -u ubuntu screen -S frontend -X quit || true
+    - sudo -u ubuntu screen -dmS frontend
+    - sudo -u ubuntu screen -S frontend -X stuff "cd ./BUILDS/frontend/dist; npx serve -l 1000$(printf '\r')"
