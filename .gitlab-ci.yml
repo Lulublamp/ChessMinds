@@ -42,6 +42,7 @@ install_dependencies:
     untracked: true
   only:
     changes:
+      - ./package.json
       - apps/backend/package.json
       - apps/client/package.json
       - apps/frontend/package.json
