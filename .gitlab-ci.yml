@@ -102,6 +102,7 @@ deploy_frontend:
   dependencies:
     - build_frontend
   script:
+    - ls -la
     - sudo -u ubuntu screen -S frontend -X quit || true
     - sudo -u ubuntu screen -dmS frontend
     - sudo -u ubuntu screen -S frontend -X stuff "cd ./BUILDS/frontend/dist; npx serve -l 1000$(printf '\r')"
