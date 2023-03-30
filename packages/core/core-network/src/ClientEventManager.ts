@@ -98,6 +98,12 @@ export class ClientEventManager<
       payload.triggerSetter(() => true);
       payload.currentClientManager.close()
       payload.disconnect(() => null)
+      //add animation
+      const lstcase = document.querySelectorAll(".case");
+      lstcase.forEach((e) => {
+        e.classList.add("animation-start");
+      });
+
       const gameManager = new ClientEventManager<IN_GAME>(NAMESPACE_TYPES.IN_GAME , "")
       gameManager.attach(game.matchId , payload.name)
       payload.nextGameManager(() => gameManager)
@@ -124,6 +130,7 @@ export class ClientEventManager<
       
       payload.chessGame.setBoard(payload.boardHistory[payload.boardHistory.length - 1].copyBoard());
       const currentTurn = payload.chessGame.getCurrentTurn() == Color.White ? 'white' : 'black';
+      console.log('current game' , payload.chessGame);
       payload.chessGame.makeMove(from , to);
       payload.boardHistory.push(payload.chessGame.getBoard().copyBoard());
       console.log('board history' , payload.boardHistory);
