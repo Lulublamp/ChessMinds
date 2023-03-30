@@ -6,7 +6,13 @@
 .case{
   width: 91px;
   height: 91px;
-  position: relative;
+  position: relative; 
+  opacity: 1;
+}
+
+.animation-start{
+  opacity: 0;
+  animation: falling 0.5s ease-in-out forwards;
 }
 
 .white{
@@ -73,3 +79,19 @@
   position: absolute;
   background: radial-gradient(transparent 0%, transparent 79%, #E63946 80%);
 }
+
+
+@keyframes falling {
+  0% {
+    transform: translateY(100%);
+    opacity: 0;
+  }
+  50% {
+    transform: translateY(-20%);
+  }
+  100% {
+    transform: translateY(0%);
+    opacity: 1;
+  }
+}
+

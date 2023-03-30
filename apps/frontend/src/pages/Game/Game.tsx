@@ -30,8 +30,8 @@ const Game = () => {
   const findChessGame = new ChessGame();
 
   useEffect(() => {
+    
     if (clientManager) return;
-    //setChessGame(() => new ChessGame());
     setBoardHistory(() => [findChessGame.getBoard().copyBoard()]);
 
     const mode = searchParams.get('RankedMode')?.toLowerCase();

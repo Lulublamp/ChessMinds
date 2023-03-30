@@ -5,6 +5,7 @@ import DisplayPiece from "./DisplayPiece";
 import "./ChessBoardStyle.css";
 import { ClientEventManager, IN_GAME } from "@TRPI/core/core-network";
 import { useGameManager, useMovesData, usePlayerIsWhite, useIndex, useBoardHistory,useChessGame, useGame}  from "../../contexts/GameContext";
+import { random } from "lodash";
 
 
 
@@ -84,11 +85,13 @@ const ChessBoardRenderer: React.FC = () => {
     const rowCoordsClassName = `row-coordinates ${row % 2 === col % 2 ? "blackText" : "whiteText"}`;
     const colCoordsClassName = `col-coordinates ${row % 2 === col % 2 ? "blackText" : "whiteText"}`;
     const piece: ChessPiece | null = chessGame!.getBoard().getPieceAt(rowName + colName);
+    const animationDelay = (((row + col)) * 0.01 + Math.random() * 0.15);
 
     return (
       <div
         key={`${row}${col}`}
         className={`case ${row % 2 === col % 2 ? "white" : "black"} ${selectedCase?.row === row && selectedCase?.col === col ? "selected" : ""}`}
+        style={{ animationDelay: `${animationDelay}s` }}
         onClick={() => onCaseClick(row, col)}
       >
         <div className={rowCoordsClassName}>
