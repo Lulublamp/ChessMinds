@@ -112,4 +112,4 @@ deploy_frontend:
     - ls -la
     - sudo -u ubuntu screen -S frontend -X quit || true
     - sudo -u ubuntu screen -dmS frontend
-    - sudo -u ubuntu screen -S frontend -X stuff "cd ./BUILDS/frontend/dist; npx serve -l 10000$(printf '\r')"
+    - sudo -u ubuntu screen -S frontend -X stuff "cd ./BUILDS/frontend/dist/dist; npx serve -l 10000$(printf '\r')"
