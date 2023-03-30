@@ -3,7 +3,6 @@ before_script:
   - export NVM_DIR="$HOME/.nvm" && [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
   - nvm install 19.6.0
   - nvm use 19.6.0
-  - rm -r ./BUILDS || true
 
 
 stages:
