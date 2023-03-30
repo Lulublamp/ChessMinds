@@ -65,7 +65,9 @@ build_backend:
   stage: build
   needs: ["build_core"]
   script:
+    - mkdir ./BUILDS && mkdir ./BUILDS/backend && mkdir ./BUILDS/backend/dist
     - yarn workspace @TRPI/backend build
+    - cp -r ./apps/backend/dist ./BUILDS/backend/dist
   artifacts:
     paths:
       - ./BUILDS/backend/dist
@@ -97,6 +99,8 @@ deploy_frontend:
   only:
     - dev
   needs: ["build_frontend"]
+  dependencies:
+    - build_frontend
   script:
     - sudo -u ubuntu screen -S frontend -X quit || true
     - sudo -u ubuntu screen -dmS frontend
