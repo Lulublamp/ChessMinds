@@ -2,26 +2,64 @@ import React from 'react';
 import InputForm from "../Form/InputForm";
 import CancelButton from "../Button/CancelButton";
 import './ConnexionIncrip.css';
-
+import axios from 'axios';
 
 interface ConnexionProps {
     onCancel: () => void;
     showConnexion : boolean;
     changeConnexion: () => void;
     changeMDPOublie: () => void;
-    ErreurConnexion: boolean;
+    changeStatusUer: () => void;
 }
 
 
-const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeConnexion, changeMDPOublie, ErreurConnexion }) => {
+const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeConnexion, changeMDPOublie, changeStatusUer}) => {
+    const [ErreurConnexion, setErreurConnexion] = React.useState(false);
+    const ShowErreur = () => {
+        setErreurConnexion(true);
+    };
+
+
+    //verfier connexion
+    const [mail, setMail] = React.useState('mail');
+    const handleMail = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setMail(event.target.value);
+    };
+
+    const [mdp, setMdp] = React.useState('mdp');
+    const handleMdp = (event: React.ChangeEvent<HTMLInputElement>) => {
+        setMdp(event.target.value);
+    };
+
+    function checkConnexion(){
+        axios.get('http://localhost:5173/cherche/:joueur',{
+            params: {
+                mail: mail,
+                mdp: mdp
+            }
+        })
+        .then(function (response) {
+            console.log(response);
+            if(response.data == "ok"){
+                changeStatusUer();
+            }else{
+                ShowErreur();
+            }
+        })
+        .catch(function (error) {
+            console.log(error);
+        });
+    };
+
+    
     if (!showConnexion) {
         return null;
     }
     return (
     <div className="ConnexionIncrip">
-        <div className="ConnexionIncrip-container">
+        <div>
             <h2>Connecte toi pour jouer à Chess Minds</h2>
-            <div className="Form-ConnexionIncrip" >
+            <div>
                 <div className={ErreurConnexion ? "ErreurValeur" : ""}>
                     <div>
                         <InputForm 
@@ -29,6 +67,7 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
                             iconeInput={false}
                             placeHolder="Adresse mail"
                             type='text'
+                            onChange={handleMail}
                         />
                     </div>
                     <div id='MdpDiv'>
@@ -37,12 +76,13 @@ const Connexion: React.FC<ConnexionProps> = ({ onCancel, showConnexion, changeCo
                             iconeInput={true}
                             placeHolder="Mot de passe"
                             type='password'
+                            onChange={handleMdp}
                         />
                         <p className="link" onClick={changeMDPOublie}>Mot de passe oublié ?</p>
                     </div>
                 </div>
-                <p className={ErreurConnexion ? "Erreur" : "ErreurHide"}>L'adresse mail ou le mot de passe est faux ! Veuillez réessayer</p>
-                <button className="PlayButton">Se connecter</button>
+                <span className={ErreurConnexion ? "Erreur" : "Hide"}>L'adresse mail ou le mot de passe est faux ! Veuillez réessayer</span>
+                <button className="PlayButton" onClick={checkConnexion}>Se connecter</button>
                 <p className="link" onClick={changeConnexion}>Pas de compte ? Incrivez-vous ici</p>
             </div>
             

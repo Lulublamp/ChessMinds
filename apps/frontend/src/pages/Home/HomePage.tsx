@@ -21,7 +21,6 @@ function HomePage() {
 
   return (
     <div>
-      <Navbar />
       <main>
         <section className="homePage">
           <div>
