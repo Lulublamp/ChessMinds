@@ -112,7 +112,14 @@ deploy_backend:
     - sudo -u ubuntu screen -S backend -X quit || true
     - sudo -u ubuntu screen -dmS backend
 
-    - sudo -u ubuntu screen -S backend -X stuff "ls -la && cd ./BUILDS/backend/dist/; node dist/main$(printf '\r')"
+    # Create .env in the deployed dist folder inside screen session
+    - sudo -u ubuntu screen -S backend -X stuff "echo 'MYSQL_HOST=$MYSQL_HOST' >> ./BUILDS/backend/.env$(printf '\r')"
+    - sudo -u ubuntu screen -S backend -X stuff "echo 'MYSQL_PORT=$MYSQL_PORT' >> ./BUILDS/backend/.env$(printf '\r')"
+    - sudo -u ubuntu screen -S backend -X stuff "echo 'MYSQL_USER=$MYSQL_USER' >> ./BUILDS/backend/.env$(printf '\r')"
+    - sudo -u ubuntu screen -S backend -X stuff "echo 'MYSQL_PASSWORD=$MYSQL_PASSWORD' >> ./BUILDS/backend/.env$(printf '\r')"
+    - sudo -u ubuntu screen -S backend -X stuff "echo 'MYSQL_DATABASE=$MYSQL_DATABASE' >> ./BUILDS/backend/.env$(printf '\r')"
+
+    - sudo -u ubuntu screen -S backend -X stuff "ls -la && cd ./BUILDS/backend/dist/; node main$(printf '\r')"
 
 deploy_frontend:
   stage: deploy
