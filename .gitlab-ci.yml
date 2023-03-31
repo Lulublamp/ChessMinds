@@ -119,7 +119,7 @@ deploy_backend:
     - sudo -u ubuntu sh -c "echo 'MYSQL_PASSWORD=$MYSQL_PASSWORD' | sudo tee -a ./BUILDS/backend/.env"
     - sudo -u ubuntu sh -c "echo 'MYSQL_DATABASE=$MYSQL_DATABASE' | sudo tee -a ./BUILDS/backend/.env"
 
-    - sudo -u ubuntu screen -S backend -X stuff "ls -la && cd ./BUILDS/backend/dist/; node main$(printf '\r')"
+    - sudo -u ubuntu screen -S backend -X stuff "ls -la && cd ./BUILDS/backend/dist/dist/; node main$(printf '\r')"
 
 deploy_frontend:
   stage: deploy
