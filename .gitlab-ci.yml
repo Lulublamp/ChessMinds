@@ -55,7 +55,7 @@ build_core:
     - /^dev$/
     - /^staging$/
   script:
-    - mkdir ./BUILDS && mkdir ./BUILDS/core && mkdir ./BUILDS/core/dist
+    # - mkdir ./BUILDS && mkdir ./BUILDS/core && mkdir ./BUILDS/core/dist
     - yarn workspace @TRPI/core build
   artifacts:
     paths:
@@ -70,7 +70,7 @@ build_backend:
     - job: build_core
       artifacts: true
   script:
-    - mkdir ./BUILDS/backend && mkdir ./BUILDS/backend/dist
+    # - mkdir ./BUILDS/backend && mkdir ./BUILDS/backend/dist
     - yarn workspace @TRPI/backend build
     - cp -r ./apps/backend/dist ./BUILDS/backend/dist
   artifacts:
@@ -84,7 +84,7 @@ build_frontend:
     - /^staging$/
   needs: ["build_core"]
   script:
-    - mkdir ./BUILDS/frontend && mkdir ./BUILDS/frontend/dist
+    # - mkdir ./BUILDS/frontend && mkdir ./BUILDS/frontend/dist
     - yarn workspace @TRPI/frontend build
     - cp -r ./apps/frontend/dist ./BUILDS/frontend/dist
   artifacts:
