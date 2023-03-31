@@ -71,11 +71,11 @@ build_backend:
       artifacts: true
   script:
     # - mkdir ./BUILDS/backend && mkdir ./BUILDS/backend/dist
-    - echo 'MYSQL_HOST=$MYSQL_HOST' | sudo tee -a ./apps/backend/.env
-    - echo 'MYSQL_PORT=$MYSQL_PORT' | sudo tee -a ./apps/backend/.env
-    - echo 'MYSQL_USER=$MYSQL_USER' | sudo tee -a ./apps/backend/.env
-    - echo 'MYSQL_PASSWORD=$MYSQL_PASSWORD' | sudo tee -a ./apps/backend/.env
-    - echo 'MYSQL_DATABASE=$MYSQL_DATABASE' | sudo tee -a ./apps/backend/.env
+    - echo 'MYSQL_HOST=$MYSQL_HOST' | tee -a ./apps/backend/.env
+    - echo 'MYSQL_PORT=$MYSQL_PORT' | tee -a ./apps/backend/.env
+    - echo 'MYSQL_USER=$MYSQL_USER' | tee -a ./apps/backend/.env
+    - echo 'MYSQL_PASSWORD=$MYSQL_PASSWORD' | tee -a ./apps/backend/.env
+    - echo 'MYSQL_DATABASE=$MYSQL_DATABASE' | tee -a ./apps/backend/.env
     - yarn workspace @TRPI/backend build
     - cp -r ./apps/backend/dist ./BUILDS/backend/dist
   artifacts:
