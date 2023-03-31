@@ -76,6 +76,8 @@ build_backend:
     - echo 'MYSQL_USER=$MYSQL_USER' | tee -a ./apps/backend/.env
     - echo 'MYSQL_PASSWORD=$MYSQL_PASSWORD' | tee -a ./apps/backend/.env
     - echo 'MYSQL_DATABASE=$MYSQL_DATABASE' | tee -a ./apps/backend/.env
+    - ls ./apps/backend/
+    - cat ./apps/backend/.env
     - yarn workspace @TRPI/backend build
     - cp -r ./apps/backend/dist ./BUILDS/backend/dist
   artifacts:
