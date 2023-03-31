@@ -13,7 +13,7 @@ export class JoueursController {
   constructor(private readonly joueursService: JoueursService) {}
 
   //si on veut recupere des infos sur un joueur
-  @Get('cherche/:email')
+  @Get('cherche/:joueur')
   async retrouverJoueur(@Param('email') email: Pick<JoueurDto, 'adresseMail'>) {
     try {
       const joueurTrouve = await this.joueursService.findJoueurByEmail(email);
@@ -21,6 +21,16 @@ export class JoueursController {
     } catch (error) {
       console.log("Le joueur n'existe pas");
       return error;
+    }
+  }
+
+  @Get('cherche/:email')
+  async retrouverMail(@Param('email') email: Pick<JoueurDto, 'adresseMail'>){
+    try{
+      const mailTrouver= await this.joueursService.findJoueurByEmail(email);
+      return true;
+    }catch(error){
+      return false;
     }
   }
 
