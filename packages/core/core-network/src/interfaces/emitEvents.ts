@@ -1,6 +1,7 @@
 import { JoinQueuOption } from "../MatchMaking";
 import { MATCHMAKING_MODES_TIMERS } from "../Namespace";
 import { Match, PPlayer } from "../utils/Queue";
+import { ChatMessage } from "../utils/Chat";
 
 export interface eIInitGameEvent {
   players: Match<PPlayer>;
@@ -39,3 +40,11 @@ export interface eIMakeMoveEvent {
   from: string,
   to: string,
 }
+
+export interface eIRequestChatHistoryEvent {
+  matchId: string;
+}
+
+export interface eISendChatMessageEvent extends Omit<ChatMessage, 'timestamp'> {}
+
+export interface eIReceiveChatMessageEvent extends ChatMessage {}

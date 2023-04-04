@@ -7,6 +7,6 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
   app.useGlobalPipes(new ValidationPipe());
   app.useWebSocketAdapter(new AuthenticatedSocketAdapter(app));
-  await app.listen(10001);
+  await app.listen(3001);
 }
 bootstrap();
