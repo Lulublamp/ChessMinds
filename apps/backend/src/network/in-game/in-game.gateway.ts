@@ -8,6 +8,7 @@ import {
 import { Nt } from '@TRPI/core';
 import { Socket, Server } from 'socket.io';
 import { MatchMakingService } from '../match-making/match-making.service';
+import { IGame } from '@TRPI/core/core-network';
 
 @WebSocketGateway({
   namespace: Nt.NAMESPACE_TYPES.IN_GAME,
@@ -78,5 +79,25 @@ export class InGameGateway {
     console.log('move: ' + from + ' to ' + to);
     console.log('valid');
     this.server.to(matchId).emit(Nt.EVENT_TYPES.MOVES, from, to);
+  }
+
+  @SubscribeMessage(Nt.EVENT_TYPES.FIRST_MOVE)
+  handleFirstMove(
+    @MessageBody() firstMovePayload: Nt.eIFirstMoveEvent,
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log('match-making: First move : ' + client.id);
+    const { matchId } = firstMovePayload;
+    setInterval(() => {
+      console.log('match-making: First move X');
+      const match: IGame = this.matchMakingService.queue.gamesList.find(
+        (game) => game.matchId === matchId,
+      );
+      if (match) {
+        this.server
+          .to(matchId)
+          .emit(Nt.EVENT_TYPES.FIRST_MOVE, firstMovePayload);
+      }
+    }, 3000);
   }
 }

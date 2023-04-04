@@ -18,6 +18,7 @@
   MAKE_MOVE_ACK: 'MAKE_MOVE_ACK',
   MOVES: 'MOVES',
   ATTACH: 'ATTACH',
+  FIRST_MOVE: 'FIRST_MOVE',
 } as const;
 
 
@@ -43,3 +44,4 @@ export type MATCH_END = typeof EVENT_TYPES.MATCH_END
 export type MAKE_MOVE_ACK = typeof EVENT_TYPES.MAKE_MOVE_ACK
 export type MOVES = typeof EVENT_TYPES.MOVES
 export type ATTACH = typeof EVENT_TYPES.ATTACH
+export type FIRST_MOVE = typeof EVENT_TYPES.FIRST_MOVE

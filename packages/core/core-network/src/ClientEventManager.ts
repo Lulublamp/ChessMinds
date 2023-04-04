@@ -10,6 +10,7 @@ import {
   eICreateLobbyEvent,
   eICreateLobbyWithReturnEvent,
   lobbyPlayer,
+  eIFirstMoveEvent,
 } from "./interfaces/emitEvents";
 import { IN_GAME, MATCH_MAKING, NAMESPACE_TYPES } from "./Namespace";
 import { Move, rICreateRoomEvent, rIIncomingGameEvent, rINetworkMoveEvent } from "./interfaces/receiveEvents";
@@ -31,7 +32,7 @@ export class EventEmitter {
 
   constructor(socketNameSpace: NAMESPACE_TYPES , token: string) {
     console.log("Connecting socket : ", token);
-    const serve = "http://localhost:3001"
+    const serve = "http://localhost:10001"
     console.log(`connect to ${serve}/${socketNameSpace}`)
     this.socket = io(`${serve}/${socketNameSpace}`, {
       transports: ["websocket"],
@@ -180,7 +181,14 @@ export class ClientEventManager<
     });
   }
 
+  public firstMove(payload: Check<T , IN_GAME , eIFirstMoveEvent>){
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    console.log('first move PAYLOAD' , payload);
+    this.send(EVENT_TYPES.FIRST_MOVE , payload);
+  }
+
   public close() {
     this.socket.close();
   }
+
 }

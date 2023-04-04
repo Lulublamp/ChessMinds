@@ -8,12 +8,14 @@ import {
 import { Nt } from '@TRPI/core';
 import {
   eIJoinQueueEvent,
+  IGame,
   MATCHMAKING_MODE,
   MMPlayer,
 } from '@TRPI/core/core-network';
 import { Server, Socket } from 'socket.io';
 
 import { MatchMakingService } from './match-making.service';
+import { ChessGame } from '@TRPI/core/core-algo';
 
 @WebSocketGateway({
   namespace: Nt.NAMESPACE_TYPES.MATCH_MAKING,

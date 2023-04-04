@@ -39,3 +39,7 @@ export interface eIMakeMoveEvent {
   from: string,
   to: string,
 }
+
+export interface eIFirstMoveEvent {
+  matchId: string,
+}

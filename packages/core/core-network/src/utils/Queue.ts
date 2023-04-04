@@ -3,6 +3,7 @@ import { ChessGame, Color, Player } from "../../../core-algo";
 import { lobbyPlayer, MMPlayer } from "../interfaces/emitEvents";
 import { JoinQueuOption } from "../MatchMaking";
 import { MATCHMAKING_MODE } from "../Namespace";
+import { Timer } from "./Timer";
 
 export interface PPlayer {
   socket: string;
@@ -38,6 +39,7 @@ export interface IGame {
   black_player: MMPlayer;
   createdAt: Date;
   winnder: string;
+  timer?: Timer
 }
 
 export class Queue {
@@ -177,5 +179,10 @@ export class Queue {
     });
     this.queue = this.queue.filter((p) => p.id !== playerId);
     this.socketMap.delete(playerId);
+  }
+
+  destroyGame(matchId: string): void {
+    this.games = this.games.filter((game) => game.matchId !== matchId);
+    this.coupledGames.delete(matchId);
   }
 }

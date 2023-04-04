@@ -58,9 +58,16 @@ const ChessBoardRenderer: React.FC = () => {
       if (!playerIsWhite && chessGame!.getCurrentTurn() === Color.White) return;
       let from = String.fromCharCode("a".charCodeAt(0) + selectedCase.row) + (8 - selectedCase.col);
       let to = coordinate;
+      if (boardHistory.length == 1) {
+        console.log('first move network')
+        gameManager?.firstMove({
+          matchId: _game!.matchId,
+        });
+      }
+      console.log(boardHistory.length)
       gameManager?.networkMove({
         from, to
-      });
+    });
       // chessGame.makeMove(from, to);
       setSelectedCase(null);
       setLegalMoves([]);
