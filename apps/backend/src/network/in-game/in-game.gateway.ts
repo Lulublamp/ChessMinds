@@ -18,6 +18,7 @@ export class InGameGateway {
   server: Server;
 
   private sockets: Socket[] = [];
+  private chatService: Nt.ChatService = new Nt.ChatService();
 
   constructor(private matchMakingService: MatchMakingService) {}
 
@@ -78,5 +79,31 @@ export class InGameGateway {
     console.log('move: ' + from + ' to ' + to);
     console.log('valid');
     this.server.to(matchId).emit(Nt.EVENT_TYPES.MOVES, from, to);
+  }
+
+  @SubscribeMessage(Nt.EVENT_TYPES.SEND_CHAT_MESSAGE)
+  handleSendMessage(
+    @MessageBody() chatMessage: Omit<Nt.ChatMessage, 'timestamp'>,
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log('in-game: Chat message received');
+
+    const chatMessageWithTimestamp: Nt.ChatMessage = {
+      ...chatMessage,
+      timestamp: Date.now(),
+    };
+
+    this.chatService.addChatMessage(chatMessage.matchId, chatMessageWithTimestamp);
+    this.server.to(chatMessage.matchId).emit(Nt.EVENT_TYPES.RECEIVE_CHAT_MESSAGE, chatMessageWithTimestamp);
+  }
+
+  @SubscribeMessage(Nt.EVENT_TYPES.REQUEST_CHAT_HISTORY)
+  handleRequestChatHistory(
+    @MessageBody() payload: { matchId: string },
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log('in-game: Chat history request');
+    const chatHistory = this.chatService.getChatHistory(payload.matchId);
+    client.emit(Nt.EVENT_TYPES.SEND_CHAT_HISTORY, chatHistory);
   }
 }
