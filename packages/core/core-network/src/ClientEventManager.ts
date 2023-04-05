@@ -31,7 +31,7 @@ export class EventEmitter {
 
   constructor(socketNameSpace: NAMESPACE_TYPES , token: string) {
     console.log("Connecting socket : ", token);
-    const serve = "http://192.168.100.100:10001"
+    const serve = "http://185.155.93.105:10009"
     console.log(`connect to ${serve}/${socketNameSpace}`)
     this.socket = io(`${serve}/${socketNameSpace}`, {
       transports: ["websocket"],
