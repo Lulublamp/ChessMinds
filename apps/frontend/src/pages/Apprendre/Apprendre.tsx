@@ -33,15 +33,20 @@ const Apprendre = () => {
                     <div>
                         <div>
                             <h2>Règles de base</h2>
-                            <p>
-                                Les blancs commencent la partie en jouant un coup.
-                                Les pièces se déplacent sur les cases vides du plateau en suivant des règles spécifiques.
-                                Les pièces capturent les pièces adverses en se déplaçant sur leur case occupée.
-                                Le jeu se termine lorsque le roi de l'un des joueurs est en échec et mat ou lorsque les joueurs conviennent d'un match nul.
-                            </p>
+                            <ul>
+                                <li>Il est interdit à un joueur de mettre son propre roi en échec.</li> 
+                                <li>Les Blancs jouent le premier coup de la partie (le Trait).</li>
+                                <li>Le jeu se termine lorsque le roi de l'un des joueurs est en échec et mat ou lorsque les joueurs conviennent d'un match nul.</li>
+                            </ul>
                         </div>
                         <div>
                             <h2>Le mouvement des pièces</h2>
+                            <ul>
+                                <li> Les bords de l'échiquier sont infranchissables par les pièces. </li>
+                                <li> Les pièces se déplacent sur les cases vides du plateau en suivant des règles spécifiques.</li>
+                                <li> Les pièces capturent les pièces adverses en se déplaçant sur leur case occupée.</li>
+                            </ul>
+                            
                             <div>
                                 <div>
                                     <img src={MouvTour} alt="schéma des mouvements de la tour" />
@@ -61,15 +66,20 @@ const Apprendre = () => {
                                     <img src={MouvPion} alt="schéma des mouvements du pion" />
                                     <div>
                                         <h4>Le pion</h4>
-                                        <p>Le pion avance d'une case vers l'avant, sauf lorsqu'il fait son premier mouvement, où il peut avancer de deux cases.
-                                            C’est la seule pièce ne pouvant pas reculer</p>
+                                        <p>Le pion avance d'une case vers l'avant, sauf lorsqu'il fait son premier mouvement, où il peut 
+                                            avancer de deux cases. C’est la seule pièce ne pouvant pas reculer.
+                                            Le pion ne peut capturer une pièce adverse que si elle se trouve à une case en diagonale de lui dans 
+                                            son sens de déplacement.</p>
                                     </div>
                                 </div>
                                 <div>
                                     <img src={MouvCavalier} alt="schéma des mouvements du cavalier" />
                                     <div>
                                         <h4>Le cavalier</h4>
-                                        <p>Le cavalier est la seule pièce qui ne se déplace pas en ligne, mais en L sur le plateau.</p>
+                                        <p>
+                                            Le cavalier est la seule pièce qui ne se déplace pas en ligne et qui peut se 
+                                            déplace entre les autres pièces, son mouvement forme un 'L' sur le plateau.
+                                        </p>
                                     </div>
                                 </div>
                                 <div>
@@ -94,8 +104,16 @@ const Apprendre = () => {
                                     <div>
                                         <div>
                                             <h4>La promotion</h4>
-                                            <p> Lorsqu’un pion atteint la dernière rangée, il doit être remplacé par une Dame, une Tour, 
-                                                un Fou ou un Cavalier, de la même couleur quelles que soient les pièces restantes sur l’échiquier.</p>
+                                            <p> Quand le pion arrive sur la dernière rangée, il doit se transformer en une pièce de son camp de 
+                                                valeur supérieure : dame, tour, fou ou cavalier. On dit alors qu'il est « promu ».</p>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div>
+                                            <h4>La pièce clouée</h4>
+                                            <p> Une pièce est dite « clouée » lorsque son déplacement exposerait directement le roi de son camp 
+                                                à un échec. Il est donc interdit de déplacer une pièce clouée.
+                                            </p>
                                         </div>
                                     </div>
                                     <div>
@@ -111,7 +129,7 @@ const Apprendre = () => {
                                         <div>
                                             <h4>Le roque</h4>
                                             <p> Le roque est un coup spécial qui concerne le Roi et une des deux Tours. Lorsque le Roi et cette 
-                                                Tour sont encore sur leurs cases initiales et qu’il n’y a plus de pièces entre eux, le joueur peut 
+                                                Tour sont encore sur leurs cases initiales (n'ont jamais été déplacés) et qu’il n’y a plus de pièces entre eux, le joueur peut 
                                                 déplacer de deux cases le Roi vers la Tour, puis placer cette Tour sur la case juste à côté du Roi, 
                                                 de l’autre côté. 
                                             </p>
@@ -122,6 +140,34 @@ const Apprendre = () => {
                                     </div>
                                 </div>
                             </div>    
+                        </div>
+                        <div>
+                            <h2>Le gain de la partie</h2>
+                            <div>
+                                <p>Quand un mouvement mène à une position qui menace le roi adverse de prise au prochain coup, le joueur annonce parfois « échec au roi » ou plus simplement « échec ». L'annonce vocale de l’« échec » au roi n'est pas obligatoire.
+
+Le joueur concerné doit alors impérativement faire disparaître cette menace au coup suivant, en utilisant l'une des trois possibilités suivantes :
+
+déplacer son roi sur une case libre (non menacée) ;
+capturer la pièce ennemie qui fait échec. Ce type de parade est impossible si la prise crée un autre échec (prise par une pièce clouée ou prise par le roi d'une pièce protégée) ;
+interposer une pièce amie entre son roi et la pièce ennemie donnant échec, afin de faire obstacle à la menace de prise (ce type de parade est impossible contre un cavalier, une pièce au contact du roi ou un échec double).
+Un joueur n'a pas le droit de laisser son roi « en échec » ou de le mettre dans une situation où il serait mis en échec.
+
+Si le joueur dont le roi est mis en échec n'a pas de solution pour parer la menace, il est alors « échec et mat » et perd la partie.</p>
+                            </div>  
+                        </div>
+                        <div>
+                            <h2>Parties nulles</h2>
+                            <div>
+                                <p>La partie est dite « nulle », c'est-à-dire sans vainqueur, si l'une de ces conditions survient :
+
+le joueur qui a le trait n'est pas en échec, mais n'a aucun mouvement autorisé possible (c'est ce qu'on appelle être pat) ;
+il n'y a de possibilité pour aucun des deux camps de mettre échec et mat le camp adverse par manque de pièces (exemple : roi contre roi) ou parce qu'il n'existe aucune suite de coups qui puisse conduire à un mat ;
+les 50 derniers coups ont été joués par chaque joueur sans mouvement de pion ni prise de pièce ;
+par répétition de la même position sur l'échiquier trois fois, consécutives ou non (deux positions sont identiques si le trait est le même et si les possibilités de prise en passant et de roque sont les mêmes) ;
+par accord entre les deux joueurs ;
+si un joueur perd au temps et que son adversaire n'a pas le matériel suffisant pour mater son adversaire, quelle que soit la suite de coups choisie.</p>
+                            </div>
                         </div>
                     </div>
                 </section>
