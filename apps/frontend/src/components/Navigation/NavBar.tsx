@@ -6,6 +6,7 @@ import Inscription from './Inscription';
 import MDPOublie from './MDPOublie';
 
 
+
 function Navbar() {
   const [showConnexion, setShowConnexion] = React.useState(false);
   const [showInscription, setShowInscription] = React.useState(false);
@@ -97,7 +98,7 @@ function Navbar() {
           <a href="#"><Logo></Logo></a>
           <ul>
             <li><a href="#">Jouer</a></li>
-            <li><a href="#">Apprendre</a></li>
+            <li><a href="../../pages/Apprendre/Apprendre.tsx">Apprendre</a></li>
             <li><a href="#">Classement</a></li>
           </ul>
           <div>

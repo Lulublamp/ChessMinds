@@ -1,0 +1,108 @@
+.PageApprendre {
+    color: #FFFFFF;
+    width: 1000px;
+}
+
+.PageApprendre h2 {    
+    padding: 10px;
+    margin: 15px;
+}
+
+.PageApprendre > div:first-of-type span {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 38px;
+    line-height: 46px;
+    text-align: center;
+
+    color: #FFFFFF;
+}
+
+.PageApprendre > div:first-of-type {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 50px 0;
+}
+
+
+
+.PageApprendre > div:first-of-type > div > span > span {
+    background: linear-gradient(135deg, #18A0FB 12.82%, #A671D3 68.37%, #E38ACF 72.17%, #E99ECF 76.43%, #FCE1D0 80.6%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.PageApprendre > div:nth-of-type(2) {
+    width: 100vw;
+    position: absolute;
+    left: 0;
+    background: #15191e;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 30px;
+}
+
+.PageApprendre > div:nth-of-type(2) > p {
+    text-align: center;
+    width: 1000px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 600;
+    line-height: 24px;
+}
+
+
+.PageApprendre > div:nth-of-type(3) {
+    margin-top: 100px;
+}
+
+.PageApprendre > div:nth-of-type(3) > div:nth-of-type(2) {    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+
+.PageApprendre > div:nth-of-type(3) > div:nth-of-type(2) > div:first-of-type,
+.PageApprendre > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(2) > div {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.PageApprendre > div:nth-of-type(3) > div:nth-of-type(2) > div:first-of-type > div,
+.PageApprendre > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(2) > div > div {
+    display: flex;
+    width: 500px;
+    box-shadow : 0px 0px 10px rgba(255, 255, 255, 0.1);
+}
+
+
+.PageApprendre > div:nth-of-type(3) > div:nth-of-type(2) > div:first-of-type > div > img,
+.PageApprendre > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(2) > div > div > img {
+   height: 175px;
+   padding: 20px 0 20px 20px;
+}
+
+.PageApprendre > div:nth-of-type(3) > div:nth-of-type(2) > div:first-of-type> div > div,
+.PageApprendre > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(2) > div > div > div {
+    padding: 30px 20px;
+}
+
+.PageApprendre > div:nth-of-type(3) > div:nth-of-type(2) > div:first-of-type > div > div > h4,
+.PageApprendre > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(2) > div > div > div > h4 {
+    padding-bottom: 10px;
+}
+
+.PageApprendre > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(2) > h3 {
+    margin: 50px 0 25px 0;
+}
+
+.PageApprendre > div:nth-of-type(3) > div:nth-of-type(2) > div:nth-of-type(2) > div > div > div > p {
+    margin-bottom: 10px;
+}
+}

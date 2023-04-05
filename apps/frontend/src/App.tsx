@@ -5,6 +5,7 @@ import { FC } from "react";
 import Navbar from "./components/Navigation/NavBar";
 import HomePage from "./pages/Home/HomePage";
 import Game from "./pages/Game/Game";
+import Apprendre from "./pages/Apprendre/Apprendre";
 
 const App: FC = () => {
   const [UserConnecter, setConnexion] = React.useState(false);
@@ -26,6 +27,7 @@ const App: FC = () => {
       <Routes>
         <Route path="/" element={<HomePage />} />
         <Route path="/Game" element={<Game />} />
+        <Route path="/Apprendre" element={<Apprendre/>} />
       </Routes>
     </HashRouter>
   );
