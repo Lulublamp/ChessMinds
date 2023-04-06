@@ -32,12 +32,43 @@ const Apprendre = () => {
                     </div>
                     <div>
                         <div>
-                            <h2>Règles de base</h2>
-                            <ul>
-                                <li>Il est interdit à un joueur de mettre son propre roi en échec.</li> 
-                                <li>Les Blancs jouent le premier coup de la partie (le Trait).</li>
-                                <li>Le jeu se termine lorsque le roi de l'un des joueurs est en échec et mat ou lorsque les joueurs conviennent d'un match nul.</li>
-                            </ul>
+                            <h2>Le déroulement de la partie</h2>
+                            <div>
+                                <div>
+                                    <div>
+                                        <h4>Le trait</h4>
+                                        <p>Le joueur ayant les Blancs commence, puis chaque joueur effectue un coup à tour de rôle. 
+                                            On dit du joueur qui doit jouer qu’il a le trait.</p>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div>
+                                        <h4>L’échec</h4>
+                                        <p> Lorsqu’un Roi est attaqué par une pièce adverse, on dit qu’il est en échec. Un joueur 
+                                            n’a pas le droit de laisser son Roi en échec. Il doit parer l’échec en : 
+                                        </p>
+                                            <ul>
+                                                <li>prenant la pièce qui attaque le Roi</li>
+                                                <li>déplaçant son Roi sur une case libre (non menacée)</li>
+                                                <li>interposant une pièce amis entre son Roi et l’attaquant</li>
+                                            </ul> 
+                                        <p> Tout autre coup est illégal.
+                                            Un joueur n’a pas le droit de déplacer son Roi sur une case où il serait en échec.
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div>
+                                        <h4>L’échec et mat</h4>
+                                        <p> Si le joueur dont le roi est mis en échec n'a pas de solution pour parer la menace, il est 
+                                            alors « échec et mat » et perd la partie.
+                                        </p>
+                                    </div>
+                                    
+                                </div>
+                            </div>
                         </div>
                         <div>
                             <h2>Le mouvement des pièces</h2>
@@ -142,33 +173,40 @@ const Apprendre = () => {
                             </div>    
                         </div>
                         <div>
-                            <h2>Le gain de la partie</h2>
+                            <h2>Le résultat de la partie</h2>
                             <div>
-                                <p>Quand un mouvement mène à une position qui menace le roi adverse de prise au prochain coup, le joueur annonce parfois « échec au roi » ou plus simplement « échec ». L'annonce vocale de l’« échec » au roi n'est pas obligatoire.
-
-Le joueur concerné doit alors impérativement faire disparaître cette menace au coup suivant, en utilisant l'une des trois possibilités suivantes :
-
-déplacer son roi sur une case libre (non menacée) ;
-capturer la pièce ennemie qui fait échec. Ce type de parade est impossible si la prise crée un autre échec (prise par une pièce clouée ou prise par le roi d'une pièce protégée) ;
-interposer une pièce amie entre son roi et la pièce ennemie donnant échec, afin de faire obstacle à la menace de prise (ce type de parade est impossible contre un cavalier, une pièce au contact du roi ou un échec double).
-Un joueur n'a pas le droit de laisser son roi « en échec » ou de le mettre dans une situation où il serait mis en échec.
-
-Si le joueur dont le roi est mis en échec n'a pas de solution pour parer la menace, il est alors « échec et mat » et perd la partie.</p>
-                            </div>  
-                        </div>
-                        <div>
-                            <h2>Parties nulles</h2>
-                            <div>
-                                <p>La partie est dite « nulle », c'est-à-dire sans vainqueur, si l'une de ces conditions survient :
-
-le joueur qui a le trait n'est pas en échec, mais n'a aucun mouvement autorisé possible (c'est ce qu'on appelle être pat) ;
-il n'y a de possibilité pour aucun des deux camps de mettre échec et mat le camp adverse par manque de pièces (exemple : roi contre roi) ou parce qu'il n'existe aucune suite de coups qui puisse conduire à un mat ;
-les 50 derniers coups ont été joués par chaque joueur sans mouvement de pion ni prise de pièce ;
-par répétition de la même position sur l'échiquier trois fois, consécutives ou non (deux positions sont identiques si le trait est le même et si les possibilités de prise en passant et de roque sont les mêmes) ;
-par accord entre les deux joueurs ;
-si un joueur perd au temps et que son adversaire n'a pas le matériel suffisant pour mater son adversaire, quelle que soit la suite de coups choisie.</p>
+                                <p>Une partie d’échec peut avoir trois résultats: </p>
+                                <ul>
+                                    <li>le gain des Blancs</li>
+                                    <li>le gain des Noirs</li>
+                                    <li>un match nul</li>
+                                </ul>
+                                <div>
+                                    <div>
+                                        <h4>Parties nulles</h4>
+                                        <div> La partie est dite « nulle », c'est-à-dire sans vainqueur, si l'une de ces conditions survient :
+                                            <ul>
+                                                <li>si l’un des joueurs n’a aucun coup légal mais que son Roi n’est pas en échec. On dit que ce joueur est pat.</li>
+                                                <li>il n'y a de possibilité pour aucun des deux camps de mettre échec et mat le camp adverse 
+                                                    par manque de pièces ou parce qu'il n'existe aucune suite de coups qui puisse conduire à 
+                                                    un mat ;
+                                                </li>
+                                                <li>si les deux joueurs ont joué chacun 50 coups consécutifs sans poussée de pion ni prise de pièce</li>
+                                                <li>si la même position survient trois fois sur l’échiquier, consécutives ou non (deux 
+                                                    positions sont identiques si le trait est le même et si les possibilités de prise en passant 
+                                                    et de roque sont les mêmes) ;
+                                                </li>
+                                                <li>par accord mutuel entre les deux joueurs ;</li>
+                                                <li>si un joueur perd au temps et que son adversaire n'a pas le matériel suffisant pour mater 
+                                                    son adversaire, quelle que soit la suite de coups choisie.
+                                                </li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                                
                             </div>
-                        </div>
+                        </div>    
                     </div>
                 </section>
             </main>
