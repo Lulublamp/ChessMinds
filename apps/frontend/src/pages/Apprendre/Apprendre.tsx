@@ -184,7 +184,8 @@ const Apprendre = () => {
                                 <div>
                                     <div>
                                         <h4>Parties nulles</h4>
-                                        <div> La partie est dite « nulle », c'est-à-dire sans vainqueur, si l'une de ces conditions survient :
+                                        <div> 
+                                            <p> La partie est dite « nulle », c'est-à-dire sans vainqueur, si l'une de ces conditions survient :</p>
                                             <ul>
                                                 <li>si l’un des joueurs n’a aucun coup légal mais que son Roi n’est pas en échec. On dit que ce joueur est pat.</li>
                                                 <li>il n'y a de possibilité pour aucun des deux camps de mettre échec et mat le camp adverse 
@@ -204,7 +205,6 @@ const Apprendre = () => {
                                         </div>
                                     </div>
                                 </div>
-                                
                             </div>
                         </div>    
                     </div>
