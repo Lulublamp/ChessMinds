@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ClassementNotFound, PlayerNotFound } from 'src/errors/bErrors';
+import { ClassementNotFound, PlayerNotFound, TypeNotFound } from 'src/errors/bErrors';
 import { Repository } from 'typeorm';
 import { ClassementDto } from './DTO/classement.dto';
 import { Classement, TypePartie } from './entities/classement.entity';
@@ -51,7 +51,7 @@ export class ClassementService {
         column = 'ELOBlitz';
         break;
       default:
-        throw new Error(`Type de partie inconnu: ${type}`);
+        throw new TypeNotFound();
     }
     return await this.classementRepository.find({
       order: {

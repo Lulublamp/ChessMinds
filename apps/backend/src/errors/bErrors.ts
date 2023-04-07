@@ -31,3 +31,9 @@ export class ClassementNotFound extends HttpException {
     super('Classement not found', HttpStatus.NOT_FOUND);
   }
 }
+
+export class TypeNotFound extends HttpException{
+  constructor(){
+    super('Type not found', HttpStatus.NOT_FOUND);
+  }
+}
