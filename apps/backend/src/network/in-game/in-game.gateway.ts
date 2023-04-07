@@ -36,22 +36,26 @@ export class CTimer {
     if (this.id !== undefined) {
       clearInterval(this.id);
     }
+    let ifTimer = false;
     let timer: NodeJS.Timer;
-    if (this.turn === 0) {
+    if (this.turn === 0 && this.whiteTime > 0) {
       timer = setInterval(() => {
         this.whiteTime -= 1;
         this.sendData(this.server, this.matchId);
         console.log('white time: ' + this.whiteTime);
       }, 1000);
-    } else {
+      ifTimer = true;
+    } else if (this.turn === 1 && this.blackTime > 0) {
       timer = setInterval(() => {
         this.blackTime -= 1;
         this.sendData(this.server, this.matchId);
         console.log('black time: ' + this.blackTime);
       }, 1000);
+      ifTimer = true;
     }
     this.turn = this.turn === 0 ? 1 : 0;
     this.id = timer;
+    if (!ifTimer) console.log('no timer finito');
     return timer;
   }
 
