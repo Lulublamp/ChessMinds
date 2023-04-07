@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Param,
+  Query,
 } from '@nestjs/common';
 import { JoueurDto } from './DTO/joueurs.dto';
 import { Post, Body } from '@nestjs/common';
@@ -58,4 +59,16 @@ export class JoueursController {
       return error;
     }
   }
+
+  //recuperer la liste des amis d'un joueur 
+  @Get('friends/list')
+  async getFriends(
+    @Param('pseudo') joueur: Pick<Joueur, 'fullpseudo' | 'pseudo' | 'adresseMail'>){
+      try{
+        const friends = await this.joueursService.getFriends(joueur, {relations: ['amis']});
+      }catch(error){
+        console.log(error);
+        return error;
+      }
+    }
 }

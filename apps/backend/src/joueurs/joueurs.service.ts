@@ -15,6 +15,7 @@ import { Joueur } from './entities/joueur.entity';
 
 @Injectable()
 export class JoueursService {
+  
   constructor(
     @InjectRepository(Joueur)
     private readonly joueursRepository: Repository<Joueur>,
@@ -103,5 +104,20 @@ export class JoueursService {
       console.log(error);
       throw new Error('Could not add friend');
     }
+  }
+
+  async getFriends(joueur: Pick<Joueur, "adresseMail" | "fullpseudo" | "pseudo">, arg1: { relations: string[]; }) {
+    const joueurTrouve = await this.joueursRepository.findOne({
+      where: {
+        adresseMail: joueur.adresseMail,
+        fullpseudo: joueur.fullpseudo,
+        pseudo: joueur.pseudo,
+      },
+      relations: ['amis'],
+    });
+    if (!joueurTrouve) {
+      throw new PlayerNotFound();
+    }
+    return joueurTrouve;
   }
 }
