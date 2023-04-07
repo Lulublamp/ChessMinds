@@ -12,6 +12,12 @@ import { Joueur } from './joueurs/entities/joueur.entity';
 import { JoueursModule } from './joueurs/joueurs.module';
 import { Partie } from './partie/entities/partie.entity';
 import { Rencontre } from './rencontre/entities/rencontre.entity';
+import { RecontreController } from './rencontre/controllers/recontre/recontre.controller';
+import { ControllersController } from './rencontre/controllers/controllers.controller';
+import { RencontreController } from './rencontre/rencontre.controller';
+import { RencontreService } from './rencontre/rencontre.service';
+import { ServiceModule } from './service/service.module';
+import { RencontreModule } from './rencontre/rencontre.module';
 
 @Module({
   imports: [
@@ -36,9 +42,11 @@ import { Rencontre } from './rencontre/entities/rencontre.entity';
     JoueursModule,
     ClassementModule,
     InGameModule,
+    ServiceModule,
+    RencontreModule,
   ],
-  controllers: [AppController],
-  providers: [AppService, MatchMakingModule],
+  controllers: [AppController, RecontreController, ControllersController, RencontreController],
+  providers: [AppService, MatchMakingModule, RencontreService],
 })
 export class AppModule {
 

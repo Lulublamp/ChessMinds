@@ -23,5 +23,9 @@ export class Rencontre {
 
   @Column({nullable:false})
   vainqueur: number;
+  
+
+  /*@Column({nullable:false})
+  matchNul: boolean;*/
 
 }
