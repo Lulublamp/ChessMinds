@@ -38,6 +38,7 @@ export class RencontreService {
       .select('COUNT(*)', 'nbreDefaite')
       .where("rencontre.vainqueur != :joueur AND (rencontre.joueurBlanc = :joueur OR rencontre.joueurNoir = :joueur", { joueur: joueur })
       .getRawOne();
+      return nbreDefaite;
   }
 
   
