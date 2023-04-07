@@ -66,6 +66,19 @@ export class JoueursController {
     @Param('pseudo') joueur: Pick<Joueur, 'fullpseudo' | 'pseudo' | 'adresseMail'>){
       try{
         const friends = await this.joueursService.getFriends(joueur, {relations: ['amis']});
+        return friends;
+      }catch(error){
+        console.log(error);
+        return error;
+      }
+    }
+
+    //recuperer la date d'inscription du joueurs
+    @Get('inscriptionDate')
+    async getInscriptionDate(@Param('pseudo') joueur: Pick<Joueur, 'fullpseudo' | 'pseudo' | 'adresseMail'>){
+      try{
+        const date = await this.joueursService.getInscriptionDate(joueur);
+        return date;
       }catch(error){
         console.log(error);
         return error;

@@ -15,7 +15,7 @@ import { Joueur } from './entities/joueur.entity';
 
 @Injectable()
 export class JoueursService {
-  
+ 
   constructor(
     @InjectRepository(Joueur)
     private readonly joueursRepository: Repository<Joueur>,
@@ -120,4 +120,20 @@ export class JoueursService {
     }
     return joueurTrouve;
   }
+
+  async getInscriptionDate(joueur: Pick<Joueur, "adresseMail" | "fullpseudo" | "pseudo">) {
+    const joueurD= await this.joueursRepository.findOne({
+      where: {
+        adresseMail: joueur.adresseMail,
+        fullpseudo: joueur.fullpseudo,
+        pseudo: joueur.pseudo,
+        },
+      select: ['dateInscription'],
+    });
+    if (!joueurD) {
+      throw new PlayerNotFound();
+    }
+    return joueurD;
+  }
+  
 }
