@@ -126,7 +126,8 @@ const Game = () => {
       setMovesData,
       setGameManager,
       set_Game,
-      setCurrentIndex
+      setCurrentIndex,
+      timer: searchParams.get('TimerMode'),
     }}>
       <FindPlayer onCancel={cancelMatchmaking}
         show={!PlayerIsFind}
@@ -134,19 +135,21 @@ const Game = () => {
       <section className="chessGame">
         <div className="leftContainer">
           <PlayerContainer
-            isWhitePlayer={true}
+            isWhitePlayer={playerisWhite}
             playerName={_game ? !playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
             playerScore={_game ? !playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
             playerScorePieceValue={2}
             time="10:00"
+            enHaut={true}
           />
           <Chat />
           <PlayerContainer
-            isWhitePlayer={false}
+            isWhitePlayer={playerisWhite}
             playerName={_game ? playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
             playerScore={_game ? playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
             playerScorePieceValue={2}
             time="10:00"
+            enHaut={false}
           />
         </div>
         <div className="chessBoardContainer">

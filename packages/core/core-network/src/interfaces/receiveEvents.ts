@@ -39,3 +39,9 @@ export interface rINetworkMoveEvent {
   setMovesData: ReactSetter<Move[]>
   setCurrentIndex : ReactSetter<number>
 }
+
+export interface rITimeEvent {
+  timeSetter: ReactSetter<string>;
+  time: string;
+  id: "white" | "black";
+}

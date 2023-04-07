@@ -13,7 +13,7 @@ import {
   eIFirstMoveEvent,
 } from "./interfaces/emitEvents";
 import { IN_GAME, MATCH_MAKING, NAMESPACE_TYPES } from "./Namespace";
-import { Move, rICreateRoomEvent, rIIncomingGameEvent, rINetworkMoveEvent } from "./interfaces/receiveEvents";
+import { Move, rICreateRoomEvent, rIIncomingGameEvent, rINetworkMoveEvent, rITimeEvent } from "./interfaces/receiveEvents";
 import { IGame, Match, PPlayer } from "./utils/Queue";
 import { PrivateLobby } from "./utils/Lobby";
 import { ChessBoard, Color } from "../../core-algo";
@@ -185,6 +185,21 @@ export class ClientEventManager<
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
     console.log('first move PAYLOAD' , payload);
     this.send(EVENT_TYPES.FIRST_MOVE , payload);
+  }
+
+  public listenToTime(payload: Check<T , IN_GAME , rITimeEvent>){
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.socket.on(EVENT_TYPES.TIMER , (time) => {
+      console.log('time received' , time);
+      const thisTime = payload.id == 'white' ? time.whiteTime : time.blackTime
+      const timeInStringMinute = Math.floor(thisTime / 60).toString();
+      console.log('time in string minute' , timeInStringMinute);
+      const timeInStringSecond = (thisTime % 60).toString();
+      console.log('time in string second' , timeInStringSecond);
+      console.log(payload.time)
+      payload.timeSetter(() => timeInStringMinute + ':' + timeInStringSecond)
+      // payload.timeSetter(() => time)
+    })
   }
 
   public close() {

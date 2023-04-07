@@ -10,6 +10,63 @@ import { Socket, Server } from 'socket.io';
 import { MatchMakingService } from '../match-making/match-making.service';
 import { IGame } from '@TRPI/core/core-network';
 
+export class CTimer {
+  public whiteTime;
+  public blackTime;
+  private server;
+  private turn = 0;
+  private id: NodeJS.Timer = undefined;
+  constructor(public time: number, public matchId: string, server: Server) {
+    this.time = time * 60;
+    this.matchId = matchId;
+    this.whiteTime = this.time;
+    this.blackTime = this.time;
+    this.server = server;
+  }
+
+  public startTimer() {
+    this.turn = 0;
+  }
+
+  public stopTimer() {
+    clearInterval(this.id);
+  }
+
+  public continueTimer() {
+    if (this.id !== undefined) {
+      clearInterval(this.id);
+    }
+    let timer: NodeJS.Timer;
+    if (this.turn === 0) {
+      timer = setInterval(() => {
+        this.whiteTime -= 1;
+        this.sendData(this.server, this.matchId);
+        console.log('white time: ' + this.whiteTime);
+      }, 1000);
+    } else {
+      timer = setInterval(() => {
+        this.blackTime -= 1;
+        this.sendData(this.server, this.matchId);
+        console.log('black time: ' + this.blackTime);
+      }, 1000);
+    }
+    this.turn = this.turn === 0 ? 1 : 0;
+    this.id = timer;
+    return timer;
+  }
+
+  public getData() {
+    return {
+      whiteTime: this.whiteTime,
+      blackTime: this.blackTime,
+    };
+  }
+
+  public sendData(server: Server, matchId: string) {
+    server.to(matchId).emit(Nt.EVENT_TYPES.TIMER, this.getData());
+  }
+}
+
 @WebSocketGateway({
   namespace: Nt.NAMESPACE_TYPES.IN_GAME,
   cors: true,
@@ -19,6 +76,8 @@ export class InGameGateway {
   server: Server;
 
   private sockets: Socket[] = [];
+  private timers = new Map<string, NodeJS.Timer>();
+  private timersMap = new Map<string, CTimer>();
 
   constructor(private matchMakingService: MatchMakingService) {}
 
@@ -33,7 +92,27 @@ export class InGameGateway {
 
   handleDisconnect(client: Socket) {
     console.log('in-game: Disconnect : ' + client.id);
-    this.sockets = this.sockets.filter((socket) => socket.id !== client.id);
+    // this.sockets = this.sockets.filter((socket) => socket.id !== client.id);
+    const games = this.matchMakingService.queue.gamesList;
+    const game1 = games.find(
+      (game) => game.black_player.socketId === client.id,
+    );
+    const game2 = games.find(
+      (game) => game.white_player.socketId === client.id,
+    );
+    const target: Nt.IGame = game1 || game2;
+    console.log(target);
+    if (target) {
+      const matchId = target.matchId;
+      console.log('matchId: ' + matchId);
+      console.log(this.timersMap);
+      const toClearId = this.timersMap.get(matchId);
+      if (toClearId) toClearId.stopTimer();
+      // this.matchMakingService.queue.removeGame(matchId);
+      // this.server.to(matchId).emit(Nt.EVENT_TYPES.GAME_OVER, {
+      //   winner: target.winner,
+      // });
+    }
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.ATTACH)
@@ -78,6 +157,10 @@ export class InGameGateway {
 
     console.log('move: ' + from + ' to ' + to);
     console.log('valid');
+    const timer = this.timersMap.get(matchId);
+    const newId = timer.continueTimer();
+    this.timers.set(matchId, newId);
+
     this.server.to(matchId).emit(Nt.EVENT_TYPES.MOVES, from, to);
   }
 
@@ -88,16 +171,8 @@ export class InGameGateway {
   ) {
     console.log('match-making: First move : ' + client.id);
     const { matchId } = firstMovePayload;
-    setInterval(() => {
-      console.log('match-making: First move X');
-      const match: IGame = this.matchMakingService.queue.gamesList.find(
-        (game) => game.matchId === matchId,
-      );
-      if (match) {
-        this.server
-          .to(matchId)
-          .emit(Nt.EVENT_TYPES.FIRST_MOVE, firstMovePayload);
-      }
-    }, 3000);
+    const timer: CTimer = new CTimer(1, matchId, this.server);
+    const toClearId = timer.startTimer();
+    this.timersMap.set(matchId, timer);
   }
 }

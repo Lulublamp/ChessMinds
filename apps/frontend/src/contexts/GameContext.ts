@@ -18,6 +18,7 @@ interface GameContextData {
   boardHistory: ChessBoard[];
   currentIndex: number;
   chessGame: ChessGame;
+  timer: string | null; 
   setGameManager: ReactSetter<MaybeGM>;
   setClientManager: ReactSetter<MaybeCM>;
   setMovesData: ReactSetter<Move[]>;
@@ -73,4 +74,9 @@ export const useBoardHistory = (): [ChessBoard[], ReactSetter<ChessBoard[]>] => 
 export const useChessGame = (): [ChessGame | null, ReactSetter<ChessGame | null>] => {
   const { chessGame} = useGameContext();
   return [chessGame, () => { }];
+}
+
+export const useTimer = (): [string | null, ReactSetter<string | null>] => {
+  const { timer } = useGameContext();
+  return [timer , () => { }];
 }
