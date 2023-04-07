@@ -50,6 +50,8 @@
 
 .Match_contre_IA > div > div > div:first-of-type > svg {
     border: 1px solid #000;
+    width: 150px;
+    height: 150px;
 }
 
 .Match_contre_IA > div > div > div:first-of-type > span:first-of-type {
@@ -85,6 +87,10 @@
     color: #000000;
 }
 
+.Match_contre_IA > div > div > div:nth-of-type(2) > div > svg {
+    cursor: pointer;
+}
+
 .Match_contre_IA > div > div > div:nth-of-type(2) {
     display: flex;
 }
@@ -118,7 +124,7 @@
 
 }
 
-.Match_contre_IA div > button:hover {
+.Match_contre_IA div > button:first-of-type:hover {
     background-color: #c81302;
 }
 

@@ -55,7 +55,7 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
     return <MatchMaking onCancel={ClosePopupMatchMaking} onPlay={handleMatchmaking} />
   }
   if (showIA) {
-    return <IAPopUP id="1" nivIA='1' left_IA="niv5" right_IA="niv2" onCancel={ClosePopupIA}/>
+    return <IAPopUP id="1" onCancel={ClosePopupIA}/>
   }
   else {
     return (
