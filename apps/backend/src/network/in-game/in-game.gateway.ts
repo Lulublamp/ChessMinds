@@ -9,18 +9,37 @@ import { Nt } from '@TRPI/core';
 import { Socket, Server } from 'socket.io';
 import { MatchMakingService } from '../match-making/match-making.service';
 import { IGame } from '@TRPI/core/core-network';
+import { JoinQueuOption } from '@TRPI/core/core-network/src/MatchMaking';
 
 export class CTimer {
-  public whiteTime;
   public blackTime;
+  public whiteTime;
   private server;
   private turn = 0;
   private id: NodeJS.Timer = undefined;
-  constructor(public time: number, public matchId: string, server: Server) {
-    this.time = time * 60;
+  private time: number;
+  constructor(
+    public options: JoinQueuOption,
+    public matchId: string,
+    server: Server,
+  ) {
+    switch (options.timer) {
+      case Nt.MATCHMAKING_MODES_TIMERS.BULLET:
+        this.time = 1 * 60;
+        break;
+      case Nt.MATCHMAKING_MODES_TIMERS.BLITZ:
+        this.time = 3 * 60;
+        break;
+      case Nt.MATCHMAKING_MODES_TIMERS.RAPID:
+        this.time = 5 * 60;
+        break;
+      default:
+        this.time = 1 * 60;
+        break;
+    }
     this.matchId = matchId;
-    this.whiteTime = this.time;
     this.blackTime = this.time;
+    this.whiteTime = this.time;
     this.server = server;
   }
 
@@ -38,18 +57,38 @@ export class CTimer {
     }
     let ifTimer = false;
     let timer: NodeJS.Timer;
-    if (this.turn === 0 && this.whiteTime > 0) {
-      timer = setInterval(() => {
-        this.whiteTime -= 1;
-        this.sendData(this.server, this.matchId);
-        console.log('white time: ' + this.whiteTime);
-      }, 1000);
-      ifTimer = true;
-    } else if (this.turn === 1 && this.blackTime > 0) {
+    if (this.turn === 0 && this.blackTime > 0) {
       timer = setInterval(() => {
         this.blackTime -= 1;
         this.sendData(this.server, this.matchId);
-        console.log('black time: ' + this.blackTime);
+        console.log('white time: ' + this.blackTime);
+        if (this.blackTime <= 0) {
+          clearInterval(timer);
+          this.server.to(this.matchId).emit(Nt.EVENT_TYPES.NO_TIME, 'black');
+          this.blackTime = 0;
+        }
+        if (this.whiteTime <= 0) {
+          clearInterval(timer);
+          this.server.to(this.matchId).emit(Nt.EVENT_TYPES.NO_TIME, 'white');
+          this.whiteTime = 0;
+        }
+      }, 1000);
+      ifTimer = true;
+    } else if (this.turn === 1 && this.whiteTime > 0) {
+      timer = setInterval(() => {
+        this.whiteTime -= 1;
+        this.sendData(this.server, this.matchId);
+        console.log('black time: ' + this.whiteTime);
+        if (this.whiteTime <= 0) {
+          clearInterval(timer);
+          this.server.to(this.matchId).emit(Nt.EVENT_TYPES.NO_TIME, 'white');
+          this.whiteTime = 0;
+        }
+        if (this.blackTime <= 0) {
+          clearInterval(timer);
+          this.server.to(this.matchId).emit(Nt.EVENT_TYPES.NO_TIME, 'black');
+          this.blackTime = 0;
+        }
       }, 1000);
       ifTimer = true;
     }
@@ -61,8 +100,8 @@ export class CTimer {
 
   public getData() {
     return {
-      whiteTime: this.whiteTime,
-      blackTime: this.blackTime,
+      whiteTime: this.blackTime,
+      blackTime: this.whiteTime,
     };
   }
 
@@ -174,8 +213,8 @@ export class InGameGateway {
     @ConnectedSocket() client: Socket,
   ) {
     console.log('match-making: First move : ' + client.id);
-    const { matchId } = firstMovePayload;
-    const timer: CTimer = new CTimer(1, matchId, this.server);
+    const { matchId, options } = firstMovePayload;
+    const timer: CTimer = new CTimer(options, matchId, this.server);
     const toClearId = timer.startTimer();
     this.timersMap.set(matchId, timer);
   }

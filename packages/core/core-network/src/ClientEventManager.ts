@@ -194,11 +194,13 @@ export class ClientEventManager<
       const thisTime = payload.id == 'white' ? time.whiteTime : time.blackTime
       const timeInStringMinute = Math.floor(thisTime / 60).toString();
       console.log('time in string minute' , timeInStringMinute);
-      const timeInStringSecond = (thisTime % 60).toString();
+      let timeInStringSecond = (thisTime % 60).toString();
+      if (timeInStringSecond.length == 1){
+        timeInStringSecond = '0' + timeInStringSecond 
+      }
       console.log('time in string second' , timeInStringSecond);
       console.log(payload.time)
       payload.timeSetter(() => timeInStringMinute + ':' + timeInStringSecond)
-      // payload.timeSetter(() => time)
     })
   }
 

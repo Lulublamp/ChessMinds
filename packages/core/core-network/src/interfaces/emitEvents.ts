@@ -42,4 +42,5 @@ export interface eIMakeMoveEvent {
 
 export interface eIFirstMoveEvent {
   matchId: string,
+  options: JoinQueuOption,
 }

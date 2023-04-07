@@ -4,7 +4,7 @@ import { ChessGame, ChessPiece, ChessBoard, Color } from "@TRPI/core/core-algo";
 import DisplayPiece from "./DisplayPiece";
 import "./ChessBoardStyle.css";
 import { ClientEventManager, IN_GAME } from "@TRPI/core/core-network";
-import { useGameManager, useMovesData, usePlayerIsWhite, useIndex, useBoardHistory,useChessGame, useGame}  from "../../contexts/GameContext";
+import { useGameManager, useMovesData, usePlayerIsWhite, useIndex, useBoardHistory,useChessGame, useGame , useFPayload}  from "../../contexts/GameContext";
 import { random } from "lodash";
 
 
@@ -18,6 +18,7 @@ const ChessBoardRenderer: React.FC = () => {
   const [boardHistory , setBoardHistory] = useBoardHistory();
   const [chessGame , setChessGame] = useChessGame();
   const [_game , set_Game] = useGame();
+  const fpayload = useFPayload();
 
   const [selectedCase, setSelectedCase] = useState<{ row: number, col: number } | null>(null);
   const [legalMoves, setLegalMoves] = useState<string[]>([]);
@@ -62,6 +63,7 @@ const ChessBoardRenderer: React.FC = () => {
         console.log('first move network')
         gameManager?.firstMove({
           matchId: _game!.matchId,
+          options: fpayload.options,
         });
       }
       console.log(boardHistory.length)
@@ -156,3 +158,4 @@ const ChessBoardRenderer: React.FC = () => {
 };
 
 export default ChessBoardRenderer;
+

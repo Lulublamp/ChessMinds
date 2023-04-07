@@ -1,7 +1,9 @@
 import React, { useEffect } from "react";
 import "./PlayerContainerStyle.css"
 import PlayerIconTEMPORAIRE from "../../images/IconPlayer.png";
-import { useGameManager, usePlayerIsWhite } from "../../contexts/GameContext";
+import { useFPayload, useGameManager, usePlayerIsWhite } from "../../contexts/GameContext";
+import { JoinQueuOption } from "@TRPI/core/core-network/src/MatchMaking";
+import { MATCHMAKING_MODES_TIMERS } from "@TRPI/core/core-network";
 
 
 interface PlayerContainerProps {
@@ -13,6 +15,19 @@ interface PlayerContainerProps {
   enHaut: boolean;
 }
 
+function optionToTime(option: JoinQueuOption){
+
+  switch (option.timer) {
+    case MATCHMAKING_MODES_TIMERS.BLITZ:
+      return '3:00';
+    case MATCHMAKING_MODES_TIMERS.BULLET:
+      return '1:00';
+    case MATCHMAKING_MODES_TIMERS.RAPID:
+      return '5:00';
+  }
+
+}
+
 const PlayerContainer: React.FC<PlayerContainerProps> = ({
   isWhitePlayer,
   playerName,
@@ -21,9 +36,14 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
   time,
   enHaut
 }) => {
+  const fpayload = useFPayload();
   const [gameManager , setGameManager] = useGameManager();
-  const [timer , setTimer] = React.useState('0');
+  const [timer , setTimer] = React.useState(fpayload?.options.timer.toString());
   const playerIsWhite = usePlayerIsWhite()
+
+  useEffect(() => {
+    console.log('payload changed');
+  }, [fpayload])  
 
   
 

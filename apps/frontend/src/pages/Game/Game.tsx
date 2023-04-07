@@ -29,6 +29,8 @@ const Game = () => {
   const [chessGame, setChessGame] = useState<ChessGame | null>(new ChessGame());
   const findChessGame = new ChessGame();
 
+  const [matchMakingPayload , setMatchMakingPayload] = useState<eIJoinQueueEvent | null>(null);
+
   useEffect(() => {
     
     if (clientManager) return;
@@ -49,6 +51,7 @@ const Game = () => {
         timer: timer as MATCHMAKING_MODES_TIMERS
       }
     }
+    setMatchMakingPayload(payload);
     const listeningPayload: rIIncomingGameEvent = {
       gameSetter: set_Game,
       triggerSetter: setFindPlayer,
@@ -128,6 +131,7 @@ const Game = () => {
       set_Game,
       setCurrentIndex,
       timer: searchParams.get('TimerMode'),
+      fpayload: matchMakingPayload,
     }}>
       <FindPlayer onCancel={cancelMatchmaking}
         show={!PlayerIsFind}
