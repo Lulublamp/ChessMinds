@@ -50,7 +50,8 @@ export class ClassementController {
     @Param('typePartie') typePartie: TypePartie,
     @Param('elo') elo: number,) {
     try {
-      return await this.classementService.updateELO(id,typePartie, elo);
+      const classUpdate= await this.classementService.updateELO(id,typePartie, elo);
+      return classUpdate;
     } catch (error) {
       return error;
     }

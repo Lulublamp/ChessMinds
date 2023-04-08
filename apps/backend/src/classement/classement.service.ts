@@ -63,6 +63,9 @@ export class ClassementService {
 
   async updateELO(idClassement: Pick<Classement, 'idClassement'>, typePartie: TypePartie, elo: number): Promise<Classement> {
     const classement = await this.classementRepository.findOneBy(idClassement);
+    if(!classement){
+      throw new ClassementNotFound()
+    }
     classement[typePartie] = elo;
     return await this.classementRepository.save(classement);
   }
