@@ -113,12 +113,11 @@ deploy_backend:
     - sudo -u ubuntu screen -dmS backend
 
     # Create .env in the deployed dist folder inside screen session
-    - sudo -u ubuntu sh -c "echo 'MYSQL_HOST=$MYSQL_HOST' | sudo tee -a ./BUILDS/backend/dist/.env"
-    - sudo -u ubuntu sh -c "echo 'MYSQL_PORT=$MYSQL_PORT' | sudo tee -a ./BUILDS/backend/dist/.env"
-    - sudo -u ubuntu sh -c "echo 'MYSQL_USER=$MYSQL_USER' | sudo tee -a ./BUILDS/backend/dist/.env"
-    - sudo -u ubuntu sh -c "echo 'MYSQL_PASSWORD=$MYSQL_PASSWORD' | sudo tee -a ./BUILDS/backend/dist/.env"
-    - sudo -u ubuntu sh -c "echo 'MYSQL_DATABASE=$MYSQL_DATABASE' | sudo tee -a ./BUILDS/backend/dist/.env"
-
+    - sudo -u ubuntu sh -c "echo 'MYSQL_HOST=$MYSQL_HOST' | sudo tee -a ./BUILDS/backend/dist/dist/.env"
+    - sudo -u ubuntu sh -c "echo 'MYSQL_PORT=$MYSQL_PORT' | sudo tee -a ./BUILDS/backend/dist/dist/.env"
+    - sudo -u ubuntu sh -c "echo 'MYSQL_USER=$MYSQL_USER' | sudo tee -a ./BUILDS/backend/dist/dist/.env"
+    - sudo -u ubuntu sh -c "echo 'MYSQL_PASSWORD=$MYSQL_PASSWORD' | sudo tee -a ./BUILDS/backend/dist/dist/.env"
+    - sudo -u ubuntu sh -c "echo 'MYSQL_DATABASE=$MYSQL_DATABASE' | sudo tee -a ./BUILDS/backend/dist/dist/.env"
     - sudo -u ubuntu screen -S backend -X stuff "ls -la && cd ./BUILDS/backend/dist/dist/; node main$(printf '\r')"
 
 deploy_frontend:
@@ -134,4 +133,5 @@ deploy_frontend:
     - ls -la
     - sudo -u ubuntu screen -S frontend -X quit || true
     - sudo -u ubuntu screen -dmS frontend
+    - sudo -u ubuntu sh -c "echo 'VITE_SERVER_URL=$VITE_SERVER_URL' | sudo tee -a ./BUILDS/frontend/dist/dist/.env"
     - sudo -u ubuntu screen -S frontend -X stuff "cd ./BUILDS/frontend/dist/dist; npx serve -l 10000$(printf '\r')"
