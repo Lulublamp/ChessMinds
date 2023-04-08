@@ -3,6 +3,7 @@ import { RencontreService } from './rencontre.service';
 import { Rencontre } from './entities/rencontre.entity';
 import { RencontreDTO } from './DTO/rencontre.dto';
 import { Post, Body } from '@nestjs/common';
+import { Joueur } from 'src/joueurs/entities/joueur.entity';
 
 @Controller('rencontre')
 export class RencontreController {
@@ -38,6 +39,42 @@ export class RencontreController {
     try {
       const nombreDefaite = await this.rencontreService.nombreDefaite(joueur);
       return nombreDefaite;
+    } catch (error) {
+      console.log("Le joueur n'existe pas");
+      return error;
+    }
+  }
+
+  //recuperer le nombre de nul
+  @Get('nul/:joueur')
+  async nombreNul(@Param('joueur') joueur: Pick<RencontreDTO, 'joueurBlanc' | 'joueurNoir'>) {
+    try {
+      const nombreNul = await this.rencontreService.nombreNul(joueur);
+      return nombreNul;
+    } catch (error) {
+      console.log("Le joueur n'existe pas");
+      return error;
+    }
+  }
+
+  //recuperer toute les rencontres d'un joueur PAS SUR
+  @Get('rencontre/:joueur')
+  async toutesRencontres(@Param('joueur') joueur: Pick<Joueur, 'fullpseudo'>) {
+    try {
+      const toutesRencontres = await this.rencontreService.toutesRencontres(joueur);
+      return toutesRencontres;
+    } catch (error) {
+      console.log("Le joueur n'existe pas");
+      return error;
+    }
+  }
+
+  //PAS SUR
+  @Get('date/:joueur')
+  async dateRencontre(@Param('joueur') joueur: Pick<Joueur, 'fullpseudo'>) {
+    try {
+      const dateRencontre = await this.rencontreService.dateRencontre(joueur);
+      return dateRencontre;
     } catch (error) {
       console.log("Le joueur n'existe pas");
       return error;
