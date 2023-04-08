@@ -133,4 +133,5 @@ deploy_frontend:
     - ls -la
     - sudo -u ubuntu screen -S frontend -X quit || true
     - sudo -u ubuntu screen -dmS frontend
+    - sudo -u ubuntu sh -c "echo 'VITE_SERVER_URL=$VITE_SERVER_URL' | sudo tee -a ./BUILDS/frontend/dist/dist/.env"
     - sudo -u ubuntu screen -S frontend -X stuff "cd ./BUILDS/frontend/dist/dist; npx serve -l 10000$(printf '\r')"
