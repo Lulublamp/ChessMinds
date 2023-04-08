@@ -119,8 +119,7 @@ export class InGameGateway {
   server: Server;
 
   private sockets: Socket[] = [];
-  private timers = new Map<string, NodeJS.Timer>();
-  private timersMap = new Map<string, CTimer>();
+  private chatService: Nt.ChatService = new Nt.ChatService();
 
   constructor(private matchMakingService: MatchMakingService) {}
 
@@ -207,15 +206,29 @@ export class InGameGateway {
     this.server.to(matchId).emit(Nt.EVENT_TYPES.MOVES, from, to);
   }
 
-  @SubscribeMessage(Nt.EVENT_TYPES.FIRST_MOVE)
-  handleFirstMove(
-    @MessageBody() firstMovePayload: Nt.eIFirstMoveEvent,
+  @SubscribeMessage(Nt.EVENT_TYPES.SEND_CHAT_MESSAGE)
+  handleSendMessage(
+    @MessageBody() chatMessage: Omit<Nt.ChatMessage, 'timestamp'>,
     @ConnectedSocket() client: Socket,
   ) {
-    console.log('match-making: First move : ' + client.id);
-    const { matchId, options } = firstMovePayload;
-    const timer: CTimer = new CTimer(options, matchId, this.server);
-    const toClearId = timer.startTimer();
-    this.timersMap.set(matchId, timer);
+    console.log('in-game: Chat message received');
+
+    const chatMessageWithTimestamp: Nt.ChatMessage = {
+      ...chatMessage,
+      timestamp: Date.now(),
+    };
+
+    this.chatService.addChatMessage(chatMessage.matchId, chatMessageWithTimestamp);
+    this.server.to(chatMessage.matchId).emit(Nt.EVENT_TYPES.RECEIVE_CHAT_MESSAGE, chatMessageWithTimestamp);
+  }
+
+  @SubscribeMessage(Nt.EVENT_TYPES.REQUEST_CHAT_HISTORY)
+  handleRequestChatHistory(
+    @MessageBody() payload: { matchId: string },
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log('in-game: Chat history request');
+    const chatHistory = this.chatService.getChatHistory(payload.matchId);
+    client.emit(Nt.EVENT_TYPES.SEND_CHAT_HISTORY, chatHistory);
   }
 }

@@ -1,7 +1,7 @@
 import React from 'react';
 import "./HomePageStyle.css";
 import Logo from '../../components/Logo_Icon/Logo';
-import chessboardpng from '../../images/ChessBoard.png';
+// import chessboardpng from '../../images/ChessBoard.png';
 import MainMenu from '../../components/Navigation/MainMenu';
 import SocialMedia from '../../components/Logo_Icon/SocialMedia';
 import DownloadButton from '../../components/Button/DownloadButton';
@@ -29,7 +29,7 @@ function HomePage() {
               <span>MINDS</span>
             </h1>
             <div className="chessBoardBackground">
-              <img src={chessboardpng} alt="ChessMinds" />
+              {/* <img src={chessboardpng} alt="ChessMinds" /> */}
             </div>
             <MainMenu
               handleMatchmakingClick={handleMatchmakingClick} 
