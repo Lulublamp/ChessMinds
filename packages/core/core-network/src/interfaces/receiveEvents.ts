@@ -29,6 +29,7 @@ export interface rIIncomingGameEvent {
   currentClientManager: ClientEventManager<MATCH_MAKING>;
   nextGameManager: ReactSetterOrNull<ClientEventManager<IN_GAME>>;
   name: string;
+  url: string;
 }
 
 export interface rINetworkMoveEvent {

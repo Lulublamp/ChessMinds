@@ -30,11 +30,11 @@ type CheckArgs<T , R> = T extends never ? never : R
 export class EventEmitter {
   readonly socket: Socket;
 
-  constructor(socketNameSpace: NAMESPACE_TYPES , token: string) {
+  constructor(urlServe: string , socketNameSpace: NAMESPACE_TYPES , token: string) {
     console.log("Connecting socket : ", token);
-    const serve = "http://localhost:10001"
-    console.log(`connect to ${serve}/${socketNameSpace}`)
-    this.socket = io(`${serve}/${socketNameSpace}`, {
+    // const serve = "http://localhost:10001"
+    console.log(`connect to ${urlServe}/${socketNameSpace}`)
+    this.socket = io(`${urlServe}/${socketNameSpace}`, {
       transports: ["websocket"],
       auth: {
         access_token: `Bearer ${token}`,
@@ -72,8 +72,8 @@ export class ClientEventManager<
   private type: T;
   private matchId: string | null = null
 
-  constructor(type: T, token: string) {
-    super(type , token);
+  constructor(urlServe: string, type: T, token: string) {
+    super(urlServe , type , token);
     this.type = type;
   }
 
@@ -109,7 +109,7 @@ export class ClientEventManager<
         e.classList.add("animation-start");
       });
 
-      const gameManager = new ClientEventManager<IN_GAME>(NAMESPACE_TYPES.IN_GAME , "")
+      const gameManager = new ClientEventManager<IN_GAME>(payload.url, NAMESPACE_TYPES.IN_GAME , "")
       gameManager.attach(game.matchId , payload.name)
       payload.nextGameManager(() => gameManager)
     });

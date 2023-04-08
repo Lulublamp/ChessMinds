@@ -40,7 +40,7 @@ const Game = () => {
     const timer = searchParams.get('TimerMode');
     const ps = searchParams.get('Pseudo');
     const elo = searchParams.get('Elo');
-    const newClientManager = new ClientEventManager<MATCH_MAKING>(NAMESPACE_TYPES.MATCH_MAKING, '');
+    const newClientManager = new ClientEventManager<MATCH_MAKING>(import.meta.env.VITE_SERVER_URL || 'http://localhost:10001', NAMESPACE_TYPES.MATCH_MAKING, '');
     if (!(mode && timer && ps && elo)) return navigate('/');
     const payload: eIJoinQueueEvent = {
       id: `${Math.random().toString(36).substr(2, 9)}`,
@@ -60,6 +60,7 @@ const Game = () => {
       disconnect: setClientManager,
       nextGameManager: setGameManager,
       name: ps,
+      url: import.meta.env.VITE_SERVER_URL || 'http://localhost:10001'
     }
     newClientManager.listenToIncomingMatch(listeningPayload)
     newClientManager.joinMatchMakingEvent(payload)
