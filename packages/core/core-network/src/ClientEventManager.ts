@@ -32,15 +32,9 @@ export class EventEmitter {
 
   constructor(urlServe: string , socketNameSpace: NAMESPACE_TYPES , token: string) {
     console.log("Connecting socket : ", token);
-<<<<<<< packages/core/core-network/src/ClientEventManager.ts
     // const serve = "http://localhost:10001"
     console.log(`connect to ${urlServe}/${socketNameSpace}`)
     this.socket = io(`${urlServe}/${socketNameSpace}`, {
-=======
-    const serve = "http://185.155.93.105:10009"
-    console.log(`connect to ${serve}/${socketNameSpace}`)
-    this.socket = io(`${serve}/${socketNameSpace}`, {
->>>>>>> packages/core/core-network/src/ClientEventManager.ts
       transports: ["websocket"],
       auth: {
         access_token: `Bearer ${token}`,
