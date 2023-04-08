@@ -41,6 +41,10 @@ export interface eIMakeMoveEvent {
   to: string,
 }
 
+export interface eIFirstMoveEvent {
+  matchId: string,
+  options: JoinQueuOption,
+}
 export interface eIRequestChatHistoryEvent {
   matchId: string;
 }

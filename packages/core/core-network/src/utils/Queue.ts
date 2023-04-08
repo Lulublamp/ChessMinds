@@ -178,4 +178,9 @@ export class Queue {
     this.queue = this.queue.filter((p) => p.id !== playerId);
     this.socketMap.delete(playerId);
   }
+
+  destroyGame(matchId: string): void {
+    this.games = this.games.filter((game) => game.matchId !== matchId);
+    this.coupledGames.delete(matchId);
+  }
 }

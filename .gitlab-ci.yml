@@ -42,20 +42,20 @@ install_dependencies:
     untracked: true
   only:
     changes:
+      - package.json
       - apps/backend/package.json
       - apps/client/package.json
       - apps/frontend/package.json
       - packages/core/package.json
       - packages/eslint-config-custom/package.json
 
-
-
 build_core:
   stage: build
   only:
-  - dev
+    - /^dev$/
+    - /^staging$/
   script:
-    - mkdir ./BUILDS && mkdir ./BUILDS/core && mkdir ./BUILDS/core/dist
+    # - mkdir ./BUILDS && mkdir ./BUILDS/core && mkdir ./BUILDS/core/dist
     - yarn workspace @TRPI/core build
   artifacts:
     paths:
@@ -64,12 +64,20 @@ build_core:
 build_backend:
   stage: build
   only:
-  - dev
+    - /^dev$/
+    - /^staging$/
   needs: 
     - job: build_core
       artifacts: true
   script:
-    - mkdir ./BUILDS/backend && mkdir ./BUILDS/backend/dist
+    # - mkdir ./BUILDS/backend && mkdir ./BUILDS/backend/dist
+    - echo 'MYSQL_HOST=$MYSQL_HOST' | tee -a ./apps/backend/.env
+    - echo 'MYSQL_PORT=$MYSQL_PORT' | tee -a ./apps/backend/.env
+    - echo 'MYSQL_USER=$MYSQL_USER' | tee -a ./apps/backend/.env
+    - echo 'MYSQL_PASSWORD=$MYSQL_PASSWORD' | tee -a ./apps/backend/.env
+    - echo 'MYSQL_DATABASE=$MYSQL_DATABASE' | tee -a ./apps/backend/.env
+    - ls ./apps/backend/
+    - cat ./apps/backend/.env
     - yarn workspace @TRPI/backend build
     - cp -r ./apps/backend/dist ./BUILDS/backend/dist
   artifacts:
@@ -79,10 +87,11 @@ build_backend:
 build_frontend:
   stage: build
   only:
-  - dev
+    - /^dev$/
+    - /^staging$/
   needs: ["build_core"]
   script:
-    - mkdir ./BUILDS/frontend && mkdir ./BUILDS/frontend/dist
+    # - mkdir ./BUILDS/frontend && mkdir ./BUILDS/frontend/dist
     - yarn workspace @TRPI/frontend build
     - cp -r ./apps/frontend/dist ./BUILDS/frontend/dist
   artifacts:
@@ -102,12 +111,15 @@ deploy_backend:
     - ls -la
     - sudo -u ubuntu screen -S backend -X quit || true
     - sudo -u ubuntu screen -dmS backend
-    - echo "MYSQL_HOST=$MYSQL_HOST" >> ./apps/backend/.env
-    - echo "MYSQL_PORT=$MYSQL_PORT" >> ./apps/backend/.env
-    - echo "MYSQL_USER=$MYSQL_USER" >> ./apps/backend/.env
-    - echo "MYSQL_PASSWORD=$MYSQL_PASSWORD" >> ./apps/backend/.env
-    - echo "MYSQL_DATABASE=$MYSQL_DATABASE" >> ./apps/backend/.env
-    - sudo -u ubuntu screen -S backend -X stuff "cd ./BUILDS/backend/dist/; node dist/main$(printf '\r')"
+
+    # Create .env in the deployed dist folder inside screen session
+    - sudo -u ubuntu sh -c "echo 'MYSQL_HOST=$MYSQL_HOST' | sudo tee -a ./BUILDS/backend/dist/.env"
+    - sudo -u ubuntu sh -c "echo 'MYSQL_PORT=$MYSQL_PORT' | sudo tee -a ./BUILDS/backend/dist/.env"
+    - sudo -u ubuntu sh -c "echo 'MYSQL_USER=$MYSQL_USER' | sudo tee -a ./BUILDS/backend/dist/.env"
+    - sudo -u ubuntu sh -c "echo 'MYSQL_PASSWORD=$MYSQL_PASSWORD' | sudo tee -a ./BUILDS/backend/dist/.env"
+    - sudo -u ubuntu sh -c "echo 'MYSQL_DATABASE=$MYSQL_DATABASE' | sudo tee -a ./BUILDS/backend/dist/.env"
+
+    - sudo -u ubuntu screen -S backend -X stuff "ls -la && cd ./BUILDS/backend/dist/dist/; node main$(printf '\r')"
 
 deploy_frontend:
   stage: deploy

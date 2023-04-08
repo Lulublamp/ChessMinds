@@ -23,7 +23,7 @@ import { Rencontre } from './rencontre/entities/rencontre.entity';
         host: configService.get('MYSQL_HOST') || 'localhost',
         port: configService.get('MYSQL_PORT') || 3306,
         username: configService.get('MYSQL_USER') || 'root',
-        password: configService.get('MYSQL_PASSWORD') || 'root',
+        // password: configService.get('MYSQL_PASSWORD') || 'root',
         database: configService.get('MYSQL_DATABASE') || 'chess-bdd',
         entities: [Joueur, Rencontre, Partie, Classement],
         autoLoadEntities: true,
