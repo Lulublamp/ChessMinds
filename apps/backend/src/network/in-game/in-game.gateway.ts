@@ -120,6 +120,8 @@ export class InGameGateway {
 
   private sockets: Socket[] = [];
   private chatService: Nt.ChatService = new Nt.ChatService();
+  private timers = new Map<string, NodeJS.Timer>();
+  private timersMap = new Map<string, CTimer>();
 
   constructor(private matchMakingService: MatchMakingService) {}
 
@@ -218,8 +220,13 @@ export class InGameGateway {
       timestamp: Date.now(),
     };
 
-    this.chatService.addChatMessage(chatMessage.matchId, chatMessageWithTimestamp);
-    this.server.to(chatMessage.matchId).emit(Nt.EVENT_TYPES.RECEIVE_CHAT_MESSAGE, chatMessageWithTimestamp);
+    this.chatService.addChatMessage(
+      chatMessage.matchId,
+      chatMessageWithTimestamp,
+    );
+    this.server
+      .to(chatMessage.matchId)
+      .emit(Nt.EVENT_TYPES.RECEIVE_CHAT_MESSAGE, chatMessageWithTimestamp);
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.REQUEST_CHAT_HISTORY)
