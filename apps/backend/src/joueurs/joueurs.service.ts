@@ -107,4 +107,12 @@ export class JoueursService {
       throw new NotFriends();
     }
   }
+
+  //A voir si c'est utile POUR return le pseudo selon adresse amil
+  async getFullPseudo(email: Pick<JoueurDto, 'adresseMail'>): Promise<string> {
+    const joueur = await this.findJoueurByEmail(email);
+    if(!joueur) throw new PlayerNotFound();
+    return joueur.fullpseudo;
+  }
+
 }

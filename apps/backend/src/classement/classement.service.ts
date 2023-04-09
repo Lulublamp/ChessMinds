@@ -25,8 +25,8 @@ export class ClassementService {
     return trouverClassement;
   }
 
-
-  async findJoueur(idJoueur: Pick<ClassementDto, "idJoueur">): Promise<Classement> {
+  //recupere le classement d'un joueur avec son id 
+   async findJoueur(idJoueur: Pick<ClassementDto, "idJoueur">): Promise<Classement> {
     const trouverJoueur= await this.classementRepository.findOne({
       where: {
         idJoueur: idJoueur,
@@ -37,7 +37,8 @@ export class ClassementService {
     }
     return trouverJoueur;
   }
-  
+
+  //Recupere le classement selon le type de partie et le trie par ELO
   async findByType(type: string): Promise<Classement[]> {
     let column: keyof Classement;
     switch (type) {
@@ -60,6 +61,7 @@ export class ClassementService {
       //relations: ['idJoueur'],
     });
   }
+ 
 
   async updateELO(idClassement: Pick<Classement, 'idClassement'>, typePartie: TypePartie, elo: number): Promise<Classement> {
     const classement = await this.classementRepository.findOneBy(idClassement);
