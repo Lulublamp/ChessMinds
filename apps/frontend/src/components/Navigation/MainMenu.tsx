@@ -4,6 +4,7 @@ import learnIcon from "../../images/LearnIcon.png";
 import leaderboardIcon from "../../images/LeaderBoardIcon.png";
 import MenuButton from "../Button/MenuButton";
 import MatchMaking from '../../components/Navigation/Matchmaking';
+import RejoindrePerso from '../../components/Navigation/RejoindrePerso';
 import CreerPartiePerso from '../../components/Navigation/CreerPartiePrive';
 import IAPopUP from '../../components/Navigation/Contre_IA';
 
@@ -14,9 +15,9 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
 
   const [showSubMenu, setShowSubMenu] = useState(false);
   const [showMatchmaking, setShowMatchmaking] = useState(false);
+  const [showRejoindrePerso, setShowRejoindrePerso] = useState(false);
   const [showCreerPartie, setShowCreerPartie] = useState(false);
   const [showIA, setShowIA] = useState(false);
-
 
   const handleClick = () => {
     setShowSubMenu(!showSubMenu);
@@ -33,6 +34,13 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
   const ClosePopupMatchMaking = () => {
     setShowMatchmaking(false);
   };
+
+  const OpenPopupRejoindrePerso = () => {
+    setShowRejoindrePerso(true);
+  };
+
+  const ClosePopupRejoindrePerso = () => {
+    setShowRejoindrePerso(false);
 
   const OpenPopupCreerPartie = () => {
     setShowCreerPartie(true);
@@ -62,6 +70,9 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
 
   if (showMatchmaking) {
     return <MatchMaking onCancel={ClosePopupMatchMaking} onPlay={handleMatchmaking} />
+  }
+  if (showRejoindrePerso) {
+    return <RejoindrePerso onCancel={ClosePopupRejoindrePerso} onPlay={handleMatchmaking} />
   }
   if (showCreerPartie) {
     return <CreerPartiePerso onCancel={ClosePopupCreerPartie} onPlay={handleMatchmaking} />
