@@ -4,6 +4,7 @@ import learnIcon from "../../images/LearnIcon.png";
 import leaderboardIcon from "../../images/LeaderBoardIcon.png";
 import MenuButton from "../Button/MenuButton";
 import MatchMaking from '../../components/Navigation/Matchmaking';
+import CreerPartiePerso from '../../components/Navigation/CreerPartiePrive';
 import IAPopUP from '../../components/Navigation/Contre_IA';
 
 
@@ -13,6 +14,7 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
 
   const [showSubMenu, setShowSubMenu] = useState(false);
   const [showMatchmaking, setShowMatchmaking] = useState(false);
+  const [showCreerPartie, setShowCreerPartie] = useState(false);
   const [showIA, setShowIA] = useState(false);
 
 
@@ -31,6 +33,13 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
   const ClosePopupMatchMaking = () => {
     setShowMatchmaking(false);
   };
+
+  const OpenPopupCreerPartie = () => {
+    setShowCreerPartie(true);
+  };
+
+  const ClosePopupCreerPartie = () => {
+    setShowCreerPartie(false);
 
   const OpenPopupIA = () => {
     setShowIA(true);
@@ -53,6 +62,9 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
 
   if (showMatchmaking) {
     return <MatchMaking onCancel={ClosePopupMatchMaking} onPlay={handleMatchmaking} />
+  }
+  if (showCreerPartie) {
+    return <CreerPartiePerso onCancel={ClosePopupCreerPartie} onPlay={handleMatchmaking} />
   }
   if (showIA) {
     return <IAPopUP id="1" onCancel={ClosePopupIA}/>
@@ -89,7 +101,7 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
         {showSubMenu && (
           <div className="subMenu_play">
             <MenuButton
-              id="jouer"
+              id="Matchmaking"
               imgSrc={playIcon}
               imgAlt="playIcon"
               spanText="Matchmaking"
@@ -97,7 +109,7 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
               click={OpenPopupMatchMaking}
             />
             <MenuButton
-              id="apprendre"
+              id="ContreIA"
               imgSrc={learnIcon}
               imgAlt="learnIcon"
               spanText="Contre l'IA"
@@ -105,11 +117,12 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
               click={OpenPopupIA}
             />
             <MenuButton
-              id="classement"
+              id="Ami"
               imgSrc={leaderboardIcon}
               imgAlt="leaderboardIcon"
               spanText="Affronter un ami"
               imgHeight="50px"
+              click={OpenPopupCreerPartie}  // a modifier quand on aura le submenu pour affornter un ami 
             />
           </div>
         )}
