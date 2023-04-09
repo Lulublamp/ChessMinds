@@ -4,6 +4,8 @@ import learnIcon from "../../images/LearnIcon.png";
 import leaderboardIcon from "../../images/LeaderBoardIcon.png";
 import MenuButton from "../Button/MenuButton";
 import MatchMaking from '../../components/Navigation/Matchmaking';
+import RejoindrePerso from '../../components/Navigation/RejoindrePerso';
+
 
 import "./MainMenuStyle.css";
 
@@ -11,6 +13,8 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
 
   const [showSubMenu, setShowSubMenu] = useState(false);
   const [showMatchmaking, setShowMatchmaking] = useState(false);
+  const [showRejoindrePerso, setShowRejoindrePerso] = useState(false);
+
 
   const handleClick = () => {
     setShowSubMenu(!showSubMenu);
@@ -28,6 +32,14 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
     setShowMatchmaking(false);
   };
 
+  const OpenPopupRejoindrePerso = () => {
+    setShowRejoindrePerso(true);
+  };
+
+  const ClosePopupRejoindrePerso = () => {
+    setShowRejoindrePerso(false);
+  };
+
 
   const handleMatchmaking = (RankedMode : string, TimerMode : string, Pseudo : string, Elo : number) => {
     //ICI A MODIFER POUR ENVOYER LES DONNEES AU SERVEUR
@@ -41,6 +53,9 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
 
   if (showMatchmaking) {
     return <MatchMaking onCancel={ClosePopupMatchMaking} onPlay={handleMatchmaking} />
+  }
+  if (showRejoindrePerso) {
+    return <RejoindrePerso onCancel={ClosePopupRejoindrePerso} onPlay={handleMatchmaking} />
   }
   else {
     return (
