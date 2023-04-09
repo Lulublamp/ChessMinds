@@ -30,10 +30,23 @@ export class JoueursController {
       const mailTrouver= await this.joueursService.findJoueurByEmail(email);
       return true;
     }catch(error){
+      console.log("Le mail n'existe pas");
       return false;
     }
   }
 
+  //DOUTE AVEC FULLPSEUDO ET PSEUDO
+  @Get('cherche/:pseudo')
+  async retrouverByPseudo(@Param('pseudo') pseudo: Pick<Joueur, 'fullpseudo'>){
+    try{
+      const pseudoTrouver= await this.joueursService.findJoueurByFullPseudo(pseudo);
+      return true;
+    }catch(error){
+      console.log("Le pseudo n'existe pas");
+      return false;
+    }
+  }
+  
   //si on veut inscrire un joueur
   //permet de mettre un message d'erreur si une des infos du joueur qui est @noempty n'est pas remplie (fichier dto)
   @Post('inscription')
@@ -55,6 +68,17 @@ export class JoueursController {
       );
     } catch (error) {
       console.log(error);
+      return error;
+    }
+  }
+
+  @Get('pseudo')
+  async retrouverPseudo(@Param('adresse') adresse: Pick<JoueurDto, 'adresseMail'>) {
+    try {
+      const pseudoTrouve = await this.joueursService.getFullPseudo(adresse);
+      return pseudoTrouve;
+    } catch (error) {
+      console.log("Le pseudo n'existe pas");
       return error;
     }
   }

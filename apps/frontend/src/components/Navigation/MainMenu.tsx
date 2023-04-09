@@ -5,6 +5,7 @@ import leaderboardIcon from "../../images/LeaderBoardIcon.png";
 import MenuButton from "../Button/MenuButton";
 import MatchMaking from '../../components/Navigation/Matchmaking';
 import CreerPartiePerso from '../../components/Navigation/CreerPartiePrive';
+import IAPopUP from '../../components/Navigation/Contre_IA';
 
 
 import "./MainMenuStyle.css";
@@ -14,6 +15,7 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
   const [showSubMenu, setShowSubMenu] = useState(false);
   const [showMatchmaking, setShowMatchmaking] = useState(false);
   const [showCreerPartie, setShowCreerPartie] = useState(false);
+  const [showIA, setShowIA] = useState(false);
 
 
   const handleClick = () => {
@@ -38,6 +40,13 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
 
   const ClosePopupCreerPartie = () => {
     setShowCreerPartie(false);
+
+  const OpenPopupIA = () => {
+    setShowIA(true);
+  };
+
+  const ClosePopupIA = () => {
+    setShowIA(false);
   };
 
 
@@ -56,6 +65,9 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
   }
   if (showCreerPartie) {
     return <CreerPartiePerso onCancel={ClosePopupCreerPartie} onPlay={handleMatchmaking} />
+  }
+  if (showIA) {
+    return <IAPopUP id="1" onCancel={ClosePopupIA}/>
   }
   else {
     return (
@@ -102,6 +114,7 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
               imgAlt="learnIcon"
               spanText="Contre l'IA"
               imgHeight="50px"
+              click={OpenPopupIA}
             />
             <MenuButton
               id="Ami"
