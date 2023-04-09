@@ -41,14 +41,14 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
 
   const ClosePopupRejoindrePerso = () => {
     setShowRejoindrePerso(false);
-
+  }
   const OpenPopupCreerPartie = () => {
     setShowCreerPartie(true);
   };
 
   const ClosePopupCreerPartie = () => {
     setShowCreerPartie(false);
-
+  }
   const OpenPopupIA = () => {
     setShowIA(true);
   };
