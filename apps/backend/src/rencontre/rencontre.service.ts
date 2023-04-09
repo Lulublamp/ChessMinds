@@ -23,10 +23,9 @@ export class RencontreService {
   async nombreRencontre(joueur: Pick<Joueur,'fullpseudo'>) {
     const nbreRencontre= await this.rencontreRepository
       .createQueryBuilder('rencontre')
-      .select('COUNT(*)', 'nbreRencontre')
       .where(
         'rencontre.joueurBlanc.fullpseudo = :joueur OR rencontre.joueurNoir.fullpseudo = :joueur', { joueur: joueur.fullpseudo })
-      .getRawOne();
+      .getCount();
       return nbreRencontre;
   }
 
@@ -34,7 +33,6 @@ export class RencontreService {
   async nombreVictoire(joueur: Pick<Joueur,'fullpseudo' | 'idJoueur'>){
     const nbreVictoire= this.rencontreRepository
       .createQueryBuilder('rencontre')
-      .select('COUNT(*)', 'nbreVictoire')
       .where(
         "rencontre.vainqueur = :id AND (rencontre.joueurBlanc = :joueur OR rencontre.joueurNoir = :joueur",
         { 
@@ -42,30 +40,28 @@ export class RencontreService {
           joueur: joueur.fullpseudo 
         }
       )
-      .getRawOne();
+      .getCount();
       return nbreVictoire;
   }
 
   async nombreDefaite(joueur: Pick<Joueur, 'fullpseudo' | 'idJoueur'>) {
     const nbreDefaite= this.rencontreRepository
       .createQueryBuilder('rencontre')
-      .select('COUNT(*)', 'nbreDefaite')
       .where("rencontre.vainqueur != :id AND (rencontre.joueurBlanc.fullpseudo = :joueur OR rencontre.joueurNoir = :joueur", 
       { 
         id: joueur.idJoueur,
         joueur: joueur.fullpseudo,
       })
-      .getRawOne();
+      .getCount();
       return nbreDefaite;
   }
 
   async nombreNul(joueur: Pick<Joueur, 'fullpseudo'>) {
     const nbreNul= this.rencontreRepository
       .createQueryBuilder('rencontre')
-      .select('COUNT(*)', 'nbreNul')
       .where("rencontre.vainqueur IS NULL AND (rencontre.joueurBlanc.fullpseudo = :joueur OR rencontre.joueurNoir = :joueur", 
       { joueur: joueur.fullpseudo })
-      .getRawOne();
+      .getCount();
       return nbreNul;
   }
 
@@ -82,7 +78,7 @@ export class RencontreService {
     
     const toutesRencontres= await this.rencontreRepository
       .createQueryBuilder('rencontre')
-      .where('rencontre.joueurBlanc.fullpseudo = :fullpseudo OR joueurNoir.fullpseudo = fullpseudo', { fullpseudo: fullpseudo })
+      .where('rencontre.joueurBlanc.fullpseudo = :fullpseudo OR joueurNoir.fullpseudo = :fullpseudo', { fullpseudo: fullpseudo })
       .andWhere(
         qb=>{
           const subQuery=qb
@@ -97,7 +93,7 @@ export class RencontreService {
       return toutesRencontres;
   }
   
-//recupere date rencontre PAS SUR
+//recupere date rencontre PAS SUR MAIS CA RECUPERE LA DATE DE LA PREMIERE PARTIE QU'IL TROUVE
   async dateRencontre(fullpseudo: Pick<Joueur, 'fullpseudo'>) {
     const joueur=await this.joueurRepository.findOne({
       where:{
@@ -110,7 +106,7 @@ export class RencontreService {
       .leftJoin('partie.idRencontre', 'rencontre')
       .leftJoin('rencontre.joueurBlanc', 'joueurBlanc')
       .leftJoin('rencontre.joueurNoir', 'joueurNoir')
-      .where('(joueurBlanc.fullpseudo = :fullpseudo OR joueurNoir.fullpseudo = fullpseudo )', { fullpseudo: fullpseudo.fullpseudo })
+      .where('(joueurBlanc.fullpseudo = :fullpseudo OR joueurNoir.fullpseudo = :fullpseudo )', { fullpseudo: fullpseudo.fullpseudo })
       .select('partie.datePartie')
       .getRawOne();
       return dateRencontre;
