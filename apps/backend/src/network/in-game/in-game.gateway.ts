@@ -178,6 +178,18 @@ export class InGameGateway {
     client.join(game.matchId);
   }
 
+  @SubscribeMessage(Nt.EVENT_TYPES.FIRST_MOVE)
+  handleFirstMove(
+    @MessageBody() firstMovePayload: Nt.eIFirstMoveEvent,
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log('match-making: First move : ' + client.id);
+    const { matchId, options } = firstMovePayload;
+    const timer: CTimer = new CTimer(options, matchId, this.server);
+    const toClearId = timer.startTimer();
+    this.timersMap.set(matchId, timer);
+  }
+
   @SubscribeMessage(Nt.EVENT_TYPES.MAKE_MOVE)
   handleMove(
     @MessageBody() movePayload: Nt.eIMakeMoveEvent,
