@@ -5,7 +5,7 @@ interface LevelProps {
 }
 
 const ElementSelonNiveauIA: React.FC<LevelProps> = ({ level }) => {
-    if (level == 1) {
+    if (level == 1 || level == -4) {
         return (
             <div>
                 <svg viewBox="0 0 118 117" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -16,7 +16,7 @@ const ElementSelonNiveauIA: React.FC<LevelProps> = ({ level }) => {
             </div>
         );
     }
-    else if (level == 2) {
+    else if (level == 2 || level == -3) {
         return (
             <div>
                 <svg viewBox="0 0 182 183" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -27,7 +27,7 @@ const ElementSelonNiveauIA: React.FC<LevelProps> = ({ level }) => {
             </div>
         );
     }
-    else if (level == 3) {
+    else if (level == 3 || level == -2) {
         return (
             <div>
                 <svg viewBox="0 0 182 183" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -38,7 +38,7 @@ const ElementSelonNiveauIA: React.FC<LevelProps> = ({ level }) => {
             </div>
         );
     }
-    else if (level == 4) {
+    else if (level == 4 || level ==-1) {
         return (
             <div>
                 <svg viewBox="0 0 182 183" fill="none" xmlns="http://www.w3.org/2000/svg">
