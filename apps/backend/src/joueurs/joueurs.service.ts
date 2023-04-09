@@ -4,6 +4,7 @@ import { create } from 'domain';
 import { resolve } from 'path';
 import {
   AlreadyFriends,
+  NotFriends,
   PlayerAlreadyExists,
   PlayerNotCreated,
   PlayerNotFound,
@@ -78,6 +79,8 @@ export class JoueursService {
       fullpseudo: fullpseudo,
     });
 
+    if(joueur.idJoueur === maybeFriend.idJoueur) throw new NotFriends();
+    
     console.log(joueur.amis);
 
     if (!joueur.amis) {
@@ -101,7 +104,15 @@ export class JoueursService {
       console.log('Friend added');
     } catch (error) {
       console.log(error);
-      throw new Error('Could not add friend');
+      throw new NotFriends();
     }
   }
+
+  //A voir si c'est utile POUR return le pseudo selon adresse amil
+  async getFullPseudo(email: Pick<JoueurDto, 'adresseMail'>): Promise<string> {
+    const joueur = await this.findJoueurByEmail(email);
+    if(!joueur) throw new PlayerNotFound();
+    return joueur.fullpseudo;
+  }
+
 }
