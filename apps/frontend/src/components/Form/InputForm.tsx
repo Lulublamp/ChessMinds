@@ -27,7 +27,7 @@ const InputForm: FC<InputProps> = ({ id, iconeInput, placeHolder, type, onChange
 
   if (iconeInput) {
     return (
-      <div id={id}>
+      <div className="InputForm" id={id}>
         <label>
           <input type={showPassword ? 'text' : 'password'} placeholder={placeHolder} onChange={onChange}/>
           <button onClick={toggleShowPassword}>
@@ -38,7 +38,7 @@ const InputForm: FC<InputProps> = ({ id, iconeInput, placeHolder, type, onChange
     );
   }
   return (
-    <div id={id}>
+    <div className="InputForm" id={id}>
       <label>
         <input type={type} placeholder={placeHolder} onChange={onChange}/>
       </label>
