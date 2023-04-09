@@ -11,7 +11,7 @@ export class RencontreController {
 
 //recuperer le nombre de rencontre d'un joueur
   @Get('nombre/:joueur')
-  async nombreRencontre(@Param('joueur') joueur: Pick<RencontreDTO, 'joueurBlanc' | 'joueurNoir'>) {
+  async nombreRencontre(@Param('joueur') joueur: Pick<Joueur,'fullpseudo'>) {
     try {
       const nombreRencontre = await this.rencontreService.nombreRencontre(joueur);
       return nombreRencontre;
@@ -23,7 +23,7 @@ export class RencontreController {
 
 //recuperer le nombre de victoire d'un joueur
   @Get('victoire/:joueur')
-  async nombreVictoire(@Param('joueur') joueur: Pick<RencontreDTO, 'joueurBlanc' | 'joueurNoir'>) {
+  async nombreVictoire(@Param('joueur') joueur: Pick<Joueur, 'fullpseudo' | 'idJoueur'>) {
     try {
       const nombreVictoire = await this.rencontreService.nombreVictoire(joueur);
       return nombreVictoire;
@@ -35,7 +35,7 @@ export class RencontreController {
 
   //recuperer le nombre de défaite
   @Get('defaite/:joueur')
-  async nombreDefaite(@Param('joueur') joueur: Pick<RencontreDTO, 'joueurBlanc' | 'joueurNoir'>) {
+  async nombreDefaite(@Param('joueur') joueur: Pick<Joueur, 'fullpseudo' | 'idJoueur'>) {
     try {
       const nombreDefaite = await this.rencontreService.nombreDefaite(joueur);
       return nombreDefaite;
@@ -47,7 +47,7 @@ export class RencontreController {
 
   //recuperer le nombre de nul
   @Get('nul/:joueur')
-  async nombreNul(@Param('joueur') joueur: Pick<RencontreDTO, 'joueurBlanc' | 'joueurNoir'>) {
+  async nombreNul(@Param('joueur') joueur: Pick<Joueur, 'fullpseudo'>) {
     try {
       const nombreNul = await this.rencontreService.nombreNul(joueur);
       return nombreNul;

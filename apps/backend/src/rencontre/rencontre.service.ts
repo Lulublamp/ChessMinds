@@ -6,56 +6,69 @@ import { Repository } from 'typeorm';
 import { Joueur } from 'src/joueurs/entities/joueur.entity';
 import { JoueurDto } from 'src/joueurs/DTO/joueurs.dto';
 import { PlayerNotFound } from 'src/errors/bErrors';
+import { Partie } from 'src/partie/entities/partie.entity';
 
 @Injectable()
 export class RencontreService {
-  partieRepository: any;
-  
- 
   
   constructor(
     @InjectRepository(Joueur)
     private readonly joueurRepository: Repository<Joueur>,
     @InjectRepository(Rencontre)
     private readonly rencontreRepository: Repository<Rencontre>,
+    @InjectRepository(Partie)
+    private readonly partieRepository: Repository<Partie>,
   ) {}
 
-  async nombreRencontre(joueur: Pick<RencontreDTO, 'joueurBlanc' | 'joueurNoir'>) {
+  async nombreRencontre(joueur: Pick<Joueur,'fullpseudo'>) {
     const nbreRencontre= await this.rencontreRepository
       .createQueryBuilder('rencontre')
       .select('COUNT(*)', 'nbreRencontre')
-      .where('rencontre.joueurBlanc = :joueur OR rencontre.joueurNoir = :joueur', { joueur: joueur })
+      .where(
+        'rencontre.joueurBlanc.fullpseudo = :joueur OR rencontre.joueurNoir.fullpseudo = :joueur', { joueur: joueur.fullpseudo })
       .getRawOne();
       return nbreRencontre;
   }
 
 
-  async nombreVictoire(joueur: Pick<RencontreDTO, "joueurBlanc" | "joueurNoir">) {
+  async nombreVictoire(joueur: Pick<Joueur,'fullpseudo' | 'idJoueur'>){
     const nbreVictoire= this.rencontreRepository
       .createQueryBuilder('rencontre')
       .select('COUNT(*)', 'nbreVictoire')
-      .where("rencontre.vainqueur = :joueur AND (rencontre.joueurBlanc = :joueur OR rencontre.joueurNoir = :joueur", { joueur: joueur })
+      .where(
+        "rencontre.vainqueur = :id AND (rencontre.joueurBlanc = :joueur OR rencontre.joueurNoir = :joueur",
+        { 
+          id: joueur.idJoueur,
+          joueur: joueur.fullpseudo 
+        }
+      )
       .getRawOne();
       return nbreVictoire;
   }
 
-  async nombreDefaite(joueur: Pick<RencontreDTO, "joueurBlanc" | "joueurNoir">) {
+  async nombreDefaite(joueur: Pick<Joueur, 'fullpseudo' | 'idJoueur'>) {
     const nbreDefaite= this.rencontreRepository
       .createQueryBuilder('rencontre')
       .select('COUNT(*)', 'nbreDefaite')
-      .where("rencontre.vainqueur != :joueur AND (rencontre.joueurBlanc = :joueur OR rencontre.joueurNoir = :joueur", { joueur: joueur })
+      .where("rencontre.vainqueur != :id AND (rencontre.joueurBlanc.fullpseudo = :joueur OR rencontre.joueurNoir = :joueur", 
+      { 
+        id: joueur.idJoueur,
+        joueur: joueur.fullpseudo,
+      })
       .getRawOne();
       return nbreDefaite;
   }
 
-  async nombreNul(joueur: Pick<RencontreDTO, "joueurBlanc" | "joueurNoir">) {
+  async nombreNul(joueur: Pick<Joueur, 'fullpseudo'>) {
     const nbreNul= this.rencontreRepository
       .createQueryBuilder('rencontre')
       .select('COUNT(*)', 'nbreNul')
-      .where("rencontre.vainqueur IS NULL AND (rencontre.joueurBlanc = :joueur OR rencontre.joueurNoir = :joueur", { joueur: joueur })
+      .where("rencontre.vainqueur IS NULL AND (rencontre.joueurBlanc.fullpseudo = :joueur OR rencontre.joueurNoir = :joueur", 
+      { joueur: joueur.fullpseudo })
       .getRawOne();
       return nbreNul;
   }
+
 
   //recupere toutes les rencontres d'un joueur
   //JE SAIS PAS AVEC QUEL MÉTHODE
@@ -69,9 +82,7 @@ export class RencontreService {
     
     const toutesRencontres= await this.rencontreRepository
       .createQueryBuilder('rencontre')
-      .leftJoinAndSelect('rencontre.joueurBlanc', 'joueurBlanc')
-      .leftJoinAndSelect('rencontre.joueurNoir', 'joueurNoir')
-      .where('joueurBlanc.fullpseudo = :fullpseudo OR joueurNoir.fullpseudo = fullpseudo', { fullpseudo: fullpseudo })
+      .where('rencontre.joueurBlanc.fullpseudo = :fullpseudo OR joueurNoir.fullpseudo = fullpseudo', { fullpseudo: fullpseudo })
       .andWhere(
         qb=>{
           const subQuery=qb
