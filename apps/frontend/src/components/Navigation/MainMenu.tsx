@@ -4,6 +4,8 @@ import learnIcon from "../../images/LearnIcon.png";
 import leaderboardIcon from "../../images/LeaderBoardIcon.png";
 import MenuButton from "../Button/MenuButton";
 import MatchMaking from '../../components/Navigation/Matchmaking';
+import CreerPartiePerso from '../../components/Navigation/CreerPartiePrive';
+
 
 import "./MainMenuStyle.css";
 
@@ -11,6 +13,8 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
 
   const [showSubMenu, setShowSubMenu] = useState(false);
   const [showMatchmaking, setShowMatchmaking] = useState(false);
+  const [showCreerPartie, setShowCreerPartie] = useState(false);
+
 
   const handleClick = () => {
     setShowSubMenu(!showSubMenu);
@@ -28,6 +32,14 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
     setShowMatchmaking(false);
   };
 
+  const OpenPopupCreerPartie = () => {
+    setShowCreerPartie(true);
+  };
+
+  const ClosePopupCreerPartie = () => {
+    setShowCreerPartie(false);
+  };
+
 
   const handleMatchmaking = (RankedMode : string, TimerMode : string, Pseudo : string, Elo : number) => {
     //ICI A MODIFER POUR ENVOYER LES DONNEES AU SERVEUR
@@ -41,6 +53,9 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
 
   if (showMatchmaking) {
     return <MatchMaking onCancel={ClosePopupMatchMaking} onPlay={handleMatchmaking} />
+  }
+  if (showCreerPartie) {
+    return <CreerPartiePerso onCancel={ClosePopupCreerPartie} onPlay={handleMatchmaking} />
   }
   else {
     return (
@@ -74,7 +89,7 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
         {showSubMenu && (
           <div className="subMenu_play">
             <MenuButton
-              id="jouer"
+              id="Matchmaking"
               imgSrc={playIcon}
               imgAlt="playIcon"
               spanText="Matchmaking"
@@ -82,18 +97,19 @@ function MainMenu({ handleMatchmakingClick }: { handleMatchmakingClick: (RankedM
               click={OpenPopupMatchMaking}
             />
             <MenuButton
-              id="apprendre"
+              id="ContreIA"
               imgSrc={learnIcon}
               imgAlt="learnIcon"
               spanText="Contre l'IA"
               imgHeight="50px"
             />
             <MenuButton
-              id="classement"
+              id="Ami"
               imgSrc={leaderboardIcon}
               imgAlt="leaderboardIcon"
               spanText="Affronter un ami"
               imgHeight="50px"
+              click={OpenPopupCreerPartie}  // a modifier quand on aura le submenu pour affornter un ami 
             />
           </div>
         )}

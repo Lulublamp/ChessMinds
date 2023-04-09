@@ -1,0 +1,176 @@
+.CreerPartie {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(10, 10, 10, 0.5);
+    z-index: 10;
+}
+
+.CreerPartie h2{
+    font-size: 25px;
+    font-weight: bold;
+    color: #000;
+    margin-top: 50px;
+}
+
+.CreerPartie h3{
+    color: #000;
+    border-bottom: solid 1px #000;
+    margin-top: 30px;
+    margin-bottom: 20px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 40px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+}
+
+.PlayButton{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 150px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: #D73324;
+    cursor: pointer;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    margin: 30px 0 35px 0;
+}
+  
+.cancel-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    background-color: inherit;
+    cursor: pointer;
+    border: none;
+}
+  
+.CreerPartie > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background-color: #fff;
+    border-radius: 20px;
+    width: 430px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.CreerPartie > div > div > div {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    width: 90%;
+    gap: 5px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+
+/* ---------------- Partie : Type de partie -------------- */
+
+.CreerPartie > div > div:first-of-type {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.timeMode {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100px;
+    height: 70px;
+    border-radius: 10px;
+    background-color: #4D5865;
+    cursor: pointer;
+}
+.timeMode:hover {
+    background-color: #695158;
+}
+.timeModeHover {
+    background: #D73324;
+}
+  
+.CreerPartie > div > div:first-of-type > div > div > div{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+}
+  
+.CreerPartie > div > div:first-of-type > div > div > div > span{
+    font-size: 16px;
+    font-weight: bold;
+    color: #fff;
+    margin-left: 8px;
+}
+
+.CreerPartie > div > div:first-of-type > div > div > span{
+    font-size: 14px;
+    color: #fff;
+}
+
+
+/* ------- Partie : Paramètres personnalisés ------- */
+
+.ParamCustomHide {
+    display: none;
+}
+
+.ParamCustomShow {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.CreerPartie > div > div:nth-of-type(2) > div > div {
+    width: 90%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.CreerPartie > div > div:nth-of-type(2) > div > div > label {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 500;
+    font-size: 18px;
+    line-height: 22px;
+
+    text-align: center;
+}
+
+.CreerPartie > div > div:nth-of-type(2) > div > div > div {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 155px;
+}
+
+.CreerPartie > div > div:nth-of-type(2) > div > div > div > output{
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-size: 14px;
+    width: 50px;
+}
+
+.CreerPartie > div > div:nth-of-type(2) > div > div > div > input{
+    width: 100px;
+}
