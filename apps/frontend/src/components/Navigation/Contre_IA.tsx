@@ -25,7 +25,7 @@ const IAPopUP: React.FC<IAProps> = ({id, JouerVsIA, onCancel}) => {
         <div>
             <h2>Match contre l'IA</h2>
             <div>
-                <ElementSelonNiveauIA level={NumberNiv} />
+                <ElementSelonNiveauIA levelIA={NumberNiv} />
                 <div>
                     <div>
                         <svg width="53" height="54" viewBox="0 0 53 54" fill="none" xmlns="http://www.w3.org/2000/svg" onClick={LeftNiv}>
