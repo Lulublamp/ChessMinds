@@ -1,11 +1,12 @@
+import { divide } from 'lodash';
 import React from 'react';
 
 interface LevelProps {
-    level: number;
+    levelIA: number;
 }
 
-const ElementSelonNiveauIA: React.FC<LevelProps> = ({ level }) => {
-    if (level == 1 || level == -4) {
+const ElementSelonNiveauIA: React.FC<LevelProps> = ({ levelIA }) => {
+    if (levelIA == 1 || levelIA == -4) {
         return (
             <div>
                 <svg viewBox="0 0 118 117" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -16,7 +17,7 @@ const ElementSelonNiveauIA: React.FC<LevelProps> = ({ level }) => {
             </div>
         );
     }
-    else if (level == 2 || level == -3) {
+    else if (levelIA == 2 || levelIA == -3) {
         return (
             <div>
                 <svg viewBox="0 0 182 183" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -27,7 +28,7 @@ const ElementSelonNiveauIA: React.FC<LevelProps> = ({ level }) => {
             </div>
         );
     }
-    else if (level == 3 || level == -2) {
+    else if (levelIA == 3 || levelIA == -2) {
         return (
             <div>
                 <svg viewBox="0 0 182 183" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -38,7 +39,7 @@ const ElementSelonNiveauIA: React.FC<LevelProps> = ({ level }) => {
             </div>
         );
     }
-    else if (level == 4 || level ==-1) {
+    else if (levelIA == 4 || levelIA ==-1) {
         return (
             <div>
                 <svg viewBox="0 0 182 183" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -49,7 +50,7 @@ const ElementSelonNiveauIA: React.FC<LevelProps> = ({ level }) => {
             </div>
         );
     }
-    else if (level == 0) {
+    else if (levelIA == 0) {
         return (
             <div>
                 <svg viewBox="0 0 182 183" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -66,7 +67,10 @@ const ElementSelonNiveauIA: React.FC<LevelProps> = ({ level }) => {
                 <span>(2000 ELO)</span>
             </div>
         );
-    }    
+    }   
+    else {
+        return (<div></div>);
+    } 
 };
 
 export default ElementSelonNiveauIA;
