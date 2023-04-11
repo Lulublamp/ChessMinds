@@ -1,4 +1,4 @@
-label {
+.InputForm label {
     width: 337px;
     height: 42.08px;
     margin: 0 0 20px 0;
@@ -9,7 +9,7 @@ label {
     box-shadow: inset 0px 1px 5px rgba(0, 0, 0, 0.5);
 }
 
-label > input {
+.InputForm label > input {
     border: none;
     padding: 0 20px;
     width: 337px;
@@ -24,16 +24,16 @@ label > input {
     border-radius: 5px;
 }
 
-label > input::placeholder {
+.InputForm label > input::placeholder {
     color: #838383;
 }
 
-label > input:focus {
+.InputForm  label > input:focus {
     outline: none;
 }
 
 
-label > button {
+.InputForm label > button {
     background-color: inherit;
     cursor: pointer;
     border: none;

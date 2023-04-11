@@ -1,0 +1,146 @@
+.Match_contre_IA {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(10, 10, 10, 0.5);
+    z-index: 10;
+    
+}
+  
+.Match_contre_IA > div {
+    background-color: #F5F5F5;
+    border-radius: 20px;
+    width: 430px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.Match_contre_IA h2 {
+    margin: 55px 0 35px 0;
+    padding: 0 35px;
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 700;
+    font-size: 25px;
+    line-height: 30px;
+    text-align: center;
+    color: #000000;
+}
+
+.Match_contre_IA > div > div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+
+.Match_contre_IA > div > div > div:first-of-type {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.Match_contre_IA > div > div > div:first-of-type > svg {
+    border: 1px solid #000;
+    width: 150px;
+    height: 150px;
+}
+
+.Match_contre_IA > div > div > div:first-of-type > span:first-of-type {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 21px;
+    line-height: 26px;
+    /* identical to box height */
+
+    display: flex;
+    align-items: center;
+    text-align: center;
+    text-transform: uppercase;
+
+    color: #000000;
+    margin-top: 10px;
+}
+
+.Match_contre_IA > div > div > div:first-of-type > span:last-of-type {
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 26px;
+    /* identical to box height */
+
+    display: flex;
+    align-items: center;
+    text-align: center;
+    text-transform: uppercase;
+
+    color: #000000;
+}
+
+.Match_contre_IA > div > div > div:nth-of-type(2) > div > svg {
+    cursor: pointer;
+}
+
+.Match_contre_IA > div > div > div:nth-of-type(2) {
+    display: flex;
+}
+
+.Match_contre_IA div > button:first-of-type {
+    width: 150px;
+    height: 40px;
+    border-radius: 20px;
+    background-color: var(--couleur-important);
+    cursor: pointer;
+    color: #fff;
+    font-size: 20px;
+    font-weight: bold;
+    border: none;
+    margin: 40px 0px;
+
+    
+    font-family: 'Montserrat';
+    font-style: normal;
+    font-weight: 800;
+    font-size: 20px;
+    line-height: 24px;
+    display: flex;
+    align-items: center;
+    text-align: center;
+    text-transform: uppercase;
+    
+    /* blanc cassé */
+    
+    color: #F5F5F5;
+
+}
+
+.Match_contre_IA div > button:first-of-type:hover {
+    background-color: #c81302;
+}
+
+
+.Match_contre_IA > div > div > div > div:nth-child(2) {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+
+.cancel-btn {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    background-color: inherit;
+    cursor: pointer;
+    border: none;
+}

@@ -29,6 +29,8 @@ const Game = () => {
   const [chessGame, setChessGame] = useState<ChessGame | null>(new ChessGame());
   const findChessGame = new ChessGame();
 
+  const [matchMakingPayload , setMatchMakingPayload] = useState<eIJoinQueueEvent | null>(null);
+
   useEffect(() => {
     
     if (clientManager) return;
@@ -38,7 +40,7 @@ const Game = () => {
     const timer = searchParams.get('TimerMode');
     const ps = searchParams.get('Pseudo');
     const elo = searchParams.get('Elo');
-    const newClientManager = new ClientEventManager<MATCH_MAKING>(NAMESPACE_TYPES.MATCH_MAKING, '');
+    const newClientManager = new ClientEventManager<MATCH_MAKING>(import.meta.env.VITE_SERVER_URL || 'http://localhost:10001', NAMESPACE_TYPES.MATCH_MAKING, '');
     if (!(mode && timer && ps && elo)) return navigate('/');
     const payload: eIJoinQueueEvent = {
       id: `${Math.random().toString(36).substr(2, 9)}`,
@@ -49,6 +51,7 @@ const Game = () => {
         timer: timer as MATCHMAKING_MODES_TIMERS
       }
     }
+    setMatchMakingPayload(payload);
     const listeningPayload: rIIncomingGameEvent = {
       gameSetter: set_Game,
       triggerSetter: setFindPlayer,
@@ -57,6 +60,7 @@ const Game = () => {
       disconnect: setClientManager,
       nextGameManager: setGameManager,
       name: ps,
+      url: import.meta.env.VITE_SERVER_URL || 'http://localhost:10001'
     }
     newClientManager.listenToIncomingMatch(listeningPayload)
     newClientManager.joinMatchMakingEvent(payload)
@@ -126,7 +130,9 @@ const Game = () => {
       setMovesData,
       setGameManager,
       set_Game,
-      setCurrentIndex
+      setCurrentIndex,
+      timer: searchParams.get('TimerMode'),
+      fpayload: matchMakingPayload,
     }}>
       <FindPlayer onCancel={cancelMatchmaking}
         show={!PlayerIsFind}
@@ -134,19 +140,21 @@ const Game = () => {
       <section className="chessGame">
         <div className="leftContainer">
           <PlayerContainer
-            isWhitePlayer={true}
+            isWhitePlayer={playerisWhite}
             playerName={_game ? !playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
             playerScore={_game ? !playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
             playerScorePieceValue={2}
             time="10:00"
+            enHaut={true}
           />
           <Chat />
           <PlayerContainer
-            isWhitePlayer={false}
+            isWhitePlayer={playerisWhite}
             playerName={_game ? playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
             playerScore={_game ? playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
             playerScorePieceValue={2}
             time="10:00"
+            enHaut={false}
           />
         </div>
         <div className="chessBoardContainer">

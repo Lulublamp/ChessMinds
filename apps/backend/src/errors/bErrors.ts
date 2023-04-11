@@ -25,9 +25,21 @@ export class AlreadyFriends extends HttpException {
   }
 }
 
+export class NotFriends extends HttpException {
+  constructor() {
+    super('Not friends', HttpStatus.CONFLICT);
+  }
+}
+
 //TABLE CLASSEMENT
 export class ClassementNotFound extends HttpException {
   constructor() {
     super('Classement not found', HttpStatus.NOT_FOUND);
+  }
+}
+
+export class TypeNotFound extends HttpException{
+  constructor(){
+    super('Type not found', HttpStatus.NOT_FOUND);
   }
 }

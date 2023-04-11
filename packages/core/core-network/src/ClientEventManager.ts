@@ -10,9 +10,10 @@ import {
   eICreateLobbyEvent,
   eICreateLobbyWithReturnEvent,
   lobbyPlayer,
+  eIFirstMoveEvent,
 } from "./interfaces/emitEvents";
 import { IN_GAME, MATCH_MAKING, NAMESPACE_TYPES } from "./Namespace";
-import { Move, rICreateRoomEvent, rIIncomingGameEvent, rINetworkMoveEvent } from "./interfaces/receiveEvents";
+import { Move, rICreateRoomEvent, rIIncomingGameEvent, rINetworkMoveEvent, rITimeEvent } from "./interfaces/receiveEvents";
 import { IGame, Match, PPlayer } from "./utils/Queue";
 import { PrivateLobby } from "./utils/Lobby";
 import { ChessBoard, Color } from "../../core-algo";
@@ -29,11 +30,11 @@ type CheckArgs<T , R> = T extends never ? never : R
 export class EventEmitter {
   readonly socket: Socket;
 
-  constructor(socketNameSpace: NAMESPACE_TYPES , token: string) {
+  constructor(urlServe: string , socketNameSpace: NAMESPACE_TYPES , token: string) {
     console.log("Connecting socket : ", token);
-    const serve = "http://localhost:3001"
-    console.log(`connect to ${serve}/${socketNameSpace}`)
-    this.socket = io(`${serve}/${socketNameSpace}`, {
+    // const serve = "http://localhost:10001"
+    console.log(`connect to ${urlServe}/${socketNameSpace}`)
+    this.socket = io(`${urlServe}/${socketNameSpace}`, {
       transports: ["websocket"],
       auth: {
         access_token: `Bearer ${token}`,
@@ -71,8 +72,8 @@ export class ClientEventManager<
   private type: T;
   private matchId: string | null = null
 
-  constructor(type: T, token: string) {
-    super(type , token);
+  constructor(urlServe: string, type: T, token: string) {
+    super(urlServe , type , token);
     this.type = type;
   }
 
@@ -108,7 +109,7 @@ export class ClientEventManager<
         e.classList.add("animation-start");
       });
 
-      const gameManager = new ClientEventManager<IN_GAME>(NAMESPACE_TYPES.IN_GAME , "")
+      const gameManager = new ClientEventManager<IN_GAME>(payload.url, NAMESPACE_TYPES.IN_GAME , "")
       gameManager.attach(game.matchId , payload.name)
       payload.nextGameManager(() => gameManager)
     });
@@ -180,7 +181,31 @@ export class ClientEventManager<
     });
   }
 
+  public firstMove(payload: Check<T , IN_GAME , eIFirstMoveEvent>){
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    console.log('first move PAYLOAD' , payload);
+    this.send(EVENT_TYPES.FIRST_MOVE , payload);
+  }
+
+  public listenToTime(payload: Check<T , IN_GAME , rITimeEvent>){
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.socket.on(EVENT_TYPES.TIMER , (time) => {
+      console.log('time received' , time);
+      const thisTime = payload.id == 'white' ? time.whiteTime : time.blackTime
+      const timeInStringMinute = Math.floor(thisTime / 60).toString();
+      console.log('time in string minute' , timeInStringMinute);
+      let timeInStringSecond = (thisTime % 60).toString();
+      if (timeInStringSecond.length == 1){
+        timeInStringSecond = '0' + timeInStringSecond 
+      }
+      console.log('time in string second' , timeInStringSecond);
+      console.log(payload.time)
+      payload.timeSetter(() => timeInStringMinute + ':' + timeInStringSecond)
+    })
+  }
+
   public close() {
     this.socket.close();
   }
+
 }
