@@ -16,6 +16,7 @@ import { Joueur } from './entities/joueur.entity';
 
 @Injectable()
 export class JoueursService {
+ 
   constructor(
     @InjectRepository(Joueur)
     private readonly joueursRepository: Repository<Joueur>,
@@ -75,9 +76,11 @@ export class JoueursService {
 
   async addFriend(email: string, fullpseudo: string) {
     const joueur = await this.findJoueurByEmail({ adresseMail: email });
+    //if(!joueur) throw new PlayerNotFound();
     const maybeFriend = await this.findJoueurByFullPseudo({
       fullpseudo: fullpseudo,
     });
+    //if(!maybeFriend) throw new PlayerNotFound();
 
     if(joueur.idJoueur === maybeFriend.idJoueur) throw new NotFriends();
     
@@ -108,6 +111,32 @@ export class JoueursService {
     }
   }
 
+  async getFriends(joueur: Pick<Joueur, "fullpseudo" >) {
+    const joueurTrouve = await this.joueursRepository.findOne({
+      where: {
+        fullpseudo: joueur.fullpseudo,
+      },
+      relations: ['amis'],
+    });
+    if (!joueurTrouve) {
+      throw new PlayerNotFound();
+    }
+    return joueurTrouve;
+  }
+
+  async getInscriptionDate(joueur: Pick<Joueur, "fullpseudo" >) {
+    const joueurD= await this.joueursRepository.findOne({
+      where: {
+        fullpseudo: joueur.fullpseudo,
+        },
+      select: ['dateInscription'],
+    });
+    if (!joueurD) {
+      throw new PlayerNotFound();
+    }
+    return joueurD;
+  }
+  
   //A voir si c'est utile POUR return le pseudo selon adresse amil
   async getFullPseudo(email: Pick<JoueurDto, 'adresseMail'>): Promise<string> {
     const joueur = await this.findJoueurByEmail(email);
