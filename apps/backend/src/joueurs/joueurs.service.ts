@@ -75,10 +75,11 @@ export class JoueursService {
 
   async addFriend(email: string, fullpseudo: string) {
     const joueur = await this.findJoueurByEmail({ adresseMail: email });
+    //if(!joueur) throw new PlayerNotFound();
     const maybeFriend = await this.findJoueurByFullPseudo({
       fullpseudo: fullpseudo,
     });
-
+    //if(!maybeFriend) throw new PlayerNotFound();
     console.log(joueur.amis);
 
     if (!joueur.amis) {
@@ -106,12 +107,10 @@ export class JoueursService {
     }
   }
 
-  async getFriends(joueur: Pick<Joueur, "adresseMail" | "fullpseudo" | "pseudo">, arg1: { relations: string[]; }) {
+  async getFriends(joueur: Pick<Joueur, "fullpseudo" >) {
     const joueurTrouve = await this.joueursRepository.findOne({
       where: {
-        adresseMail: joueur.adresseMail,
         fullpseudo: joueur.fullpseudo,
-        pseudo: joueur.pseudo,
       },
       relations: ['amis'],
     });
@@ -121,12 +120,10 @@ export class JoueursService {
     return joueurTrouve;
   }
 
-  async getInscriptionDate(joueur: Pick<Joueur, "adresseMail" | "fullpseudo" | "pseudo">) {
+  async getInscriptionDate(joueur: Pick<Joueur, "fullpseudo" >) {
     const joueurD= await this.joueursRepository.findOne({
       where: {
-        adresseMail: joueur.adresseMail,
         fullpseudo: joueur.fullpseudo,
-        pseudo: joueur.pseudo,
         },
       select: ['dateInscription'],
     });

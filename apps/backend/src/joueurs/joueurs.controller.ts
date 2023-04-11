@@ -63,9 +63,9 @@ export class JoueursController {
   //recuperer la liste des amis d'un joueur 
   @Get('friends/list')
   async getFriends(
-    @Param('pseudo') joueur: Pick<Joueur, 'fullpseudo' | 'pseudo' | 'adresseMail'>){
+    @Param('pseudo') joueur: Pick<Joueur, 'fullpseudo'>){
       try{
-        const friends = await this.joueursService.getFriends(joueur, {relations: ['amis']});
+        const friends = await this.joueursService.getFriends(joueur);
         return friends;
       }catch(error){
         console.log(error);
