@@ -10,6 +10,7 @@ import { Socket, Server } from 'socket.io';
 import { MatchMakingService } from '../match-making/match-making.service';
 import { IGame } from '@TRPI/core/core-network';
 import { JoinQueuOption } from '@TRPI/core/core-network/src/MatchMaking';
+import { Color } from '@TRPI/core/core-algo/src/pieces/ChessPiece';
 
 export class CTimer {
   public blackTime;
@@ -271,6 +272,20 @@ export class InGameGateway {
 
     if (!roomSockets) {
       console.log('error: room not found CANCEL_MOVE');
+      return;
+    }
+
+    //Find player's color
+    const playerColor = game.white_player.socketId === client.id ? Color.White : Color.Black;
+
+    const coupledGame = this.matchMakingService.queue.coupledGamesList.get(payload.matchId);
+
+    try{
+      coupledGame.cancelMove(playerColor);
+    }
+    catch(error){
+      console.log('error: invalid cancel move !!');
+      console.log(error);
       return;
     }
 
