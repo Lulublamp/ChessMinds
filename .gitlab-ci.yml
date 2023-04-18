@@ -6,6 +6,7 @@ before_script:
 
 
 stages:
+  # - debug
   - .pre
   - build
   - deploy
@@ -55,11 +56,10 @@ build_core:
     - /^dev$/
     - /^staging$/
   script:
-    # - mkdir ./BUILDS && mkdir ./BUILDS/core && mkdir ./BUILDS/core/dist
     - yarn workspace @TRPI/core build
   artifacts:
     paths:
-      - ./BUILDS/core/dist
+      - ./packages/core/dist
 
 build_backend:
   stage: build
@@ -70,7 +70,6 @@ build_backend:
     - job: build_core
       artifacts: true
   script:
-    # - mkdir ./BUILDS/backend && mkdir ./BUILDS/backend/dist
     - echo 'MYSQL_HOST=$MYSQL_HOST' | tee -a ./apps/backend/.env
     - echo 'MYSQL_PORT=$MYSQL_PORT' | tee -a ./apps/backend/.env
     - echo 'MYSQL_USER=$MYSQL_USER' | tee -a ./apps/backend/.env
@@ -79,24 +78,23 @@ build_backend:
     - ls ./apps/backend/
     - cat ./apps/backend/.env
     - yarn workspace @TRPI/backend build
-    - cp -r ./apps/backend/dist ./BUILDS/backend/dist
   artifacts:
     paths:
-      - ./BUILDS/backend/dist
+      - ./apps/backend/dist
 
 build_frontend:
   stage: build
   only:
     - /^dev$/
     - /^staging$/
-  needs: ["build_core"]
+  needs: 
+    - job: build_core
+      artifacts: true
   script:
-    # - mkdir ./BUILDS/frontend && mkdir ./BUILDS/frontend/dist
     - yarn workspace @TRPI/frontend build
-    - cp -r ./apps/frontend/dist ./BUILDS/frontend/dist
   artifacts:
     paths:
-      - ./BUILDS/frontend/dist
+      - ./apps/frontend/dist
 
 deploy_backend:
   stage: deploy
@@ -111,14 +109,12 @@ deploy_backend:
     - ls -la
     - sudo -u ubuntu screen -S backend -X quit || true
     - sudo -u ubuntu screen -dmS backend
-
-    # Create .env in the deployed dist folder inside screen session
-    - sudo -u ubuntu sh -c "echo 'MYSQL_HOST=$MYSQL_HOST' | sudo tee -a ./BUILDS/backend/dist/dist/.env"
-    - sudo -u ubuntu sh -c "echo 'MYSQL_PORT=$MYSQL_PORT' | sudo tee -a ./BUILDS/backend/dist/dist/.env"
-    - sudo -u ubuntu sh -c "echo 'MYSQL_USER=$MYSQL_USER' | sudo tee -a ./BUILDS/backend/dist/dist/.env"
-    - sudo -u ubuntu sh -c "echo 'MYSQL_PASSWORD=$MYSQL_PASSWORD' | sudo tee -a ./BUILDS/backend/dist/dist/.env"
-    - sudo -u ubuntu sh -c "echo 'MYSQL_DATABASE=$MYSQL_DATABASE' | sudo tee -a ./BUILDS/backend/dist/dist/.env"
-    - sudo -u ubuntu screen -S backend -X stuff "ls -la && cd ./BUILDS/backend/dist/dist/; node main$(printf '\r')"
+    - sudo -u ubuntu sh -c "echo 'MYSQL_HOST=$MYSQL_HOST' | sudo tee -a ./apps/backend/dist/.env"
+    - sudo -u ubuntu sh -c "echo 'MYSQL_PORT=$MYSQL_PORT' | sudo tee -a ./apps/backend/dist/.env"
+    - sudo -u ubuntu sh -c "echo 'MYSQL_USER=$MYSQL_USER' | sudo tee -a ./apps/backend/dist/.env"
+    - sudo -u ubuntu sh -c "echo 'MYSQL_PASSWORD=$MYSQL_PASSWORD' | sudo tee -a ./apps/backend/dist/.env"
+    - sudo -u ubuntu sh -c "echo 'MYSQL_DATABASE=$MYSQL_DATABASE' | sudo tee -a ./apps/backend/dist/.env"
+    - sudo -u ubuntu screen -S backend -X stuff "ls -la && cd ./apps/backend/dist/; node main$(printf '\r')"
 
 deploy_frontend:
   stage: deploy
@@ -133,5 +129,17 @@ deploy_frontend:
     - ls -la
     - sudo -u ubuntu screen -S frontend -X quit || true
     - sudo -u ubuntu screen -dmS frontend
-    - sudo -u ubuntu sh -c "echo 'VITE_SERVER_URL=$VITE_SERVER_URL' | sudo tee -a ./BUILDS/frontend/dist/dist/.env"
-    - sudo -u ubuntu screen -S frontend -X stuff "cd ./BUILDS/frontend/dist/dist; npx serve -l 10000$(printf '\r')"
+    - sudo -u ubuntu sh -c "echo 'VITE_SERVER_URL=$VITE_SERVER_URL' | sudo tee -a ./apps/frontend/dist/.env"
+    - sudo -u ubuntu screen -S frontend -X stuff "cd ./apps/frontend/dist/; npx serve -l 10000$(printf '\r')"
+
+
+
+
+# debug_cd:
+#   stage: debug
+#   script:
+#     - pwd
+#     - ls -la
+#     - git status
+#     - git branch
+#     - git log -1

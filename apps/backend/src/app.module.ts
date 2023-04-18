@@ -7,19 +7,12 @@ import { MatchMakingModule } from './network/match-making/match-making.module';
 import { InGameModule } from './network/in-game/in-game.module';
 import { AuthModule } from './auth/auth.module';
 import { ClassementModule } from './classement/classement.module';
+import { RencontreCoupsModule } from './rencontre/rencontre-coups.module';
 import { Classement } from './classement/entities/classement.entity';
-import { ClassementController } from './classement/classement.controller';
 import { Joueur } from './joueurs/entities/joueur.entity';
 import { JoueursModule } from './joueurs/joueurs.module';
 import { Partie } from './partie/entities/partie.entity';
 import { Rencontre } from './rencontre/entities/rencontre.entity';
-import { RencontreController } from './rencontre/rencontre.controller';
-import { RencontreService } from './rencontre/rencontre.service';
-import { RencontreModule } from './rencontre/rencontre.module';
-import { JoueursController } from './joueurs/joueurs.controller';
-import { JoueursService } from './joueurs/joueurs.service';
-import { ClassementService } from './classement/classement.service';
-
 
 @Module({
   imports: [
@@ -44,10 +37,10 @@ import { ClassementService } from './classement/classement.service';
     JoueursModule,
     ClassementModule,
     InGameModule,
-    RencontreModule,
+    RencontreCoupsModule,
   ],
-  controllers: [AppController, RencontreController,JoueursController, ClassementController],
-  providers: [AppService, MatchMakingModule, RencontreService,JoueursService, ClassementService ],
+  controllers: [AppController],
+  providers: [AppService, MatchMakingModule],
 })
 export class AppModule {
 

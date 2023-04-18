@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { useState } from 'react';
 import './GameStyle.css';
 import GameControl from '../../components/ChessGame/GameControl';
@@ -14,6 +14,20 @@ import { useNavigate, useSearchParams } from "react-router-dom";
 import { ClientEventManager, eIJoinQueueEvent, IGame, IN_GAME, MATCHMAKING_MODE, MATCHMAKING_MODES_TIMERS, MATCH_MAKING, NAMESPACE_TYPES } from '@TRPI/core/core-network';
 import { Move, rIIncomingGameEvent } from '@TRPI/core/core-network/src/interfaces/receiveEvents';
 import { GameContext } from '../../contexts/GameContext';
+import { useGameInfoContext } from '../../components/ChessGame/GameInfoProvider';
+import { UserContext } from '../../components/UserContext';
+import ChessGameEndPopup from '../../components/ChessGame/ChessGameEndPopup';
+import axios from 'axios';
+import { API_BASE_URL } from '../../config';
+
+type GameEndInfo = {
+  winner: string;
+  playerName1: string;
+  playerName2: string;
+  gameType: string;
+  ranking: number;
+  rankingChange: number;
+};
 
 const Game = () => {
 
@@ -25,55 +39,110 @@ const Game = () => {
   const [boardHistory, setBoardHistory] = useState<ChessBoard[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [playerisWhite, setPlayerisWhite] = useState(false);
+  const [showEndPopup, setShowEndPopup] = useState(false);
   const [_game, set_Game] = useState<IGame | null>(null);
   const [chessGame, setChessGame] = useState<ChessGame | null>(new ChessGame());
+  const { selectedTimeMode, isRanked } = useGameInfoContext();
+  const user = useContext(UserContext);
+  const [elo, setElo] = useState<number>(0);
   const findChessGame = new ChessGame();
+  const [gameEndInfo, setGameEndInfo] = useState<GameEndInfo | null>(null);
 
-  const [matchMakingPayload , setMatchMakingPayload] = useState<eIJoinQueueEvent | null>(null);
+  const [matchMakingPayload, setMatchMakingPayload] = useState<eIJoinQueueEvent | null>(null);
+
+  const fetchEloData = async (timeMode: MATCHMAKING_MODES_TIMERS) => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/classement/elo`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      if (timeMode === "blitz") {
+        setElo(response.data.elo_blitz);
+      } else if (timeMode === "bullet") {
+        setElo(response.data.elo_bullet);
+      } else if (timeMode === "rapid") {
+        setElo(response.data.elo_rapide);
+      } else {
+        console.log("Erreur lors de la récupération des données ELO");
+      }
+    } catch (error) {
+      console.error("Erreur lors de la récupération des données ELO:", error);
+    }
+  };
 
   useEffect(() => {
-    
+
     if (clientManager) return;
-    setBoardHistory(() => [findChessGame.getBoard().copyBoard()]);
-
-    const mode = searchParams.get('RankedMode')?.toLowerCase();
-    const timer = searchParams.get('TimerMode');
-    const ps = searchParams.get('Pseudo');
-    const elo = searchParams.get('Elo');
-    const newClientManager = new ClientEventManager<MATCH_MAKING>(import.meta.env.VITE_SERVER_URL || 'http://localhost:10001', NAMESPACE_TYPES.MATCH_MAKING, '');
-    if (!(mode && timer && ps && elo)) return navigate('/');
-    const payload: eIJoinQueueEvent = {
-      id: `${Math.random().toString(36).substr(2, 9)}`,
-      name: ps,
-      elo: parseInt(elo),
-      options: {
-        mode: mode as MATCHMAKING_MODE,
-        timer: timer as MATCHMAKING_MODES_TIMERS
-      }
-    }
-    setMatchMakingPayload(payload);
-    const listeningPayload: rIIncomingGameEvent = {
-      gameSetter: set_Game,
-      triggerSetter: setFindPlayer,
-      colorSetter: setPlayerisWhite,
-      currentClientManager: newClientManager,
-      disconnect: setClientManager,
-      nextGameManager: setGameManager,
-      name: ps,
-      url: import.meta.env.VITE_SERVER_URL || 'http://localhost:10001'
-    }
-    newClientManager.listenToIncomingMatch(listeningPayload)
-    newClientManager.joinMatchMakingEvent(payload)
-    setClientManager(() => newClientManager);
     console.log('mounted');
+    (async () => {
+      await fetchEloData(selectedTimeMode);
+      setBoardHistory(() => [findChessGame.getBoard().copyBoard()]);
 
-    return () => {
-      console.log('unmounting...');
-      gameManager?.close();
-      newClientManager.close()
-    }
+      const newClientManager = new ClientEventManager<MATCH_MAKING>(import.meta.env.VITE_SERVER_URL || `${API_BASE_URL}`, NAMESPACE_TYPES.MATCH_MAKING, '');
+      console.log("Info :", selectedTimeMode, isRanked, elo, user.user?.pseudo);
+      if (!user.user?.pseudo || elo === undefined || selectedTimeMode === undefined || isRanked === undefined) {
+        navigate('/MainMenu');
+        return;
+      }
+
+      const payload: eIJoinQueueEvent = {
+        id: `${Math.random().toString(36).substr(2, 9)}`,
+        name: user.user.pseudo,
+        elo: elo,
+        options: {
+          mode: isRanked as MATCHMAKING_MODE,
+          timer: selectedTimeMode as MATCHMAKING_MODES_TIMERS
+        }
+      }
+      setMatchMakingPayload(payload);
+      const listeningPayload: rIIncomingGameEvent = {
+        gameSetter: set_Game,
+        triggerSetter: setFindPlayer,
+        colorSetter: setPlayerisWhite,
+        currentClientManager: newClientManager,
+        disconnect: setClientManager,
+        nextGameManager: setGameManager,
+        name: user.user.pseudo,
+        url: import.meta.env.VITE_SERVER_URL || `${API_BASE_URL}`
+      }
+      newClientManager.listenToIncomingMatch(listeningPayload)
+      newClientManager.joinMatchMakingEvent(payload)
+      setClientManager(() => newClientManager);
+      console.log('mounted');
+
+      return () => {
+        console.log('unmounting...');
+        gameManager?.close();
+        newClientManager.close()
+      }
+    })();
 
   }, []);
+
+  const handleGameEnd = (gameResult: any) => {
+    if (_game === null) return;
+    setGameEndInfo(
+      {
+        winner: gameResult.winner,
+        playerName1: _game.white_player.name,
+        playerName2: _game.black_player.name,
+        gameType: selectedTimeMode,
+        ranking: elo,
+        rankingChange: -15
+      }
+    );
+    setShowEndPopup(true); // Afficher la popup de fin de partie
+  };
+
+  const handleNewGame = () => {
+    console.log('handleNewGame');
+  };
+
+  const handleReturn = () => {
+    console.log('handleReturn');
+    navigate('/MainMenu');
+  };
 
   const [PlayerIsFind, setFindPlayer] = useState(false);
 
@@ -84,7 +153,7 @@ const Game = () => {
 
   const cancelMatchmaking = () => {
     console.log('cancelMatchmaking');
-    navigate('/');
+    navigate('/MainMenu');
   };
 
 
@@ -118,14 +187,14 @@ const Game = () => {
 
   return (
     <GameContext.Provider value={{
-      clientManager : clientManager,
+      clientManager: clientManager,
       gameManager,
       playerIsWhite: playerisWhite,
       _game,
       movesData,
       boardHistory,
       currentIndex,
-      chessGame : chessGame!,
+      chessGame: chessGame!,
       setClientManager,
       setMovesData,
       setGameManager,
@@ -134,6 +203,19 @@ const Game = () => {
       timer: searchParams.get('TimerMode'),
       fpayload: matchMakingPayload,
     }}>
+      {showEndPopup && gameEndInfo && (
+        <ChessGameEndPopup
+          winner={gameEndInfo.winner ? 'Les noirs' : 'Les blancs'}
+          playerName1={gameEndInfo.playerName1}
+          playerName2={gameEndInfo.playerName2}
+          gameType={gameEndInfo.gameType}
+          ranking={gameEndInfo.ranking}
+          rankingChange={gameEndInfo.rankingChange}
+          onNewGame={handleNewGame} // Implémentez cette fonction pour gérer la création d'une nouvelle partie
+          onReturn={handleReturn} // Implémentez cette fonction pour gérer le retour à l'écran précédent
+        />
+      )}
+
       <FindPlayer onCancel={cancelMatchmaking}
         show={!PlayerIsFind}
       />
@@ -158,8 +240,7 @@ const Game = () => {
           />
         </div>
         <div className="chessBoardContainer">
-          <ChessBoardRenderer
-          />
+          <ChessBoardRenderer onGameEnd={handleGameEnd} />
         </div>
         <div className="rightContainer">
           <MovesList moves={movesData} />

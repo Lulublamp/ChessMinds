@@ -4,7 +4,6 @@ import { create } from 'domain';
 import { resolve } from 'path';
 import {
   AlreadyFriends,
-  NotFriends,
   PlayerAlreadyExists,
   PlayerNotCreated,
   PlayerNotFound,
@@ -13,25 +12,57 @@ import { comparePassword, hashPassword } from 'src/utils/bcrypt';
 import { Repository } from 'typeorm';
 import { JoueurDto } from './DTO/joueurs.dto';
 import { Joueur } from './entities/joueur.entity';
+import { ClassementService } from 'src/classement/classement.service';
 
 @Injectable()
 export class JoueursService {
- 
   constructor(
     @InjectRepository(Joueur)
     private readonly joueursRepository: Repository<Joueur>,
+    private readonly classementService: ClassementService,
   ) {}
 
   async inscriptionJoueur(joueurDto: JoueurDto): Promise<Joueur> {
+    const existingJoueurByEmail = await this.joueursRepository.findOne({
+      where: { adresseMail: joueurDto.adresseMail },
+    });
+    const existingJoueurByPseudo = await this.joueursRepository.findOne({
+      where: { pseudo: joueurDto.pseudo },
+    });
+    if (existingJoueurByEmail || existingJoueurByPseudo) {
+      throw new PlayerAlreadyExists();
+    }
     try {
+      joueurDto.motDePasse = await hashPassword(joueurDto.motDePasse);
       const newJoueur = this.joueursRepository.create(joueurDto);
-      return await this.joueursRepository.save(newJoueur);
+      const joueurCree = await this.joueursRepository.save(newJoueur);
+  
+      await this.classementService.creerClassement({
+        user_id: joueurCree,
+        elo_blitz: 800,
+        elo_bullet: 800,
+        elo_rapide: 800,
+        elo_max_blitz: 800,
+        elo_max_bullet: 800,
+        elo_max_rapide: 800,
+      });
+  
+      return joueurCree;
     } catch (error) {
-      if (error.name === 'QueryFailedError') {
-        throw new PlayerAlreadyExists();
-      }
       throw new PlayerNotCreated();
     }
+  }
+  
+  async connexionJoueur(adresseMail: string, motDePasse: string): Promise<Joueur | null> {
+    const joueur = await this.joueursRepository.findOne({ 
+      where: { adresseMail: adresseMail }
+     });
+
+    if (!joueur || !(comparePassword(motDePasse, joueur.motDePasse))) {
+      return null;
+    }
+
+    return joueur;
   }
 
   async findJoueurByEmail(
@@ -49,11 +80,11 @@ export class JoueursService {
   }
 
   async findJoueurByFullPseudo(
-    query: Pick<Joueur, 'fullpseudo'>,
+    query: Pick<Joueur, 'pseudo'>,
   ): Promise<Joueur> {
     const joueurTrouve = await this.joueursRepository.findOne({
       where: {
-        fullpseudo: query.fullpseudo,
+        pseudo: query.pseudo,
       },
     });
     if (!joueurTrouve) {
@@ -74,16 +105,12 @@ export class JoueursService {
     return joueurTrouve;
   }
 
-  async addFriend(email: string, fullpseudo: string) {
+  async addFriend(email: string, pseudo: string) {
     const joueur = await this.findJoueurByEmail({ adresseMail: email });
-    //if(!joueur) throw new PlayerNotFound();
     const maybeFriend = await this.findJoueurByFullPseudo({
-      fullpseudo: fullpseudo,
+      pseudo: pseudo,
     });
-    //if(!maybeFriend) throw new PlayerNotFound();
 
-    if(joueur.idJoueur === maybeFriend.idJoueur) throw new NotFriends();
-    
     console.log(joueur.amis);
 
     if (!joueur.amis) {
@@ -107,41 +134,16 @@ export class JoueursService {
       console.log('Friend added');
     } catch (error) {
       console.log(error);
-      throw new NotFriends();
+      throw new Error('Could not add friend');
     }
   }
 
-  async getFriends(joueur: Pick<Joueur, "fullpseudo" >) {
-    const joueurTrouve = await this.joueursRepository.findOne({
-      where: {
-        fullpseudo: joueur.fullpseudo,
-      },
-      relations: ['amis'],
-    });
+  async getDateInscription(joueur: Joueur): Promise<Date> {
+    const joueurTrouve = await this.joueursRepository.findOne({ where: { idJoueur: joueur.idJoueur } });
     if (!joueurTrouve) {
-      throw new PlayerNotFound();
+      throw new Error('Joueur introuvable');
     }
-    return joueurTrouve;
-  }
-
-  async getInscriptionDate(joueur: Pick<Joueur, "fullpseudo" >) {
-    const joueurD= await this.joueursRepository.findOne({
-      where: {
-        fullpseudo: joueur.fullpseudo,
-        },
-      select: ['dateInscription'],
-    });
-    if (!joueurD) {
-      throw new PlayerNotFound();
-    }
-    return joueurD;
-  }
-  
-  //A voir si c'est utile POUR return le pseudo selon adresse amil
-  async getFullPseudo(email: Pick<JoueurDto, 'adresseMail'>): Promise<string> {
-    const joueur = await this.findJoueurByEmail(email);
-    if(!joueur) throw new PlayerNotFound();
-    return joueur.fullpseudo;
+    return joueurTrouve.dateInscription;
   }
 
 }

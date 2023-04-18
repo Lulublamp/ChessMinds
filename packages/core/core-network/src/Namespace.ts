@@ -1,7 +1,6 @@
 export const NAMESPACE_TYPES = {
   MATCH_MAKING: "match-making",
   IN_GAME: "in-game",
-  PRIVATE_LOBBY: "private-lobby",
 } as const;
 
 export type NAMESPACE_TYPES =

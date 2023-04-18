@@ -1,0 +1,252 @@
+.login-PopUp, .signup-PopUp {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+}
+
+.login-PopUp>div:first-of-type, .signup-PopUp>div:first-of-type {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #2121217a;;
+}
+
+.login-PopUp>.container, .signup-PopUp>.container {
+  width: 522px;
+  height: 632px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border-radius: 19px;
+  border: solid 2px #212121;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.signup-PopUp>.container{
+  height: auto;
+}
+
+.login-PopUp>.container>div, .signup-PopUp>.container>div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 357px;
+  margin-top: 20px;
+}
+
+.login-PopUp>.container img, .signup-PopUp>.container img {
+  width: 65px;
+  height: 65px;
+}
+
+.login-PopUp>.container h2, .signup-PopUp>.container h2 {
+  font-weight: 700;
+  font-size: 25px;
+  line-height: 30px;
+  text-align: center;
+  color: var(--font-color);
+}
+
+.login-PopUp form, .signup-PopUp form {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.login-PopUp form .input-container, .signup-PopUp form .input-container {
+  width: 100%;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  position: relative;
+}
+
+.login-PopUp form .input-container:not(:first-of-type), .signup-PopUp form .input-container:not(:first-of-type) {
+  margin-top: 25px;
+}
+
+.login-PopUp form .input-container>div, .signup-PopUp form .input-container>div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-bottom: 5px;
+  margin-left: 10px;
+}
+
+.login-PopUp form .input-container>div label, .signup-PopUp form .input-container>div label {
+  font-weight: 400;
+  font-size: 18px;
+  color: var(--font-color);
+  margin-left: 8px;
+}
+
+.login-PopUp form .input-container input, .signup-PopUp form .input-container input {
+  width: 100%;
+  height: 45px;
+  border: solid 2px #212121;
+  border-radius: 7px;
+  background-color: #fff;
+  padding: 11px;
+  color: var(--font-color);
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.58);
+  font-size: 18px;
+  color: var(--font-color);
+}
+
+.login-PopUp form .input-container input::placeholder, .signup-PopUp form .input-container input::placeholder {
+  color: #212121bb;
+}
+
+.login-PopUp form .input-container input:focus, .signup-PopUp form .input-container input:focus {
+  outline: none;
+}
+
+.login-PopUp form a, .signup-PopUp form a {
+  color: var(--font-color);
+  font-size: 16px;
+  font-weight: normal;
+  text-decoration: none;
+  text-align: end;
+  width: 100%;
+  margin-top: 13px;
+}
+
+.login-PopUp form a:visited, .signup-PopUp form a:visited {
+  color: var(--font-color);
+}
+
+.login-PopUp form button[type="submit"], .signup-PopUp form button[type="submit"] {
+  width: 312px;
+  height: 57px;
+  border: none;
+  border-radius: 11px;
+  background-color: var(--main-color);
+  color: #fff;
+  font-size: 28px;
+  font-weight: 700;
+  margin-top: 30px;
+  cursor: pointer;
+  filter: drop-shadow(5px 5px 0px #212121);
+}
+
+.toggle-password {
+  position: absolute;
+  top: 42px;
+  right: 15px;
+  cursor: pointer;
+}
+
+.switchLogSign {
+  width: 100%;
+  text-align: center;
+  color: #505050;
+  font-size: 16px;
+  font-weight: normal;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  margin: 25px auto 20px auto;
+}
+
+.switchLogSign button {
+  background: none;
+  border: none;
+  color: #E63946;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.closePopup {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+}
+
+.login-PopUp .container > svg, .signup-PopUp .container > svg {
+  cursor: pointer;
+}
+
+.statut {
+  width: 100%;
+  text-align: center;
+  color: #E63946;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 15px;
+}
+
+@media (max-width: 768px){
+  .login-PopUp>.container, .signup-PopUp>.container {
+    width: 90%;
+    height: 90%;
+  }
+  .login-PopUp>.container>div, .signup-PopUp>.container>div {
+    width: 90%;
+  }
+  .login-PopUp form .input-container input, .signup-PopUp form .input-container input {
+    width: 100%;
+    height: 45px;
+    border: solid 2px #212121;
+    border-radius: 7px;
+    background-color: #fff;
+    padding: 11px;
+    color: var(--font-color);
+    box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.58);
+    font-size: 18px;
+    color: var(--font-color);
+  }
+  .login-PopUp form .input-container>div label, .signup-PopUp form .input-container>div label {
+    font-weight: 400;
+    font-size: 18px;
+    color: var(--font-color);
+    margin-left: 8px;
+  }
+  .login-PopUp form .input-container input::placeholder, .signup-PopUp form .input-container input::placeholder {
+    color: #212121bb;
+  }
+  .login-PopUp form .input-container input:focus, .signup-PopUp form .input-container input:focus {
+    outline: none;
+  }
+  .login-PopUp form button[type="submit"], .signup-PopUp form button[type="submit"] {
+    max-width: 312px;
+    width: 90%;
+  }
+  .login-PopUp form a, .signup-PopUp form a {
+    color: var(--font-color);
+    font-size: 16px;
+    font-weight: normal;
+    text-decoration: none;
+    text-align: end;
+    width: 100%;
+    margin-top: 13px;
+  }
+  .login-PopUp form a:visited, .signup-PopUp form a:visited {
+    color: var(--font-color);
+  }
+  .login-PopUp form .input-container, .signup-PopUp form .input-container {
+    width: 100%;
+    height: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    position: relative;
+  }
+  .login-PopUp form .input-container:not(:first-of-type), .signup-PopUp form .input-container:not(:first-of-type) {
+    margin-top: 25px;
+  }
+  .login-PopUp form .input-container>div, .signup-PopUp form .input-container>div {
+    display: flex
+  }
+}

@@ -8,8 +8,11 @@ import { useGameManager, useMovesData, usePlayerIsWhite, useIndex, useBoardHisto
 import { random } from "lodash";
 
 
+interface Props{
+  onGameEnd: (gameResult : any) => void;
+}
 
-const ChessBoardRenderer: React.FC = () => {
+const ChessBoardRenderer: React.FC<Props> = ({onGameEnd}) => {
 
   const playerIsWhite = usePlayerIsWhite()
   const [gameManager , setGameManager] = useGameManager();
@@ -26,16 +29,16 @@ const ChessBoardRenderer: React.FC = () => {
   
   useEffect(() => {
     console.log('updating game manager');
-    console.log(chessGame);
     gameManager?.listenToNetworkMove({
       _forceUpdate,
       chessGame : chessGame!,
       setMovesData,
       setCurrentIndex,
       movesData,
-      boardHistory,
-    })
-    console.log(gameManager);
+      boardHistory
+    },
+    onGameEnd
+    )
   }, [_game])
 
   useEffect(() => {

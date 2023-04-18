@@ -1,10 +1,12 @@
 /* eslint-disable prettier/prettier */
-import { IsEmail, IsNotEmpty, IsString, Matches } from 'class-validator';
+import { IsEmail, IsNotEmpty, IsString, Matches, MinLength } from 'class-validator';
+import { Entity } from 'typeorm';
+import * as bcrypt from 'bcrypt';
 
-
+@Entity()
 export class JoueurDto {
   @IsNotEmpty()
-  @IsEmail() // pour dire que ce qui entre en email doit etre sous forme d'email
+  @IsEmail()
   adresseMail: string;
 
   @IsNotEmpty()
@@ -12,5 +14,10 @@ export class JoueurDto {
   pseudo: string;
 
   @IsNotEmpty()
+  @MinLength(6)
   motDePasse: string;
+
+  async compareMotDePasse(motDePasse: string): Promise<boolean> {
+    return await bcrypt.compare(motDePasse, this.motDePasse);
+  }
 }

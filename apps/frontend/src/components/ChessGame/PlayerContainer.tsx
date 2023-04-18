@@ -41,6 +41,9 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
   const [timer , setTimer] = React.useState(fpayload?.options.timer.toString());
   const playerIsWhite = usePlayerIsWhite()
 
+  //console.log('fpayload', fpayload);
+  //console.log('gameManager', gameManager);
+
   useEffect(() => {
     console.log('payload changed');
   }, [fpayload])  
@@ -50,6 +53,7 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
   useEffect(() => {
     if (gameManager) {
       console.log(isWhitePlayer)
+      console.log('Je vais LISTEN TO TIME')
       gameManager.listenToTime({
         timeSetter: setTimer,
         time: timer,

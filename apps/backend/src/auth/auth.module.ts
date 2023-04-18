@@ -6,9 +6,11 @@ import { JwtStrategy } from './jwt.strategy';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { AuthController } from './auth.controller';
+import { JoueursModule } from '../joueurs/joueurs.module';
 
 @Module({
   imports: [
+    JoueursModule,
     PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,

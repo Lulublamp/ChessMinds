@@ -20,13 +20,7 @@ export class Joueur {
 
   @Column({nullable:false})
   pseudo: string;
-
-  @Column({nullable:false})
-  tagJoueur: string;
-
-  @Column({nullable:false})
-  fullpseudo: string;
-
+  
   @Column({nullable:false})
   motDePasse: string;
 

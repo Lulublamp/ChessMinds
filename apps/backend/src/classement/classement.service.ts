@@ -1,9 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ClassementNotFound, PlayerNotFound, TypeNotFound } from 'src/errors/bErrors';
+import { ClassementNotFound, PlayerNotFound } from 'src/errors/bErrors';
 import { Repository } from 'typeorm';
 import { ClassementDto } from './DTO/classement.dto';
 import { Classement, TypePartie } from './entities/classement.entity';
+import { DeepPartial } from 'typeorm';
+import { Joueur } from 'src/joueurs/entities/joueur.entity';
 
 @Injectable()
 export class ClassementService {
@@ -11,70 +13,107 @@ export class ClassementService {
   constructor(
     @InjectRepository(Classement)
     private readonly classementRepository: Repository<Classement>,
-  ) {}
+  ) { }
 
-  async findClassement(id: Pick<Classement, 'idClassement'>){
-    const trouverClassement = await this.classementRepository.findOne({
-      where: {
-        idClassement:id.idClassement,
-      },
+  async creerClassement(classementDto: ClassementDto) {
+    const newClassement = this.classementRepository.create(classementDto);
+    await this.classementRepository.save(newClassement);
+  }
+
+  async getMyHighestElo(userId: Joueur, typePartie: TypePartie) {
+    const classement = await this.classementRepository.findOne({
+      where: { user_id: userId },
     });
-    if(!trouverClassement){
-      throw new ClassementNotFound()
+
+    if (!classement) {
+      throw new NotFoundException('Classement introuvable pour cet utilisateur');
     }
-    return trouverClassement;
+
+    return classement[typePartie];
   }
 
-  //recupere le classement d'un joueur avec son id 
-   async findJoueur(idJoueur: Pick<ClassementDto, "idJoueur">): Promise<Classement> {
-    const trouverJoueur= await this.classementRepository.findOne({
-      where: {
-        idJoueur: idJoueur,
-      },
+  async getEloByUserId(userId: Joueur) {
+
+    const classement = await this.classementRepository.findOne({
+      where: { user_id: userId },
     });
-    if(!trouverJoueur){
-      throw new PlayerNotFound()
+
+    if (!classement) {
+      throw new NotFoundException('Classement introuvable pour cet utilisateur');
     }
-    return trouverJoueur;
+
+    return {
+      elo_blitz: classement.elo_blitz,
+      elo_bullet: classement.elo_bullet,
+      elo_rapide: classement.elo_rapide,
+    };
   }
 
-  //Recupere le classement selon le type de partie et le trie par ELO
-  async findByType(type: string): Promise<Classement[]> {
-    let column: keyof Classement;
-    switch (type) {
-      case TypePartie.RAPIDE:
-        column = 'ELORapide';
-        break;
-      case TypePartie.BULLET:
-        column = 'ELOBullet';
-        break;
-      case TypePartie.BLITZ:
-        column = 'ELOBlitz';
-        break;
-      default:
-        throw new TypeNotFound();
-    }
-    return await this.classementRepository.find({
-      order: {
-        [column]: 'DESC',
-      },
-      //relations: ['idJoueur'],
-    });
+  async getEloByUserIdAndTypePartie(userId: number) {
+    const dernierClassement = await this.classementRepository
+      .createQueryBuilder('classement')
+      .select('classement.elo_bullet')
+      .where('classement.user_id = :userId', { userId })
+      .getOne();
+    return dernierClassement;
   }
- 
 
-  async updateELO(idClassement: Pick<Classement, 'idClassement'>, typePartie: TypePartie, elo: number): Promise<Classement> {
-    const classement = await this.classementRepository.findOneBy(idClassement);
-    if(!classement){
-      throw new ClassementNotFound()
+
+  async getMyRank(userId: Joueur, typePartie: TypePartie) {
+    try {
+      // Récupérer les classements de la partie demandée
+      const ranks = await this.fetchRanks(typePartie);
+      // Trouver le rang du joueur parmi les classements récupérés
+      const myRank = ranks.findIndex(rank => rank.userId === userId.idJoueur) + 1;
+      // Retourner le rang du joueur
+      return myRank;
+    } catch (error) {
+      // Gérer les erreurs et retourner -1 en cas d'erreur
+      console.error('Erreur lors de la récupération du rang:', error);
+      return -1;
     }
-    classement[typePartie] = elo;
-    return await this.classementRepository.save(classement);
   }
+
+  async fetchRanks(typePartie: TypePartie): Promise<Array<{ userId: number, rank: number }>> {
+    // Récupérer les classements de la partie demandée
+    const ranks = await this.classementRepository
+      .createQueryBuilder('classement')
+      .addSelect('classement.user_id', 'userId')
+      .addSelect(`classement.${typePartie}`, 'rank')
+      .orderBy(`classement.${typePartie}`, 'DESC')
+      .getRawMany();
+    // Vérifier si des classements ont été trouvés
+    if (!ranks || ranks.length === 0) {
+      throw new ClassementNotFound();
+    }
+    // Mapper les résultats pour correspondre au type attendu
+    const mappedRanks = ranks.map(rank => ({
+      userId: rank.userId,
+      rank: rank.rank,
+    }));
+    return mappedRanks;
+  }
+
+
+  async findTop20ByElo(typePartie: TypePartie): Promise<Classement[]> {
+    return await this.classementRepository
+      .createQueryBuilder('classement')
+      .select([
+        'classement.idClassement',
+        'joueur.idJoueur',
+        'joueur.pseudo',
+        `classement.${typePartie}`,
+      ])
+      .leftJoinAndSelect('classement.user_id', 'joueur')
+      .orderBy(`classement.${typePartie}`, 'DESC')
+      .limit(20)
+      .getMany();
+  }
+
+
 }
- 
- 
 
-  
+
+
 
 

@@ -10,7 +10,6 @@ import { ChessBoard } from "./ChessBoard";
 
 export class ChessGame {
   private board: ChessBoard; // le plateau de jeu
-  private previousGame: ChessGame | null; // la partie précédente
   private whitePlayer: Player; // le joueur blanc
   private blackPlayer: Player; // le joueur noir
   private currentTurn: Color; // la couleur du joueur qui doit jouer le prochain tour
@@ -19,17 +18,18 @@ export class ChessGame {
   //Cela pourrait être utile dans le cas où la logique du jeu est modifiée pour autoriser plus d'un pion à effectuer un double déplacement, par exemple
   //si on implemente un jeu d'echecs a 4 joueurs
   private pawnsWithDoubleMove: Pawn[] = []; // les pions qui ont fait un double déplacement au tour précédent pour pouvoir les capturer en passant
-  
+
   private QueenSideCastlingWhite: boolean = true; // le roque à gauche est-il possible pour le joeur blanc ?
   private KingSideCastlingWhite: boolean = true; // le roque à droite est-il possible pour le joeur blanc ?
   private QueenSideCastlingBlack: boolean = true; // le roque à gauche est-il possible pour le joueur noir ?
   private KingSideCastlingBlack: boolean = true; // le roque à droite est-il possible pour le joueur noir ?
+  private movesHistory: Array<{ from: string, to: string, piece: string, color: Color }> = [];
+
 
   constructor() {
     this.board = new ChessBoard();
     this.whitePlayer = new Player(Color.White);
     this.blackPlayer = new Player(Color.Black);
-    this.previousGame = null;
     this.currentTurn = Color.White;
     this.initializePieces();
   }
@@ -117,9 +117,6 @@ export class ChessGame {
       throw new Error("Invalid move for this piece");
     }
 
-    //Stocker la partie précédente pour revenir en arrière d'un coup
-    const previousGame = this.CopyGame();
-
     //Verfier si on est encore en échec après le déplacement
     const copygame = this.CopyGame();
     const king =
@@ -154,7 +151,7 @@ export class ChessGame {
         }
       }
     }
-    
+
     // Réinitialiser les pions qui ont effectué un double pas au tour précédent
     this.pawnsWithDoubleMove.forEach((pawn) => {
       pawn.resetDoubleMove();
@@ -162,12 +159,26 @@ export class ChessGame {
     this.pawnsWithDoubleMove = [];
 
     this.board.movePiece(from, to);
+    // Sauvegardez le coup joué dans movesHistory
+    this.movesHistory.push({
+      from,
+      to,
+      piece: fromPiece.constructor.name,
+      color: fromPiece.color,
+    });
 
     if (this.isCheckmate()) {
-      throw new Error("Checkmate Winner: " + this.currentTurn);
+      return {
+        status: 'checkmate',
+        winner: this.currentTurn,
+        message: `Checkmate Winner: ${this.currentTurn}`,
+      };
     }
     if (this.isStalemate()) {
-      throw new Error("Stalemate");
+      return {
+        status: 'stalemate',
+        message: 'Stalemate',
+      };
     }
 
     // Si le pion a fait un double pas, on l'ajoute à la liste des pions pouvant être capturés en passant
@@ -270,12 +281,14 @@ export class ChessGame {
 
     this.currentTurn =
       this.currentTurn === Color.White ? Color.Black : Color.White;
-
-    this.previousGame = previousGame;
   }
 
   public getBoard(): ChessBoard {
     return this.board;
+  }
+
+  public getMovesHistory(): Array<{from: string, to: string, piece: string, color: Color}> {
+    return this.movesHistory;
   }
 
   public setBoard(board: ChessBoard) {
@@ -408,35 +421,6 @@ export class ChessGame {
     clone.pawnsWithDoubleMove = this.pawnsWithDoubleMove.map(
       (pawn) => pawn.copyPiece() as Pawn
     );
-    clone.KingSideCastlingWhite = this.KingSideCastlingWhite;
-    clone.KingSideCastlingBlack = this.KingSideCastlingBlack;
-    clone.QueenSideCastlingWhite = this.QueenSideCastlingWhite;
-    clone.QueenSideCastlingBlack = this.QueenSideCastlingBlack;
     return clone;
-  }
-
-  public cancelMove(playerColor: Color) {
-    if (this.previousGame === null) {
-      throw new Error('No previous game state available to cancel the move.');
-      return;
-    }
-    if(this.currentTurn === playerColor) {
-      throw new Error('It is not your turn to cancel the move.');
-      return;
-    }
-    
-    this.board = this.previousGame.board;
-    this.whitePlayer = this.previousGame.whitePlayer;
-    this.blackPlayer = this.previousGame.blackPlayer;
-    this.currentTurn = this.previousGame.currentTurn;
-    this.pawnsWithDoubleMove = this.previousGame.pawnsWithDoubleMove.map(
-      (pawn) => pawn.copyPiece() as Pawn
-    );
-    this.KingSideCastlingBlack = this.previousGame.KingSideCastlingBlack;
-    this.KingSideCastlingWhite = this.previousGame.KingSideCastlingWhite;
-    this.QueenSideCastlingBlack = this.previousGame.QueenSideCastlingBlack;
-    this.QueenSideCastlingWhite = this.previousGame.QueenSideCastlingWhite;
-    this.previousGame = this.previousGame.previousGame;
-    
   }
 }

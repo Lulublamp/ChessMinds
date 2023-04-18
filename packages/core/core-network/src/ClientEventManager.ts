@@ -32,7 +32,7 @@ export class EventEmitter {
 
   constructor(urlServe: string , socketNameSpace: NAMESPACE_TYPES , token: string) {
     console.log("Connecting socket : ", token);
-    // const serve = "http://localhost:10001"
+    // const serve = "${API_BASE_URL}"
     console.log(`connect to ${urlServe}/${socketNameSpace}`)
     this.socket = io(`${urlServe}/${socketNameSpace}`, {
       transports: ["websocket"],
@@ -125,59 +125,74 @@ export class ClientEventManager<
     this.send(EVENT_TYPES.MAKE_MOVE , {matchId: this.matchId , ...data});
   }
   
-  public listenToNetworkMove(payload: Check<T , IN_GAME , rINetworkMoveEvent>){
-    if (this.matchId == null) return
-    console.log('listen to network move')
-
+  public listenToNetworkMove(payload: Check<T , IN_GAME , rINetworkMoveEvent>, onGameEnd: (gameResult: any) => void){
+    if (this.matchId == null) return;
+    console.log('listen to network move');
+  
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
-    this.socket.on(EVENT_TYPES.MOVES , (from: string , to:string) => {
-      console.log('move received' , from , to);
-      
+    this.socket.on(EVENT_TYPES.MOVES, (from: string, to: string, gameResult: any) => {
+      console.log('move received', from, to);
+  
       payload.chessGame.setBoard(payload.boardHistory[payload.boardHistory.length - 1].copyBoard());
       const currentTurn = payload.chessGame.getCurrentTurn() == Color.White ? 'white' : 'black';
-      console.log('current game' , payload.chessGame);
-      payload.chessGame.makeMove(from , to);
+      console.log('current game', payload.chessGame);
+      payload.chessGame.makeMove(from, to);
       payload.boardHistory.push(payload.chessGame.getBoard().copyBoard());
-      console.log('board history' , payload.boardHistory);
+      console.log('board history', payload.boardHistory);
       payload.setCurrentIndex(payload.boardHistory.length - 1);
-
+  
+      // Gérer le résultat de la partie
+      if (gameResult) {
+        if (gameResult.status === 'checkmate') {
+          // Gérer l'échec et mat
+          console.log("CHECKMATE !");
+          console.log(gameResult.message);
+          onGameEnd(gameResult);
+        } else if (gameResult.status === 'stalemate') {
+          // Gérer le pat
+          console.log("STALEMATE !");
+          console.log(gameResult.message);
+          onGameEnd(gameResult);
+        }
+        return; // Ne pas continuer avec la mise à jour des mouvements si la partie est terminée
+      }
+  
       let thisMove: Move | null = null;
-      if (payload.movesData.length == 0){
+      if (payload.movesData.length == 0) {
         thisMove = {
           turn: 1,
           white: to,
           whitePiece: payload.chessGame.getBoard().getPieceAt(to),
           black: null,
-          blackPiece: null
-        }
+          blackPiece: null,
+        };
       } else {
-        const lastMove = payload.movesData[payload.movesData.length - 1]
-        if (lastMove.black == null){
+        const lastMove = payload.movesData[payload.movesData.length - 1];
+        if (lastMove.black == null) {
           thisMove = {
             turn: lastMove.turn,
             white: lastMove.white,
             whitePiece: lastMove.whitePiece,
             black: to,
-            blackPiece: payload.chessGame.getBoard().getPieceAt(to)
-          }
-        }else{
+            blackPiece: payload.chessGame.getBoard().getPieceAt(to),
+          };
+        } else {
           thisMove = {
             turn: lastMove.turn + 1,
             white: to,
             whitePiece: payload.chessGame.getBoard().getPieceAt(to),
             black: null,
-            blackPiece: null
-          }
+            blackPiece: null,
+          };
         }
       }
-        
+  
       payload.setMovesData((current) => {
-        currentTurn == 'black' ? current.pop() : null
-        const moveAfter = [...current , thisMove!]
-        payload.movesData = moveAfter 
-        return moveAfter
-      })
-
+        currentTurn == 'black' ? current.pop() : null;
+        const moveAfter = [...current, thisMove!];
+        payload.movesData = moveAfter;
+        return moveAfter;
+      });
     });
   }
 
@@ -190,7 +205,7 @@ export class ClientEventManager<
   public listenToTime(payload: Check<T , IN_GAME , rITimeEvent>){
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
     this.socket.on(EVENT_TYPES.TIMER , (time) => {
-      console.log('time received' , time);
+      //console.log('time received' , time);
       const thisTime = payload.id == 'white' ? time.whiteTime : time.blackTime
       const timeInStringMinute = Math.floor(thisTime / 60).toString();
       console.log('time in string minute' , timeInStringMinute);
@@ -198,8 +213,8 @@ export class ClientEventManager<
       if (timeInStringSecond.length == 1){
         timeInStringSecond = '0' + timeInStringSecond 
       }
-      console.log('time in string second' , timeInStringSecond);
-      console.log(payload.time)
+      //console.log('time in string second' , timeInStringSecond);
+      //console.log(payload.time)
       payload.timeSetter(() => timeInStringMinute + ':' + timeInStringSecond)
     })
   }

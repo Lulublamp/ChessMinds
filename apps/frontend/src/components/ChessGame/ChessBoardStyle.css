@@ -23,7 +23,7 @@
   background-color: var(--couleur-caseNoir);
 }
 
-.selected{
+.chessBoard .selected{
   background-color: #E63946;
 }
 

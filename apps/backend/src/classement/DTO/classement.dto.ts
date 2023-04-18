@@ -1,24 +1,15 @@
-/* eslint-disable prettier/prettier */
 import { IsNotEmpty} from 'class-validator';
+import { Joueur } from 'src/joueurs/entities/joueur.entity';
 
 export class ClassementDto {
-  // a voir si on a besoin de l'idJoueur dans le DTO
-  // Mais je pense que oui sinon on ne sait pas à qui on attribue le chanegemnt de ELO
-  
-  @IsNotEmpty()
-  idJoueur: number;
-
-  @IsNotEmpty()
-  ELORapide: number;
-
-  @IsNotEmpty()
-  ELOBLitz: number;
-
-  @IsNotEmpty()
-  ELOBullet: number;
-
- /* @IsNotEmpty()
-  ELOMax: number;*/
+  idClassement?: number;
+  user_id: Joueur;
+  elo_blitz: number;
+  elo_bullet: number;
+  elo_rapide: number;
+  elo_max_blitz: number;
+  elo_max_bullet: number;
+  elo_max_rapide: number;
 }
 
 

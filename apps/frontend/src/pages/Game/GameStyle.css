@@ -9,7 +9,7 @@
   background-color: var(--couleur-principale);
 }
 
-.leftContainer {
+.chessGame .leftContainer {
   width: 300px;
   height: 90%;
   display: flex;
@@ -27,7 +27,7 @@
   border-radius: 8px;
 }
 
-.rightContainer {
+.chessGame .rightContainer {
   width: 280px;
   height: 90%;
   display: flex;

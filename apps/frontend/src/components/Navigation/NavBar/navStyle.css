@@ -1,0 +1,254 @@
+nav{
+  background-color: inherit;
+  height: 100px;
+  width: 100%;
+  z-index: 100;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+}
+
+nav > .nav-container{
+  display: flex;
+  width: auto;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+}
+
+nav .logo-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+nav .logo-container img{
+  width: 65px;
+  height: 65px;
+  cursor: pointer;
+}
+
+nav h2 {
+  width: 160px;
+  height: 62px;
+  margin-left: 7px;
+  position: relative;
+  overflow: hidden;
+  position: relative;
+  cursor: default;
+  cursor: pointer;
+}
+
+nav h2>span:first-of-type {
+  position: absolute;
+  color: #000;
+  top: 0px;
+  left: 0px;
+  font-weight: bold;
+  font-size: 33px;
+  text-align: center;
+}
+
+nav h2>span:last-of-type {
+  position: absolute;
+  left: 31px;
+  top: 26px;
+  font-weight: Bold;
+  font-size: 33px;
+  text-align: center;
+  background: linear-gradient(to right, rgba(0, 124, 239, 1), rgba(0, 221, 216, 1));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+nav .nav-links-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 435px;
+  margin-left: 80px;
+}
+
+nav .nav-links-container span{
+  font-size: 22px;
+  font-weight: normal;
+  color: var(--font-color);
+  cursor: pointer;
+  position: relative;
+}
+
+nav .nav-links-container span::before {  
+  transform: scaleX(0);
+  transform-origin: bottom right;
+}
+
+nav .nav-links-container span:hover::before {
+  transform: scaleX(1);
+  transform-origin: bottom left;
+}
+
+nav .nav-links-container span::before {
+  content: " ";
+  display: block;
+  position: absolute;
+  top: 0; right: 0; bottom: 0; left: 0;
+  inset: 0 0 0 0;
+  background: hsl(200 100% 80%);
+  z-index: -1;
+  transition: transform .3s ease;
+}
+
+nav .button-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  min-width: 355px;
+}
+
+nav .button-container svg{
+  cursor: pointer;
+}
+
+nav .button-container > *:first-child {
+  margin-right: 10px;
+}
+
+nav .button-container > *:not(:first-child):not(:last-child) {
+  margin: 0 10px;
+}
+
+nav .button-container > *:last-child {
+  margin-left: 10px;
+}
+
+nav .button-container .nav-button{
+  width: 165px;
+  height: 50px;
+  border-radius: 50px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: bold;
+  background-color: #fff;
+  cursor: pointer;
+  font-family: 'Montserrat', sans-serif;
+}
+
+nav .button-container .play{
+  border: solid var(--main-color) 1px;
+  color: var(--main-color);
+  font-size: 25px;
+  box-shadow: 3px 3px 0px var(--main-color);
+}
+
+nav .button-container .download{
+  border: solid var(--font-color) 1px;
+  color: var(--font-color);
+  font-size: 18px;
+  box-shadow: 3px 3px 0px var(--font-color);
+}
+
+nav .button-container .download svg{
+  margin-left : 4px;
+}
+
+.hamburger, .menu {
+  display: none;
+}
+
+.menu{
+  border-right: solid 1px var(--font-color);
+}
+
+.menu .close-btn-container {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+}
+
+.menu .close-btn {
+  width: 24px;
+  height: 24px;
+}
+
+
+
+@media (min-width: 768px) and (max-width: 1100px) {
+  nav .nav-links-container {
+    min-width: auto;
+    margin-left: 20px;
+  }
+
+  nav .nav-links-container span{
+    margin-right: 12px;
+  }
+
+  nav .button-container {
+    min-width: auto;
+  }
+
+  nav .button-container .nav-button:first-of-type{
+    margin-right: 12px;
+  }
+}
+
+
+@media (max-width: 768px) {
+  nav{
+    justify-content: space-between;
+    padding: 0 20px;
+  }
+  
+  nav .nav-links-container {
+    display: none;
+  }
+
+  nav .button-container {
+    display: none;
+  }
+
+  .hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    height: 25px;
+    width: 35px;
+    cursor: pointer;
+  }
+
+  .line {
+    height: 3px;
+    width: 100%;
+    background-color: var(--font-color);
+  }
+
+  .menu {
+    position: fixed;
+    top: 0;
+    z-index: 10;
+    left: -100%;
+    height: 100%;
+    width: 250px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: #fff;
+    transition: 0.3s;
+  }
+
+  .menu span {
+    font-size: 22px;
+    font-weight: normal;
+    color: var(--font-color);
+    cursor: pointer;
+    margin-bottom: 1rem;
+  }
+
+  nav h2 span{
+    font-size: 22px;
+  }
+}

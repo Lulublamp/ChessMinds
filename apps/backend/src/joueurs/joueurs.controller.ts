@@ -2,109 +2,60 @@ import {
   Controller,
   Get,
   Param,
-  Query,
+  NotFoundException,
+  Post,
+  Body,
+  Request,
+  HttpException,
+  HttpStatus,
+  UseGuards,
+  Query
 } from '@nestjs/common';
 import { JoueurDto } from './DTO/joueurs.dto';
-import { Post, Body } from '@nestjs/common';
 import { JoueursService } from './joueurs.service';
 import { Joueur } from './entities/joueur.entity';
+import { PlayerAlreadyExists } from 'src/errors/bErrors';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.gard';
 
 @Controller('joueurs')
 export class JoueursController {
-  constructor(private readonly joueursService: JoueursService) {}
+  constructor(private readonly joueursService: JoueursService) { }
 
-  //si on veut recupere des infos sur un joueur
-  @Get('cherche/:joueur')
-  async retrouverJoueur(@Param('email') email: Pick<JoueurDto, 'adresseMail'>) {
-    try {
-      const joueurTrouve = await this.joueursService.findJoueurByEmail(email);
-      return joueurTrouve;
-    } catch (error) {
-      console.log("Le joueur n'existe pas");
-      return error;
-    }
-  }
 
-  @Get('cherche/:email')
-  async retrouverMail(@Param('email') email: Pick<JoueurDto, 'adresseMail'>){
-    try{
-      const mailTrouver= await this.joueursService.findJoueurByEmail(email);
-      return true;
-    }catch(error){
-      console.log("Le mail n'existe pas");
-      return false;
-    }
-  }
-
-  //DOUTE AVEC FULLPSEUDO ET PSEUDO
-  @Get('cherche/:pseudo')
-  async retrouverByPseudo(@Param('pseudo') pseudo: Pick<Joueur, 'fullpseudo'>){
-    try{
-      const pseudoTrouver= await this.joueursService.findJoueurByFullPseudo(pseudo);
-      return true;
-    }catch(error){
-      console.log("Le pseudo n'existe pas");
-      return false;
-    }
-  }
-  
-  //si on veut inscrire un joueur
-  //permet de mettre un message d'erreur si une des infos du joueur qui est @noempty n'est pas remplie (fichier dto)
   @Post('inscription')
   async inscriptionJoueur(@Body() joueur: JoueurDto) {
     try {
       return await this.joueursService.inscriptionJoueur(joueur);
     } catch (error) {
-      return error;
+      if (error instanceof PlayerAlreadyExists) {
+        throw new HttpException(
+          {
+            status: HttpStatus.CONFLICT,
+            error: "L'utilisateur existe déjà.",
+          },
+          HttpStatus.CONFLICT,
+        );
+      }
+      throw error;
     }
   }
 
   @Post('friends/add')
-  async addFriend(@Body() payload: Pick<Joueur, 'adresseMail' | 'fullpseudo'>) {
+  async addFriend(@Body() payload: Pick<Joueur, 'adresseMail' | 'pseudo'>) {
     try {
       console.log(payload);
       return await this.joueursService.addFriend(
         payload.adresseMail,
-        payload.fullpseudo,
+        payload.pseudo,
       );
     } catch (error) {
-      console.log(error);
-      return error;
+      throw new NotFoundException("Erreur lors de l'ajout de l'ami");
     }
   }
 
-  //recuperer la liste des amis d'un joueur 
-  @Get('friends/list')
-  async getFriends(
-    @Param('pseudo') joueur: Pick<Joueur, 'fullpseudo'>){
-      try{
-        const friends = await this.joueursService.getFriends(joueur);
-        return friends;
-      }catch(error){
-        console.log(error);
-        return error;
-      }
-    }
-
-    //recuperer la date d'inscription du joueurs
-    @Get('inscriptionDate')
-    async getInscriptionDate(@Param('pseudo') joueur: Pick<Joueur, 'fullpseudo' | 'pseudo' | 'adresseMail'>){
-      try{
-        const date = await this.joueursService.getInscriptionDate(joueur);
-        return date;
-      }catch(error){
-        console.log(error);
-        return error;
-      }
-    }
-  @Get('pseudo')
-  async retrouverPseudo(@Param('adresse') adresse: Pick<JoueurDto, 'adresseMail'>) {
-    try {
-      const pseudoTrouve = await this.joueursService.getFullPseudo(adresse);
-      return pseudoTrouve;
-    } catch (error) {
-      console.log("Le pseudo n'existe pas");
-      return error;
-    }
+  @UseGuards(JwtAuthGuard)
+  @Get('dateInscription')
+  async getDateInscription(@Request() req): Promise<Date> {
+    return this.joueursService.getDateInscription(req.user);
   }
 }

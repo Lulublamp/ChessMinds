@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {
   Column,
   Entity,
@@ -9,9 +8,12 @@ import {
 import { Joueur } from '../../joueurs/entities/joueur.entity';
 
 export enum TypePartie {
-  RAPIDE = 'ELORapide',
-  BULLET = 'ELOBullet',
-  BLITZ = 'ELOBlitz',
+  RAPIDE = 'elo_rapide',
+  BULLET = 'elo_bullet',
+  BLITZ = 'elo_blitz',
+  RAPIDE_MAX = 'elo_max_rapide',
+  BULLET_MAX = 'elo_max_bullet',
+  BLITZ_MAX = 'elo_max_blitz',
 }
 
 @Entity()
@@ -20,27 +22,27 @@ export class Classement {
   idClassement: number;
 
   @OneToOne(() => Joueur, {nullable:false})
-  @JoinColumn()
-  idJoueur: Joueur;
+  @JoinColumn({name: 'user_id'})
+  user_id: Joueur;
 
   //Pour partie Rapide
   @Column({nullable:false})
-  ELOMaxRapide: number;
+  elo_blitz: number;
 
   @Column({nullable:false})
-  ELORapide: number;
+  elo_bullet: number;
 
   //Pour partie Bullet
   @Column({nullable:false})
-  ELOMaxBullet: number;
+  elo_rapide: number;
 
   @Column({nullable:false})
-  ELOBullet: number;
+  elo_max_blitz: number;
 
   //Pour partie Blitz
   @Column({nullable:false})
-  ELOMaxBlitz: number;
+  elo_max_bullet: number;
 
   @Column({nullable:false})
-  ELOBlitz: number;
+  elo_max_rapide: number;
 }

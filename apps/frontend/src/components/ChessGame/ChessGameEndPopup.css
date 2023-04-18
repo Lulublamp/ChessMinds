@@ -1,0 +1,125 @@
+.PopUpFinDePartie{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+}
+
+.PopUpFinDePartie>div:first-of-type{
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #2121217a;;
+}
+
+.PopUpFinDePartie > div:last-of-type{
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 500px;
+  height: 500px;
+  background-color: #fff;
+  border-radius: 11px;
+  border: solid 2px var(--font-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.PopUpFinDePartie > div:last-of-type > div{
+  width: 360px;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.PopUpFinDePartie > div:last-of-type > div h2{
+  font-size: 32px;
+  width: 100%;
+  text-align: center;
+  color: var(--font-color);
+  font-weight: bold;
+  margin-top: 26px;
+  margin-bottom: 12px;
+}
+
+.PopUpFinDePartie > div:last-of-type > div > div{
+  display: flex;
+  height: auto;
+  width: 100%;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.PopUpFinDePartie > div:last-of-type > div > div > div{
+  width: auto;
+  height: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.PopUpFinDePartie > div:last-of-type > div > div > div img{
+  width: 85px;
+  height: 85px;
+  object-fit: none;
+}
+
+.PopUpFinDePartie > div:last-of-type > div > div > div span{
+  font-size: 18px;
+  color: var(--font-color);
+  font-weight: normal;
+  margin-top: 7px;
+}
+
+.PopUpFinDePartie > div:last-of-type > div > span{
+  font-size: 22px;
+  font-weight: bold;
+  color: var(--font-color);
+  position: relative;
+}
+
+.PopUpFinDePartie > div:last-of-type > div > span:first-of-type{
+  margin-top: 12px;
+  margin-bottom: 5px;
+}
+
+.PopUpFinDePartie > div:last-of-type > div > span > span{
+  position: absolute;
+  top: -10px;
+  right: -35px;
+  font-size: 22px;
+  font-weight: bold;
+  color: #E65D6A;
+}
+
+.PopUpFinDePartie > div:last-of-type > div > button{
+  width: 250px;
+  height: 50px;
+  border-radius: 11px;
+  box-shadow: 4px 4px 0px var(--font-color);
+  font-size: 22px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.PopUpFinDePartie > div:last-of-type > div > button:first-of-type{
+  background-color: var(--main-color);
+  color: #fff;
+  border: none;
+  margin-top: 18px;
+  margin-bottom: 12px;
+}
+
+.PopUpFinDePartie > div:last-of-type > div > button:nth-of-type(2){
+  background-color: #fff;
+  color: var(--font-color);
+  border: 2px solid var(--font-color);
+}

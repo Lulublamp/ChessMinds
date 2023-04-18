@@ -1,0 +1,362 @@
+.Profil {
+  background-color: #fff;
+  width: 90%;
+  margin: auto;
+  height: calc(100vh - 100px);
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.Profil .leftContainer,
+.Profil .rightContainer {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.Profil .leftContainer .MainCadre {
+  width: 783px;
+  height: 270px;
+  background-color: #fff;
+  border: solid 2px var(--font-color);
+  border-radius: 7px;
+  filter: drop-shadow(8px 8px 0px var(--font-color));
+  display: flex;
+  position: relative;
+}
+
+.Profil .leftContainer .Historique {
+  width: 783px;
+  height: 500px;
+  background-color: #fff;
+  border: solid 2px var(--font-color);
+  border-radius: 7px;
+  filter: drop-shadow(8px 8px 0px var(--font-color));
+  display: flex;
+  position: relative;
+  flex-direction: column;
+}
+
+.Profil .rightContainer .Statistiques {
+  width: 496px;
+  height: 370px;
+  background-color: #fff;
+  border: solid 2px var(--font-color);
+  border-radius: 7px;
+  filter: drop-shadow(8px 8px 0px var(--font-color));
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  padding: 14px 23px;
+}
+
+.Profil .rightContainer .FriendsList {
+  width: 494px;
+  height: 400px;
+  background-color: #fff;
+  border: solid 2px var(--font-color);
+  border-radius: 7px;
+  filter: drop-shadow(8px 8px 0px var(--font-color));
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  padding: 14px 23px;
+}
+
+.Profil .leftContainer .MainCadre>div:first-of-type {
+  width: 90%;
+  height: 90%;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  flex-direction: row;
+}
+
+.Profil .leftContainer .MainCadre>div img {
+  width: 190px;
+  height: 190px;
+}
+
+.Profil .leftContainer .MainCadre>div>div {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+.Profil .leftContainer .MainCadre>div>div>span:first-of-type {
+  font-weight: 600;
+  font-size: 38px;
+  color: var(--font-color);
+}
+
+.Profil .leftContainer .MainCadre>div>div>span:not(:first-of-type) {
+  font-weight: 500;
+  font-size: 25px;
+  color: var(--font-color);
+}
+
+.Profil .leftContainer .MainCadre>div>div>div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-top: 35px;
+  margin-bottom: 20px;
+}
+
+.Profil .leftContainer .MainCadre>div>div>div span {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 27px;
+  color: var(--font-color);
+}
+
+.Profil .leftContainer .MainCadre>div>div>div>div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin-left: 15px;
+}
+
+.Profil .leftContainer .MainCadre>div>div>div>div span {
+  margin-left: 5px;
+}
+
+.Profil .leftContainer .MainCadre .ModifContainer {
+  position: absolute;
+  top: 17px;
+  right: 17px;
+  display: flex;
+  flex-direction: row;
+  cursor: pointer;
+}
+
+.Profil .leftContainer .MainCadre .ModifContainer span {
+  font-weight: 700;
+  font-size: 20px;
+  color: var(--font-color);
+  margin-left: 8px;
+}
+
+.Profil .leftContainer .Historique header, .Profil .leftContainer .Historique main {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.Profil .leftContainer .Historique main{
+  max-height: 78%;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.Profil .leftContainer .Historique>header>div, .Profil .leftContainer .Historique>main>div {
+  border-bottom: solid 2px var(--font-color);
+}
+
+.Profil .leftContainer .Historique header>div {
+  width: 100%;
+}
+
+.Profil .leftContainer .Historique header>div:first-of-type {
+  height: 60px;
+  display: flex;
+  align-items: center
+}
+
+.Profil .leftContainer .Historique header>div:first-of-type span {
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--font-color);
+  margin-left: 31px;
+}
+
+.Profil .leftContainer .Historique header>div:last-of-type {
+  height: 45px;
+  width: 100%;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+}
+
+.Profil .leftContainer .Historique header>div:last-of-type span {
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--font-color);
+  text-align: center;
+}
+
+.Profil .leftContainer .Historique main >div
+{
+  display: flex;
+  flex-direction: row;
+  width: 100%;
+  justify-content: space-around;
+  align-items: center;
+  height: 70px;
+  flex-shrink: 0;
+}
+
+.Profil .leftContainer .Historique header>div>span:first-of-type, .Profil .leftContainer .Historique main >div >*:nth-child(1) {
+  width: 296px;
+}
+
+.Profil .leftContainer .Historique header>div>span:nth-of-type(2), .Profil .leftContainer .Historique main >div> *:nth-child(2) {
+  width: 60px;
+}
+
+.Profil .leftContainer .Historique header>div>span:nth-of-type(3), .Profil .leftContainer .Historique main >div> *:nth-child(3) {
+  width: 100px;
+}
+
+.Profil .leftContainer .Historique header>div>span:nth-of-type(4), .Profil .leftContainer .Historique main >div> *:nth-child(4) {
+  width: 100px;
+}
+
+.Profil .leftContainer .Historique header>div>span:nth-of-type(5), .Profil .leftContainer .Historique main >div> *:nth-child(5) {
+  width: 100px;
+}
+
+.Profil .leftContainer .Historique main >div span{
+  font-size: 15px;
+  font-weight: bold;
+  color: var(--font-color);
+  text-align: center;
+}
+
+.Profil .leftContainer .Historique main >div .win{
+  color: #47E639;
+}
+
+.Profil .leftContainer .Historique main >div .loose{
+  color: #E63946;
+}
+
+.Profil .leftContainer .Historique main >div button{
+  width: 90px;
+  height: 36px;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--main-color);
+  color: #fff;
+  font-size: 15px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.Profil .leftContainer .Historique main >div> div:first-of-type{
+  display: flex;
+  flex-direction: column;
+}
+
+.Profil .leftContainer .Historique main >div> div:first-of-type > span:first-of-type{
+  margin-bottom: 4px;
+}
+
+.Profil .rightContainer .Statistiques > span{
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--font-color);
+}
+
+.Profil .rightContainer .Statistiques > div{
+  margin-top: 10px;
+  border-top: solid 2px var(--font-color);
+}
+
+
+.Profil .rightContainer .Statistiques > div span{
+  font-size: 20px;
+  color: var(--font-color);
+}
+
+.Profil .rightContainer .Statistiques > div > div{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.Profil .rightContainer .Statistiques > div:first-of-type{
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+}
+
+
+.Profil .rightContainer .Statistiques > div:last-of-type{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  height: 25%;
+  align-items: center;
+}
+
+.Profil .rightContainer .FriendsList > span{
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--font-color);
+}
+
+.Profil .rightContainer .FriendsList > div{
+  margin-top: 10px;
+  border-top: solid 2px var(--font-color);
+  display: flex;
+  flex-direction: column;
+  max-height: 78%;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.Profil .rightContainer .FriendsList > div > div{
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  width: 100%;
+  height: 70px;
+  background-color: #fff;
+  border : solid 2px var(--font-color);
+  border-radius: 5px;
+  padding: 0px 15px;
+  margin-top: 10px;
+  flex-shrink: 0;
+}
+
+.Profil .rightContainer .FriendsList > div > div span:first-of-type{
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--font-color);
+  margin-right: 10px;
+}
+
+.Profil .rightContainer .FriendsList > div > div span:last-of-type{
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--font-color);
+  margin-right: 80px;
+}
+
+.Profil .rightContainer .FriendsList > div > div img{
+  width: 43px;
+  height: 43px;
+  object-fit: contain;
+  margin-right: 15px;
+}
+
+.Profil .rightContainer .FriendsList > div > div button{
+  width: 130px;
+  height: 40px;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--main-color);
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
