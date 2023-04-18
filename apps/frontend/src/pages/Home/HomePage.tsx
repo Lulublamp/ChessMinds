@@ -1,6 +1,6 @@
 import React from 'react';
 import Card from './Card';
-import './homePageStyle.css';
+import './HomePageStyle.css';
 import imageBanner from '../../images/0_2.png';
 
 interface Props {
