@@ -10,7 +10,7 @@ import { Partie } from 'src/partie/entities/partie.entity';
 
 @Injectable()
 export class RencontreService {
-  
+  /*
   constructor(
     @InjectRepository(Joueur)
     private readonly joueurRepository: Repository<Joueur>,
@@ -69,12 +69,12 @@ export class RencontreService {
   //recupere toutes les rencontres d'un joueur
   //JE SAIS PAS AVEC QUEL MÉTHODE
   async toutesRencontres(fullpseudo: Pick<Joueur, 'fullpseudo'>) {
-    /*const joueur=await this.joueurRepository.findOne({
+    const joueur=await this.joueurRepository.findOne({
       where:{
         fullpseudo: fullpseudo.fullpseudo,
       }});
 
-      if(!joueur) throw new PlayerNotFound();*/
+      if(!joueur) throw new PlayerNotFound();
     
     const toutesRencontres= await this.rencontreRepository
       .createQueryBuilder('rencontre')
@@ -93,7 +93,6 @@ export class RencontreService {
       return toutesRencontres;
   }
   
-//recupere date rencontre PAS SUR MAIS CA RECUPERE LA DATE DE LA PREMIERE PARTIE QU'IL TROUVE
   async dateRencontre(fullpseudo: Pick<Joueur, 'fullpseudo'>) {
     const joueur=await this.joueurRepository.findOne({
       where:{
@@ -110,5 +109,5 @@ export class RencontreService {
       .select('partie.datePartie')
       .getRawOne();
       return dateRencontre;
-    }
+    }*/
 }
