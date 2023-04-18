@@ -20,7 +20,7 @@ const Matchmaking: React.FC<Props> = ({onBackClick}) => {
     setSelectedTimeMod(timeMode);
   };
 
-  const handleRankedChange = (checked: boolean) => {
+  const handleRankedChange = (checked: MATCHMAKING_MODE) => {
     setIsRanked(checked);
   };
 
