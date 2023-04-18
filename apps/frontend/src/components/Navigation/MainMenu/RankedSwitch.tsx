@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
+import { MATCHMAKING_MODE } from '@TRPI/core/core-network';
 
 interface RankedSwitchProps {
-  onRankedChange: (checked: boolean) => void;
+  onRankedChange: (checked: MATCHMAKING_MODE) => void;
 }
 
 const RankedSwitch: React.FC<RankedSwitchProps> = ({ onRankedChange }) => {
@@ -10,7 +11,10 @@ const RankedSwitch: React.FC<RankedSwitchProps> = ({ onRankedChange }) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.target.checked;
     setChecked(isChecked);
-    onRankedChange(isChecked);
+    if(isChecked)
+      onRankedChange('ranked');
+    else 
+      onRankedChange('unranked');
   };
 
   return (
