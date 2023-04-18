@@ -4,12 +4,11 @@ import { ClassementNotFound, PlayerNotFound } from 'src/errors/bErrors';
 import { Repository } from 'typeorm';
 import { ClassementDto } from './DTO/classement.dto';
 import { Classement, TypePartie } from './entities/classement.entity';
-import { DeepPartial } from 'typeorm';
 import { Joueur } from 'src/joueurs/entities/joueur.entity';
+import { JoueurDto } from 'src/joueurs/DTO/joueurs.dto';
 
 @Injectable()
 export class ClassementService {
-
   constructor(
     @InjectRepository(Classement)
     private readonly classementRepository: Repository<Classement>,
@@ -20,22 +19,20 @@ export class ClassementService {
     await this.classementRepository.save(newClassement);
   }
 
-  async getMyHighestElo(userId: Joueur, typePartie: TypePartie) {
+  async getMyHighestElo(joueurDto: JoueurDto, typePartie: TypePartie): Promise<number> {
     const classement = await this.classementRepository.findOne({
-      where: { user_id: userId },
+      where: { user_id: { idJoueur: joueurDto.idJoueur } },
     });
-
     if (!classement) {
       throw new NotFoundException('Classement introuvable pour cet utilisateur');
     }
-
-    return classement[typePartie];
+    return Promise.resolve(classement[typePartie]);
   }
+  
 
-  async getEloByUserId(userId: Joueur) {
-
+  async getEloByUserId(joueurDto: JoueurDto): Promise<Partial<ClassementDto>> {
     const classement = await this.classementRepository.findOne({
-      where: { user_id: userId },
+      where: { user_id: { idJoueur: joueurDto.idJoueur } },
     });
 
     if (!classement) {
@@ -49,26 +46,21 @@ export class ClassementService {
     };
   }
 
-  async getEloByUserIdAndTypePartie(userId: number) {
+  async getEloByUserIdAndTypePartie(joueurDto: JoueurDto, typePartie: TypePartie) {
     const dernierClassement = await this.classementRepository
       .createQueryBuilder('classement')
-      .select('classement.elo_bullet')
-      .where('classement.user_id = :userId', { userId })
+      .select(`classement.${typePartie}`)
+      .where('classement.user_id = :userId', { userId: { idJoueur: joueurDto.idJoueur } })
       .getOne();
     return dernierClassement;
   }
 
-
-  async getMyRank(userId: Joueur, typePartie: TypePartie) {
+  async getMyRank(joueurDto: JoueurDto, typePartie: TypePartie): Promise<number> {
     try {
-      // Récupérer les classements de la partie demandée
       const ranks = await this.fetchRanks(typePartie);
-      // Trouver le rang du joueur parmi les classements récupérés
-      const myRank = ranks.findIndex(rank => rank.userId === userId.idJoueur) + 1;
-      // Retourner le rang du joueur
+      const myRank = ranks.findIndex(rank => rank.userId === joueurDto.idJoueur) + 1;
       return myRank;
     } catch (error) {
-      // Gérer les erreurs et retourner -1 en cas d'erreur
       console.error('Erreur lors de la récupération du rang:', error);
       return -1;
     }
