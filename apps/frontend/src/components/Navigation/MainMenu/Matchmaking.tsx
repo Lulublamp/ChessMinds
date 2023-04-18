@@ -5,7 +5,7 @@ import RankedSwitch from './RankedSwitch';
 import PlayButton from '../../Button/PlayButton';
 import imageBanner from '../../../images/0_1.png';
 import TimeMode from './TimeMode';
-import { MATCHMAKING_MODES_TIMERS } from '@TRPI/core/core-network';
+import { MATCHMAKING_MODES_TIMERS, MATCHMAKING_MODE } from '@TRPI/core/core-network';
 
 
 interface Props {
@@ -14,7 +14,7 @@ interface Props {
 
 const Matchmaking: React.FC<Props> = ({onBackClick}) => {
   const [selectedTimeMod, setSelectedTimeMod] = useState<MATCHMAKING_MODES_TIMERS>('bullet');
-  const [isRanked, setIsRanked] = useState(false);
+  const [isRanked, setIsRanked] = useState<MATCHMAKING_MODE>('unranked');
   
   const handleTimeModeSelect = (timeMode: MATCHMAKING_MODES_TIMERS) => {
     setSelectedTimeMod(timeMode);
