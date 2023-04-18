@@ -8,7 +8,7 @@ import { Joueur } from 'src/joueurs/entities/joueur.entity';
 @Controller('rencontre')
 export class RencontreController {
   constructor(private readonly rencontreService: RencontreService) {}
-
+/*
 //recuperer le nombre de rencontre d'un joueur
   @Get('nombre/:joueur')
   async nombreRencontre(@Param('joueur') joueur: Pick<Joueur,'fullpseudo'>) {
@@ -79,7 +79,7 @@ export class RencontreController {
       console.log("Le joueur n'existe pas");
       return error;
     }
-  }
+  }*/
 
 
 }
