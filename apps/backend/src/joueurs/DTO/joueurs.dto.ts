@@ -1,12 +1,10 @@
 /* eslint-disable prettier/prettier */
-import { IsEmail, IsNotEmpty, IsString, Matches, MinLength, IsInt } from 'class-validator';
-import { Entity } from 'typeorm';
+import { IsEmail, IsNotEmpty, IsString, Matches, MinLength, IsNumber } from 'class-validator';
 import * as bcrypt from 'bcrypt';
 
-@Entity()
 export class JoueurDto {
 
-  @IsInt()
+  @IsNumber()
   @IsNotEmpty()
   idJoueur?: number;
 

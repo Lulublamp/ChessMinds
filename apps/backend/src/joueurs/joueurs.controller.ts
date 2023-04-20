@@ -14,30 +14,36 @@ import {
 import { JoueurDto } from './DTO/joueurs.dto';
 import { JoueursService } from './joueurs.service';
 import { Joueur } from './entities/joueur.entity';
-import { PlayerAlreadyExists } from 'src/errors/bErrors';
+import { PseudoPlayerAlreadyExists, EmailPlayerAlreadyExists } from 'src/errors/bErrors';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.gard';
 
 @Controller('joueurs')
 export class JoueursController {
   constructor(private readonly joueursService: JoueursService) { }
 
-
   @Post('inscription')
-  async inscriptionJoueur(@Body() joueur: JoueurDto) {
+  async inscriptionJoueur(@Body() joueur: Joueur) {
     try {
       return await this.joueursService.inscriptionJoueur(joueur);
     } catch (error) {
-      if (error instanceof PlayerAlreadyExists) {
-        throw new HttpException(
-          {
-            status: HttpStatus.CONFLICT,
-            error: "L'utilisateur existe déjà.",
-          },
-          HttpStatus.CONFLICT,
-        );
+      if (error instanceof PseudoPlayerAlreadyExists || error instanceof EmailPlayerAlreadyExists) {
+        throw this.generateConflictException(error);
       }
       throw error;
     }
+  }
+
+  private generateConflictException(error: PseudoPlayerAlreadyExists | EmailPlayerAlreadyExists): HttpException {
+    const errorMessage = error instanceof PseudoPlayerAlreadyExists
+      ? "L'utilisateur existe déjà."
+      : "L'adresse mail est déjà utilisée";
+    return new HttpException(
+      {
+        status: HttpStatus.CONFLICT,
+        error: errorMessage,
+      },
+      HttpStatus.CONFLICT,
+    );
   }
 
   @Post('friends/add')

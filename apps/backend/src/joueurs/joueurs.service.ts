@@ -4,7 +4,8 @@ import { create } from 'domain';
 import { resolve } from 'path';
 import {
   AlreadyFriends,
-  PlayerAlreadyExists,
+  EmailPlayerAlreadyExists,
+  PseudoPlayerAlreadyExists,
   PlayerNotCreated,
   PlayerNotFound,
 } from 'src/errors/bErrors';
@@ -22,19 +23,23 @@ export class JoueursService {
     private readonly classementService: ClassementService,
   ) {}
 
-  async inscriptionJoueur(joueurDto: JoueurDto): Promise<Joueur> {
+  async inscriptionJoueur(joueur: Joueur): Promise<Joueur> {
     const existingJoueurByEmail = await this.joueursRepository.findOne({
-      where: { adresseMail: joueurDto.adresseMail },
+      where: { adresseMail: joueur.adresseMail },
     });
     const existingJoueurByPseudo = await this.joueursRepository.findOne({
-      where: { pseudo: joueurDto.pseudo },
+      where: { pseudo: joueur.pseudo },
     });
-    if (existingJoueurByEmail || existingJoueurByPseudo) {
-      throw new PlayerAlreadyExists();
+    if(existingJoueurByEmail){
+      throw new EmailPlayerAlreadyExists();
     }
+    if(existingJoueurByPseudo){
+      throw new PseudoPlayerAlreadyExists();
+    }
+
     try {
-      joueurDto.motDePasse = await hashPassword(joueurDto.motDePasse);
-      const newJoueur = this.joueursRepository.create(joueurDto);
+      joueur.motDePasse = await hashPassword(joueur.motDePasse);
+      const newJoueur = this.joueursRepository.create(joueur);
       const joueurCree = await this.joueursRepository.save(newJoueur);
   
       await this.classementService.creerClassement({

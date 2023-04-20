@@ -13,6 +13,18 @@ export class PlayerAlreadyExists extends HttpException {
   }
 }
 
+export class EmailPlayerAlreadyExists extends HttpException {
+  constructor() {
+    super('Email player already exists', HttpStatus.CONFLICT);
+  }
+}
+
+export class PseudoPlayerAlreadyExists extends HttpException {
+  constructor() {
+    super('Pseudo player already exists', HttpStatus.CONFLICT);
+  }
+}
+
 export class PlayerNotCreated extends HttpException {
   constructor() {
     super('Player not created', HttpStatus.BAD_REQUEST);

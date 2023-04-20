@@ -17,6 +17,9 @@ const SignupPopup: React.FC<Props> = ({ onClose, onSwitch }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [showPasswordConfirm, setShowPasswordConfirm] = useState(false);
   const [error, setError] = useState('');
+  const [inputClassName, setInputClassName] = useState('');
+  const [inputClassEmail, setinputClassEmail] = useState('');
+  const [inputClassPseudo, setinputClassPseudo] = useState('');
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -28,12 +31,22 @@ const SignupPopup: React.FC<Props> = ({ onClose, onSwitch }) => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    if(password.length < 6) {
+    setInputClassName('');
+    setinputClassEmail('');
+    setinputClassPseudo('');
+    if (password.length < 6) {
       setError('Le mot de passe doit contenir au moins 6 caractères');
+      
+      setTimeout(() => {
+        setInputClassName('input-error');
+      }, 100);
       return;
     }
-    if(password !== passwordConfirm) {
+    if (password !== passwordConfirm) {
       setError('Les mots de passe ne correspondent pas');
+      setTimeout(() => {
+        setInputClassName('input-error');
+      }, 100);
       return;
     }
     axios.post(`${API_BASE_URL}/joueurs/inscription`, {
@@ -47,6 +60,18 @@ const SignupPopup: React.FC<Props> = ({ onClose, onSwitch }) => {
       console.log(error);
       if (error.response) {
         setError(error.response.data.error);
+        if (error.response.data.error === "L'adresse mail est déjà utilisée") {
+          setinputClassEmail('');
+          setTimeout(() => {
+            setinputClassEmail('input-error');
+          }, 100);
+        }
+        if (error.response.data.error === "L'utilisateur existe déjà.") {
+          setinputClassPseudo('');
+          setTimeout(() => {
+            setinputClassPseudo('input-error');
+          }, 100);
+        }
       } else {
         setError("Une erreur s'est produite lors de l'inscription. Veuillez réessayer.");
       }
@@ -77,6 +102,7 @@ const SignupPopup: React.FC<Props> = ({ onClose, onSwitch }) => {
                 placeholder="Entrez votre adresse mail"
                 required
                 value={email}
+                className={inputClassEmail}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
@@ -97,6 +123,7 @@ const SignupPopup: React.FC<Props> = ({ onClose, onSwitch }) => {
                 placeholder="Entrez votre pseudo"
                 required
                 value={username}
+                className={inputClassPseudo}
                 onChange={(e) => setUsername(e.target.value)}
               />
             </div>
@@ -116,6 +143,7 @@ const SignupPopup: React.FC<Props> = ({ onClose, onSwitch }) => {
                 placeholder="Entrez votre mot de passe"
                 required
                 value={password}
+                className={inputClassName}
                 onChange={(e) => setPassword(e.target.value)}
               />
               <svg className="toggle-password" width="19" height="18" viewBox="0 0 19 18" fill="none"
@@ -141,6 +169,7 @@ const SignupPopup: React.FC<Props> = ({ onClose, onSwitch }) => {
                 placeholder="Confirmez votre mot de passe"
                 required
                 value={passwordConfirm}
+                className={inputClassName}
                 onChange={(e) => setPasswordConfirm(e.target.value)}
               />
               <svg className="toggle-password" width="19" height="18" viewBox="0 0 19 18" fill="none"
