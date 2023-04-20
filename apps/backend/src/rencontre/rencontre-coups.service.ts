@@ -3,7 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Rencontre } from './entities/rencontre.entity';
 import { Coups } from 'src/coups/entities/coups.entity';
-import { Joueur } from 'src/joueurs/entities/joueur.entity';
+import { JoueurDto } from 'src/joueurs/DTO/joueurs.dto';
 import { JoueursService } from 'src/joueurs/joueurs.service';
 import { ClassementService } from 'src/classement/classement.service';
 
@@ -41,7 +41,7 @@ export class RencontreCoupsService {
     return this.coupsRepository.save(coup);
   }
 
-  async getStats(joueur: Joueur): Promise<{ victoires: number; defaites: number; parties: number }> {
+  async getStats(joueur: JoueurDto): Promise<{ victoires: number; defaites: number; parties: number }> {
     const victoires = await this.rencontreRepository.count({ where: { vainqueur: joueur.idJoueur } });
     const parties = await this.rencontreRepository.count({
       where: [{ joueurBlanc: joueur }, { joueurNoir: joueur }],
@@ -51,7 +51,7 @@ export class RencontreCoupsService {
     return { victoires, defaites, parties };
   }
 
-  async getPartiesDetailsPourJoueur(joueur: Joueur): Promise<any> {
+  async getPartiesDetailsPourJoueur(joueur: JoueurDto): Promise<any> {
     const rencontres = await this.rencontreRepository.find({
       where: [
         { joueurBlanc: { idJoueur: joueur.idJoueur } },
@@ -59,7 +59,6 @@ export class RencontreCoupsService {
       ],
       relations: ['joueurBlanc', 'joueurNoir'],
     });
-    //console.log(rencontres);
 
     if (!rencontres || rencontres.length === 0) {
       throw new Error('Aucune rencontre trouvée pour ce joueur');
@@ -74,8 +73,8 @@ export class RencontreCoupsService {
       .where("coups.idRencontreIdRencontre = :idRencontre", { idRencontre: rencontre.idRencontre })
       .getCount();
 
-      const eloBlanc = await this.classementService.getEloByUserIdAndTypePartie(rencontre.joueurBlanc.idJoueur);
-      const eloNoir = await this.classementService.getEloByUserIdAndTypePartie(rencontre.joueurNoir.idJoueur);
+      const eloBlanc = await this.classementService.getEloByUserId(rencontre.joueurBlanc.toDto());
+      const eloNoir = await this.classementService.getEloByUserId(rencontre.joueurNoir.toDto());
 
       result.push({
         idRencontre: rencontre.idRencontre,
@@ -96,3 +95,4 @@ export class RencontreCoupsService {
   }
 
 }
+

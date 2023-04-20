@@ -8,6 +8,7 @@ import {
   ManyToMany, 
   PrimaryGeneratedColumn 
 } from "typeorm";
+import { JoueurDto } from "../DTO/joueurs.dto";
 
 @Entity()
 export class Joueur {
@@ -30,4 +31,16 @@ export class Joueur {
   @ManyToMany(() => Joueur , (user) => user.amis )
   @JoinTable()
   amis: Joueur[]; 
+
+  toDto(): JoueurDto {
+    const dto = new JoueurDto();
+    dto.idJoueur = this.idJoueur;
+    dto.adresseMail = this.adresseMail;
+    dto.pseudo = this.pseudo;
+    dto.motDePasse = this.motDePasse;
+    dto.dateInscription = this.dateInscription;
+
+    return dto;
+  }
+
 }
