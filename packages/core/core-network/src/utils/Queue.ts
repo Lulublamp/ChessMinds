@@ -46,9 +46,7 @@ export class Queue {
   protected coupledGames: Map<string , ChessGame> = new Map<string , ChessGame>();
   protected socketMap: Map<string, string>;
 
-  get gamesList(): IGame[] {
-    return this.games;
-  }
+ 
 
   public mutateGameSocketId(matchId: string , socketId: string , name: string) {
     const game = this.games.find(game => game.matchId === matchId)
@@ -56,15 +54,19 @@ export class Queue {
     isBlack ? game!.black_player.socketId = socketId : game!.white_player.socketId = socketId;
   }
 
+  get gamesList(): IGame[] {
+    return this.games;
+  }
+
   get queueList(): MMPlayer[] {
     return this.queue;
   }
 
-  get coupledGamesList(): Map<string , ChessGame> {
+  get coupledGamesMap(): Map<string , ChessGame> {
     return this.coupledGames;
   }
 
-  get socketMapList(): Map<string, string> {
+  get socketMaps(): Map<string, string> {
     return this.socketMap;
   }
 
@@ -86,7 +88,8 @@ export class Queue {
       (player) =>
         player.rank === p.rank &&
         player.options?.mode === mode.mode &&
-        player.options?.timer === mode.timer
+        player.options?.timer === mode.timer &&
+        player.id !== p.id
     );
       
     if (filtredQueue.length === 0) return [false , null];
@@ -116,7 +119,7 @@ export class Queue {
     firstPlayer: MMPlayer,
     secondPlayer: MMPlayer
   ): string {
-    return firstPlayer.id + secondPlayer.id;
+    return firstPlayer.socketId + secondPlayer.socketId!; //à revoir si on est vraiment sûr que les socketId sont toujours dispo au moment de la création de la partie
   }
 
   getRandomRoomId(): string {
@@ -176,6 +179,7 @@ export class Queue {
       }
     });
     this.queue = this.queue.filter((p) => p.id !== playerId);
+    console.log(this.socketMap.get(playerId));
     this.socketMap.delete(playerId);
   }
 

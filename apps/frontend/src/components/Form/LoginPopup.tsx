@@ -30,6 +30,7 @@ const LoginPopup: React.FC<Props> = ({ onClose, onSwitch, onSuccess }) => {
       .then(function (response) {
         setError('');
         setUser({
+          id: response.data.idJoueur,
           email: response.data.adresseMail,
           pseudo: response.data.pseudo,
         });

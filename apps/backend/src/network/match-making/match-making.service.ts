@@ -7,7 +7,7 @@ export class MatchMakingService {
   readonly pLobby: Nt.Lobby;
 
   constructor() {
-    this.queue = new Nt.Queue(100);
+    this.queue = new Nt.Queue(10000);
     this.pLobby = new Nt.Lobby();
   }
 }

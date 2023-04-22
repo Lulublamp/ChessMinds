@@ -40,6 +40,19 @@ export class MatchMakingGateway {
 
   handleDisconnect(client: Socket) {
     console.log('match-making: Disconnect : ' + client.id);
+    this.matchMakingService.queue.gamesList.forEach((game) => {
+      console.log('game : ' + game);
+    });
+
+    this.matchMakingService.queue.queueList.forEach((player) => {
+      console.log('player : ');
+      console.log(player);
+    });
+
+    this.matchMakingService.queue.socketMaps.forEach((socket) => {
+      console.log('socket : ' + socket);
+    });
+
     this.sockets = this.sockets.filter((socket) => socket.id !== client.id);
     this.matchMakingService.queue.removePlayerFromQueue(client.id);
   }
@@ -56,7 +69,8 @@ export class MatchMakingGateway {
       console.log('error: private game not implemented in queue');
       return;
     }
-
+    console.log('playerPayload : ');
+    console.log(playerPayload);
     const maybeGame = this.matchMakingService.queue.addPlayerToQueue(
       playerPayload,
       client.id,

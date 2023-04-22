@@ -276,7 +276,7 @@ export class InGameGateway {
     @ConnectedSocket() client: Socket,
   ) {
     const { matchId, from, to } = movePayload;
-    const coupledGames = this.matchMakingService.queue.coupledGamesList;
+    const coupledGames = this.matchMakingService.queue.coupledGamesMap;
     console.log(coupledGames);
     if (!coupledGames.has(matchId)) {
       console.log('error: game not found MAKE_MOVE');
