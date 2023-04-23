@@ -6,9 +6,11 @@ import {
   Entity, 
   JoinTable, 
   ManyToMany, 
+  OneToOne, 
   PrimaryGeneratedColumn 
 } from "typeorm";
 import { JoueurDto } from "../DTO/joueurs.dto";
+import { Classement } from "src/classement/entities/classement.entity";
 
 @Entity()
 export class Joueur {

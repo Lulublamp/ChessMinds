@@ -7,6 +7,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { AuthController } from './auth.controller';
 import { JoueursModule } from '../joueurs/joueurs.module';
+import { Classement } from 'src/classement/entities/classement.entity';
+import { ClassementModule } from 'src/classement/classement.module';
 
 @Module({
   imports: [

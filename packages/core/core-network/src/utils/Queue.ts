@@ -1,48 +1,29 @@
 import { Socket } from "socket.io";
 import { ChessGame, Color, Player } from "../../../core-algo";
-import { lobbyPlayer, MMPlayer } from "../interfaces/emitEvents";
+// import { lobbyPlayer, MMPlayer } from "../interfaces/emitEvents";
 import { JoinQueuOption } from "../MatchMaking";
 import { MATCHMAKING_MODE } from "../Namespace";
+import { IMMPlayer, IRPlayer } from "../interfaces/mmplayer";
 
-export interface PPlayer {
-  socket: string;
-  id: string;
-  name: string;
-  elo: number;
-  rank?: number | null;
-  player?: Player;
-}
 
-export const MatchState = {
-  waiting: "waiting",
-  playing: "playing",
-  ended: "ended",
-} as const;
 
-export type MatchState = (typeof MatchState)[keyof typeof MatchState];
 
-export interface Match<T> {
-  matchId: string;
-  players: (T extends PPlayer ? PPlayer : lobbyPlayer)[];
-  createdAt: Date;
-  endedAt: Date | null;
-  winner: PPlayer | null;
-  state: MatchState;
-  currentTurn: T extends PPlayer ? PPlayer : lobbyPlayer;
-}
+
+
+
 
 export interface IGame {
   matchId: string;
   matchOptions: JoinQueuOption;
-  white_player: MMPlayer;
-  black_player: MMPlayer;
+  white_player: IRPlayer;
+  black_player: IRPlayer;
   createdAt: Date;
   winnder: string;
 }
 
 export class Queue {
   protected games: IGame[] = [];  
-  protected queue: MMPlayer[] = [];
+  protected queue: IRPlayer[] = [];
   protected coupledGames: Map<string , ChessGame> = new Map<string , ChessGame>();
   protected socketMap: Map<string, string>;
 
@@ -58,7 +39,7 @@ export class Queue {
     return this.games;
   }
 
-  get queueList(): MMPlayer[] {
+  get queueList(): IRPlayer[] {
     return this.queue;
   }
 
@@ -81,24 +62,22 @@ export class Queue {
   }
 
   isReadyToMatch(
-    p: MMPlayer,
-    mode: JoinQueuOption
-  ): [boolean , MMPlayer | null] {
+    p: IRPlayer,
+  ): [boolean , IRPlayer | null] {
     const filtredQueue = this.queue.filter(
       (player) =>
         player.rank === p.rank &&
-        player.options?.mode === mode.mode &&
-        player.options?.timer === mode.timer &&
+        player.options?.mode === p.options.mode &&
+        player.options?.timer === p.options.timer &&
         player.id !== p.id
     );
-      
     if (filtredQueue.length === 0) return [false , null];
 
     const random = Math.floor(Math.random() * filtredQueue.length);
     return [true , filtredQueue[random]];
   }
 
-  static BuildGame(firstPlayer: MMPlayer, secondPlayer: MMPlayer , options: JoinQueuOption): IGame {
+  static BuildGame(firstPlayer: IRPlayer, secondPlayer: IRPlayer): IGame {
     let random = Math.floor(Math.random() * 2);
     const white_player = random === 0 ? firstPlayer : secondPlayer;
     const black_player = random === 0 ? secondPlayer : firstPlayer;
@@ -106,8 +85,8 @@ export class Queue {
     const game: IGame = {
       matchId,
       white_player,
-      matchOptions: options,
       black_player,
+      matchOptions: firstPlayer.options || secondPlayer.options,
       createdAt: new Date(),
       winnder: "",
     };
@@ -116,8 +95,8 @@ export class Queue {
   }
 
   static generateMatchId(
-    firstPlayer: MMPlayer,
-    secondPlayer: MMPlayer
+    firstPlayer: IRPlayer,
+    secondPlayer: IRPlayer
   ): string {
     return firstPlayer.socketId + secondPlayer.socketId!; //à revoir si on est vraiment sûr que les socketId sont toujours dispo au moment de la création de la partie
   }
@@ -127,7 +106,7 @@ export class Queue {
   }
 
   //modifier avec proposition de lucas + logarithmique un truc du genre
-  rankPlayers(player: MMPlayer): number | null {
+  rankPlayers(player: IRPlayer): number | null {
     if (player.elo < 800) {
       return 1;
     } else if (player.elo < 1000) {
@@ -147,22 +126,29 @@ export class Queue {
   }
 
   addPlayerToQueue(
-    player: MMPlayer,
+    player: IMMPlayer,
     socket: string,
-    mode: JoinQueuOption
   ): IGame | number {
     if (this.queue.length >= this.maxPlayers) {
       return -1;
     }
-    player.rank = this.rankPlayers(player);
-    player.options = mode;
-    const [isReadyToMatch, matchPlayer] = this.isReadyToMatch(player, mode);
+
+    const pWithRank: IRPlayer = {
+      ...player,
+      rank: null,
+      socketId: null,
+    };
+
+    pWithRank.rank = this.rankPlayers(pWithRank);
+    pWithRank.socketId = socket;
+
+    const [isReadyToMatch, matchPlayer] = this.isReadyToMatch(pWithRank);
     if (!isReadyToMatch) {
-      this.queue.push(player);
-      this.socketMap.set(player.id, socket);
+      this.queue.push(pWithRank);
+      this.socketMap.set(pWithRank.id, socket);
       return -2;
     }
-    const game = Queue.BuildGame(player, matchPlayer! , mode);
+    const game = Queue.BuildGame(pWithRank, matchPlayer!);
     this.coupledGames.set(game.matchId , new ChessGame());
     this.games.push(game);
     this.queue = this.queue.filter(
@@ -179,7 +165,7 @@ export class Queue {
       }
     });
     this.queue = this.queue.filter((p) => p.id !== playerId);
-    console.log(this.socketMap.get(playerId));
+    // console.log(this.socketMap.get(playerId));
     this.socketMap.delete(playerId);
   }
 

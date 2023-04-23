@@ -6,12 +6,6 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Nt } from '@TRPI/core';
-import {
-  eIJoinQueueEvent,
-  IGame,
-  MATCHMAKING_MODE,
-  MMPlayer,
-} from '@TRPI/core/core-network';
 import { Server, Socket } from 'socket.io';
 
 import { MatchMakingService } from './match-making.service';
@@ -33,8 +27,10 @@ export class MatchMakingGateway {
     console.log('match-making: Init');
   }
 
-  handleConnection(client: Socket) {
+  handleConnection(@ConnectedSocket() client: Socket) {
     console.log('match-making: Connection : ' + client.id);
+    // console.log(client);
+    console.log('User : ' + client['user']);
     this.sockets.push(client);
   }
 
@@ -62,19 +58,24 @@ export class MatchMakingGateway {
     @MessageBody() joinQueuPayload: Nt.eIJoinQueueEvent,
     @ConnectedSocket() client: Socket,
   ) {
+    console.log('match-making: User join queue');
+    console.log(client['user']);
     const { options } = joinQueuPayload;
-    const playerPayload: Nt.MMPlayer = joinQueuPayload;
-    playerPayload.socketId = client.id;
+    const player: Nt.IMMPlayer = this.matchMakingService.mapPlayer(
+      client['user'],
+      options,
+    );
+    console.log('player : ');
+    console.log(player);
     if (options.mode === Nt.MATCHMAKING_MODE.PRIVATE) {
       console.log('error: private game not implemented in queue');
       return;
     }
-    console.log('playerPayload : ');
-    console.log(playerPayload);
+    // console.log('playerPayload : ');
+    // console.log(playerPayload);
     const maybeGame = this.matchMakingService.queue.addPlayerToQueue(
-      playerPayload,
+      player,
       client.id,
-      options,
     );
 
     if (typeof maybeGame === 'number') {

@@ -48,6 +48,7 @@ const Game = () => {
   const [elo, setElo] = useState<number>(0);
   const findChessGame = new ChessGame();
   const [gameEndInfo, setGameEndInfo] = useState<GameEndInfo | null>(null);
+  const localStorage = window.localStorage;
 
   const [matchMakingPayload, setMatchMakingPayload] = useState<eIJoinQueueEvent | null>(null);
 
@@ -81,7 +82,7 @@ const Game = () => {
       await fetchEloData(selectedTimeMode);
       setBoardHistory(() => [findChessGame.getBoard().copyBoard()]);
 
-      const newClientManager = new ClientEventManager<MATCH_MAKING>(import.meta.env.VITE_SERVER_URL || `${API_BASE_URL}`, NAMESPACE_TYPES.MATCH_MAKING, '');
+      const newClientManager = new ClientEventManager<MATCH_MAKING>(import.meta.env.VITE_SERVER_URL || `${API_BASE_URL}`, NAMESPACE_TYPES.MATCH_MAKING, localStorage.getItem("accessToken")!);
       console.log("Info :", selectedTimeMode, isRanked, elo, user.user?.pseudo);
       if (!user.user?.pseudo || elo === undefined || selectedTimeMode === undefined || isRanked === undefined) {
         navigate('/MainMenu');
@@ -92,9 +93,6 @@ const Game = () => {
 
 
       const payload: eIJoinQueueEvent = {
-        id: user.user.id,
-        name: user.user.pseudo,
-        elo: elo,
         options: {
           mode: isRanked as MATCHMAKING_MODE,
           timer: selectedTimeMode as MATCHMAKING_MODES_TIMERS
