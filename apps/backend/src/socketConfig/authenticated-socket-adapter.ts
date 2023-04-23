@@ -32,9 +32,6 @@ export class AuthenticatedSocketAdapter extends IoAdapter {
       socket.user = user;
       const inQueue = this.matchMakingServer.checkPlayerInQueue(user.user.idJoueur);
       const inGame = this.matchMakingServer.checkPlayerInGame(user.user.idJoueur);
-      console.log('inQueue', inQueue)
-      console.log('inGame', inGame)
-
       if (inQueue || inGame) {
         return next(new Error('Already in queue or game'));
       }

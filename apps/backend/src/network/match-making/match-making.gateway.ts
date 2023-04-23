@@ -30,27 +30,18 @@ export class MatchMakingGateway {
   handleConnection(@ConnectedSocket() client: Socket) {
     console.log('match-making: Connection : ' + client.id);
     // console.log(client);
-    console.log('User : ' + client['user']);
+    // console.log('User : ' + client['user']);
     this.sockets.push(client);
   }
 
   handleDisconnect(client: Socket) {
     console.log('match-making: Disconnect : ' + client.id);
-    this.matchMakingService.queue.gamesList.forEach((game) => {
-      console.log('game : ' + game);
-    });
-
-    this.matchMakingService.queue.queueList.forEach((player) => {
-      console.log('player : ');
-      console.log(player);
-    });
-
-    this.matchMakingService.queue.socketMaps.forEach((socket) => {
-      console.log('socket : ' + socket);
-    });
-
     this.sockets = this.sockets.filter((socket) => socket.id !== client.id);
     this.matchMakingService.queue.removePlayerFromQueue(client.id);
+    console.log(this.matchMakingService.queue.coupledGamesMap);
+    console.log(this.matchMakingService.queue.queueList);
+    console.log(this.matchMakingService.queue.gamesList);
+    console.log(this.matchMakingService.queue.socketMaps);
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.JOIN_QUEUE)
@@ -59,14 +50,14 @@ export class MatchMakingGateway {
     @ConnectedSocket() client: Socket,
   ) {
     console.log('match-making: User join queue');
-    console.log(client['user']);
+    // console.log(client['user']);
     const { options } = joinQueuPayload;
     const player: Nt.IMMPlayer = this.matchMakingService.mapPlayer(
       client['user'],
       options,
     );
-    console.log('player : ');
-    console.log(player);
+    // console.log('player : ');
+    // console.log(player);
     if (options.mode === Nt.MATCHMAKING_MODE.PRIVATE) {
       console.log('error: private game not implemented in queue');
       return;

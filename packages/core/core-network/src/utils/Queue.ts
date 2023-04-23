@@ -87,7 +87,6 @@ export class Queue {
       }
     });
     this.queue = this.queue.filter((p) => p.id !== playerId);
-    // console.log(this.socketMap.get(playerId));
     this.socketMap.delete(playerId);
   }
 
