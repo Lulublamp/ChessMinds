@@ -1,7 +1,7 @@
 import { ChessBoard, ChessGame, ChessPiece } from "../../../core-algo";
 import { ClientEventManager } from "../ClientEventManager";
 import { IN_GAME, MATCH_MAKING } from "../Namespace";
-import { IGame } from "../utils/Queue";
+import { IGame } from "./game";
 
 export interface Move {
   turn: number;
