@@ -4,14 +4,17 @@ import { INestApplicationContext } from '@nestjs/common';
 import { AuthService } from '../auth/auth.service';
 import { Nt } from '@TRPI/core';
 import { ServerOptions } from 'https';
+import { MatchMakingService } from 'src/network/match-making/match-making.service';
 
 export class AuthenticatedSocketAdapter extends IoAdapter {
   private readonly authService: AuthService;
+  private matchMakingServer: MatchMakingService;
 
 
   constructor(app: INestApplicationContext) {
     super(app);
     this.authService = app.get(AuthService);
+    this.matchMakingServer = app.get(MatchMakingService);
   }
 
   private validate = async (socket , next) => {
@@ -27,6 +30,16 @@ export class AuthenticatedSocketAdapter extends IoAdapter {
       const user = await this.authService.validateToken(token);
       console.log('match-making: AuthenticatedSocketAdapter success')
       socket.user = user;
+      const inQueue = this.matchMakingServer.checkPlayerInQueue(user.user.idJoueur);
+      const inGame = this.matchMakingServer.checkPlayerInGame(user.user.idJoueur);
+      console.log('inQueue', inQueue)
+      console.log('inGame', inGame)
+
+      if (inQueue || inGame) {
+        return next(new Error('Already in queue or game'));
+      }
+
+
       return next();
     } catch (error: any) {
       return next(new Error('Authentication error'));

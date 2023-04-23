@@ -38,4 +38,20 @@ export class MatchMakingService {
         throw new Error('Invalid timer option');
     }
   }
+
+  public checkPlayerInQueue(playerId: string): boolean {
+    console.log('checkPlayerInQueue', playerId);
+    console.log(this.queue.queueList);
+    const playerInQueue = this.queue.queueList.find((p) => p.id === playerId);
+    return playerInQueue ? true : false;
+  }
+
+  public checkPlayerInGame(playerId: string): boolean {
+    console.log('checkPlayerInGame', playerId);
+    console.log(this.queue.gamesList);
+    const playerInGame = this.queue.gamesList.find((g) => {
+      return g.black_player.id === playerId || g.white_player.id === playerId;
+    });
+    return playerInGame ? true : false;
+  }
 }
