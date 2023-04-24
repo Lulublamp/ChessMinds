@@ -17,7 +17,7 @@ import MouvRoi from '../../images/Mouvement_Pieces/mouv_roi.jpg';
 
 const Apprendre = () => {  
     return (
-        <div>
+        <>
             <main>
                 <section className="PageApprendre">
                     <div>
@@ -210,8 +210,7 @@ const Apprendre = () => {
                     </div>
                 </section>
             </main>
-        </div>
-
+        </>
     );
 }
 

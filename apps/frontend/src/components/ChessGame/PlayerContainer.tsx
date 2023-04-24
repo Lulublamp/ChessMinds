@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
 import "./PlayerContainerStyle.css"
-import PlayerIconTEMPORAIRE from "../../images/IconPlayer.png";
 import { useFPayload, useGameManager, usePlayerIsWhite } from "../../contexts/GameContext";
 import { JoinQueuOption } from "@TRPI/core/core-network/src/MatchMaking";
 import { MATCHMAKING_MODES_TIMERS } from "@TRPI/core/core-network";
+import ProfileImage from "../Logo_Icon/ProfileImage";
 
 
 interface PlayerContainerProps {
@@ -68,7 +68,7 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
     <div className={`playerContainer ${isWhitePlayer ? "whitePlayer" : "blackPlayer"}`}>
       <div>
         <div>
-          <img src={PlayerIconTEMPORAIRE} alt="Player Icon" />
+          <ProfileImage id={0} alt="Icon Player 1" />
           <div>
             <span>{playerName}</span>
             <span>{playerScore}</span>

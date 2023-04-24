@@ -1,11 +1,13 @@
 import React, { useContext, useState, useEffect } from 'react';
 import ModifContainer from './ModifContainer';
-import iconPlayer from "../../images/IconPlayer.png";
 import { useNavigate } from 'react-router-dom';
 import { UserContext, User } from '../UserContext';
 import { Elo } from './EloContainer';
+import ProfileImage from '../Logo_Icon/ProfileImage';
 import axios from 'axios'
 import { API_BASE_URL } from '../../config';
+import Profil from '../../pages/Profil/Profil';
+
 
 function formatDate(date: Date): string {
   const day = String(date.getDate()).padStart(2, "0");
@@ -15,7 +17,11 @@ function formatDate(date: Date): string {
   return `${day}/${month}/${year}`;
 }
 
-const MainCadre: React.FC = () => {
+interface Props {
+  togglePopup() : void;
+}
+
+const MainCadre: React.FC<Props> = ({togglePopup}) => {
 
   const user = useContext(UserContext);
   const [eloData, setEloData] = useState<{ elo_blitz: number, elo_bullet: number, elo_rapide: number } | null>(null);
@@ -23,6 +29,7 @@ const MainCadre: React.FC = () => {
 
   const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
+
 
   const fetchEloData = async () => {
     try {
@@ -53,9 +60,8 @@ const MainCadre: React.FC = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
-
     if (token === null) {
-      navigate('/');
+      //navigate('/');
     } else if (user.user === null || user.user === undefined) {
       axios
         .get(`${API_BASE_URL}/auth/me`, {
@@ -72,7 +78,7 @@ const MainCadre: React.FC = () => {
         .catch((error) => {
           console.log(error);
           localStorage.removeItem('accessToken');
-          navigate('/');
+          //navigate('/');
         });
     }
     fetchEloData();
@@ -83,7 +89,7 @@ const MainCadre: React.FC = () => {
   return (
     <div className="MainCadre">
       <div>
-        <img src={iconPlayer} alt="Icon Player" srcSet="" />
+        <ProfileImage id={0} />
         <div>
           <span>{user.user?.pseudo}</span>
           <div>
@@ -94,7 +100,7 @@ const MainCadre: React.FC = () => {
           <span>Membre depuis le {dateInscription ? formatDate(dateInscription) : "XX/XX/XXXX"}</span>
         </div>
       </div>
-      <ModifContainer />
+      <ModifContainer openPopUp={togglePopup}/>
     </div>
   );
 };

@@ -1,22 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import MainCadre from '../../components/Profil/MainCadre';
 import Historique from '../../components/Profil/Historique';
 import Statistiques from '../../components/Profil/Statistique';
 import FriendsList from '../../components/Profil/FriendsList';
+import PopupModifProfil from '../../components/Profil/PopupModifProfil';
 import './styleProfil.css';
 
 const Profil: React.FC = () => {
+
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+
+  const togglePopup = () => {
+    setIsPopupOpen(!isPopupOpen);
+  };
+
+
   return (
-    <section className="Profil">
-      <div className="leftContainer">
-        <MainCadre />
-        <Historique />
-      </div>
-      <div className="rightContainer">
-        <Statistiques />
-        <FriendsList />
-      </div>
-    </section>
+    <>
+      <section className="Profil">
+        <div className="leftContainer">
+          <MainCadre togglePopup={togglePopup} />
+          <Historique />
+        </div>
+        <div className="rightContainer">
+          <Statistiques />
+          <FriendsList />
+        </div>
+      </section>
+      {isPopupOpen && <PopupModifProfil togglePopup={togglePopup}/>}
+    </>
   );
 };
 

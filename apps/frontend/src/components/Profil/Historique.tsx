@@ -16,7 +16,7 @@ const Historique: React.FC = () => {
         },
       });
       setGameHistory(response.data);
-      console.log(response.data);
+      //console.log(response.data);
     } catch (error) {
       console.error('Erreur lors de la récupération de l\'historique des parties:', error);
     }
@@ -42,7 +42,8 @@ const Historique: React.FC = () => {
       </header>
       <main>
         {gameHistory
-          ? gameHistory.map((game) => <GameHistoryRow 
+          ? gameHistory.map((game,index) => <GameHistoryRow 
+            key={index}
             elo1={game.joueurBlanc.elo.elo_bullet}
             elo2={game.joueurNoir.elo.elo_bullet}
             player1={game.joueurBlanc.pseudo}
