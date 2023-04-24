@@ -18,8 +18,9 @@
 }
 
 .chessBoardContainer {
-  width: 750px;
-  height: 750px;
+  width: auto;
+  height: auto;
+  padding: 5px;
   background-color: #FFFFFF;
   display: flex;
   justify-content: center;
@@ -35,3 +36,33 @@
   align-items: center;
 }
 
+.Mobile{
+  display: none;
+}
+
+.BotContainer, .TopContainer{
+  width: 80%;
+}
+
+.BotContainer .playerContainer, .TopContainer .playerContainer{
+  width : 95%;
+}
+
+@media (max-width: 600px){
+  .Mobile{
+    display: flex;
+  }
+
+  .chessGame .leftContainer,.chessGame .rightContainer {
+    display: none
+  }
+  .chessGame {
+    height: calc(100vh - 50px);
+    flex-direction: column;
+    justify-content: space-between;
+  }
+
+  .playerContainer>div:first-of-type{
+    height: 60px;
+  }
+}

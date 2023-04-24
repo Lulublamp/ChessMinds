@@ -1,0 +1,41 @@
+.coupsContainerMobile{
+  width: auto;
+  margin-top: 1px;
+  min-width: 100%;
+  overflow-x: auto;
+  height: 43px;
+  border: solid 1px #fff;
+  display: none;
+  flex-direction: row;
+}
+
+.coupsContainerMobile > div{
+  display: flex;
+  flex-direction: row;
+}
+
+.coupsContainerMobile > div > div{
+  height: 43px;
+  border-right: 1px solid #fff;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.coupsContainerMobile > div > div:first-of-type{
+  width: 34px;
+}
+
+.coupsContainerMobile > div > div:not(:first-of-type){
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  width: 80px;
+}
+
+@media (max-width: 600px){
+  .coupsContainerMobile{
+    display: flex;
+  }
+}

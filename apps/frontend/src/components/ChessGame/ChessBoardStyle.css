@@ -95,3 +95,26 @@
   }
 }
 
+
+@media (max-width: 600px){
+  .case{
+    width: 44px;
+    height: 44px;
+  }
+  .piece img{
+    width: 40px;
+    height: 40px;
+  }
+
+  .row-coordinates, .col-coordinates{
+    font-size: 8px;
+  }
+  .row-coordinates {
+    right: 0px; 
+  }
+
+  .legalMouvementCase{
+    height: 14px;
+    width: 14px;
+  }
+}

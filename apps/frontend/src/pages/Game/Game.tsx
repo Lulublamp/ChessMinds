@@ -7,7 +7,9 @@ import PlayerContainer from '../../components/ChessGame/PlayerContainer';
 import Chat from '../../components/ChessGame/Chat';
 import MovesList from '../../components/ChessGame/TableCoups';
 import AbandonButton from '../../components/Button/AbandonButton';
+import BottomMenuMobile from '../../components/ChessGame/BottomMenuMobile';
 import ChessBoardRenderer from '../../components/ChessGame/ChessBoard';
+import MovesListMobile from '../../components/ChessGame/TableCoupMobile';
 import { ChessBoard, ChessGame, Pawn, Color, ChessPiece } from '@TRPI/core/core-algo';
 import FindPlayer from '../../components/ChessGame/FindPlayer';
 import { useNavigate, useSearchParams } from "react-router-dom";
@@ -77,7 +79,7 @@ const Game = () => {
 
     if (clientManager) return;
     console.log('mounted in here');
-    
+
     const fetchDataAndInitClient = async () => {
       await fetchEloData(selectedTimeMode);
       setBoardHistory(() => [findChessGame.getBoard().copyBoard()]);
@@ -123,9 +125,9 @@ const Game = () => {
       gameManager?.close();
       clientManagerRef.current?.close();
     }
-    
-    
-    
+
+
+
 
   }, []);
 
@@ -229,6 +231,7 @@ const Game = () => {
         show={!PlayerIsFind}
       />
       <section className="chessGame">
+        <MovesListMobile moves={movesData} />
         <div className="leftContainer">
           <PlayerContainer
             isWhitePlayer={playerisWhite}
@@ -248,6 +251,16 @@ const Game = () => {
             enHaut={false}
           />
         </div>
+        <div className='TopContainer Mobile'>
+          <PlayerContainer
+            isWhitePlayer={playerisWhite}
+            playerName={_game ? !playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
+            playerScore={_game ? !playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
+            playerScorePieceValue={2}
+            time="10:00"
+            enHaut={true}
+          />
+        </div>
         <div className="chessBoardContainer">
           <ChessBoardRenderer onGameEnd={handleGameEnd} />
         </div>
@@ -260,6 +273,22 @@ const Game = () => {
           <AbandonButton onClick={Abandon} />
           <NulleButtons onClick={ProposeNulle} />
         </div>
+        <div className='BotContainer Mobile'>
+        <PlayerContainer
+            isWhitePlayer={playerisWhite}
+            playerName={_game ? playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
+            playerScore={_game ? playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
+            playerScorePieceValue={2}
+            time="10:00"
+            enHaut={false}
+          />
+        </div>
+        <BottomMenuMobile 
+          onAbandon={Abandon}
+          onDraw={ProposeNulle}
+          onPreviousMove={PreviousMove}
+          onNextMove={NextMove}
+        />
       </section>
     </GameContext.Provider>
   );
