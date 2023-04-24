@@ -1,76 +1,34 @@
 import { Socket } from "socket.io";
 import { ChessGame, Color, Player } from "../../../core-algo";
-import { lobbyPlayer, MMPlayer } from "../interfaces/emitEvents";
+// import { lobbyPlayer, MMPlayer } from "../interfaces/emitEvents";
 import { JoinQueuOption } from "../MatchMaking";
 import { MATCHMAKING_MODE } from "../Namespace";
-
-export interface PPlayer {
-  socket: string;
-  id: string;
-  name: string;
-  elo: number;
-  rank?: number | null;
-  player?: Player;
-}
-
-export const MatchState = {
-  waiting: "waiting",
-  playing: "playing",
-  ended: "ended",
-} as const;
-
-export type MatchState = (typeof MatchState)[keyof typeof MatchState];
-
-export interface Match<T> {
-  matchId: string;
-  players: (T extends PPlayer ? PPlayer : lobbyPlayer)[];
-  createdAt: Date;
-  endedAt: Date | null;
-  winner: PPlayer | null;
-  state: MatchState;
-  currentTurn: T extends PPlayer ? PPlayer : lobbyPlayer;
-}
-
-export interface IGame {
-  matchId: string;
-  matchOptions: JoinQueuOption;
-  white_player: MMPlayer;
-  black_player: MMPlayer;
-  createdAt: Date;
-  winnder: string;
-}
+import { IMMPlayer, IRPlayer } from "../interfaces/mmplayer";
+import { IGame } from "../interfaces/game";
 
 export class Queue {
-  protected games: IGame[] = [];  
-  protected queue: MMPlayer[] = [];
-  protected coupledGames: Map<string , ChessGame> = new Map<string , ChessGame>();
+  protected games: IGame[] = [];
+  protected queue: IRPlayer[] = [];
+  protected coupledGames: Map<string, ChessGame> = new Map<string, ChessGame>();
   protected socketMap: Map<string, string>;
+  protected maxPlayers: number;
+  protected state: boolean;
 
   get gamesList(): IGame[] {
     return this.games;
   }
 
-  public mutateGameSocketId(matchId: string , socketId: string , name: string) {
-    const game = this.games.find(game => game.matchId === matchId)
-    const isBlack = game!.black_player.name === name;
-    isBlack ? game!.black_player.socketId = socketId : game!.white_player.socketId = socketId;
-  }
-
-  get queueList(): MMPlayer[] {
+  get queueList(): IRPlayer[] {
     return this.queue;
   }
 
-  get coupledGamesList(): Map<string , ChessGame> {
+  get coupledGamesMap(): Map<string, ChessGame> {
     return this.coupledGames;
   }
 
-  get socketMapList(): Map<string, string> {
+  get socketMaps(): Map<string, string> {
     return this.socketMap;
   }
-
-
-  protected maxPlayers: number;
-  protected state: boolean;
 
   constructor(maxPlayers: number) {
     this.maxPlayers = maxPlayers;
@@ -78,24 +36,74 @@ export class Queue {
     this.socketMap = new Map();
   }
 
-  isReadyToMatch(
-    p: MMPlayer,
-    mode: JoinQueuOption
-  ): [boolean , MMPlayer | null] {
+  isReadyToMatch(p: IRPlayer): [boolean, IRPlayer | null] {
     const filtredQueue = this.queue.filter(
       (player) =>
         player.rank === p.rank &&
-        player.options?.mode === mode.mode &&
-        player.options?.timer === mode.timer
+        player.options?.mode === p.options.mode &&
+        player.options?.timer === p.options.timer &&
+        player.id !== p.id
     );
-      
-    if (filtredQueue.length === 0) return [false , null];
+    if (filtredQueue.length === 0) return [false, null];
 
     const random = Math.floor(Math.random() * filtredQueue.length);
-    return [true , filtredQueue[random]];
+    return [true, filtredQueue[random]];
   }
 
-  static BuildGame(firstPlayer: MMPlayer, secondPlayer: MMPlayer , options: JoinQueuOption): IGame {
+  addPlayerToQueue(player: IMMPlayer, socket: string): IGame | number {
+    if (this.queue.length >= this.maxPlayers) {
+      return -1;
+    }
+
+    const pWithRank: IRPlayer = {
+      ...player,
+      rank: null,
+      socketId: null,
+    };
+
+    pWithRank.rank = this.rankPlayers(pWithRank);
+    pWithRank.socketId = socket;
+
+    const [isReadyToMatch, matchPlayer] = this.isReadyToMatch(pWithRank);
+    if (!isReadyToMatch) {
+      this.queue.push(pWithRank);
+      this.socketMap.set(pWithRank.id, socket);
+      return -2;
+    }
+    const game = Queue.BuildGame(pWithRank, matchPlayer!);
+    this.games.push(game);
+    this.coupledGames.set(game.matchId, new ChessGame());
+    this.queue = this.queue.filter(
+      (p) => p.id !== matchPlayer!.id && p.id !== player.id
+    );
+    return game;
+  }
+
+  removePlayerFromQueue(clientId: string): void {
+    var playerId = "";
+    this.socketMap.forEach((value, key) => {
+      if (value === clientId) {
+        playerId = key;
+      }
+    });
+    this.queue = this.queue.filter((p) => p.id !== playerId);
+    this.socketMap.delete(playerId);
+  }
+
+  destroyGame(matchId: string): void {
+    this.games = this.games.filter((game) => game.matchId !== matchId);
+    this.coupledGames.delete(matchId);
+  }
+
+  public mutateGameSocketId(matchId: string, socketId: string, name: string) {
+    const game = this.games.find((game) => game.matchId === matchId);
+    const isBlack = game!.black_player.name === name;
+    isBlack
+      ? (game!.black_player.socketId = socketId)
+      : (game!.white_player.socketId = socketId);
+  }
+
+  static BuildGame(firstPlayer: IRPlayer, secondPlayer: IRPlayer): IGame {
     let random = Math.floor(Math.random() * 2);
     const white_player = random === 0 ? firstPlayer : secondPlayer;
     const black_player = random === 0 ? secondPlayer : firstPlayer;
@@ -103,20 +111,23 @@ export class Queue {
     const game: IGame = {
       matchId,
       white_player,
-      matchOptions: options,
       black_player,
+      matchOptions: firstPlayer.options || secondPlayer.options,
       createdAt: new Date(),
-      winnder: "",
+      state: {
+        state: "ongoing",
+        winner: undefined,
+      },
     };
 
     return game;
   }
 
   static generateMatchId(
-    firstPlayer: MMPlayer,
-    secondPlayer: MMPlayer
+    firstPlayer: IRPlayer,
+    secondPlayer: IRPlayer
   ): string {
-    return firstPlayer.id + secondPlayer.id;
+    return firstPlayer.socketId + secondPlayer.socketId!; //à revoir si on est vraiment sûr que les socketId sont toujours dispo au moment de la création de la partie
   }
 
   getRandomRoomId(): string {
@@ -124,7 +135,7 @@ export class Queue {
   }
 
   //modifier avec proposition de lucas + logarithmique un truc du genre
-  rankPlayers(player: MMPlayer): number | null {
+  rankPlayers(player: IRPlayer): number | null {
     if (player.elo < 800) {
       return 1;
     } else if (player.elo < 1000) {
@@ -141,46 +152,5 @@ export class Queue {
       return 7;
     }
     return null;
-  }
-
-  addPlayerToQueue(
-    player: MMPlayer,
-    socket: string,
-    mode: JoinQueuOption
-  ): IGame | number {
-    if (this.queue.length >= this.maxPlayers) {
-      return -1;
-    }
-    player.rank = this.rankPlayers(player);
-    player.options = mode;
-    const [isReadyToMatch, matchPlayer] = this.isReadyToMatch(player, mode);
-    if (!isReadyToMatch) {
-      this.queue.push(player);
-      this.socketMap.set(player.id, socket);
-      return -2;
-    }
-    const game = Queue.BuildGame(player, matchPlayer! , mode);
-    this.coupledGames.set(game.matchId , new ChessGame());
-    this.games.push(game);
-    this.queue = this.queue.filter(
-      (p) => p.id !== matchPlayer!.id && p.id !== player.id
-    );
-    return game;
-  }
-
-  removePlayerFromQueue(clientId: string): void {
-    var playerId = '';
-    this.socketMap.forEach((value, key) => {
-      if (value === clientId) {
-        playerId = key;
-      }
-    });
-    this.queue = this.queue.filter((p) => p.id !== playerId);
-    this.socketMap.delete(playerId);
-  }
-
-  destroyGame(matchId: string): void {
-    this.games = this.games.filter((game) => game.matchId !== matchId);
-    this.coupledGames.delete(matchId);
   }
 }

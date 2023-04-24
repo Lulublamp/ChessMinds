@@ -51,7 +51,7 @@ export class JoueursService {
         elo_max_bullet: 800,
         elo_max_rapide: 800,
       });
-  
+      console.log('Joueur créé' + joueurCree.idJoueur);
       return joueurCree;
     } catch (error) {
       throw new PlayerNotCreated();

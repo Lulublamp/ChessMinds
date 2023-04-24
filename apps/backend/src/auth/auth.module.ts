@@ -7,6 +7,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './constants';
 import { AuthController } from './auth.controller';
 import { JoueursModule } from '../joueurs/joueurs.module';
+import { Classement } from 'src/classement/entities/classement.entity';
+import { ClassementModule } from 'src/classement/classement.module';
 
 @Module({
   imports: [
@@ -14,7 +16,7 @@ import { JoueursModule } from '../joueurs/joueurs.module';
     PassportModule,
     JwtModule.register({
       secret: jwtConstants.secret,
-      signOptions: { expiresIn: '7d' },
+      signOptions: { expiresIn: '1d' },
     }),
   ],
   controllers: [AuthController],

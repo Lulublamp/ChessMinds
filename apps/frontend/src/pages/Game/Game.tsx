@@ -1,4 +1,4 @@
-import React, { useEffect, useContext } from 'react';
+import React, { useEffect, useContext, useRef } from 'react';
 import { useState } from 'react';
 import './GameStyle.css';
 import GameControl from '../../components/ChessGame/GameControl';
@@ -34,6 +34,7 @@ const Game = () => {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const [clientManager, setClientManager] = useState<ClientEventManager<MATCH_MAKING> | null>(null);
+  const clientManagerRef = useRef<ClientEventManager<MATCH_MAKING> | null>(null);
   const [gameManager, setGameManager] = useState<ClientEventManager<IN_GAME> | null>(null);
   const [movesData, setMovesData] = useState<Move[]>([]);
   const [boardHistory, setBoardHistory] = useState<ChessBoard[]>([]);
@@ -47,6 +48,7 @@ const Game = () => {
   const [elo, setElo] = useState<number>(0);
   const findChessGame = new ChessGame();
   const [gameEndInfo, setGameEndInfo] = useState<GameEndInfo | null>(null);
+  const localStorage = window.localStorage;
 
   const [matchMakingPayload, setMatchMakingPayload] = useState<eIJoinQueueEvent | null>(null);
 
@@ -74,27 +76,29 @@ const Game = () => {
   useEffect(() => {
 
     if (clientManager) return;
-    console.log('mounted');
-    (async () => {
+    console.log('mounted in here');
+    
+    const fetchDataAndInitClient = async () => {
       await fetchEloData(selectedTimeMode);
       setBoardHistory(() => [findChessGame.getBoard().copyBoard()]);
 
-      const newClientManager = new ClientEventManager<MATCH_MAKING>(import.meta.env.VITE_SERVER_URL || `${API_BASE_URL}`, NAMESPACE_TYPES.MATCH_MAKING, '');
+      const newClientManager = new ClientEventManager<MATCH_MAKING>(import.meta.env.VITE_SERVER_URL || `${API_BASE_URL}`, NAMESPACE_TYPES.MATCH_MAKING, localStorage.getItem("accessToken")!);
       console.log("Info :", selectedTimeMode, isRanked, elo, user.user?.pseudo);
       if (!user.user?.pseudo || elo === undefined || selectedTimeMode === undefined || isRanked === undefined) {
         navigate('/MainMenu');
         return;
       }
 
+      console.log(user)
+
+
       const payload: eIJoinQueueEvent = {
-        id: `${Math.random().toString(36).substr(2, 9)}`,
-        name: user.user.pseudo,
-        elo: elo,
         options: {
           mode: isRanked as MATCHMAKING_MODE,
           timer: selectedTimeMode as MATCHMAKING_MODES_TIMERS
         }
       }
+      console.log('payload', payload);
       setMatchMakingPayload(payload);
       const listeningPayload: rIIncomingGameEvent = {
         gameSetter: set_Game,
@@ -109,14 +113,19 @@ const Game = () => {
       newClientManager.listenToIncomingMatch(listeningPayload)
       newClientManager.joinMatchMakingEvent(payload)
       setClientManager(() => newClientManager);
-      console.log('mounted');
+      clientManagerRef.current = newClientManager;
+      console.log('mounted in here finished');
+    }
 
-      return () => {
-        console.log('unmounting...');
-        gameManager?.close();
-        newClientManager.close()
-      }
-    })();
+    fetchDataAndInitClient();
+    return () => {
+      console.log('unmounting...');
+      gameManager?.close();
+      clientManagerRef.current?.close();
+    }
+    
+    
+    
 
   }, []);
 

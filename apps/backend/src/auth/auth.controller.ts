@@ -17,7 +17,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly joueursService: JoueursService,
-  ) { }
+  ) {}
 
   @Post('login')
   async login(
@@ -45,9 +45,9 @@ export class AuthController {
   @Get('me')
   async getMe(@Req() req) {
     return {
+      idJoueur: req.user.idJoueur,
       adresseMail: req.user.adresseMail,
       pseudo: req.user.pseudo,
     };
   }
-  
 }

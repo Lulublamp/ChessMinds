@@ -43,10 +43,8 @@ import { Rencontre } from './rencontre/entities/rencontre.entity';
   providers: [AppService, MatchMakingModule],
 })
 export class AppModule {
-
   afterInit() {
     console.log('AppModule initialized');
-    console.log()
+    console.log();
   }
-
 }

@@ -202,26 +202,8 @@ export class InGameGateway {
   handleDisconnect(client: Socket) {
     console.log('in-game: Disconnect : ' + client.id);
     // this.sockets = this.sockets.filter((socket) => socket.id !== client.id);
-    const games = this.matchMakingService.queue.gamesList;
-    const game1 = games.find(
-      (game) => game.black_player.socketId === client.id,
-    );
-    const game2 = games.find(
-      (game) => game.white_player.socketId === client.id,
-    );
-    const target: Nt.IGame = game1 || game2;
-    console.log(target);
-    if (target) {
-      const matchId = target.matchId;
-      console.log('matchId: ' + matchId);
-      console.log(this.timersMap);
-      const toClearId = this.timersMap.get(matchId);
-      if (toClearId) toClearId.stopTimer();
-      // this.matchMakingService.queue.removeGame(matchId);
-      // this.server.to(matchId).emit(Nt.EVENT_TYPES.GAME_OVER, {
-      //   winner: target.winner,
-      // });
-    }
+    // const games = this.matchMakingService.queue.gamesList;
+    // const game = games.find((game) => game.socketIdWhite === client.id || game.socketIdBlack === client.id);
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.ATTACH)
@@ -276,7 +258,7 @@ export class InGameGateway {
     @ConnectedSocket() client: Socket,
   ) {
     const { matchId, from, to } = movePayload;
-    const coupledGames = this.matchMakingService.queue.coupledGamesList;
+    const coupledGames = this.matchMakingService.queue.coupledGamesMap;
     console.log(coupledGames);
     if (!coupledGames.has(matchId)) {
       console.log('error: game not found MAKE_MOVE');

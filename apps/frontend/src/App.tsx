@@ -38,7 +38,9 @@ const App: FC = () => {
             },
           })
           .then((response) => {
+            console.log(response.data);
             setUser({
+              id: response.data.idJoueur,
               email: response.data.adresseMail,
               pseudo: response.data.pseudo,
             });
@@ -53,6 +55,7 @@ const App: FC = () => {
     }
     else {
       setUser({
+        id: user.id,
         email: user.email,
         pseudo: user.pseudo,
       });

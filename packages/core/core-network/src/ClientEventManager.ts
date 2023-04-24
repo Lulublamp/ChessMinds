@@ -2,20 +2,15 @@
 import { EVENT_TYPES } from "./Event";
 import { Socket, io } from "socket.io-client";
 import {
-  eIInitGameEvent,
   eIJoinQueueEvent,
   eILeaveRoomEvent,
   eIMatchMakingStateEvent,
-  eIJoinLobbyEvent,
-  eICreateLobbyEvent,
-  eICreateLobbyWithReturnEvent,
-  lobbyPlayer,
   eIFirstMoveEvent,
 } from "./interfaces/emitEvents";
 import { IN_GAME, MATCH_MAKING, NAMESPACE_TYPES } from "./Namespace";
 import { Move, rICreateRoomEvent, rIIncomingGameEvent, rINetworkMoveEvent, rITimeEvent } from "./interfaces/receiveEvents";
-import { IGame, Match, PPlayer } from "./utils/Queue";
-import { PrivateLobby } from "./utils/Lobby";
+import { IGame } from "./interfaces/game";
+// import { PrivateLobby } from "./utils/Lobby";
 import { ChessBoard, Color } from "../../core-algo";
 
 
@@ -23,7 +18,6 @@ import { ChessBoard, Color } from "../../core-algo";
 export type IRespond =
   | eILeaveRoomEvent
   | eIMatchMakingStateEvent
-  | eIInitGameEvent;
 type Check<T, R, K> = T extends R ? K : never;
 type CheckArgs<T , R> = T extends never ? never : R
 
@@ -43,14 +37,14 @@ export class EventEmitter {
     });
   }
 
-  private _send(event: EVENT_TYPES, data: IRespond) {
+  private _send(event: EVENT_TYPES, data: IRespond | null) {
     this.socket.emit(event, data, (response: any) => {
       console.log("response ack", response);
       return response;
     });
   }
 
-  protected send(event: EVENT_TYPES, data: IRespond) {
+  protected send(event: EVENT_TYPES, data: IRespond | null) {
     console.log("typeof data", typeof data);
     this._send(event, data);
   }
@@ -86,7 +80,7 @@ export class ClientEventManager<
 
   public joinMatchMakingEvent(data: Check<T, MATCH_MAKING, eIJoinQueueEvent>) {
     if (!this.validateEmit(NAMESPACE_TYPES.MATCH_MAKING)) return;
-    this.send(EVENT_TYPES.JOIN_QUEUE, data);
+    this.send(EVENT_TYPES.JOIN_QUEUE , data);
   }
 
   public listenToIncomingMatch(
