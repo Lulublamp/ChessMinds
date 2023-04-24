@@ -24,8 +24,12 @@ export class JoueursController {
   @Post('inscription')
   async inscriptionJoueur(@Body() joueur: Joueur) {
     try {
-      return await this.joueursService.inscriptionJoueur(joueur);
+      console.log(`Début de la création d'un joueur à ${new Date().toLocaleTimeString()}`);
+      const result = await this.joueursService.inscriptionJoueur(joueur);
+      console.log(`Fin de la création d'un joueur à ${new Date().toLocaleTimeString()}`);
+      return result;
     } catch (error) {
+      console.log('Erreur lors de la création dun joueur');
       if (error instanceof PseudoPlayerAlreadyExists || error instanceof EmailPlayerAlreadyExists) {
         throw this.generateConflictException(error);
       }
