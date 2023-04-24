@@ -10,6 +10,7 @@ import { ChessBoard } from "./ChessBoard";
 
 export class ChessGame {
   private board: ChessBoard; // le plateau de jeu
+  private previousGame: ChessGame | null; // etat partie précédente
   private whitePlayer: Player; // le joueur blanc
   private blackPlayer: Player; // le joueur noir
   private currentTurn: Color; // la couleur du joueur qui doit jouer le prochain tour
@@ -30,6 +31,7 @@ export class ChessGame {
     this.board = new ChessBoard();
     this.whitePlayer = new Player(Color.White);
     this.blackPlayer = new Player(Color.Black);
+    this.previousGame = null;
     this.currentTurn = Color.White;
     this.initializePieces();
   }
@@ -116,6 +118,10 @@ export class ChessGame {
     if (!fromPiece.isValidMove(to, this)) {
       throw new Error("Invalid move for this piece");
     }
+
+    //Stocker la partie précédente pour revenir en arrière d'un coup
+    const previousGame = this.CopyGame();
+
 
     //Verfier si on est encore en échec après le déplacement
     const copygame = this.CopyGame();
@@ -281,6 +287,8 @@ export class ChessGame {
 
     this.currentTurn =
       this.currentTurn === Color.White ? Color.Black : Color.White;
+
+    this.previousGame = previousGame;
   }
 
   public getBoard(): ChessBoard {
@@ -421,6 +429,35 @@ export class ChessGame {
     clone.pawnsWithDoubleMove = this.pawnsWithDoubleMove.map(
       (pawn) => pawn.copyPiece() as Pawn
     );
+    clone.KingSideCastlingWhite = this.KingSideCastlingWhite;
+    clone.KingSideCastlingBlack = this.KingSideCastlingBlack;
+    clone.QueenSideCastlingWhite = this.QueenSideCastlingWhite;
+    clone.QueenSideCastlingBlack = this.QueenSideCastlingBlack;
     return clone;
+  }
+
+  public cancelMove(playerColor: Color) {
+    if (this.previousGame === null) {
+      throw new Error('No previous game state available to cancel the move.');
+      return;
+    }
+    if(this.currentTurn === playerColor) {
+      throw new Error('It is not your turn to cancel the move.');
+      return;
+    }
+    
+    this.board = this.previousGame.board;
+    this.whitePlayer = this.previousGame.whitePlayer;
+    this.blackPlayer = this.previousGame.blackPlayer;
+    this.currentTurn = this.previousGame.currentTurn;
+    this.pawnsWithDoubleMove = this.previousGame.pawnsWithDoubleMove.map(
+      (pawn) => pawn.copyPiece() as Pawn
+    );
+    this.KingSideCastlingBlack = this.previousGame.KingSideCastlingBlack;
+    this.KingSideCastlingWhite = this.previousGame.KingSideCastlingWhite;
+    this.QueenSideCastlingBlack = this.previousGame.QueenSideCastlingBlack;
+    this.QueenSideCastlingWhite = this.previousGame.QueenSideCastlingWhite;
+    this.previousGame = this.previousGame.previousGame;
+    
   }
 }
