@@ -7,7 +7,6 @@ import { ClientEventManager, IN_GAME } from "@TRPI/core/core-network";
 import { useGameManager, useMovesData, usePlayerIsWhite, useIndex, useBoardHistory,useChessGame, useGame , useFPayload}  from "../../contexts/GameContext";
 import { random } from "lodash";
 
-
 interface Props{
   onGameEnd: (gameResult : any) => void;
 }

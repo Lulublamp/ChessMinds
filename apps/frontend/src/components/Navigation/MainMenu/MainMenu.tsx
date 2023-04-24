@@ -13,14 +13,14 @@ interface Props {
   onNewGameClick: () => void;
 }
 
-const MainMenu: React.FC<Props> = ({onLogoutClick,onNewGameClick }) => {
+const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick }) => {
   const user = useContext(UserContext);
   const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
-  
+
     if (token === null) {
       navigate('/');
     } else if (user.user === null || user.user === undefined) {
@@ -34,6 +34,7 @@ const MainMenu: React.FC<Props> = ({onLogoutClick,onNewGameClick }) => {
           setUser({
             email: response.data.adresseMail,
             pseudo: response.data.pseudo,
+            id: response.data.idJoueur,
           });
         })
         .catch((error) => {
@@ -54,8 +55,8 @@ const MainMenu: React.FC<Props> = ({onLogoutClick,onNewGameClick }) => {
             <div className="icon"></div>
             <span className="text">Let’s play</span>
           </div>
-          <MenuContainer 
-            onLogoutClick={onLogoutClick} 
+          <MenuContainer
+            onLogoutClick={onLogoutClick}
             onNewGameClick={onNewGameClick}
           />
         </div>

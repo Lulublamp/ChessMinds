@@ -71,6 +71,7 @@ const MainCadre: React.FC<Props> = ({togglePopup}) => {
         })
         .then((response) => {
           setUser({
+            id: response.data.idJoueur,
             email: response.data.adresseMail,
             pseudo: response.data.pseudo,
           });
