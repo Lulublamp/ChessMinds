@@ -13,6 +13,7 @@ import { Joueur } from './joueurs/entities/joueur.entity';
 import { JoueursModule } from './joueurs/joueurs.module';
 import { Partie } from './partie/entities/partie.entity';
 import { Rencontre } from './rencontre/entities/rencontre.entity';
+import { DevtoolsModule } from '@nestjs/devtools-integration';
 
 @Module({
   imports: [
@@ -38,6 +39,10 @@ import { Rencontre } from './rencontre/entities/rencontre.entity';
     ClassementModule,
     InGameModule,
     RencontreCoupsModule,
+    DevtoolsModule.register({
+      port: 8000,
+      http: true,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService, MatchMakingModule],
