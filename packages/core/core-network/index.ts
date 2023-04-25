@@ -7,6 +7,8 @@ export * from './src/MatchMaking';
 // export * from './src/utils/Lobby';
 export * from './src/utils/Queue';
 export * from './src/utils/Chat';
+export * from './src/utils/Timer';
+export * from './src/utils/GameTimeout';
 
 export * from './src/interfaces/emitEvents';
 export * from './src/interfaces/mmplayer';

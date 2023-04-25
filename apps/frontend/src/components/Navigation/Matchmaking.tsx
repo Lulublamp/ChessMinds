@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './Matchmaking.css';
+import axios from 'axios';
+import { API_BASE_URL } from '../../config';
 
 interface MatchMakingProps {
   onCancel: () => void;
@@ -16,6 +18,9 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ onCancel, onPlay }) => {
   const timeModeBulletRef = React.useRef<HTMLDivElement>(null);
   const timeModeBlitzRef = React.useRef<HTMLDivElement>(null);
   const timeModeRapideRef = React.useRef<HTMLDivElement>(null);
+
+  
+
 
   const handleRankedModeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setRankedMode(event.target.value);
@@ -60,7 +65,7 @@ const MatchMaking: React.FC<MatchMakingProps> = ({ onCancel, onPlay }) => {
             <label htmlFor="Unranked">Unranked</label>
           </div>
         </div>
-        <h3>Type de partie</h3>
+        <h3>Type de partie EEEEEEEEEEE</h3>
         <div className="Mode-container">
           <div ref={timeModeBulletRef} className="timeMode timeModeHover" onClick={(event) => handleTimerModeChange("bullet", event)}>
             <div>

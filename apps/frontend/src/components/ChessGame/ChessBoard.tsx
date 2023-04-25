@@ -3,7 +3,7 @@ import { useState } from "react";
 import { ChessGame, ChessPiece, ChessBoard, Color } from "@TRPI/core/core-algo";
 import DisplayPiece from "./DisplayPiece";
 import "./ChessBoardStyle.css";
-import { ClientEventManager, IN_GAME } from "@TRPI/core/core-network";
+import { ClientEventManager, IGame, IN_GAME } from "@TRPI/core/core-network";
 import { useGameManager, useMovesData, usePlayerIsWhite, useIndex, useBoardHistory,useChessGame, useGame , useFPayload}  from "../../contexts/GameContext";
 import { random } from "lodash";
 
@@ -26,6 +26,8 @@ const ChessBoardRenderer: React.FC<Props> = ({onGameEnd}) => {
   const [selectedCase, setSelectedCase] = useState<{ row: number, col: number } | null>(null);
   const [legalMoves, setLegalMoves] = useState<string[]>([]);
   const [_fu , _forceUpdate] = useState(0);
+
+  const [gameOver , setGameOver] = useState(false);
   
   useEffect(() => {
     console.log('updating game manager');
@@ -39,7 +41,20 @@ const ChessBoardRenderer: React.FC<Props> = ({onGameEnd}) => {
     },
     onGameEnd
     )
+
+    gameManager?.listenToTimeout({
+      gameOver: setGameOver,
+      onGameEnd: onGameEnd
+    });
+
   }, [_game])
+
+  useEffect(() => {
+    if (gameOver) {
+      console.log('game over LOL FINISH ALL');
+      gameManager?.close();
+    }
+  }, [gameOver])
 
   useEffect(() => {
     console.log('force updating');
@@ -65,8 +80,7 @@ const ChessBoardRenderer: React.FC<Props> = ({onGameEnd}) => {
       if (boardHistory.length == 1) {
         console.log('first move network')
         gameManager?.firstMove({
-          matchId: _game!.matchId,
-          options: fpayload.options,
+          game: _game as IGame,//C'est un MaybeGame donc on force le type vu qu'on est sûr qu'il est défini ;)
         });
       }
       console.log(boardHistory.length)

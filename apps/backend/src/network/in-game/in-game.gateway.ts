@@ -12,113 +12,19 @@ import { IGame } from '@TRPI/core/core-network';
 import { JoinQueuOption } from '@TRPI/core/core-network/src/MatchMaking';
 import axios from 'axios';
 
-export class CTimer {
-  public blackTime;
-  public whiteTime;
-  private server;
-  private turn = 0;
-  private id: NodeJS.Timer = undefined;
-  private time: number;
-  constructor(
-    public options: JoinQueuOption,
-    public matchId: string,
-    server: Server,
-  ) {
-    switch (options.timer) {
-      case Nt.MATCHMAKING_MODES_TIMERS.BULLET:
-        this.time = 1 * 60;
-        break;
-      case Nt.MATCHMAKING_MODES_TIMERS.BLITZ:
-        this.time = 3 * 60;
-        break;
-      case Nt.MATCHMAKING_MODES_TIMERS.RAPID:
-        this.time = 5 * 60;
-        break;
-      default:
-        this.time = 1 * 60;
-        break;
-    }
-    this.matchId = matchId;
-    this.blackTime = this.time;
-    this.whiteTime = this.time;
-    this.server = server;
-  }
-
-  public startTimer() {
-    this.turn = 0;
-  }
-
-  public stopTimer() {
-    clearInterval(this.id);
-  }
-
-  public continueTimer() {
-    if (this.id !== undefined) {
-      clearInterval(this.id);
-    }
-    let ifTimer = false;
-    let timer: NodeJS.Timer;
-    if (this.turn === 0 && this.blackTime > 0) {
-      timer = setInterval(() => {
-        this.blackTime -= 1;
-        this.sendData(this.server, this.matchId);
-        console.log('white time: ' + this.blackTime);
-        if (this.blackTime <= 0) {
-          clearInterval(timer);
-          this.server.to(this.matchId).emit(Nt.EVENT_TYPES.NO_TIME, 'black');
-          this.blackTime = 0;
-        }
-        if (this.whiteTime <= 0) {
-          clearInterval(timer);
-          this.server.to(this.matchId).emit(Nt.EVENT_TYPES.NO_TIME, 'white');
-          this.whiteTime = 0;
-        }
-      }, 1000);
-      ifTimer = true;
-    } else if (this.turn === 1 && this.whiteTime > 0) {
-      timer = setInterval(() => {
-        this.whiteTime -= 1;
-        this.sendData(this.server, this.matchId);
-        console.log('black time: ' + this.whiteTime);
-        if (this.whiteTime <= 0) {
-          clearInterval(timer);
-          this.server.to(this.matchId).emit(Nt.EVENT_TYPES.NO_TIME, 'white');
-          this.whiteTime = 0;
-        }
-        if (this.blackTime <= 0) {
-          clearInterval(timer);
-          this.server.to(this.matchId).emit(Nt.EVENT_TYPES.NO_TIME, 'black');
-          this.blackTime = 0;
-        }
-      }, 1000);
-      ifTimer = true;
-    }
-    this.turn = this.turn === 0 ? 1 : 0;
-    this.id = timer;
-    if (!ifTimer) console.log('no timer finito');
-    return timer;
-  }
-
-  public getData() {
-    return {
-      whiteTime: this.blackTime,
-      blackTime: this.whiteTime,
-    };
-  }
-
-  public sendData(server: Server, matchId: string) {
-    server.to(matchId).emit(Nt.EVENT_TYPES.TIMER, this.getData());
-    server.to(matchId).emit('debug', 'debug ci/cd');
-  }
-}
-
 async function saveRencontre(rencontre) {
-  const response = await axios.post('http://localhost:10001/rencontre-coups/rencontre', rencontre);
+  const response = await axios.post(
+    'http://localhost:10001/rencontre-coups/rencontre',
+    rencontre,
+  );
   return response.data;
 }
 
 async function saveCoup(coup) {
-  const response = await axios.post('http://localhost:10001/rencontre-coups/coup', coup);
+  const response = await axios.post(
+    'http://localhost:10001/rencontre-coups/coup',
+    coup,
+  );
   return response.data;
 }
 
@@ -126,7 +32,7 @@ async function savePartie(rencontre, coups) {
   try {
     const savedRencontre = await saveRencontre(rencontre);
 
-    for (let coup of coups) {
+    for (const coup of coups) {
       coup.idRencontre = savedRencontre;
       await saveCoup(coup);
     }
@@ -138,14 +44,70 @@ async function savePartie(rencontre, coups) {
 }
 
 export enum Echiquier {
-  a1 = 11, a2 =12,  a3 = 13, a4 = 14, a5 = 15, a6 = 16, a7 = 17, a8 = 18,
-  b1 = 21, b2 = 22, b3 = 23, b4 = 24, b5 = 25, b6 = 26, b7 = 27, b8 = 28,
-  c1 = 31, c2 = 32, c3 = 33, c4 = 34, c5 = 35, c6 = 36, c7 = 37, c8 = 38,
-  D1 = 41, D2 = 42, D3 = 43, D4 = 44, D5 = 45, D6 = 46, D7 = 47, D8 = 48,
-  E1 = 51, E2 = 52, E3 = 53, e4 = 54, E5 = 55, E6 = 56, E7 = 57, E8 = 58,
-  F1 = 61, F2 = 62, F3 = 63, F4 = 64, F5 = 65, F6 = 66, F7 = 67, F8 = 68,
-  G1 = 71, G2 = 72, G3 = 73, G4 = 74, G5 = 75, G6 = 76, G7 = 77, G8 = 78,
-  H1 = 81, H2 = 82, H3 = 83, H4 = 84, H5 = 85, H6 = 86, H7 = 87, H8 = 88,
+  a1 = 11,
+  a2 = 12,
+  a3 = 13,
+  a4 = 14,
+  a5 = 15,
+  a6 = 16,
+  a7 = 17,
+  a8 = 18,
+  b1 = 21,
+  b2 = 22,
+  b3 = 23,
+  b4 = 24,
+  b5 = 25,
+  b6 = 26,
+  b7 = 27,
+  b8 = 28,
+  c1 = 31,
+  c2 = 32,
+  c3 = 33,
+  c4 = 34,
+  c5 = 35,
+  c6 = 36,
+  c7 = 37,
+  c8 = 38,
+  D1 = 41,
+  D2 = 42,
+  D3 = 43,
+  D4 = 44,
+  D5 = 45,
+  D6 = 46,
+  D7 = 47,
+  D8 = 48,
+  E1 = 51,
+  E2 = 52,
+  E3 = 53,
+  e4 = 54,
+  E5 = 55,
+  E6 = 56,
+  E7 = 57,
+  E8 = 58,
+  F1 = 61,
+  F2 = 62,
+  F3 = 63,
+  F4 = 64,
+  F5 = 65,
+  F6 = 66,
+  F7 = 67,
+  F8 = 68,
+  G1 = 71,
+  G2 = 72,
+  G3 = 73,
+  G4 = 74,
+  G5 = 75,
+  G6 = 76,
+  G7 = 77,
+  G8 = 78,
+  H1 = 81,
+  H2 = 82,
+  H3 = 83,
+  H4 = 84,
+  H5 = 85,
+  H6 = 86,
+  H7 = 87,
+  H8 = 88,
 }
 
 function positionToNumber(position: string): number | null {
@@ -159,18 +121,18 @@ function positionToNumber(position: string): number | null {
   return Echiquier[`${letter.toUpperCase()}${numberCode}`];
 }
 
-function formate_piece(piecename : string){
-  if(piecename === 'Pawn') return 'PION';
-  if(piecename === 'Rook') return 'TOUR';
-  if(piecename === 'Knight') return 'CAVALIER';
-  if(piecename === 'Bishop') return 'FOU';
-  if(piecename === 'Queen') return 'DAME';
-  if(piecename === 'King') return 'ROI';
+function formate_piece(piecename: string) {
+  if (piecename === 'Pawn') return 'PION';
+  if (piecename === 'Rook') return 'TOUR';
+  if (piecename === 'Knight') return 'CAVALIER';
+  if (piecename === 'Bishop') return 'FOU';
+  if (piecename === 'Queen') return 'DAME';
+  if (piecename === 'King') return 'ROI';
 }
 
-function formate_color(color : number){
-  if(color === 0) return 'BLANC';
-  if(color === 1) return 'NOIR';
+function formate_color(color: number) {
+  if (color === 0) return 'BLANC';
+  if (color === 1) return 'NOIR';
 }
 
 @WebSocketGateway({
@@ -184,11 +146,16 @@ export class InGameGateway {
   private sockets: Socket[] = [];
   private chatService: Nt.ChatService = new Nt.ChatService();
   private timers = new Map<string, NodeJS.Timer>();
-  private timersMap = new Map<string, CTimer>();
-  private playerNames: Map<string, { joueurBlanc: string; joueurNoir: string }> = new Map();
+  private timersMap = new Map<string, Nt.CTimer>();
+  private playerNames: Map<
+    string,
+    { joueurBlanc: string; joueurNoir: string }
+  > = new Map();
 
+  private delayMap = new Map<string, Nt.DelayTimer>();
+  private timeoutMap = new Map<string, Nt.DelayTimer>();
 
-  constructor(private matchMakingService: MatchMakingService) { }
+  constructor(private matchMakingService: MatchMakingService) {}
 
   afterInit() {
     console.log('in-game: Init');
@@ -201,6 +168,53 @@ export class InGameGateway {
 
   handleDisconnect(client: Socket) {
     console.log('in-game: Disconnect : ' + client.id);
+    const games = this.matchMakingService.queue.gamesList;
+    const actualPlayerId = client.id;
+    const game1 = games.find(
+      (game) => game.black_player.socketId === actualPlayerId,
+    );
+    const game2 = games.find(
+      (game) => game.white_player.socketId === actualPlayerId,
+    );
+    const target: Nt.IGame = game1 || game2;
+    // console.log(target);
+    if (target) {
+      console.log('game affected: ' + target.matchId);
+      const matchId = target.matchId;
+      if (this.matchMakingService.queue.matchStartedMap.has(matchId)) {
+        console.log('match going pending');
+        this.matchMakingService.queue.setInPendingMap(matchId, target);
+        this.matchMakingService.queue.removeFromStartedMap(matchId);
+        const timer30s: Nt.DelayTimer = new Nt.DelayTimer(() => {
+          console.log('10s passed');
+          console.log('No Reconnection' + matchId);
+          this.matchMakingService.queue.removeFromStartedMap(matchId);
+          this.server.to(matchId).emit(Nt.EVENT_TYPES.TIME_OUT, 'BLANC');
+        }, 5000);
+        timer30s.start();
+        this.timeoutMap.set(matchId, timer30s);
+      } else if (this.matchMakingService.queue.matchPendingMap.has(matchId)) {
+        console.log('match already pending --> game ended NULL');
+        this.matchMakingService.queue.removeFromPendingMap(matchId);
+        this.matchMakingService.queue.destroyGame(matchId);
+        this.delayMap.get(matchId)?.stop();
+        this.timeoutMap.get(matchId)?.stop();
+        this.delayMap.delete(matchId);
+        this.timeoutMap.delete(matchId);
+      } else {
+        console.log('match not started --> wait 30second normally');
+      }
+
+      // console.log('matchId: ' + matchId);
+      // console.log(this.timersMap);
+      const toClearId = this.timersMap.get(matchId);
+      if (toClearId) toClearId.stopTimer();
+      // this.matchMakingService.queue.removeGame(matchId);
+      // this.server.to(matchId).emit(Nt.EVENT_TYPES.GAME_OVER, {
+      //   winner: target.winner,
+      // });
+    }
+
     // this.sockets = this.sockets.filter((socket) => socket.id !== client.id);
     // const games = this.matchMakingService.queue.gamesList;
     // const game = games.find((game) => game.socketIdWhite === client.id || game.socketIdBlack === client.id);
@@ -222,15 +236,33 @@ export class InGameGateway {
       client.id,
       payload.name,
     );
+
+    if (game.white_player.socketId == client.id) {
+      console.log('white player : ' + payload.name);
+      //je set en Pending
+      this.matchMakingService.queue.setInStartedMap(game.matchId, game);
+      const timer30s: Nt.DelayTimer = new Nt.DelayTimer(() => {
+        console.log('30s passed');
+        console.log('this pending game will be destroyed' + game.matchId);
+        this.matchMakingService.queue.removeFromStartedMap(game.matchId);
+        this.server.to(game.matchId).emit(Nt.EVENT_TYPES.TIME_OUT, 'BLANC');
+      }, 30000);
+      timer30s.start();
+      this.delayMap.set(game.matchId, timer30s);
+    }
     client.join(game.matchId);
-    const timer: CTimer = new CTimer(
+    const timer: Nt.CTimer = new Nt.CTimer(
       game.matchOptions,
       game.matchId,
       this.server,
     );
     this.timersMap.set(game.matchId, timer);
+
     // Stocker les noms des joueurs
-    const currentPlayerNames = this.playerNames.get(payload.matchId) || { joueurBlanc: '', joueurNoir: '' };
+    const currentPlayerNames = this.playerNames.get(payload.matchId) || {
+      joueurBlanc: '',
+      joueurNoir: '',
+    };
 
     if (!currentPlayerNames.joueurBlanc) {
       currentPlayerNames.joueurBlanc = payload.name;
@@ -247,8 +279,16 @@ export class InGameGateway {
     @ConnectedSocket() client: Socket,
   ) {
     console.log('match-making: First move : ' + client.id);
-    const { matchId } = firstMovePayload;
-    const timer = this.timersMap.get(matchId);
+    const { game } = firstMovePayload;
+    if (this.delayMap.has(game.matchId)) {
+      console.log('clearing delay');
+      const timer = this.delayMap.get(game.matchId);
+      timer.stop();
+      this.delayMap.delete(game.matchId);
+    }
+    this.matchMakingService.queue.setInStartedMap(game.matchId, game);
+    this.matchMakingService.queue.removeFromPendingMap(game.matchId);
+    const timer = this.timersMap.get(game.matchId);
     timer.startTimer();
   }
 
@@ -265,7 +305,7 @@ export class InGameGateway {
       return;
     }
     const game = coupledGames.get(matchId);
-    var gameResult = null;
+    let gameResult = null;
     try {
       gameResult = game.makeMove(from, to);
     } catch (error) {
@@ -300,6 +340,9 @@ export class InGameGateway {
       } catch (error) {
         console.error('Erreur lors de la sauvegarde de la partie', error);
       }
+
+      this.matchMakingService.queue.destroyGame(matchId);
+      // this.timersMap.delete(matchId);
     }
     const timer = this.timersMap.get(matchId);
     const newId = timer.continueTimer();

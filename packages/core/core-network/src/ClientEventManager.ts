@@ -8,7 +8,7 @@ import {
   eIFirstMoveEvent,
 } from "./interfaces/emitEvents";
 import { IN_GAME, MATCH_MAKING, NAMESPACE_TYPES } from "./Namespace";
-import { Move, rICreateRoomEvent, rIIncomingGameEvent, rINetworkMoveEvent, rITimeEvent } from "./interfaces/receiveEvents";
+import { Move, rICreateRoomEvent, rIIncomingGameEvent, rINetworkMoveEvent, rITimeEvent, rITimeoutEvent } from "./interfaces/receiveEvents";
 import { IGame } from "./interfaces/game";
 // import { PrivateLobby } from "./utils/Lobby";
 import { ChessBoard, Color } from "../../core-algo";
@@ -105,6 +105,7 @@ export class ClientEventManager<
 
       const gameManager = new ClientEventManager<IN_GAME>(payload.url, NAMESPACE_TYPES.IN_GAME , "")
       gameManager.attach(game.matchId , payload.name)
+      payload.gameRef.current = gameManager;
       payload.nextGameManager(() => gameManager)
     });
   }
@@ -210,6 +211,15 @@ export class ClientEventManager<
       //console.log('time in string second' , timeInStringSecond);
       //console.log(payload.time)
       payload.timeSetter(() => timeInStringMinute + ':' + timeInStringSecond)
+    })
+  }
+
+  public listenToTimeout(payload: Check<T , IN_GAME , rITimeoutEvent>){
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.socket.on(EVENT_TYPES.TIME_OUT , (timeout) => {
+      console.log('timeout received' , timeout);
+      payload.gameOver(() => true)
+      payload.onGameEnd('')
     })
   }
 

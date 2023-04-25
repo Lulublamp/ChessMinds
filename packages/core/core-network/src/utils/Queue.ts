@@ -10,9 +10,12 @@ export class Queue {
   protected games: IGame[] = [];
   protected queue: IRPlayer[] = [];
   protected coupledGames: Map<string, ChessGame> = new Map<string, ChessGame>();
+  private matchStarted: Map<string, IGame> = new Map();
+  private matchPending: Map<string, IGame> = new Map();
   protected socketMap: Map<string, string>;
   protected maxPlayers: number;
   protected state: boolean;
+
 
   get gamesList(): IGame[] {
     return this.games;
@@ -29,6 +32,33 @@ export class Queue {
   get socketMaps(): Map<string, string> {
     return this.socketMap;
   }
+
+  get matchStartedMap(): Map<string, IGame> {
+    return this.matchStarted;
+  }
+
+  public setInStartedMap(id: string, game: IGame) {
+    this.matchStarted.set(id, game);
+  }
+
+  public removeFromStartedMap(id: string) {
+    this.matchStarted.delete(id);
+  }
+
+  
+  get matchPendingMap(): Map<string, IGame> {
+    return this.matchPending;
+  }
+
+  public setInPendingMap(id: string, game: IGame) {
+    this.matchPending.set(id, game);
+  }
+
+  public removeFromPendingMap(id: string) {
+    this.matchPending.delete(id);
+  }
+
+  
 
   constructor(maxPlayers: number) {
     this.maxPlayers = maxPlayers;
@@ -101,6 +131,7 @@ export class Queue {
     isBlack
       ? (game!.black_player.socketId = socketId)
       : (game!.white_player.socketId = socketId);
+    return game;
   }
 
   static BuildGame(firstPlayer: IRPlayer, secondPlayer: IRPlayer): IGame {
