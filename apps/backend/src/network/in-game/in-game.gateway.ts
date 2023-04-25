@@ -11,7 +11,6 @@ import { MatchMakingService } from '../match-making/match-making.service';
 import { IGame } from '@TRPI/core/core-network';
 import { JoinQueuOption } from '@TRPI/core/core-network/src/MatchMaking';
 import axios from 'axios';
-import { Color } from '@TRPI/core/core-algo/src/pieces/ChessPiece';
 
 export class CTimer {
   public blackTime;
@@ -364,7 +363,7 @@ export class InGameGateway {
     }
 
     //Find player's color
-    const playerColor = game.white_player.socketId === client.id ? Color.White : Color.Black;
+    const playerColor = game.white_player.socketId === client.id ? "White" : "Black";
 
     const coupledGame = this.matchMakingService.queue.coupledGamesMap.get(payload.matchId);
 

@@ -49,3 +49,21 @@ export interface eIRequestChatHistoryEvent {
 export interface eISendChatMessageEvent extends Omit<ChatMessage, 'timestamp'> {}
 
 export interface eIReceiveChatMessageEvent extends ChatMessage {}
+
+export interface eIInviteAmisEvent {
+  idJoueur: number;
+}
+
+export interface eIInvitationResponseEvent {
+  joueur: any;
+  reponse: boolean;
+}
+
+export interface eIChangeTimerEvent {
+  lobbyId: string;
+  timer: MATCHMAKING_MODES_TIMERS;
+}
+
+export interface eILobbyPlayerReadyEvent {
+  lobbyId: string;
+}

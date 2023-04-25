@@ -436,12 +436,13 @@ export class ChessGame {
     return clone;
   }
 
-  public cancelMove(playerColor: Color) {
+  public cancelMove(playerColor: string) {
+    const realColor = playerColor === 'White' ? Color.White : Color.Black;
     if (this.previousGame === null) {
       throw new Error('No previous game state available to cancel the move.');
       return;
     }
-    if(this.currentTurn === playerColor) {
+    if(this.currentTurn === realColor) {
       throw new Error('It is not your turn to cancel the move.');
       return;
     }
