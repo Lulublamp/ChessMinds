@@ -54,7 +54,7 @@ export class CTimer {
       timer = setInterval(() => {
         this.blackTime -= 1;
         this.sendData(this.server, this.matchId);
-        console.log('white time: ' + this.blackTime);
+        // console.log('white time: ' + this.blackTime);
         if (this.blackTime <= 0) {
           clearInterval(timer);
           this.server.to(this.matchId).emit(EVENT_TYPES.NO_TIME, 'black');
@@ -71,7 +71,7 @@ export class CTimer {
       timer = setInterval(() => {
         this.whiteTime -= 1;
         this.sendData(this.server, this.matchId);
-        console.log('black time: ' + this.whiteTime);
+        // console.log('black time: ' + this.whiteTime);
         if (this.whiteTime <= 0) {
           clearInterval(timer);
           this.server.to(this.matchId).emit(EVENT_TYPES.NO_TIME, 'white');
