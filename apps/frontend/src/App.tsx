@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useState, useEffect, useRef } from 'react';
 import { HashRouter, Routes, Route, useNavigate } from 'react-router-dom';
 import Game from './pages/Game/Game';
 import Navbar from './components/Navigation/NavBar/NavBar';
@@ -18,14 +18,40 @@ import { API_BASE_URL } from './config';
 const App: FC = () => {
 
   const [user, setUser] = useState<User | null>(null);
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [showSignupPopup, setShowSignupPopup] = useState(false);
   const [showMatchmaking, setShowMatchmaking] = useState(false);
+  const [darkMode, setDarkMode] = useState(false);
+  const authWrapperRef = useRef<any>(null);
 
   const handleDownloadClick = () => {
     console.log('Bouton Télécharger cliqué');
   };
 
+  const togleDarkMode = () => {
+    setDarkMode(!darkMode);
+  };
+
+  useEffect(() => {
+    if (darkMode) {
+      document.documentElement.style.setProperty('--background-color', 'var(--background-color-dark)');
+      document.documentElement.style.setProperty('--font-color', 'var(--font-color-dark)');
+      document.documentElement.style.setProperty('--backgroundCards', 'var(--backgroundCards-dark)');
+      document.documentElement.style.setProperty('--secondbackground', 'var(--secondbackground-dark)');
+      document.documentElement.style.setProperty('--couleur-caseBlanc', 'var(--couleur-caseBlanc-dark)');
+      document.documentElement.style.setProperty('--couleur-caseNoir', 'var(--couleur-caseNoir-dark)');
+      document.documentElement.style.setProperty('--drop-shadow', 'var(--drop-shadow-dark)');
+    } else {
+      document.documentElement.style.setProperty('--background-color', 'var(--background-color-light)');
+      document.documentElement.style.setProperty('--font-color', 'var(--font-color-light)');
+      document.documentElement.style.setProperty('--backgroundCards', 'var(--backgroundCards-light)');
+      document.documentElement.style.setProperty('--secondbackground', 'var(--secondbackground-light)');
+      document.documentElement.style.setProperty('--couleur-caseBlanc', 'var(--couleur-caseBlanc-light)');
+      document.documentElement.style.setProperty('--couleur-caseNoir', 'var(--couleur-caseNoir-light)');
+      document.documentElement.style.setProperty('--drop-shadow', 'var(--drop-shadow-light)');
+    }
+  }, [darkMode]);
 
   const handleLoginPopupClick = () => {
     if (user === null) {
@@ -44,6 +70,7 @@ const App: FC = () => {
               email: response.data.adresseMail,
               pseudo: response.data.pseudo,
             });
+            setIsLoggedIn(true);
           })
           .catch((error) => {
             console.log(error);
@@ -54,11 +81,10 @@ const App: FC = () => {
       }
     }
     else {
-      setUser({
-        id: user.id,
-        email: user.email,
-        pseudo: user.pseudo,
-      });
+      if (!isLoggedIn)
+        setIsLoggedIn(true);
+      else
+        authWrapperRef.current.handleSuccessfulLogin();
     }
   };
 
@@ -100,7 +126,7 @@ const App: FC = () => {
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <HashRouter>
-        <Navbar onPlayClick={handleLoginPopupClick} onLogoutClick={handleLogout} />
+        <Navbar onPlayClick={handleLoginPopupClick} onLogoutClick={handleLogout} toggleDarkMode={togleDarkMode} />
         <GameInfoProvider>
           <Routes>
             <Route
@@ -109,6 +135,7 @@ const App: FC = () => {
                 <HomePage
                   onPlayClick={handleLoginPopupClick}
                   onDownloadClick={handleDownloadClick}
+                  darkMode={darkMode}
                 />
               }
             />
@@ -116,7 +143,7 @@ const App: FC = () => {
               path="/MainMenu"
               element={
                 !showMatchmaking ? (
-                  <MainMenu onNewGameClick={handleNewGameClick} onLogoutClick={handleLogout} />
+                  <MainMenu onNewGameClick={handleNewGameClick} onLogoutClick={handleLogout} isDarkMode={darkMode} />
                 ) : (
                   <Matchmaking onBackClick={onBackClickMenu} />
                 )
@@ -124,13 +151,15 @@ const App: FC = () => {
             />
             <Route path="/Game" element={<Game />} />
             <Route path="/Classement" element={<Classement />} />
-            <Route path="/Profil" element={ <Profil />} />
+            <Route path="/Profil" element={<Profil />} />
             <Route path='/Apprendre' element={<Apprendre />} />
           </Routes>
         </GameInfoProvider>
         <AuthWrapper
+          ref={authWrapperRef}
           showLoginPopup={showLoginPopup}
           showSignupPopup={showSignupPopup}
+          isLogged={isLoggedIn}
           handleCloseLoginPopup={handleCloseLoginPopup}
           handleCloseSignupPopup={handleCloseSignupPopup}
           handleSwitchToSignup={handleSwitchToSignup}

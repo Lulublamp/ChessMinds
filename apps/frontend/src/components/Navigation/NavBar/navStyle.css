@@ -1,5 +1,5 @@
 nav {
-  background-color: inherit;
+  background-color: var(--background-color);
   height: 100px;
   width: 100%;
   z-index: 100;
@@ -43,7 +43,7 @@ nav h2 {
 
 nav h2>span:first-of-type {
   position: absolute;
-  color: #000;
+  color: var(--font-color);
   top: 0px;
   left: 0px;
   font-weight: bold;
@@ -70,6 +70,25 @@ nav .nav-links-container {
   align-items: center;
   min-width: 435px;
   margin-left: 80px;
+}
+
+.nav-links-container > div{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+.nav-links-container > button, .menu > button 
+{
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  outline: none;
+}
+
+.nav-links-container > button path, .menu > button path{
+  stroke: var(--font-color);
 }
 
 nav .nav-links-container span {
@@ -143,6 +162,7 @@ nav .button-container .nav-button {
 nav .button-container .play {
   border: solid var(--main-color) 1px;
   color: var(--main-color);
+  background-color: var(--background-color);
   font-size: 25px;
   box-shadow: 3px 3px 0px var(--main-color);
 }
@@ -150,12 +170,17 @@ nav .button-container .play {
 nav .button-container .download {
   border: solid var(--font-color) 1px;
   color: var(--font-color);
+  background-color: var(--background-color);
   font-size: 18px;
   box-shadow: 3px 3px 0px var(--font-color);
 }
 
 nav .button-container .download svg {
   margin-left: 4px;
+}
+
+nav .button-container .download svg path, nav .button-container > svg:first-of-type path {
+  stroke: var(--font-color);
 }
 
 .hamburger,
@@ -177,6 +202,10 @@ nav .button-container .download svg {
 .menu .close-btn {
   width: 24px;
   height: 24px;
+}
+
+.menu .close-btn path{
+  stroke: var(--font-color);
 }
 
 
@@ -242,7 +271,7 @@ nav .button-container .download svg {
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    background-color: #fff;
+    background-color: var(--background-color);
     transition: 0.3s;
   }
 

@@ -6,7 +6,7 @@
   flex-direction: row;
   align-items: center;
   justify-content: space-around;
-  background-color: var(--couleur-principale);
+  background-color: var(--background-color);
 }
 
 .chessGame .leftContainer {
@@ -21,7 +21,9 @@
   width: auto;
   height: auto;
   padding: 5px;
-  background-color: #FFFFFF;
+  background-color: #fff;
+  border : 2px solid var(--font-color);
+  box-shadow: 4px 4px 0px var(--drop-shadow);
   display: flex;
   justify-content: center;
   align-items: center;

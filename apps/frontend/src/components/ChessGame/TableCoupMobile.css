@@ -4,7 +4,7 @@
   min-width: 100%;
   overflow-x: auto;
   height: 43px;
-  border: solid 1px #fff;
+  border: solid 1px var(--font-color);
   display: none;
   flex-direction: row;
 }
@@ -16,8 +16,8 @@
 
 .coupsContainerMobile > div > div{
   height: 43px;
-  border-right: 1px solid #fff;
-  color: #fff;
+  border-right: 1px solid var(--font-color);
+  color: var(--font-color);
   font-size: 18px;
   font-weight: 500;
 }

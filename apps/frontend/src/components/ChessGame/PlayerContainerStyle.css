@@ -2,6 +2,8 @@
   width: 100%;
   height: 75px;
   background-color: #fff;
+  border: solid 1px var(--font-color);
+  box-shadow: 4px 4px 0px var(--drop-shadow);
   border-radius: 15px;
   display: flex;
   flex-direction: row;
@@ -40,7 +42,7 @@
 .playerContainer>div:first-of-type span {
   font-size: 14px;
   font-weight: bold;
-  color: #000;
+  color: #212121;
 }
 
 .playerContainer>div:first-of-type>div:nth-of-type(2) {
@@ -69,7 +71,7 @@
 .playerContainer>div:last-of-type span {
   font-size: 25px;
   font-weight: bold;
-  color: #fff;
+  color: var(--font-color);
 }
 
 

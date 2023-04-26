@@ -1,7 +1,8 @@
 .coupsContainer {
   width: 100%;
   height: 525px;
-  border: solid 2px #E8EDF9;
+  border: solid 2px var(--font-color);
+  box-shadow: 4px 4px 0px var(--drop-shadow);
   overflow-y: auto;
 }
 
@@ -13,13 +14,13 @@
 .coupsContainer>div>div:first-of-type {
   width: 50px;
   height: 50px;
-  border-bottom: solid 2px #E8EDF9;
+  border-bottom: solid 2px var(--font-color);
   display: flex;
   justify-content: center;
   align-items: center;
   font-size: 22px;
   font-weight: bold;
-  color: #fff;
+  color: var(--font-color);
 }
 
 .coupsContainer .piece, .coupsContainer .piece img {
@@ -31,13 +32,13 @@
 .coupsContainer>div>div:nth-of-type(3) {
   width: calc(50% - 25px);
   height: 50px;
-  border-bottom: solid 2px #E8EDF9;
-  border-left: solid 2px #E8EDF9;
+  border-bottom: solid 2px var(--font-color);
+  border-left: solid 2px var(--font-color);
   display: flex;
   flex-direction: row;
   justify-content: center;
   align-items: center;
   font-size: 18px;
   font-weight: 600;
-  color: #fff;
+  color: var(--font-color);
 }

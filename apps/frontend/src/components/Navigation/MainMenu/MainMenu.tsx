@@ -2,6 +2,7 @@ import React, { useContext, useEffect } from 'react';
 import EloContainer from '../../Profil/EloContainer';
 import MenuContainer from './MenuContainer';
 import imageBanner from '../../../images/0_2.png';
+import imageBannerDark from '../../../images/0_2_dark.png';
 import { UserContext, User } from '../../UserContext';
 import { useNavigate } from 'react-router-dom';
 import './styleMenu.css';
@@ -11,9 +12,10 @@ import { API_BASE_URL } from '../../../config';
 interface Props {
   onLogoutClick: () => void;
   onNewGameClick: () => void;
+  isDarkMode: boolean;
 }
 
-const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick }) => {
+const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick, isDarkMode }) => {
   const user = useContext(UserContext);
   const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
@@ -62,7 +64,7 @@ const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick }) => {
         </div>
         <div className="right-container">
           <div>
-            <img src={imageBanner} alt="" srcSet="" />
+            <img src={isDarkMode ? imageBannerDark : imageBanner} alt="" srcSet="" />
           </div>
         </div>
       </div>

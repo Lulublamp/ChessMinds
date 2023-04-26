@@ -1,5 +1,5 @@
 .Matchmaking {
-  background-color: #fff;
+  background-color: var(--background-color);
   height: calc(100vh - 100px);
   width: 100%;
   overflow-x: hidden;
@@ -12,7 +12,7 @@
   width: 1200px;
   max-height: 790px;
   height: 100%;
-  background-color: #fff;
+  background-color: var(--background-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -24,7 +24,7 @@
   width: auto;
   padding-left: 24px;
   height: 100%;
-  background-color: #fff;
+  background-color: var(--background-color);
   float: left;
   position: relative;
 }
@@ -44,7 +44,7 @@
 .Matchmaking .cta-box::before {
   content: '';
   display: block;
-  background-color: #6AADEC;
+  background-color: rgba(0, 125, 240, 0.54);;
   width: 250px;
   height: 33px;
   position: absolute;
@@ -66,8 +66,8 @@
   height: 100%;
   background-color: #42C2C8;
   border-radius: 38px 38px 22px 38px;
-  border: 3px solid #212121;
-  box-shadow: 11px 13px 0px #212121;
+  border: 3px solid var(--font-color);
+  box-shadow: 11px 13px 0px var(--font-color);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -92,6 +92,11 @@
   font-weight: 700;
   font-size: 22px;
   line-height: 27px;
+  color: var(--font-color);
+}
+
+.Matchmaking svg path{
+  fill: var(--font-color);
 }
 
 .Matchmaking .elo-container>div {
@@ -125,7 +130,7 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  background-color: #fff;
+  background-color: var(--secondbackground);
   border: 1px solid var(--font-color);
   cursor: pointer;
   box-shadow: 4px 4px 0px var(--font-color);
@@ -254,7 +259,7 @@ input:checked+.slider .checked-icon {
   width: 223px;
   height: 80px;
   margin-top: 35px;
-  filter: drop-shadow(5px 5px 0px #212121);
+  filter: drop-shadow(5px 5px 0px var(--font-color));
   color: #fff;
   background-color: var(--main-color);
   border: none;

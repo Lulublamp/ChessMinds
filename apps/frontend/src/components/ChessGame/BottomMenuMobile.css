@@ -6,6 +6,7 @@
   width: 100%;
   height: 50px;
   background-color: #fff;
+  border-top: solid 1px var(--font-color);
 }
 
 .MenuChessEventMobile > div:not(:last-of-type){
@@ -17,7 +18,7 @@
 
 .MenuChessEventMobile > div:not(:last-of-type) span{
   font-size: 10px;
-  color: var(--font-color);
+  color: #212121;
   font-weight: bold;
 }
 

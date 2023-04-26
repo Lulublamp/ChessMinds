@@ -18,6 +18,7 @@ const AbandonButton: React.FC<AbandonButtonProps> = ({ onClick }) => {
         borderRadius: "9px",
         cursor: "pointer",
         marginTop: "50px",
+        boxShadow: "4px 4px 0px var(--font-color)"
       }}
       onClick={onClick}
     >
