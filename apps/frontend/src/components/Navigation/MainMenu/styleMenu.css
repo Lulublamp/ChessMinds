@@ -1,5 +1,5 @@
 .MainMenu {
-  background-color: #fff;
+  background-color: var(--background-color);
   height: calc(100vh - 100px);
   width: 100%;
   overflow-x: hidden;
@@ -12,7 +12,7 @@
   width: 1200px;
   max-height: 790px;
   height: 100%;
-  background-color: #fff;
+  background-color: var(--background-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -24,7 +24,7 @@
   width: auto;
   padding-left: 24px;
   height: 100%;
-  background-color: #fff;
+  background-color: var(--background-color);
   float: left;
   position: relative;
 }
@@ -76,13 +76,13 @@
   top: 8px;
 }
 
-.MainMenu .right-container > div:first-of-type{
+.MainMenu .right-container>div:first-of-type {
   width: 100%;
   height: 100%;
-  background-color: #fff;
+  background-color: var(--backgroundCards);
   border-radius: 38px 38px 22px 38px;
-  border: 3px solid #212121;
-  box-shadow: 11px 13px 0px #212121;
+  border: 3px solid var(--font-color);
+  box-shadow: 11px 13px 0px var(--font-color);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -96,40 +96,45 @@
   object-fit: initial;
 }
 
-.MainMenu .elo-container{
+.MainMenu .elo-container {
   display: flex;
   flex-direction: row;
   align-items: center;
 }
 
-.MainMenu .elo-container span{
+.MainMenu .elo-container span {
   font-style: normal;
   font-weight: 700;
   font-size: 22px;
   line-height: 27px;
+  color: var(--font-color);
 }
 
-.MainMenu .elo-container > div{
+.MainMenu .elo-container svg path{
+  fill: var(--font-color);
+}
+
+.MainMenu .elo-container>div {
   display: flex;
   flex-direction: row;
   align-items: center;
   margin-left: 15px;
 }
 
-.MainMenu .elo-container > div span{
+.MainMenu .elo-container>div span {
   margin-left: 5px;
 }
 
-.MainMenu .menu-container{
+.MainMenu .menu-container {
   display: flex;
   flex-direction: column;
   justify-content: start;
 }
 
-.MainMenu .menu-container > button{
+.MainMenu .menu-container>button {
   width: 386px;
   height: 80px;
-  background: #FFFFFF;
+  background: var(--secondbackground);
   border: 2px solid var(--font-color);
   filter: drop-shadow(5px 5px 0px var(--font-color));
   border-radius: 11px;
@@ -140,54 +145,68 @@
   padding-left: 10px;
   cursor: pointer;
   margin-bottom: 30px;
-  transition: all 0.2s ease-in-out;
+  transition: transform 0.2s ease-in-out;
   font-family: 'Montserrat', sans-serif;
 }
 
-.MainMenu .menu-container > button:first-of-type{
+.MainMenu .menu-container>button:first-of-type {
   margin-top: 25px;
   background-color: var(--main-color);
   color: #fff;
   border: 2px solid var(--main-color);
 }
 
-.MainMenu .menu-container > button:last-of-type{
+.MainMenu .menu-container>button:last-of-type {
   color: #E63946;
   border: 2px solid #E63946;
 }
 
-.MainMenu .menu-container > button:hover{
+.MainMenu .menu-container>button:hover {
   transform: translateY(-5px);
 }
 
 
 
-@media (max-width: 1200px){
+@media (max-width: 1200px) {
   .MainMenu>div {
     width: 95%;
   }
 }
 
-@media (max-width: 900px){
-  .MainMenu .right-container {  
+@media (max-width: 900px) {
+  .MainMenu .right-container {
     display: none;
   }
+
   .MainMenu>div {
     justify-content: center;
     align-items: center;
   }
 }
 
-@media (max-width: 450px){
+@media (max-width: 600px) {
+  .MainMenu {
+    height: calc(100vh - 50px);
+  }
+
+  .format-container {
+    align-content: space-around;
+    height: 200px;
+  }
+}
+
+@media (max-width: 450px) {
   .MainMenu .left-container {
     width: 100%;
     min-width: 100%;
     padding-left: 0;
   }
 
-  .menu-container > button{
-    width: 100%;
+  .MainMenu .menu-container>button {
+    width: 97%;
     height: 70px;
     font-size: 25px;
   }
+
+
 }

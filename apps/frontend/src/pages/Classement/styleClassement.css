@@ -1,5 +1,5 @@
 .Classement {
-  background-color: #fff;
+  background-color: var(--background-color);
   height: calc(100vh - 100px);
   width: 80%;
   margin: auto;
@@ -14,7 +14,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #fff;
+  background-color: var(--background-color);
   border-radius: 29px;
   border: 2px solid var(--font-color);
   box-shadow: 8px 8px 0px var(--font-color);
@@ -195,6 +195,10 @@
   width: 365px;
   height: auto;
   object-fit: initial;
+}
+
+.Classement .categories svg path{
+  fill: var(--font-color);
 }
 
 

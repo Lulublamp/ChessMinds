@@ -1,0 +1,37 @@
+.MenuChessEventMobile{
+  display: none;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  height: 50px;
+  background-color: #fff;
+  border-top: solid 1px var(--font-color);
+}
+
+.MenuChessEventMobile > div:not(:last-of-type){
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.MenuChessEventMobile > div:not(:last-of-type) span{
+  font-size: 10px;
+  color: #212121;
+  font-weight: bold;
+}
+
+.MenuChessEventMobile > div:last-of-type{
+  display: flex;
+  flex-direction: row;
+  width: 66px;
+  justify-content: space-between;
+  align-items: center;
+}
+
+@media (max-width: 600px){
+  .MenuChessEventMobile{
+    display: flex;
+  }
+}

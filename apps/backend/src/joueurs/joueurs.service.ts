@@ -144,6 +144,17 @@ export class JoueursService {
     }
   }
 
+  async getAmis(joueur: Joueur): Promise<Joueur[]> {
+    const joueurTrouve = await this.joueursRepository.findOne({
+      where: { idJoueur: joueur.idJoueur },
+      relations: ['amis'],
+    });
+    if (!joueurTrouve) {
+      throw new Error('Joueur introuvable');
+    }
+    return joueurTrouve.amis;
+  }
+
   async getDateInscription(joueur: Joueur): Promise<Date> {
     const joueurTrouve = await this.joueursRepository.findOne({
       where: { idJoueur: joueur.idJoueur },

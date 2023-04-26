@@ -11,3 +11,7 @@
 .gameControl svg {
   cursor: pointer;
 }
+
+.gameControl svg path{
+  stroke: var(--font-color);
+}

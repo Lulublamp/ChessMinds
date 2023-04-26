@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState, useContext } from 'react';
+import React, { FC, useEffect, useState, useContext, useRef, useImperativeHandle, forwardRef } from 'react';
 import { useNavigate } from 'react-router-dom';
 import LoginPopup from '../Form/LoginPopup';
 import SignupPopup from '../Form/SignupPopup';
@@ -7,52 +7,49 @@ import { UserContext } from '../UserContext';
 interface AuthWrapperProps {
   showLoginPopup: boolean;
   showSignupPopup: boolean;
+  isLogged: boolean;
   handleCloseLoginPopup: () => void;
   handleCloseSignupPopup: () => void;
   handleSwitchToSignup: () => void;
   handleSwitchToLogin: () => void;
 }
 
-const AuthWrapper: FC<AuthWrapperProps> = ({
-  showLoginPopup,
-  showSignupPopup,
-  handleCloseLoginPopup,
-  handleCloseSignupPopup,
-  handleSwitchToSignup,
-  handleSwitchToLogin,
-}) => {
+const AuthWrapper = forwardRef((props: AuthWrapperProps, ref) =>{
 
   const navigate = useNavigate();
   const user = useContext(UserContext)
 
   const handleSuccessfulLogin = () => {
-    handleCloseLoginPopup();
+    props.handleCloseLoginPopup();
     navigate('/MainMenu');
   };
+  
+  useImperativeHandle(ref, () => ({
+    handleSuccessfulLogin,
+  }));
 
   useEffect(() => {
     if (user.user !== null) {
       handleSuccessfulLogin();
     }
-  }, [user]);
+  }, [props.isLogged]);
 
   return (
     <>
-      {showLoginPopup && (
+      {props.showLoginPopup && (
         <LoginPopup
-          onClose={handleCloseLoginPopup}
-          onSwitch={handleSwitchToSignup}
+          onClose={props.handleCloseLoginPopup}
+          onSwitch={props.handleSwitchToSignup}
           onSuccess={handleSuccessfulLogin}
         />
       )}
-      {showSignupPopup && (
+      {props.showSignupPopup && (
         <SignupPopup
-          onClose={handleCloseSignupPopup}
-          onSwitch={handleSwitchToLogin}
+          onClose={props.handleCloseSignupPopup}
+          onSwitch={props.handleSwitchToLogin}
         />
       )}
     </>
   );
-};
-
+});
 export default AuthWrapper;

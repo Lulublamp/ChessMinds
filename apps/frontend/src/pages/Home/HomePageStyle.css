@@ -18,6 +18,11 @@
   animation: navText 0.3s ease-out forwards 0.3s;
 }
 
+.nav-links-container > button:nth-child(4) {
+  opacity: 0;
+  animation: navText 0.3s ease-out forwards 0.4s;
+}
+
 nav .button-container .play {
   opacity: 0;
   animation: fadeIn 0.3s ease-out forwards 0.4s;
@@ -29,7 +34,7 @@ nav .button-container .download{
 }
 
 .HomePage {
-  background-color: #fff;
+  background-color: var(--background-color);
   height: calc(100vh - 100px);
   width: 100%;
   overflow-x: hidden;
@@ -41,7 +46,7 @@ nav .button-container .download{
 .HomePage>div {
   width: 1400px;
   height: 790px;
-  background-color: #fff;
+  background-color: var(--background-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -52,7 +57,7 @@ nav .button-container .download{
   width: 691px;
   padding-left: 24px;
   height: 100%;
-  background-color: #fff;
+  background-color: var(--background-color);
   float: left;
   position: relative;
 }
@@ -67,10 +72,10 @@ nav .button-container .download{
 .HomePage .right-container > div:first-of-type{
   width: 100%;
   height: 100%;
-  background-color: #fff;
+  background-color: var(--backgroundCards);
   border-radius: 38px 38px 22px 38px;
-  border: 3px solid #212121;
-  box-shadow: 11px 13px 0px #212121;
+  border: 3px solid var(--font-color);
+  box-shadow: 11px 13px 0px var(--font-color);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -160,7 +165,7 @@ h1 > span > span {
   color: #fff;
   background-color: var(--main-color);
   padding: 5px 10px;
-  box-shadow: 6px 6px 0px #212121;
+  box-shadow: 6px 6px 0px var(--font-color);
 }
 
 p {
@@ -229,7 +234,7 @@ p > span:nth-of-type(2){
   width: 283px;
   height: 80px;
   filter: drop-shadow(4px 4px 0px var(--font-color));
-  background: #fff;
+  background: var(--secondbackground);
   border: 2px solid var(--font-color);
   color: var(--font-color);
   font-family: 'Montserrat', sans-serif;
@@ -239,6 +244,10 @@ p > span:nth-of-type(2){
 
 .HomePage .button-container .button-download svg {
   transform: translateY(4px);
+}
+
+.HomePage .button-container .button-download svg path{
+  stroke: var(--font-color);
 }
 
 .HomePage .button-container>svg {
@@ -251,7 +260,7 @@ p > span:nth-of-type(2){
 }
 
 .arrow-path {
-  stroke: #212121;
+  stroke: var(--font-color);
   fill: none;
   stroke-width: 2;
   stroke-linecap: round;
@@ -262,7 +271,7 @@ p > span:nth-of-type(2){
 }
 
 .arrow-fill {
-  fill: #212121;
+  fill: var(--font-color);
   opacity: 0;
   animation: fill 0.4s ease-out forwards 0.5s;
 }
@@ -288,12 +297,16 @@ p > span:nth-of-type(2){
   animation: slideInFadeIn 1s ease-out forwards 0.8s;
 }
 
+.pyram path:last-of-type{
+  fill: #fff;
+}
+
 .right-container .cards {
   position: absolute;
   border: solid 2px var(--font-color);
   border-radius: 18px;
   box-shadow: 6px 6px 0px var(--font-color);
-  background-color: #fff;
+  background-color: var(--background-color);
   overflow: hidden;
 }
 
@@ -353,7 +366,7 @@ p > span:nth-of-type(2){
   border: solid 2px var(--font-color);
   border-radius: 18px;
   box-shadow: 6px 6px 0px var(--font-color);
-  background-color: #fff;
+  background-color: var(--background-color);
 }
 
 .responsiveCards .cards h3 {

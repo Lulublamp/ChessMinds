@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import HamburgerMenu from './HamburgerMenu';
 import Logo from '../../Logo/Logo';
 import './navStyle.css';
@@ -8,9 +8,11 @@ import { useNavigate } from 'react-router-dom';
 interface Props {
   onPlayClick: () => void;
   onLogoutClick: () => void;
+  toggleDarkMode: () => void;
 }
 
-const Navbar: React.FC<Props> = ({ onPlayClick, onLogoutClick }) => {
+const Navbar: React.FC<Props> = ({ onPlayClick, onLogoutClick, toggleDarkMode }) => {
+  
   const user = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -31,9 +33,14 @@ const Navbar: React.FC<Props> = ({ onPlayClick, onLogoutClick }) => {
     onLogoutClick();
   };
 
+  const toggleDarkModeClick = (event: React.MouseEvent) => {
+    event.preventDefault();
+    toggleDarkMode();
+  };
+
   return (
     <nav>
-      <HamburgerMenu onPlayClick={onPlayClick} goClassementPage={goClassementPage} />
+      <HamburgerMenu onPlayClick={onPlayClick} goClassementPage={goClassementPage} toggleDarkModeClick={toggleDarkModeClick}/>
       <div className="nav-container">
         <div onClick={goHomePage} className="logo-container">
           <Logo width={65} height={65} />
@@ -48,6 +55,11 @@ const Navbar: React.FC<Props> = ({ onPlayClick, onLogoutClick }) => {
           </span>
           <span>Apprendre</span>
           <span onClick={goClassementPage}>Classement</span>
+          <button type="button" onClick={toggleDarkModeClick}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+              <path d="M4.67199 18.7967C3.97348 18.2328 4.55832 17.2239 5.45256 17.1452C11.2419 16.6357 15.0596 10.0755 12.4592 5.00063C12.0486 4.19926 12.5832 3.13003 13.4466 3.38559C17.2438 4.50955 20 7.94173 20 12C20 16.9715 16.1189 21 11 21C8.65964 21 6.38082 20.1762 4.67199 18.7967Z" stroke="#001A72" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+          </button>
         </div>
       </div>
       <div className="button-container">
@@ -57,7 +69,7 @@ const Navbar: React.FC<Props> = ({ onPlayClick, onLogoutClick }) => {
             <path d="M19.5 19.5C24.3325 19.5 28.25 15.5825 28.25 10.75C28.25 5.91751 24.3325 2 19.5 2C14.6675 2 10.75 5.91751 10.75 10.75C10.75 15.5825 14.6675 19.5 19.5 19.5Z" stroke="#212121" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
         )}
-        <button className="nav-button play play-btn" onClick={onPlayClick}>
+        <button className="nav-button play play-btn" type="button" onClick={onPlayClick}>
           Jouer
         </button>
         <button className="nav-button download">Télécharger

@@ -10,7 +10,7 @@ const NulleButton: React.FC<NulleButtonProps> = ({ onClick }) => {
       style={{
         width: "223px",
         height: "52px",
-        backgroundColor: "#4465F2",
+        backgroundColor: "var(--couleur-caseNoir)",
         fontSize: "22px",
         fontWeight: "bold",
         color: "#fff",
@@ -18,6 +18,7 @@ const NulleButton: React.FC<NulleButtonProps> = ({ onClick }) => {
         borderRadius: "9px",
         cursor: "pointer",
         marginTop: "15px",
+        boxShadow: "4px 4px 0px var(--font-color)"
       }}
       onClick={onClick}
     >

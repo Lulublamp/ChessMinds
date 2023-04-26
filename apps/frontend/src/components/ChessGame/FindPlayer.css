@@ -105,3 +105,11 @@
     transform: scale(1.2, 1);
   }
 }
+
+@media (max-width: 600px){
+  .search-container {
+    width: 95%;
+    height: 200px;
+  }
+  
+}

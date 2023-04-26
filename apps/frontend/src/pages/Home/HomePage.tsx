@@ -2,13 +2,15 @@ import React from 'react';
 import Card from './Card';
 import './HomePageStyle.css';
 import imageBanner from '../../images/0_2.png';
+import imageBannerDark from '../../images/0_2_dark.png';
 
 interface Props {
   onPlayClick: () => void;
   onDownloadClick: () => void;
+  darkMode : boolean;
 }
 
-const HomePage: React.FC<Props> = ({ onPlayClick, onDownloadClick }) => {
+const HomePage: React.FC<Props> = ({ onPlayClick, onDownloadClick, darkMode }) => {
   return (
     <section className="HomePage">
       <div>
@@ -76,7 +78,7 @@ const HomePage: React.FC<Props> = ({ onPlayClick, onDownloadClick }) => {
         </div>
         <div className="right-container">
           <div>
-            <img src={imageBanner} alt="Image Banniere" srcSet="" />
+            <img src={darkMode ? imageBannerDark : imageBanner} alt="Image Banniere" srcSet="" />
           </div>
           <Card title="🤖 Entraînez-vous contre l'IA">
             Jouez contre notre intelligence artificielle pour vous préparer à

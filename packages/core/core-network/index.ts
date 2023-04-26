@@ -4,7 +4,7 @@ export * from './src/Event';
 export * from './src/ClientEventManager';
 export * from './src/MatchMaking';
 
-// export * from './src/utils/Lobby';
+export * from './src/utils/Lobby';
 export * from './src/utils/Queue';
 export * from './src/utils/Chat';
 export * from './src/utils/Timer';
