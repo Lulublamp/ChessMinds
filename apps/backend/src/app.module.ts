@@ -13,6 +13,7 @@ import { Joueur } from './joueurs/entities/joueur.entity';
 import { JoueursModule } from './joueurs/joueurs.module';
 import { Partie } from './partie/entities/partie.entity';
 import { Rencontre } from './rencontre/entities/rencontre.entity';
+import { PrivaGameModule } from './network/private-game/private-game.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { Rencontre } from './rencontre/entities/rencontre.entity';
     ClassementModule,
     InGameModule,
     RencontreCoupsModule,
+    PrivaGameModule,
   ],
   controllers: [AppController],
   providers: [AppService, MatchMakingModule],
