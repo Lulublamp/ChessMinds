@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import {
+  Column,
   CreateDateColumn,
   Entity,
   JoinColumn,
@@ -29,4 +30,9 @@ export class Partie {
   @CreateDateColumn({nullable:false})
   datePartie: number;
 
+  @Column({nullable:false})
+  eloBlanc: number;
+
+  @Column({nullable:false})
+  eloNoir: number;
 }
