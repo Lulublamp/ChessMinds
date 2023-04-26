@@ -30,6 +30,9 @@ export class Joueur {
   @CreateDateColumn()
   dateInscription: Date;
 
+  @Column({nullable: true})
+  image: string;
+
   @ManyToMany(() => Joueur , (user) => user.amis )
   @JoinTable()
   amis: Joueur[]; 

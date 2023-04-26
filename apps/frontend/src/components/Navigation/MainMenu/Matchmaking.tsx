@@ -1,4 +1,4 @@
-import React,{ useState }  from 'react';
+import React,{ useState , useEffect }  from 'react';
 import './styleMatchmaking.css';
 import EloContainer from '../../Profil/EloContainer';
 import RankedSwitch from './RankedSwitch';
@@ -6,6 +6,8 @@ import PlayButton from '../../Button/PlayButton';
 import imageBanner from '../../../images/0_1.png';
 import TimeMode from './TimeMode';
 import { MATCHMAKING_MODES_TIMERS, MATCHMAKING_MODE } from '@TRPI/core/core-network';
+import axios from 'axios';
+import { API_BASE_URL } from '../../../config';
 
 
 interface Props {
@@ -24,6 +26,41 @@ const Matchmaking: React.FC<Props> = ({onBackClick}) => {
     setIsRanked(checked);
   };
 
+  async function getMatchMaking() {
+    const response = await axios.get(`${API_BASE_URL}/match-making`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
+      },
+    });
+    return response;
+  }
+  
+
+
+
+  useEffect(() => {
+    async function fetchData() {
+      console.log('mounted');
+      try {
+        const response = await getMatchMaking();
+        console.log(response.data.result);
+        if (response.data.result == true) {
+          console.log('tu peu jouer');
+        }else {
+          console.log('tu peu pas jouer');
+        }
+      } catch (error) {
+        console.error(error);
+      }
+    }
+
+    fetchData();
+
+    return () => {
+      console.log('unmounting...');
+    };
+  }, []);
+
   return (
     <section className="Matchmaking">
       <div>
@@ -33,7 +70,7 @@ const Matchmaking: React.FC<Props> = ({onBackClick}) => {
             <div className="icon"></div>
             <span className="text">Matchmaking</span>
           </div>
-          <EloContainer />
+          {/* <EloContainer /> */}
           <div className="menu-container">
             <TimeMode onTimeModeSelect={handleTimeModeSelect}/>
             <RankedSwitch onRankedChange={handleRankedChange}/>

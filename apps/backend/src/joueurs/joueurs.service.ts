@@ -30,10 +30,10 @@ export class JoueursService {
     const existingJoueurByPseudo = await this.joueursRepository.findOne({
       where: { pseudo: joueur.pseudo },
     });
-    if(existingJoueurByEmail){
+    if (existingJoueurByEmail) {
       throw new EmailPlayerAlreadyExists();
     }
-    if(existingJoueurByPseudo){
+    if (existingJoueurByPseudo) {
       throw new PseudoPlayerAlreadyExists();
     }
 
@@ -41,7 +41,7 @@ export class JoueursService {
       joueur.motDePasse = await hashPassword(joueur.motDePasse);
       const newJoueur = this.joueursRepository.create(joueur);
       const joueurCree = await this.joueursRepository.save(newJoueur);
-  
+
       await this.classementService.creerClassement({
         user_id: joueurCree,
         elo_blitz: 800,
@@ -57,13 +57,16 @@ export class JoueursService {
       throw new PlayerNotCreated();
     }
   }
-  
-  async connexionJoueur(adresseMail: string, motDePasse: string): Promise<Joueur | null> {
-    const joueur = await this.joueursRepository.findOne({ 
-      where: { adresseMail: adresseMail }
-     });
 
-    if (!joueur || !(comparePassword(motDePasse, joueur.motDePasse))) {
+  async connexionJoueur(
+    adresseMail: string,
+    motDePasse: string,
+  ): Promise<Joueur | null> {
+    const joueur = await this.joueursRepository.findOne({
+      where: { adresseMail: adresseMail },
+    });
+
+    if (!joueur || !comparePassword(motDePasse, joueur.motDePasse)) {
       return null;
     }
 
@@ -84,9 +87,7 @@ export class JoueursService {
     return joueurTrouve;
   }
 
-  async findJoueurByFullPseudo(
-    query: Pick<Joueur, 'pseudo'>,
-  ): Promise<Joueur> {
+  async findJoueurByFullPseudo(query: Pick<Joueur, 'pseudo'>): Promise<Joueur> {
     const joueurTrouve = await this.joueursRepository.findOne({
       where: {
         pseudo: query.pseudo,
@@ -155,11 +156,12 @@ export class JoueursService {
   }
 
   async getDateInscription(joueur: Joueur): Promise<Date> {
-    const joueurTrouve = await this.joueursRepository.findOne({ where: { idJoueur: joueur.idJoueur } });
+    const joueurTrouve = await this.joueursRepository.findOne({
+      where: { idJoueur: joueur.idJoueur },
+    });
     if (!joueurTrouve) {
       throw new Error('Joueur introuvable');
     }
     return joueurTrouve.dateInscription;
   }
-
 }

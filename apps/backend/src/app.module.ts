@@ -13,6 +13,7 @@ import { Joueur } from './joueurs/entities/joueur.entity';
 import { JoueursModule } from './joueurs/joueurs.module';
 import { Partie } from './partie/entities/partie.entity';
 import { Rencontre } from './rencontre/entities/rencontre.entity';
+import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { PrivaGameModule } from './network/private-game/private-game.module';
 
 @Module({
@@ -39,6 +40,10 @@ import { PrivaGameModule } from './network/private-game/private-game.module';
     ClassementModule,
     InGameModule,
     RencontreCoupsModule,
+    DevtoolsModule.register({
+      port: 8000,
+      http: true,
+    }),
     PrivaGameModule,
   ],
   controllers: [AppController],

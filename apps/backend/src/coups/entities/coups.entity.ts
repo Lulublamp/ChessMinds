@@ -53,4 +53,7 @@ export class Coups {
 
   @Column({type: 'enum', enum: Couleur, nullable: false})
   couleur: Couleur;
+
+  @Column({ nullable: false })
+  ordre: number;
 }

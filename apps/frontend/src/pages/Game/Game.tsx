@@ -38,6 +38,7 @@ const Game = () => {
   const [clientManager, setClientManager] = useState<ClientEventManager<MATCH_MAKING> | null>(null);
   const clientManagerRef = useRef<ClientEventManager<MATCH_MAKING> | null>(null);
   const [gameManager, setGameManager] = useState<ClientEventManager<IN_GAME> | null>(null);
+  const gameManagerRef = useRef<ClientEventManager<IN_GAME> | null>(null);
   const [movesData, setMovesData] = useState<Move[]>([]);
   const [boardHistory, setBoardHistory] = useState<ChessBoard[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -110,7 +111,8 @@ const Game = () => {
         disconnect: setClientManager,
         nextGameManager: setGameManager,
         name: user.user.pseudo,
-        url: import.meta.env.VITE_SERVER_URL || `${API_BASE_URL}`
+        url: import.meta.env.VITE_SERVER_URL || `${API_BASE_URL}`,
+        gameRef: gameManagerRef,
       }
       newClientManager.listenToIncomingMatch(listeningPayload)
       newClientManager.joinMatchMakingEvent(payload)
@@ -120,10 +122,14 @@ const Game = () => {
     }
 
     fetchDataAndInitClient();
+
     return () => {
       console.log('unmounting...');
-      gameManager?.close();
+      console.log('clientManager', clientManagerRef.current);
+      console.log('gameManager', gameManager);
       clientManagerRef.current?.close();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      gameManagerRef.current?.close();
     }
 
 

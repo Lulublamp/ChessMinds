@@ -1,6 +1,7 @@
 import { JoinQueuOption } from "../MatchMaking";
 import { MATCHMAKING_MODES_TIMERS } from "../Namespace";
 import { ChatMessage } from "../utils/Chat";
+import { IGame } from "./game";
 
 
 
@@ -39,8 +40,7 @@ export interface eIMakeMoveEvent {
 }
 
 export interface eIFirstMoveEvent {
-  matchId: string,
-  options: JoinQueuOption,
+  game: IGame
 }
 export interface eIRequestChatHistoryEvent {
   matchId: string;

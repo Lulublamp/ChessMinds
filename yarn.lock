@@ -1400,6 +1400,14 @@
     path-to-regexp "3.2.0"
     tslib "2.5.0"
 
+"@nestjs/devtools-integration@^0.1.4":
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/@nestjs/devtools-integration/-/devtools-integration-0.1.4.tgz#e739b5afb88a13615944030e694c448e7dde5223"
+  integrity sha512-jAKTrpc+Ilrb7CFV1ZuG9b4OYVlFPHUXna2H8BrmxKResyqnzlzR/YIUr8zJE7p15MipAjiVaLHHyEL0C9OYGA==
+  dependencies:
+    chalk "^4.1.2"
+    node-fetch "^2.6.9"
+
 "@nestjs/jwt@^10.0.2":
   version "10.0.2"
   resolved "https://registry.npmjs.org/@nestjs/jwt/-/jwt-10.0.2.tgz"
@@ -7394,7 +7402,7 @@ node-emoji@1.11.0:
   dependencies:
     lodash "^4.17.21"
 
-node-fetch@^2.6.1, node-fetch@^2.6.7:
+node-fetch@^2.6.1, node-fetch@^2.6.7, node-fetch@^2.6.9:
   version "2.6.9"
   resolved "https://registry.npmjs.org/node-fetch/-/node-fetch-2.6.9.tgz"
   integrity sha512-DJm/CJkZkRjKKj4Zi4BsKVZh3ValV5IR5s7LVZnW+6YMh0W1BfNA8XSs6DLMGYlId5F3KnA70uu2qepcR08Qqg==
