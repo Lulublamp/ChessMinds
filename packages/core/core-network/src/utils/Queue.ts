@@ -90,6 +90,12 @@ export class Queue {
     this.socketMap.delete(playerId);
   }
 
+  mapPrivateGame(game: IGame): IGame {
+    this.games.push(game);
+    this.coupledGames.set(game.matchId, new ChessGame());
+    return game;
+  }
+
   destroyGame(matchId: string): void {
     this.games = this.games.filter((game) => game.matchId !== matchId);
     this.coupledGames.delete(matchId);

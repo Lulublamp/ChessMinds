@@ -1,5 +1,7 @@
-import { IMMPlayer } from "../interfaces/mmplayer";
+import { IGame } from "../interfaces/game";
+import { IMMPlayer, IRPlayer } from "../interfaces/mmplayer";
 import { MATCHMAKING_MODES_TIMERS } from "../Namespace";
+import { Queue } from "./Queue";
 
 
 
@@ -19,6 +21,7 @@ export class Lobby {
 
   createLobby(host: IMMPlayer, player2: IMMPlayer): PrivateLobby {
     const id = `${host.id}-${player2.id}`;
+    if(this.lobbies.find((lobby) => lobby.id === id)) throw new Error('Lobby already exists');
     const lobby: PrivateLobby = {
       id,
       host,
@@ -31,9 +34,23 @@ export class Lobby {
     return lobby;
   }
 
+  leaveLobby(id: string): void {
+    this.lobbies = this.lobbies.filter((lobby) => lobby.id !== id);
+  }
+
+  leaveOnDisconnect(playerid: string): string | null {
+    const lobby = this.lobbies.find((lobby) => lobby.players.find((player) => player.id === playerid));
+    if (!lobby) return null;
+    this.leaveLobby(lobby.id);
+    return lobby.id;
+  }
+    
+
   changeTimer(id: string, timer: MATCHMAKING_MODES_TIMERS): PrivateLobby | null {
     const lobby = this.lobbies.find((lobby) => lobby.id === id);
     if (!lobby) return null;
+    lobby.players.forEach((player) => lobby.ready[player.id] = false);
+    lobby.players.forEach((player) => player.options.timer = timer);
     lobby.timer = timer;
     return lobby;
   }
@@ -58,71 +75,28 @@ export class Lobby {
     return lobby;
   }
 
-  // joinLobby(code: string, player: lobbyPlayer): PrivateLobby | null {
-  //   const lobby = this.lobbies.find((lobby) => lobby.code === code);
-  //   if (!lobby) return null;
-  //   lobby.players.push(player);
-  //   lobby.ready[player.id] = false;
-  //   return lobby;
-  // }
+  startGame(id: string, sockId: string, sockId2: string): IGame {
+    const lobby = this.lobbies.find((lobby) => lobby.id === id);
+    if (!lobby) throw new Error('Lobby not found');
+    lobby.players.forEach((player) => {
+      if (lobby.ready[player.id] === false) throw new Error('Not all players are ready');
+    });
+    const pWithRank: IRPlayer = {
+      ...lobby.players[0],
+      rank: null,
+      socketId: sockId,
+    }
+    const pWithRank2: IRPlayer = {
+      ...lobby.players[1],
+      rank: null,
+      socketId: sockId2,
+    }
 
-  // leaveLobby(code: string, player: lobbyPlayer): PrivateLobby | null {
-  //   const lobby = this.lobbies.find((lobby) => lobby.code === code);
-  //   if (!lobby) return null;
-  //   lobby.players = lobby.players.filter((p) => p.id !== player.id);
-  //   if(lobby.players.length === 0 ) this.lobbies = this.lobbies.filter((l) => l.code !== code);
-  //   if(lobby.host.id === player.id) lobby.host = lobby.players[0];
-  //   return lobby;
-  // }
+    const game = Queue.BuildGame(pWithRank, pWithRank2);
+    this.lobbies = this.lobbies.filter((lobby) => lobby.id !== id);
+    return game;
 
-  // generateCode(): string {
-  //   let code = '';
-  //   const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  //   for (let i = 0; i < 5; i++) {
-  //     code += characters.charAt(Math.floor(Math.random() * characters.length));
-  //   }
-  //   return code;
-  // }
-
-  // playerReady(code: string, player: lobbyPlayer): PrivateLobby | null {
-  //   console.log("Looking for lobby", code);
-  //   const lobby = this.lobbies.find((lobby) => lobby.code === code);
-  //   console.log("Ready in");
-  //   console.log(lobby);
-  //   if (!lobby) return null;
-  //   lobby.ready[player.id] = true;
-  //   return lobby;
-  // }
-
-  // playerUnready(code: string, player: lobbyPlayer): PrivateLobby | null {
-  //   const lobby = this.lobbies.find((lobby) => lobby.code === code);
-  //   if (!lobby) return null;
-  //   lobby.ready[player.id] = false;
-  //   return lobby;
-  // }
-
-  // startGame(code: string): Match<lobbyPlayer> | null {
-  //   const lobby = this.lobbies.find((lobby) => lobby.code === code);
-  //   if (!lobby) return null;
-  //   if (lobby.players.length < 2) return null;
-  //   if (Object.values(lobby.ready).some((r) => !r)) return null;
-  //   const match = Lobby.buildMatch(lobby.players);
-  //   lobby.status = 'playing';
-  //   return match;
-  // }
-
-  // static buildMatch(players: lobbyPlayer[]): Match<lobbyPlayer> {
-  //   const match: Match<lobbyPlayer> = {
-  //     matchId: Math.random().toString(36).substring(7),
-  //     players,
-  //     createdAt: new Date(),
-  //     endedAt: null,
-  //     winner: null,
-  //     state: 'waiting',
-  //     currentTurn: players[0],
-  //   };
-  //   return match;
-  // }
+  }
 
 }
 

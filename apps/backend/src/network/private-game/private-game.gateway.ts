@@ -23,14 +23,16 @@ export class PrivateGameGateway {
   constructor(private joueursService: JoueursService, private gameService : PrivateGameService) {}
 
   async handleConnection(client: Socket, ...args: any[]) {
-    console.log('Lobbies: Connection : ' + client.id);
+    if(this.sockets.find((socket) => socket['user'].user.idJoueur === client['user'].user.idJoueur)){
+      console.log('Lobbies: Connection : ' + client['user'].user.pseudo + ' (already connected)');
+      client.disconnect();
+    }
     this.sockets.push(client);
     // Notify all friends that the player is online
     const playerFriends = await this.joueursService.getAmis(client['user'].user);
     const friendSockets = playerFriends.map((friend) => {
       const friendSocket = this.sockets.find((socket) => socket['user'].user.idJoueur === friend.idJoueur);
       if(friendSocket){
-        console.log("Sending to " + friend.pseudo);
         this.server.to(friendSocket.id).emit(Nt.EVENT_TYPES.AMIS_ONLINE, client['user'].user.idJoueur);
       }
     });
@@ -38,7 +40,6 @@ export class PrivateGameGateway {
   }
 
   async handleDisconnect(client: Socket) {
-    console.log('Lobbies: Disconnect : ' + client.id);
     this.sockets = this.sockets.filter((socket) => socket.id !== client.id);
     // Notify all friends that the player is offline
     const playerFriends = await this.joueursService.getAmis(client['user'].user);
@@ -48,30 +49,18 @@ export class PrivateGameGateway {
         this.server.to(friendSocket.id).emit(Nt.EVENT_TYPES.AMIS_OFFLINE, client['user'].user.idJoueur);
       }
     });
+    const lobbyId = this.gameService.leaveOnDisconnect(client['user'].user.idJoueur);
+    if(lobbyId){
+      this.server.to(lobbyId).emit(Nt.EVENT_TYPES.LEAVE_LOBBY);
+    }
   }
 
-  @SubscribeMessage('test')
-  async handleTest(
-    @MessageBody() testPayload: any,
-    @ConnectedSocket() client: Socket,
-  ) {
-    console.log('Lobbies: Test');
-    console.log(client['user']);
-    console.log("Id");
-    console.log(client['user'].user.idJoueur);
-    // const playerFriends = await this.joueursService.getAmis(client['user']);
-    // console.log("playerFriends : ");
-    // console.log(playerFriends);
-  }
 
   @SubscribeMessage(Nt.EVENT_TYPES.GET_AMIS_WITH_STATUS)
   async handleGetAmisWithStatus(
     @ConnectedSocket() client: Socket,
   ) {
-    console.log('request by ' + client['user'].user.pseudo);
     const playerFriends = await this.joueursService.getAmis(client['user'].user);
-    console.log("playerFriends : ");
-    console.log(playerFriends);
     const playerFriendsWithStatus = playerFriends.map((friend) => {
       const friendSocket = this.sockets.find((socket) => socket['user'].user.idJoueur === friend.idJoueur);
       return {
@@ -79,8 +68,7 @@ export class PrivateGameGateway {
         status: friendSocket ? 'online' : 'offline',
       };
     });
-    console.log("playerFriendsWithStatus : ");
-    console.log(playerFriendsWithStatus);
+    return playerFriendsWithStatus;
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.INVITE_AMI)
@@ -88,7 +76,8 @@ export class PrivateGameGateway {
     @MessageBody() inviteAmisPayload: Nt.eIInviteAmisEvent,
     @ConnectedSocket() client: Socket,
   ) {
-    const friendSocket = this.sockets.find((socket) => socket['user'].user.idJoueur === inviteAmisPayload.idJoueur);
+    const idJoueur = Number(inviteAmisPayload.idJoueur);
+    const friendSocket = this.sockets.find((socket) => socket['user'].user.idJoueur === idJoueur);
     if(!friendSocket){
       console.log("Friend not found or offline");
       return;
@@ -112,7 +101,7 @@ export class PrivateGameGateway {
       lobby: null,
     };
     
-    if(invitationResponsePayload.reponse === true){
+    if(invitationResponsePayload.response === true){
       const lobby = this.gameService.createLobby(invitationResponsePayload.joueur, client['user'].user);
       lobbyPayload.lobby = lobby;
       client.join(lobby.id);
@@ -123,6 +112,22 @@ export class PrivateGameGateway {
       this.server.to(friendSocket.id).emit(Nt.EVENT_TYPES.INVITATION_RESPONSE, lobbyPayload);
     }
   }
+
+  @SubscribeMessage(Nt.EVENT_TYPES.LEAVE_LOBBY)
+  handleLeaveLobby(
+    @MessageBody() leaveLobbyPayload: Nt.eILobbyPlayerReadyEvent,
+    @ConnectedSocket() client: Socket,
+  ) {
+    try{
+      this.gameService.leaveLobby(leaveLobbyPayload.lobbyId);
+    }
+    catch(e){
+      console.log(e);
+    }
+    client.to(leaveLobbyPayload.lobbyId).emit(Nt.EVENT_TYPES.LEAVE_LOBBY);
+    this.server.in(leaveLobbyPayload.lobbyId).socketsLeave(leaveLobbyPayload.lobbyId);
+  }
+
 
   @SubscribeMessage(Nt.EVENT_TYPES.CHANGE_TIMER)
   handleChangeTimer(
@@ -168,11 +173,25 @@ export class PrivateGameGateway {
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.LOBBY_START_GAME)
-  handleStartGame(
+  async handleStartGame(
     @MessageBody() startGamePayload: Nt.eILobbyPlayerReadyEvent,
     @ConnectedSocket() client: Socket,
   ) {
-    
+    if(!this.gameService.isHost(startGamePayload.lobbyId, client['user'].user.idJoueur)){
+      console.log("Not host");
+      return;
+    }
+    const socketsInRoom = await this.server.in(startGamePayload.lobbyId).fetchSockets();
+    const sockId2 = socketsInRoom.find((socket) => socket.id !== client.id).id;
+    const game = this.gameService.startGame(startGamePayload.lobbyId, client.id, sockId2);
+    if(!game){
+      console.log("Unable to start game");
+      return;
+    }
+    this.server.to(startGamePayload.lobbyId).emit(Nt.EVENT_TYPES.INCOMING_CATCH, game);
+    this.sockets.find((socket) => socket.id === client.id).leave(startGamePayload.lobbyId);
+    this.sockets.find((socket) => socket.id === sockId2).leave(startGamePayload.lobbyId);
+
   }
 
 

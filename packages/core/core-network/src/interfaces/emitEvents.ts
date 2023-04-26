@@ -56,7 +56,7 @@ export interface eIInviteAmisEvent {
 
 export interface eIInvitationResponseEvent {
   joueur: any;
-  reponse: boolean;
+  response: boolean;
 }
 
 export interface eIChangeTimerEvent {

@@ -212,6 +212,8 @@ export class InGameGateway {
     @ConnectedSocket() client: Socket,
   ) {
     const games = this.matchMakingService.queue.gamesList;
+    console.log('mathId : ' + payload.matchId);
+    console.log('name : ' + payload.name);
     const game = games.find((game) => game.matchId === payload.matchId);
     if (!game) {
       console.log('error: game not found ATTACH');
