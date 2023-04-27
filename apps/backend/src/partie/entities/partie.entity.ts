@@ -7,25 +7,16 @@ import {
   OneToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { Rencontre } from '../../rencontre/entities/rencontre.entity';
+import { Rencontre } from 'src/rencontre/entities/rencontre.entity';
 
 @Entity()
 export class Partie {
   @PrimaryGeneratedColumn()
   idPartie: number;
 
-  @OneToOne(() => Rencontre, {nullable:false})
+  @OneToOne(() => Rencontre, rencontre => rencontre.partie)
   @JoinColumn()
-  idRencontre: Rencontre;
-
-  @CreateDateColumn()
-  heureDebut: number;
-
-  @CreateDateColumn()
-  heureFin: number;
-
-  @CreateDateColumn()
-  dureePartie: number;
+  rencontre: Rencontre;
 
   @CreateDateColumn({nullable:false})
   datePartie: number;
@@ -35,4 +26,6 @@ export class Partie {
 
   @Column({nullable:false})
   eloNoir: number;
+
+  
 }

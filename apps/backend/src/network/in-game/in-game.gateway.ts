@@ -259,14 +259,16 @@ export class InGameGateway {
         pseudoJoueurBlanc: names.joueurBlanc,
         pseudoJoueurNoir: names.joueurNoir,
         vainqueur: gameResult.winner,
+        timer : Nt.MATCHMAKING_MODES_TIMERS.BLITZ //A MODIFIER
       };
 
-      const coups = game.getMovesHistory().map((move) => ({
+      const coups = game.getMovesHistory().map((move,index) => ({
         idRencontre: null, // Cette valeur sera remplacée par l'ID de la rencontre sauvegardée
         caseSource: positionToNumber(move.from),
         caseDestination: positionToNumber(move.to),
         piece: formate_piece(move.piece),
         couleur: formate_color(move.color),
+        ordre : index+1
       }));
 
       try {

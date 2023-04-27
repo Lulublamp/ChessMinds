@@ -1,16 +1,19 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { Partie } from 'src/partie/entities/partie.entity';
 import { Rencontre } from './entities/rencontre.entity';
 import { Coups } from 'src/coups/entities/coups.entity';
 import { JoueurDto } from 'src/joueurs/DTO/joueurs.dto';
 import { JoueursService } from 'src/joueurs/joueurs.service';
 import { ClassementService } from 'src/classement/classement.service';
+import { Nt } from '@TRPI/core';
 
 export interface RencontreWithPseudos {
   pseudoJoueurBlanc: string;
   pseudoJoueurNoir: string;
   vainqueur: number;
+  timer: Nt.MATCHMAKING_MODES_TIMERS;
 }
 
 @Injectable()
@@ -20,6 +23,8 @@ export class RencontreCoupsService {
     private rencontreRepository: Repository<Rencontre>,
     @InjectRepository(Coups)
     private coupsRepository: Repository<Coups>,
+    @InjectRepository(Partie)
+    private partieRepository: Repository<Partie>,
     private joueurService: JoueursService,
     private classementService: ClassementService,
   ) { }
@@ -34,7 +39,29 @@ export class RencontreCoupsService {
       vainqueur: rencontre.vainqueur,
     });
 
-    return this.rencontreRepository.save(newRencontre);
+    const savedRencontre = await this.rencontreRepository.save(newRencontre);
+
+    const eloBlanc = (await this.classementService.getEloByUserId(joueurBlanc.toDto()));
+    const eloNoir = (await this.classementService.getEloByUserId(joueurNoir.toDto()));
+
+    let eloB = rencontre.timer === Nt.MATCHMAKING_MODES_TIMERS.BULLET ? eloBlanc.elo_bullet :
+      rencontre.timer === Nt.MATCHMAKING_MODES_TIMERS.BLITZ ? eloBlanc.elo_blitz : eloBlanc.elo_rapide;
+
+    let eloN = rencontre.timer === Nt.MATCHMAKING_MODES_TIMERS.BULLET ? eloNoir.elo_bullet :
+      rencontre.timer === Nt.MATCHMAKING_MODES_TIMERS.BLITZ ? eloNoir.elo_blitz : eloNoir.elo_rapide;
+
+    // Créez une nouvelle instance de Partie
+    const newPartie = this.partieRepository.create({
+      rencontre: savedRencontre,
+      datePartie: new Date().getDate(),
+      eloBlanc: eloB,
+      eloNoir: eloN,
+    });
+
+    // Sauvegardez la Partie
+    await this.partieRepository.save(newPartie);
+
+    return savedRencontre;
   }
 
   async saveCoup(coup: Partial<Coups>): Promise<Coups> {
@@ -51,47 +78,16 @@ export class RencontreCoupsService {
     return { victoires, defaites, parties };
   }
 
-  async getPartiesDetailsPourJoueur(joueur: JoueurDto): Promise<any> {
-    const rencontres = await this.rencontreRepository.find({
-      where: [
-        { joueurBlanc: { idJoueur: joueur.idJoueur } },
-        { joueurNoir: { idJoueur: joueur.idJoueur } },
-      ],
-      relations: ['joueurBlanc', 'joueurNoir'],
-    });
-
-    if (!rencontres || rencontres.length === 0) {
-      throw new Error('Aucune rencontre trouvée pour ce joueur');
-    }
-
-    const result = [];
-
-    for (const rencontre of rencontres) {
-
-      const nombreDeCoups = await this.coupsRepository
-      .createQueryBuilder("coups")
-      .where("coups.idRencontreIdRencontre = :idRencontre", { idRencontre: rencontre.idRencontre })
-      .getCount();
-
-      const eloBlanc = await this.classementService.getEloByUserId(rencontre.joueurBlanc.toDto());
-      const eloNoir = await this.classementService.getEloByUserId(rencontre.joueurNoir.toDto());
-
-      result.push({
-        idRencontre: rencontre.idRencontre,
-        nombreDeCoups,
-        resultat: rencontre.vainqueur === rencontre.joueurBlanc.idJoueur ? 'Blanc' : 'Noir',
-        joueurBlanc: {
-          pseudo: rencontre.joueurBlanc.pseudo,
-          elo: eloBlanc,
-        },
-        joueurNoir: {
-          pseudo: rencontre.joueurNoir.pseudo,
-          elo: eloNoir,
-        },
-      });
-    }
-
-    return result;
+  async getPartiesDetailsPourJoueur(joueur: JoueurDto): Promise<Rencontre[]> {
+    return this.rencontreRepository
+      .createQueryBuilder('rencontre')
+      .leftJoinAndSelect('rencontre.joueurBlanc', 'joueurBlanc')
+      .leftJoinAndSelect('rencontre.joueurNoir', 'joueurNoir')
+      .leftJoinAndSelect('rencontre.partie', 'partie')
+      .leftJoinAndSelect('rencontre.coups', 'coups')
+      .where('rencontre.joueurBlanc = :id', { id: joueur.idJoueur })
+      .orWhere('rencontre.joueurNoir = :id', { id: joueur.idJoueur })
+      .getMany();
   }
 
   async getCoupsForRencontre(idRencontre: number): Promise<Coups[]> {
@@ -100,6 +96,6 @@ export class RencontreCoupsService {
       .orderBy('coups.ordre', 'ASC')
       .getMany();
   }
-  
+
 }
 

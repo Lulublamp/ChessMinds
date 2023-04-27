@@ -5,8 +5,12 @@ import {
   PrimaryGeneratedColumn,
   JoinColumn,
   ManyToOne,
+  OneToOne,
+  OneToMany,
 } from 'typeorm';
 import { Joueur } from '../../joueurs/entities/joueur.entity';
+import { Partie } from 'src/partie/entities/partie.entity';
+import { Coups } from 'src/coups/entities/coups.entity';
 
 @Entity()
 export class Rencontre {
@@ -24,4 +28,9 @@ export class Rencontre {
   @Column({nullable:false})
   vainqueur: number;
 
+  @OneToOne(() => Partie, partie => partie.rencontre)
+  partie: Partie;
+
+  @OneToMany(() => Coups, coup => coup.idRencontre)
+  coups: Coups[];
 }

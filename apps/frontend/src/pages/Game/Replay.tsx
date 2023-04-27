@@ -31,7 +31,6 @@ const Replay: React.FC = () => {
     setChessGame(new ChessGame());
 
     const ConvertDataBaseObjectToChessObject = (piece_name: string, color: Color): ChessPiece => {
-      console.log(piece_name);
       switch (piece_name) {
         case 'PION':
           return new Pawn(color, '');
