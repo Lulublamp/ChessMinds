@@ -94,5 +94,12 @@ export class RencontreCoupsService {
     return result;
   }
 
+  async getCoupsForRencontre(idRencontre: number): Promise<Coups[]> {
+    return this.coupsRepository.createQueryBuilder('coups')
+      .where('coups.idRencontreIdRencontre = :idRencontre', { idRencontre })
+      .orderBy('coups.ordre', 'ASC')
+      .getMany();
+  }
+  
 }
 

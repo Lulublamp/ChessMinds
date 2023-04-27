@@ -280,7 +280,7 @@ const Game = () => {
           <NulleButtons onClick={ProposeNulle} />
         </div>
         <div className='BotContainer Mobile'>
-        <PlayerContainer
+          <PlayerContainer
             isWhitePlayer={playerisWhite}
             playerName={_game ? playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
             playerScore={_game ? playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}

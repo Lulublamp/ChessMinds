@@ -8,6 +8,7 @@ import MainMenu from './components/Navigation/MainMenu/MainMenu';
 import Matchmaking from './components/Navigation/MainMenu/Matchmaking';
 import PrivateGame from './components/Navigation/MainMenu/PrivateGame';
 import Profil from './pages/Profil/Profil';
+import Replay from './pages/Game/Replay';
 import Apprendre from './pages/Apprendre/Apprendre';
 import { GameInfoProvider } from './components/ChessGame/GameInfoProvider';
 import { UserContext, User } from './components/UserContext';
@@ -171,6 +172,7 @@ const App: FC = () => {
             <Route path="/Classement" element={<Classement />} />
             <Route path="/Profil" element={<Profil />} />
             <Route path='/Apprendre' element={<Apprendre />} />
+            <Route path='/Replay' element={<Replay />} />
           </Routes>
         </GameInfoProvider>
         <AuthWrapper

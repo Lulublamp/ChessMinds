@@ -5,6 +5,7 @@ import {
   Body,
   Request,
   UseGuards,
+  Param,
 } from '@nestjs/common';
 import { Rencontre } from './entities/rencontre.entity';
 import { Joueur } from 'src/joueurs/entities/joueur.entity';
@@ -36,5 +37,10 @@ export class RencontreCoupsController {
   @Get('getDetailsParties')
   async getPartiesDetailsPourJoueur(@Request() req): Promise<any> {
     return this.rencontreCoupsService.getPartiesDetailsPourJoueur(req.user);
+  }
+
+  @Get(':idRencontre/coups')
+  async getCoupsForRencontre(@Param('idRencontre') idRencontre: number): Promise<Coups[]> {
+    return this.rencontreCoupsService.getCoupsForRencontre(idRencontre);
   }
 }

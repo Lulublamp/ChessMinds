@@ -1,0 +1,28 @@
+.Replay{
+  width: 80%;
+  margin: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.Replay .rightContainer {
+  width: 220px;
+  height: 90%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.chessBoardContainer {
+  width: auto;
+  height: auto;
+  padding: 5px;
+  background-color: #fff;
+  border : 2px solid var(--font-color);
+  box-shadow: 4px 4px 0px var(--drop-shadow);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 8px;
+}
