@@ -42,6 +42,18 @@ export class PrivateGameService {
     this.pLobby.leaveLobby(lobbyId);
   }
 
+  public inviteAmi(idSend: number, idRecieve: number): void {
+    this.pLobby.inviteAmi(idSend, idRecieve);
+  }
+
+  public getInvitations(id: number): number[] {
+    return this.pLobby.getInvitations(id);
+  }
+
+  public inviteResponse(idSend: number, idRecieve: number, response: boolean): void {
+    this.pLobby.inviteResponse(idSend, idRecieve, response);
+  }
+
   public changeTimer(lobbyId: string, timer: Nt.MATCHMAKING_MODES_TIMERS): Nt.PrivateLobby {
     return this.pLobby.changeTimer(lobbyId, timer);
   }
