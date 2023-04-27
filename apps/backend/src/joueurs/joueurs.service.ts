@@ -73,6 +73,18 @@ export class JoueursService {
     return joueur;
   }
 
+  async findJoueurById(id: number): Promise<Joueur> {
+    const joueurTrouve = await this.joueursRepository.findOne({
+      where: {
+        idJoueur: id,
+      },
+    });
+    if (!joueurTrouve) {
+      throw new PlayerNotFound();
+    }
+    return joueurTrouve;
+  }
+
   async findJoueurByEmail(
     email: Pick<JoueurDto, 'adresseMail'>,
   ): Promise<Joueur> {

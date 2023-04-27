@@ -9,6 +9,7 @@ import { Nt } from '@TRPI/core';
 import { Server, Socket } from 'socket.io';
 import { JoueursService } from 'src/joueurs/joueurs.service';
 import { PrivateGameService } from './private-game.service';
+import { Joueur } from 'src/joueurs/entities/joueur.entity';
 
 @WebSocketGateway({
   namespace: Nt.NAMESPACE_TYPES.PRIVATE_GAME,
@@ -30,12 +31,21 @@ export class PrivateGameGateway {
     this.sockets.push(client);
     // Notify all friends that the player is online
     const playerFriends = await this.joueursService.getAmis(client['user'].user);
-    const friendSockets = playerFriends.map((friend) => {
+    playerFriends.map((friend) => {
       const friendSocket = this.sockets.find((socket) => socket['user'].user.idJoueur === friend.idJoueur);
       if(friendSocket){
         this.server.to(friendSocket.id).emit(Nt.EVENT_TYPES.AMIS_ONLINE, client['user'].user.idJoueur);
       }
     });
+    const invitations = this.gameService.getInvitations(client['user'].user.idJoueur);
+    if(invitations){
+      invitations.map(async (invitation) => {
+        const joueur = await this.joueursService.findJoueurById(invitation);
+        if(joueur){
+          this.sendInviteAmiEvent(joueur, client['user'].user.idJoueur);
+        }
+      });
+    }
     
   }
 
@@ -43,7 +53,7 @@ export class PrivateGameGateway {
     this.sockets = this.sockets.filter((socket) => socket.id !== client.id);
     // Notify all friends that the player is offline
     const playerFriends = await this.joueursService.getAmis(client['user'].user);
-    const friendSockets = playerFriends.map((friend) => {
+    playerFriends.map((friend) => {
       const friendSocket = this.sockets.find((socket) => socket['user'].user.idJoueur === friend.idJoueur);
       if(friendSocket){
         this.server.to(friendSocket.id).emit(Nt.EVENT_TYPES.AMIS_OFFLINE, client['user'].user.idJoueur);
@@ -72,7 +82,40 @@ export class PrivateGameGateway {
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.INVITE_AMI)
-  handleInviteAmis(
+  async handleInviteAmi(
+    @MessageBody() inviteAmiPayload: Nt.eIInviteAmisEvent,
+    @ConnectedSocket() client: Socket,
+  ) {
+    const idRecieve = Number(inviteAmiPayload.idJoueur);
+    const amis = await this.joueursService.getAmis(client['user'].user);
+    if(amis.find((ami) => ami.idJoueur === idRecieve)){
+      console.log("Already friend");
+      return;
+    }
+    this.gameService.inviteAmi(client['user'].user.idJoueur, idRecieve);
+    this.sendInviteAmiEvent(client['user'].user, idRecieve);
+
+  }
+
+  @SubscribeMessage(Nt.EVENT_TYPES.INVITATION_RESPONSE)
+  handleInvitationResponse(
+    @MessageBody() invitationResponsePayload: Nt.eIInvitationResponseEvent,
+    @ConnectedSocket() client: Socket,
+  ) {
+    const idSender = Number(invitationResponsePayload.joueur.idJoueur);
+    try{
+      this.gameService.inviteResponse(idSender, Number(client['user'].user.idJoueur), invitationResponsePayload.response);
+      if(invitationResponsePayload.response === true){
+        this.joueursService.addFriend(client['user'].user.adresseMail, invitationResponsePayload.joueur.pseudo);
+      }
+    }
+    catch(e){
+      console.log(e.message);
+    }
+  }
+
+  @SubscribeMessage(Nt.EVENT_TYPES.LOBBY_INVITE_AMI)
+  handleLobbyInviteAmis(
     @MessageBody() inviteAmisPayload: Nt.eIInviteAmisEvent,
     @ConnectedSocket() client: Socket,
   ) {
@@ -82,11 +125,11 @@ export class PrivateGameGateway {
       console.log("Friend not found or offline");
       return;
     }
-    this.server.to(friendSocket.id).emit(Nt.EVENT_TYPES.INVITE_AMI, client['user'].user);
+    this.server.to(friendSocket.id).emit(Nt.EVENT_TYPES.LOBBY_INVITE_AMI, client['user'].user);
   }
 
-  @SubscribeMessage(Nt.EVENT_TYPES.INVITATION_RESPONSE)
-  handleInvitationResponse(
+  @SubscribeMessage(Nt.EVENT_TYPES.LOBBY_INVITATION_RESPONSE)
+  handleLobbyInvitationResponse(
     @MessageBody() invitationResponsePayload: Nt.eIInvitationResponseEvent,
     @ConnectedSocket() client: Socket,
   ) {
@@ -106,10 +149,10 @@ export class PrivateGameGateway {
       lobbyPayload.lobby = lobby;
       client.join(lobby.id);
       friendSocket.join(lobby.id);
-      this.server.to(lobby.id).emit(Nt.EVENT_TYPES.INVITATION_RESPONSE, lobbyPayload);
+      this.server.to(lobby.id).emit(Nt.EVENT_TYPES.LOBBY_INVITATION_RESPONSE, lobbyPayload);
     }
     else{
-      this.server.to(friendSocket.id).emit(Nt.EVENT_TYPES.INVITATION_RESPONSE, lobbyPayload);
+      this.server.to(friendSocket.id).emit(Nt.EVENT_TYPES.LOBBY_INVITATION_RESPONSE, lobbyPayload);
     }
   }
 
@@ -192,6 +235,15 @@ export class PrivateGameGateway {
     this.sockets.find((socket) => socket.id === client.id).leave(startGamePayload.lobbyId);
     this.sockets.find((socket) => socket.id === sockId2).leave(startGamePayload.lobbyId);
 
+  }
+
+  private sendInviteAmiEvent(sender: Joueur, recieverId: number){
+    const friendSocket = this.sockets.find((socket) => socket['user'].user.idJoueur === recieverId);
+    if(!friendSocket){
+      console.log("Friend not found or offline");
+      return;
+    }
+    this.server.to(friendSocket.id).emit(Nt.EVENT_TYPES.INVITE_AMI, sender);
   }
 
 

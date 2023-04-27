@@ -16,6 +16,7 @@ export interface PrivateLobby {
 
 export class Lobby {
   protected lobbies: PrivateLobby[] = [];
+  protected invitaions: Map<number, number[]> = new Map();
 
   constructor() {}
 
@@ -66,6 +67,40 @@ export class Lobby {
     if (!lobby) return null;
     lobby.ready[playerId] = true;
     return lobby;
+  }
+
+  inviteAmi(idSend: number, idRecieve: number): void {
+    if (this.invitaions.has(idRecieve)) {
+      const invitations = this.invitaions.get(idRecieve);
+      if (invitations && !invitations.includes(idSend)) {
+        invitations.push(idSend);
+      }
+    } else {
+      this.invitaions.set(idRecieve, [idSend]);
+    }
+  }
+
+  inviteResponse(idSend: number, idRecieve: number, response: boolean): void {
+    if (this.invitaions.has(idRecieve)) {
+      const invitations = this.invitaions.get(idRecieve);
+      if (invitations) {
+        const res = invitations.filter((id) => id !== idSend);
+        if(res.length === 0) this.invitaions.delete(idRecieve);
+        else this.invitaions.set(idRecieve, res);
+        return;
+      }
+    }
+    throw new Error('Invitation not found');
+  }
+
+  getInvitations(id: number): number[] | null {
+    if (this.invitaions.has(id)) {
+      const invitaions = this.invitaions.get(id);
+      if (invitaions) {
+        return invitaions;
+      }
+    }
+    return null;
   }
 
   lobbyPlayerUnready(id: string, playerId: string): PrivateLobby | null {
