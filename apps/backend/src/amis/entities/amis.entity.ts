@@ -14,7 +14,6 @@ export class Amis {
   @PrimaryGeneratedColumn()
   idAmis: number;
 
-
   @ManyToOne(()=>Joueur,{nullable:false})
   @JoinColumn()
   idJoueur1: Joueur;

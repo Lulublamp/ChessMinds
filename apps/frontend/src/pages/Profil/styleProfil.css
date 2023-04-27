@@ -53,19 +53,6 @@
   padding: 14px 23px;
 }
 
-.Profil .rightContainer .FriendsList {
-  width: 494px;
-  height: 400px;
-  background-color: #fff;
-  border: solid 2px var(--font-color);
-  border-radius: 7px;
-  filter: drop-shadow(8px 8px 0px var(--font-color));
-  display: flex;
-  position: relative;
-  flex-direction: column;
-  padding: 14px 23px;
-}
-
 .Profil .leftContainer .MainCadre>div:first-of-type {
   width: 90%;
   height: 90%;
@@ -295,68 +282,4 @@
   justify-content: space-around;
   height: 25%;
   align-items: center;
-}
-
-.Profil .rightContainer .FriendsList > span{
-  font-size: 20px;
-  font-weight: bold;
-  color: var(--font-color);
-}
-
-.Profil .rightContainer .FriendsList > div{
-  margin-top: 10px;
-  border-top: solid 2px var(--font-color);
-  display: flex;
-  flex-direction: column;
-  max-height: 78%;
-  overflow-y: auto;
-  flex-shrink: 0;
-}
-
-.Profil .rightContainer .FriendsList > div > div{
-  display: flex;
-  flex-direction: row;
-  justify-content: start;
-  align-items: center;
-  width: 100%;
-  height: 70px;
-  background-color: #fff;
-  border : solid 2px var(--font-color);
-  border-radius: 5px;
-  padding: 0px 15px;
-  margin-top: 10px;
-  flex-shrink: 0;
-}
-
-.Profil .rightContainer .FriendsList > div > div span:first-of-type{
-  font-size: 20px;
-  font-weight: 500;
-  color: var(--font-color);
-  margin-right: 10px;
-}
-
-.Profil .rightContainer .FriendsList > div > div span:last-of-type{
-  font-size: 20px;
-  font-weight: bold;
-  color: var(--font-color);
-  margin-right: 80px;
-}
-
-.Profil .rightContainer .FriendsList > div > div img{
-  width: 43px;
-  height: 43px;
-  object-fit: contain;
-  margin-right: 15px;
-}
-
-.Profil .rightContainer .FriendsList > div > div button{
-  width: 130px;
-  height: 40px;
-  border: none;
-  border-radius: 5px;
-  background-color: var(--main-color);
-  color: #fff;
-  font-size: 18px;
-  font-weight: bold;
-  cursor: pointer;
 }

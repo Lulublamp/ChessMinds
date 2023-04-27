@@ -1,0 +1,104 @@
+.PopUpAddFriend {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 100;
+}
+
+.PopUpAddFriend>div:first-of-type {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: #2121217a;
+  ;
+}
+
+.PopUpAddFriend>div:last-of-type {
+  position: relative;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 800px;
+  height: 200px;
+  background-color: #fff;
+  border-radius: 11px;
+  border: solid 2px var(--font-color);
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+}
+
+.PopUpAddFriend>div:last-of-type > div:first-of-type{
+  display: flex;
+  flex-direction: row;
+  margin: 25px 0px 34px 25px;
+}
+
+.PopUpAddFriend>div:last-of-type > div:first-of-type svg{
+  margin-right: 5px;
+}
+
+.PopUpAddFriend>div:last-of-type > div:first-of-type h3{
+  font-size: 18px;
+  font-weight: bold;
+  margin: 0;
+  color: var(--font-color);
+}
+
+.PopUpAddFriend>div:last-of-type input{
+  width: 715px;
+  height: 45px;
+  color: var(--font-color);
+  padding: 11px 15px;
+  border: solid 2px var(--font-color);
+  border-radius: 7px;
+  outline: none;
+  margin: 0 auto;
+  font-size: 18px;
+}
+
+.PopUpAddFriend>div:last-of-type input::placeholder{
+  color: var(--font-color);
+  opacity: 0.7;
+}
+
+.PopUpAddFriend>div:last-of-type  > div:last-of-type{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  margin: 21px auto 0px auto;
+  width: 715px;
+}
+
+.PopUpAddFriend>div:last-of-type > div:last-of-type span{
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.PopUpAddFriend>div:last-of-type > div:last-of-type .success{
+  color: #06BA18;
+}
+
+.PopUpAddFriend>div:last-of-type > div:last-of-type  button{
+  width: 102px;
+  height: 35px;
+  background-color: var(--main-color);
+  color: #fff;
+  box-shadow: 3px 3px 0px #212121;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+  font-size: 18px;
+  font-weight: bold;
+}
+
+.close-btn{
+  position: absolute;
+  top: 15px;
+  right: 15px;
+  cursor: pointer;
+}

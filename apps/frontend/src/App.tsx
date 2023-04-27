@@ -6,6 +6,7 @@ import HomePage from './pages/Home/HomePage';
 import Classement from './pages/Classement/Classement';
 import MainMenu from './components/Navigation/MainMenu/MainMenu';
 import Matchmaking from './components/Navigation/MainMenu/Matchmaking';
+import PrivateGame from './components/Navigation/MainMenu/PrivateGame';
 import Profil from './pages/Profil/Profil';
 import Apprendre from './pages/Apprendre/Apprendre';
 import { GameInfoProvider } from './components/ChessGame/GameInfoProvider';
@@ -14,7 +15,6 @@ import AuthWrapper from './components/Navigation/AuthWrapper';
 import axios from 'axios';
 import { API_BASE_URL } from './config';
 
-
 const App: FC = () => {
 
   const [user, setUser] = useState<User | null>(null);
@@ -22,6 +22,7 @@ const App: FC = () => {
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [showSignupPopup, setShowSignupPopup] = useState(false);
   const [showMatchmaking, setShowMatchmaking] = useState(false);
+  const [showPrivateGame, setShowPrivateGame] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const authWrapperRef = useRef<any>(null);
 
@@ -121,8 +122,31 @@ const App: FC = () => {
 
   const onBackClickMenu = () => {
     setShowMatchmaking(false);
+    setShowPrivateGame(false);
   };
 
+  const handleNewPrivateGameClick = () => {
+    console.log("private game");
+    setShowPrivateGame(true);
+  };
+
+  const getMenuElement = () => {
+    if (showMatchmaking) {
+      return <Matchmaking onBackClick={onBackClickMenu} />;
+    }
+    if (showPrivateGame) {
+      return <PrivateGame onBackClick={onBackClickMenu} />;
+    }
+    return (
+      <MainMenu
+        onNewGameClick={handleNewGameClick}
+        onLogoutClick={handleLogout}
+        onPrivateGameClick={handleNewPrivateGameClick}
+        isDarkMode={darkMode}
+      />
+    );
+  };
+  
   return (
     <UserContext.Provider value={{ user, setUser }}>
       <HashRouter>
@@ -141,13 +165,7 @@ const App: FC = () => {
             />
             <Route
               path="/MainMenu"
-              element={
-                !showMatchmaking ? (
-                  <MainMenu onNewGameClick={handleNewGameClick} onLogoutClick={handleLogout} isDarkMode={darkMode} />
-                ) : (
-                  <Matchmaking onBackClick={onBackClickMenu} />
-                )
-              }
+              element={getMenuElement()}
             />
             <Route path="/Game" element={<Game />} />
             <Route path="/Classement" element={<Classement />} />

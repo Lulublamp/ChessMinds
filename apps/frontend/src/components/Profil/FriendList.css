@@ -1,0 +1,136 @@
+.FriendsList {
+  width: 494px;
+  height: 400px;
+  background-color: var(--background-color);
+  border: solid 2px var(--font-color);
+  border-radius: 7px;
+  filter: drop-shadow(8px 8px 0px var(--drop-shadow));
+  display: flex;
+  position: relative;
+  flex-direction: column;
+  padding: 14px 23px;
+}
+
+.FriendsList > div > span{
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--font-color);
+  cursor: pointer;
+}
+
+.FriendsList > div:last-of-type{
+  margin-top: 10px;
+  border-top: solid 2px var(--font-color);
+  display: flex;
+  flex-direction: column;
+  max-height: 78%;
+  overflow-y: auto;
+  flex-shrink: 0;
+}
+
+.FriendsList > div:last-of-type > div{
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+  align-items: center;
+  width: 100%;
+  height: 70px;
+  background-color: var(--secondbackground);
+  border : solid 2px var(--font-color);
+  border-radius: 5px;
+  padding: 0px 15px;
+  margin-top: 10px;
+  flex-shrink: 0;
+}
+
+.FriendsList > div:last-of-type > div span:first-of-type{
+  font-size: 20px;
+  font-weight: 500;
+  color: var(--font-color);
+  margin-right: 10px;
+}
+
+.FriendsList > div:last-of-type > div span:last-of-type{
+  font-size: 20px;
+  font-weight: bold;
+  color: var(--font-color);
+  margin-right: 80px;
+}
+
+.FriendsList > div:last-of-type > div img{
+  width: 43px;
+  height: 43px;
+  object-fit: contain;
+  margin-right: 15px;
+}
+
+.FriendsList > div:last-of-type > div button{
+  width: 130px;
+  height: 40px;
+  border: none;
+  border-radius: 5px;
+  background-color: var(--main-color);
+  color: #fff;
+  font-size: 18px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.FriendsList > div:first-of-type{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.FriendsList > div:first-of-type svg{
+  cursor: pointer;
+}
+
+.FriendsList > div:first-of-type svg path{
+  stroke: var(--font-color);
+}
+
+.FriendsList > div:first-of-type > div{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 100px;
+}
+
+.FriendsList > div:first-of-type > div div{
+  position: relative;
+}
+
+.FriendsList > div:first-of-type > div div span{
+  position: absolute;
+  top: -11px;
+  right: -11px;
+  width: 20px;
+  height: 20px;
+  color: #fff;
+  background-color: #E63946;
+  border-radius: 100%;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.FriendsList .InvitationContainer span:last-of-type{
+  margin-right: 30px !important;
+}
+
+.FriendsList .InvitationContainer button:first-of-type{
+  margin-right: 10px !important;
+}
+
+.FriendsList .InvitationContainer button:last-of-type{
+  margin-right: 0px !important;
+  background-color: #E63946 !important;
+}
+
+
+

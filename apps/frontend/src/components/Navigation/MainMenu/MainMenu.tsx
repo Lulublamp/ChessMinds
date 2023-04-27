@@ -12,10 +12,11 @@ import { API_BASE_URL } from '../../../config';
 interface Props {
   onLogoutClick: () => void;
   onNewGameClick: () => void;
+  onPrivateGameClick: () => void;
   isDarkMode: boolean;
 }
 
-const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick, isDarkMode }) => {
+const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick, onPrivateGameClick, isDarkMode }) => {
   const user = useContext(UserContext);
   const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
@@ -60,6 +61,7 @@ const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick, isDarkMode }
           <MenuContainer
             onLogoutClick={onLogoutClick}
             onNewGameClick={onNewGameClick}
+            onPrivateGameClick={onPrivateGameClick}
           />
         </div>
         <div className="right-container">
