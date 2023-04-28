@@ -47,6 +47,7 @@ export class PrivateGameService {
   }
 
   public getInvitations(id: number): number[] {
+    console.log(this.pLobby);
     return this.pLobby.getInvitations(id);
   }
 

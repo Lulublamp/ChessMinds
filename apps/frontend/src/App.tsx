@@ -15,6 +15,8 @@ import { UserContext, User } from './components/UserContext';
 import AuthWrapper from './components/Navigation/AuthWrapper';
 import axios from 'axios';
 import { API_BASE_URL } from './config';
+import { PublicContext } from './contexts/ContextPublicManager';
+import { ClientEventManager, PRIVATE_GAME } from '@TRPI/core/core-network';
 
 const App: FC = () => {
 
@@ -26,6 +28,7 @@ const App: FC = () => {
   const [showPrivateGame, setShowPrivateGame] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const authWrapperRef = useRef<any>(null);
+  const [socketGlobal, setSocketGlobal] = useState<ClientEventManager<PRIVATE_GAME> | null>(null);
 
   const handleDownloadClick = () => {
     console.log('Bouton Télécharger cliqué');
@@ -85,10 +88,17 @@ const App: FC = () => {
     else {
       if (!isLoggedIn)
         setIsLoggedIn(true);
-      else
+      else {
         authWrapperRef.current.handleSuccessfulLogin();
+      }
     }
   };
+
+  useEffect(() => {
+    if (authWrapperRef.current) {
+      setSocketGlobal(authWrapperRef.current.getPublicManager());
+    }
+  }, [authWrapperRef.current?.getPublicManager()]);
 
   const handleCloseLoginPopup = () => {
     setShowLoginPopup(false);
@@ -147,46 +157,48 @@ const App: FC = () => {
       />
     );
   };
-  
+
   return (
-    <UserContext.Provider value={{ user, setUser }}>
-      <HashRouter>
-        <Navbar onPlayClick={handleLoginPopupClick} onLogoutClick={handleLogout} toggleDarkMode={togleDarkMode} />
-        <GameInfoProvider>
-          <Routes>
-            <Route
-              path="/"
-              element={
-                <HomePage
-                  onPlayClick={handleLoginPopupClick}
-                  onDownloadClick={handleDownloadClick}
-                  darkMode={darkMode}
-                />
-              }
-            />
-            <Route
-              path="/MainMenu"
-              element={getMenuElement()}
-            />
-            <Route path="/Game" element={<Game />} />
-            <Route path="/Classement" element={<Classement />} />
-            <Route path="/Profil" element={<Profil />} />
-            <Route path='/Apprendre' element={<Apprendre />} />
-            <Route path='/Replay' element={<Replay />} />
-          </Routes>
-        </GameInfoProvider>
-        <AuthWrapper
-          ref={authWrapperRef}
-          showLoginPopup={showLoginPopup}
-          showSignupPopup={showSignupPopup}
-          isLogged={isLoggedIn}
-          handleCloseLoginPopup={handleCloseLoginPopup}
-          handleCloseSignupPopup={handleCloseSignupPopup}
-          handleSwitchToSignup={handleSwitchToSignup}
-          handleSwitchToLogin={handleSwitchToLogin}
-        />
-      </HashRouter>
-    </UserContext.Provider>
+    <PublicContext.Provider value={{ publicManager: socketGlobal}}>
+      <UserContext.Provider value={{ user, setUser }}>
+        <HashRouter>
+          <Navbar onPlayClick={handleLoginPopupClick} onLogoutClick={handleLogout} toggleDarkMode={togleDarkMode} />
+          <GameInfoProvider>
+            <Routes>
+              <Route
+                path="/"
+                element={
+                  <HomePage
+                    onPlayClick={handleLoginPopupClick}
+                    onDownloadClick={handleDownloadClick}
+                    darkMode={darkMode}
+                  />
+                }
+              />
+              <Route
+                path="/MainMenu"
+                element={getMenuElement()}
+              />
+              <Route path="/Game" element={<Game />} />
+              <Route path="/Classement" element={<Classement />} />
+              <Route path="/Profil" element={<Profil />} />
+              <Route path='/Apprendre' element={<Apprendre />} />
+              <Route path='/Replay' element={<Replay />} />
+            </Routes>
+          </GameInfoProvider>
+          <AuthWrapper
+            ref={authWrapperRef}
+            showLoginPopup={showLoginPopup}
+            showSignupPopup={showSignupPopup}
+            isLogged={isLoggedIn}
+            handleCloseLoginPopup={handleCloseLoginPopup}
+            handleCloseSignupPopup={handleCloseSignupPopup}
+            handleSwitchToSignup={handleSwitchToSignup}
+            handleSwitchToLogin={handleSwitchToLogin}
+          />
+        </HashRouter>
+      </UserContext.Provider>
+    </PublicContext.Provider>
   );
 };
 

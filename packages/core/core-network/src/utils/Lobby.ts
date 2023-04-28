@@ -3,8 +3,6 @@ import { IMMPlayer, IRPlayer } from "../interfaces/mmplayer";
 import { MATCHMAKING_MODES_TIMERS } from "../Namespace";
 import { Queue } from "./Queue";
 
-
-
 export interface PrivateLobby {
   id: string;
   host: IMMPlayer;

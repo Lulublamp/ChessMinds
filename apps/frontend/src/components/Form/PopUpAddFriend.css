@@ -83,6 +83,10 @@
   color: #06BA18;
 }
 
+.PopUpAddFriend>div:last-of-type > div:last-of-type .error{
+  color: #E63946;
+}
+
 .PopUpAddFriend>div:last-of-type > div:last-of-type  button{
   width: 102px;
   height: 35px;

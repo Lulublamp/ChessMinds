@@ -67,3 +67,8 @@ export interface eIChangeTimerEvent {
 export interface eILobbyPlayerReadyEvent {
   lobbyId: string;
 }
+
+export interface eISendEnviteEvent {
+  idJoueur: number;
+  idJoueurInvite: number;
+}

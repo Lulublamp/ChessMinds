@@ -24,6 +24,7 @@ export class PrivateGameGateway {
   constructor(private joueursService: JoueursService, private gameService : PrivateGameService) {}
 
   async handleConnection(client: Socket, ...args: any[]) {
+    console.log(this.gameService);
     if(this.sockets.find((socket) => socket['user'].user.idJoueur === client['user'].user.idJoueur)){
       console.log('Lobbies: Connection : ' + client['user'].user.pseudo + ' (already connected)');
       client.disconnect();

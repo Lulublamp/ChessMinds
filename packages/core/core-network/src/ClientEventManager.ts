@@ -6,12 +6,14 @@ import {
   eILeaveRoomEvent,
   eIMatchMakingStateEvent,
   eIFirstMoveEvent,
+  eISendEnviteEvent,
 } from "./interfaces/emitEvents";
-import { IN_GAME, MATCH_MAKING, NAMESPACE_TYPES } from "./Namespace";
+import { IN_GAME, MATCH_MAKING, NAMESPACE_TYPES, PRIVATE, PRIVATE_GAME } from "./Namespace";
 import { Move, rICreateRoomEvent, rIIncomingGameEvent, rINetworkMoveEvent, rITimeEvent, rITimeoutEvent } from "./interfaces/receiveEvents";
 import { IGame } from "./interfaces/game";
 // import { PrivateLobby } from "./utils/Lobby";
 import { ChessBoard, Color } from "../../core-algo";
+import { PrivateLobby } from "./utils/Lobby";
 
 
 
@@ -227,4 +229,9 @@ export class ClientEventManager<
     this.socket.close();
   }
 
+  public SendInvite(payload : Check<T , PRIVATE_GAME , eISendEnviteEvent>){
+    if (!this.validateEmit(NAMESPACE_TYPES.PRIVATE_GAME)) return;
+    this.send(EVENT_TYPES.INVITE_AMI , payload)
+  }
+  
 }

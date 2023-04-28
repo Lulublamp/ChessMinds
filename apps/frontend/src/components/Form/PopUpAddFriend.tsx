@@ -1,21 +1,74 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import './PopUpAddFriend.css';
+import { useGlobalSocket } from '../../contexts/ContextPublicManager';
+import { UserContext } from '../UserContext';
+import axios from 'axios';
+import { API_BASE_URL } from '../../config';
 
 interface Props {
   closePopUp: () => void;
 }
 
 const PopUpAddFriend: React.FC<Props> = ({ closePopUp }) => {
+
   const [inputValue, setInputValue] = useState('');
+  const [statusMessage, setStatusMessage] = useState('');
+  const [statusClass, setStatusClass] = useState('');
+  const Globalsocket = useGlobalSocket();
+  const user = useContext(UserContext);
+
+  useEffect(() => {
+    console.log("Globalsocket: ", Globalsocket);
+    if (Globalsocket === null) return;
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(e.target.value);
   };
 
-  const handleSubmit = () => {
-    // Code pour envoyer la demande d'ami
+  const findIdPlayer = async (pseudo: string, email: string): Promise<number> => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/joueurs/TrouverJoueur?pseudo=${pseudo}&email=${email}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      if (response.data) {
+        console.log("Player Found");
+        return response.data.idJoueur;
+      } else {
+        console.log("Player Not Found");
+        return -1;
+      }
+    } catch (error) {
+      console.log(error);
+      return -1;
+    }
   };
-
+  
+  const handleSubmit = async () => {
+    if (inputValue === "") {
+      setStatusMessage("Veuillez entrer un pseudo ou une adresse mail");
+      setStatusClass("error");
+      return;
+    }
+    if(inputValue === user.user?.pseudo){
+      setStatusMessage("Vous ne pouvez pas vous ajouter vous-même");
+      setStatusClass("error");
+      return;
+    }
+    let idJoueurInvite = await findIdPlayer(inputValue, inputValue);
+    console.log("idJoueurInvite: ", idJoueurInvite);
+    if (idJoueurInvite === -1) {
+      setStatusMessage("Joueur non trouvé");
+      setStatusClass("error");
+      return;
+    }
+    Globalsocket!.SendInvite({ idJoueur: Number(user.user?.id!), idJoueurInvite: idJoueurInvite });
+    setStatusMessage("Demande envoyée");
+    setStatusClass("success");
+  };
+  
   return (
     <div className="PopUpAddFriend">
       <div onClick={closePopUp}></div>
@@ -38,7 +91,7 @@ const PopUpAddFriend: React.FC<Props> = ({ closePopUp }) => {
           onChange={handleInputChange}
         />
         <div>
-          <span className="success">Demande envoyée</span>
+          <span className={statusClass}>{statusMessage}</span>
           <button onClick={handleSubmit}>Envoyer</button>
         </div>
         <svg onClick={closePopUp} className="close-btn" width="25" height="25" viewBox="0 0 25 25" fill="none">

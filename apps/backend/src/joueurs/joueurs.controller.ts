@@ -66,6 +66,22 @@ export class JoueursController {
     return this.joueursService.getDateInscription(req.user);
   }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('TrouverJoueur')
+  async trouverJoueur(@Query('pseudo') pseudo: string, @Query('email') email : string): Promise<number> {
+    try {
+      return (await this.joueursService.findJoueurByPseudo({pseudo : pseudo})).idJoueur;
+    }
+    catch (error) {
+      try {
+        return (await this.joueursService.findJoueurByEmail({adresseMail : email})).idJoueur;
+      }
+      catch (error) {
+        throw new NotFoundException("Erreur lors de la recherche du joueur");
+      }
+    }
+  }
+
   // @UseGuards(JwtAuthGuard)
   // @Post('getFriendData')
   // async getFriendData(@Request() req, @Body() payload: Pick<Joueur, 'idJoueur'>) {
