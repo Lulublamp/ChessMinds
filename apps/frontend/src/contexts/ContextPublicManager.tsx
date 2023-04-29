@@ -1,8 +1,8 @@
-import { ClientEventManager, PRIVATE_GAME } from '@TRPI/core/core-network';
+import { CONNECTION, ClientEventManager, PRIVATE_GAME } from '@TRPI/core/core-network';
 import { createContext, useContext } from 'react';
 
 export interface PublicContextData {
-  publicManager: ClientEventManager<PRIVATE_GAME> | null;
+  publicManager: ClientEventManager<CONNECTION> | null;
 }
 
 export const PublicContext = createContext<PublicContextData | undefined>(

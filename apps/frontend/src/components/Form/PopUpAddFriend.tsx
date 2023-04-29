@@ -64,8 +64,11 @@ const PopUpAddFriend: React.FC<Props> = ({ closePopUp }) => {
       return;
     }
     console.log("idJoueurInvite: ", idJoueurInvite);
-    Globalsocket!.SendInvite({ idJoueur: Number(user.user?.id!), idJoueurInvite: idJoueurInvite });
-    setStatusMessage("Demande envoyée");
+    Globalsocket!.sendFriendInvitations({
+      idInvite: idJoueurInvite,
+    })
+    // Globalsocket!.SendInvite({ idJoueur: Number(user.user?.id!), idJoueurInvite: idJoueurInvite });
+    setStatusMessage("Demande d'ami simulé");
     setStatusClass("success");
   };
   

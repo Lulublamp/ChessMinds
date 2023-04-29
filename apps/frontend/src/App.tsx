@@ -69,6 +69,7 @@ const App: FC = () => {
             },
           })
           .then((response) => {
+            console.log('User Logged in with token')
             console.log(response.data);
             setUser({
               id: response.data.idJoueur,
@@ -96,10 +97,33 @@ const App: FC = () => {
   };
 
   useEffect(() => {
-    if (authWrapperRef.current) {
-      setSocketGlobal(authWrapperRef.current.getPublicManager());
+    if (authWrapperRef.current.getPublicManager() !== null) {
+      console.log('user changed');
+      // console.log(authWrapperRef);
+      if (!socketGlobal){
+        setSocketGlobal(authWrapperRef.current.getPublicManager());
+      }
     }
   }, [authWrapperRef.current?.getPublicManager()]);
+
+
+  useEffect(() => {
+    console.log(`Global Socket ${socketGlobal ? 'set' : 'not set'}`);
+    if (socketGlobal) {
+      console.log('Listening to friend invitations');
+      socketGlobal.listenToFriendInvitations((invitations) => {
+        console.log('Received friend invitations', invitations);
+        // Traiter les invitations ici
+        // non pas ici mon pote :)
+      
+      });
+    }
+
+    // cleanup function
+    return () => {
+        socketGlobal?.close();
+    };
+  }, [socketGlobal]);
 
   const handleCloseLoginPopup = () => {
     setShowLoginPopup(false);
@@ -159,21 +183,7 @@ const App: FC = () => {
     );
   };
 
-  useEffect(() => {
-    if (socketGlobal) {
-      socketGlobal.listenToFriendInvitations((invitations) => {
-        console.log('Received friend invitations', invitations);
-        // Traiter les invitations ici
-      });
-    }
-
-    // cleanup function
-    return () => {
-      if (socketGlobal) {
-        socketGlobal.stopListeningToFriendInvitations();
-      }
-    };
-  }, [socketGlobal]);
+  
   
   return (
     <PublicContext.Provider value={{ publicManager: socketGlobal}}>

@@ -7,8 +7,9 @@ import {
   eIMatchMakingStateEvent,
   eIFirstMoveEvent,
   eISendEnviteEvent,
+  eIInviteFriend,
 } from "./interfaces/emitEvents";
-import { IN_GAME, MATCH_MAKING, NAMESPACE_TYPES, PRIVATE, PRIVATE_GAME } from "./Namespace";
+import { CONNECTION, IN_GAME, MATCH_MAKING, NAMESPACE_TYPES, PRIVATE, PRIVATE_GAME } from "./Namespace";
 import { Move, rICreateRoomEvent, rIIncomingGameEvent, rINetworkMoveEvent, rITimeEvent, rITimeoutEvent } from "./interfaces/receiveEvents";
 import { IGame } from "./interfaces/game";
 // import { PrivateLobby } from "./utils/Lobby";
@@ -27,8 +28,6 @@ export class EventEmitter {
   readonly socket: Socket;
 
   constructor(urlServe: string, socketNameSpace: NAMESPACE_TYPES, token: string) {
-    console.log("Connecting socket : ", token);
-    // const serve = "${API_BASE_URL}"
     console.log(`connect to ${urlServe}/${socketNameSpace}`)
     this.socket = io(`${urlServe}/${socketNameSpace}`, {
       transports: ["websocket"],
@@ -229,10 +228,10 @@ export class ClientEventManager<
     this.socket.close();
   }
 
-  public SendInvite(payload: Check<T, PRIVATE_GAME, eISendEnviteEvent>) {
-    if (!this.validateEmit(NAMESPACE_TYPES.PRIVATE_GAME)) return;
-    this.send(EVENT_TYPES.INVITE_AMI, payload);
+  public sendFriendInvitations(payload: Check<T, CONNECTION, eIInviteFriend>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
     console.log('invite sent', payload);  
+    this.send(EVENT_TYPES.INVITE_FRIEND, payload);
   }
 
   public listenToFriendInvitations(callback: (invitations: number[]) => void) {

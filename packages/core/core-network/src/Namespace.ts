@@ -2,6 +2,7 @@ export const NAMESPACE_TYPES = {
   MATCH_MAKING: "match-making",
   IN_GAME: "in-game",
   PRIVATE_GAME: "private-game",
+  CONNECTION: "glob-connection"
 } as const;
 
 export type NAMESPACE_TYPES =
@@ -10,6 +11,7 @@ export type NAMESPACE_TYPES =
 export type MATCH_MAKING = typeof NAMESPACE_TYPES.MATCH_MAKING;
 export type IN_GAME = typeof NAMESPACE_TYPES.IN_GAME;
 export type PRIVATE_GAME = typeof NAMESPACE_TYPES.PRIVATE_GAME;
+export type CONNECTION = typeof NAMESPACE_TYPES.CONNECTION;
 
 export const MATCHMAKING_MODE = {
   RANKED: "ranked",

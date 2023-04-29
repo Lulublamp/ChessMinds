@@ -15,6 +15,8 @@ import { Partie } from './partie/entities/partie.entity';
 import { Rencontre } from './rencontre/entities/rencontre.entity';
 import { DevtoolsModule } from '@nestjs/devtools-integration';
 import { PrivaGameModule } from './network/private-game/private-game.module';
+import { ConnectionGateway } from './network/connection/connection.gateway';
+import { ConnectionService } from './network/connection/connection.service';
 
 @Module({
   imports: [
@@ -47,7 +49,7 @@ import { PrivaGameModule } from './network/private-game/private-game.module';
     PrivaGameModule,
   ],
   controllers: [AppController],
-  providers: [AppService, MatchMakingModule],
+  providers: [AppService, MatchMakingModule, ConnectionGateway, ConnectionService],
 })
 export class AppModule {
   afterInit() {

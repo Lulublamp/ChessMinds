@@ -72,3 +72,8 @@ export interface eISendEnviteEvent {
   idJoueur: number;
   idJoueurInvite: number;
 }
+
+
+export interface eIInviteFriend {
+  idInvite: number;
+}

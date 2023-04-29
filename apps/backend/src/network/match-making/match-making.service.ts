@@ -50,7 +50,6 @@ export class MatchMakingService {
       console.log(g);
       return g.black_player.id == playerId || g.white_player.id == playerId;
     });
-    console.log(playerInGame);
     return playerInGame ? true : false;
   }
 
