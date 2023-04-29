@@ -16,7 +16,7 @@ import AuthWrapper from './components/Navigation/AuthWrapper';
 import axios from 'axios';
 import { API_BASE_URL } from './config';
 import { PublicContext } from './contexts/ContextPublicManager';
-import { ClientEventManager, PRIVATE_GAME } from '@TRPI/core/core-network';
+import { CONNECTION, ClientEventManager, NAMESPACE_TYPES } from '@TRPI/core/core-network';
 
 const App: FC = () => {
 
@@ -28,7 +28,10 @@ const App: FC = () => {
   const [showPrivateGame, setShowPrivateGame] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const authWrapperRef = useRef<any>(null);
-  const [socketGlobal, setSocketGlobal] = useState<ClientEventManager<PRIVATE_GAME> | null>(null);
+
+
+  const [socketGlobal, setSocketGlobal] = useState<ClientEventManager<CONNECTION> | null>(null);
+  const socketGlobalRef = useRef<ClientEventManager<CONNECTION> | null>(null);
 
   const handleDownloadClick = () => {
     console.log('Bouton Télécharger cliqué');
@@ -77,7 +80,7 @@ const App: FC = () => {
               pseudo: response.data.pseudo,
             });
             setIsLoggedIn(true);
-            authWrapperRef.current.handleSuccessfulLogin();
+            // authWrapperRef.current.handleSuccessfulLogin();
           })
           .catch((error) => {
             console.log(error);
@@ -90,40 +93,32 @@ const App: FC = () => {
     else {
       if (!isLoggedIn)
         setIsLoggedIn(true);
-      else {
-        authWrapperRef.current.handleSuccessfulLogin();
-      }
+      // else {
+      //   authWrapperRef.current.handleSuccessfulLogin();
+      // }
     }
   };
 
   useEffect(() => {
-    if (authWrapperRef.current.getPublicManager() !== null) {
-      console.log('user changed');
-      // console.log(authWrapperRef);
-      if (!socketGlobal){
-        setSocketGlobal(authWrapperRef.current.getPublicManager());
+    if (user == null) {
+      console.log('User is not connected')
+    } else {
+      console.log('User is connected')
+      if (socketGlobalRef.current !== null) {
+        socketGlobalRef.current.close();
+      }
+      const _clientManager = new ClientEventManager<CONNECTION>(import.meta.env.VITE_SERVER_URL || `${API_BASE_URL}`, NAMESPACE_TYPES.CONNECTION, localStorage.getItem("accessToken")!);
+      setSocketGlobal(() => _clientManager);
+      socketGlobalRef.current = _clientManager;
+    }
+
+    return () => {
+      if (socketGlobalRef.current !== null) {
+        socketGlobalRef.current.close();
       }
     }
-  }, [authWrapperRef.current?.getPublicManager()]);
-
-
-  useEffect(() => {
-    console.log(`Global Socket ${socketGlobal ? 'set' : 'not set'}`);
-    if (socketGlobal) {
-      console.log('Listening to friend invitations');
-      socketGlobal.listenToFriendInvitations((invitations) => {
-        console.log('Received friend invitations', invitations);
-        // Traiter les invitations ici
-        // non pas ici mon pote :)
+  }, [user]);
       
-      });
-    }
-
-    // cleanup function
-    return () => {
-        socketGlobal?.close();
-    };
-  }, [socketGlobal]);
 
   const handleCloseLoginPopup = () => {
     setShowLoginPopup(false);

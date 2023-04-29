@@ -1,13 +1,15 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import FriendCard from './FriendCard';
 import FriendCardInvitation from './FriendDemandeAmi';
 import PopUpAddFriend from '../Form/PopUpAddFriend';
 import './FriendList.css'
+import { useGlobalSocket } from '../../contexts/ContextPublicManager';
 
 const FriendsList: React.FC = () => {
 
   const [showPopUp, setShowPopUp] = useState(false);
   const [showInvitation, setShowInvitation] = useState(false);
+  const Globalsocket = useGlobalSocket();
 
   const handleAddFriendClick = () => {
     setShowPopUp(!showPopUp);
@@ -20,6 +22,12 @@ const FriendsList: React.FC = () => {
   const handleFriendClick = () => {
     setShowInvitation(false);
   };
+
+  useEffect(() => {
+    Globalsocket?.listenToInvitationsStatus(null)
+    Globalsocket?.listenToIncomingInvitations(null)
+    Globalsocket?.getInvitations(null)
+  }, []);
 
   return (
     <>

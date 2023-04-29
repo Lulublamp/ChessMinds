@@ -21,22 +21,21 @@ const AuthWrapper = forwardRef((props: AuthWrapperProps, ref) =>{
 
   const navigate = useNavigate();
   const user = useContext(UserContext)
-  const [publicManager, setPublicManager] = useState<ClientEventManager<CONNECTION> | null>(null);
-  const publicManagerRef = useRef<ClientEventManager<CONNECTION> | null>(null);
+  // const [publicManager, setPublicManager] = useState<ClientEventManager<CONNECTION> | null>(null);
+  // const publicManagerRef = useRef<ClientEventManager<CONNECTION> | null>(null);
   const isConnected = user.user !== null;
 
   const handleSuccessfulLogin = () => {
     props.handleCloseLoginPopup();
     navigate('/MainMenu');
-    console.log('Attempting to connect to the server...');
-    const _clientManager = new ClientEventManager<CONNECTION>(import.meta.env.VITE_SERVER_URL || `${API_BASE_URL}`, NAMESPACE_TYPES.CONNECTION, localStorage.getItem("accessToken")!);
-    setPublicManager(() => _clientManager);
-    publicManagerRef.current = _clientManager;
+    // console.log('Attempting to connect to the server...');
+    // setPublicManager(() => _clientManager);
+    // publicManagerRef.current = _clientManager;
   };
   
   useImperativeHandle(ref, () => ({
     handleSuccessfulLogin,
-    getPublicManager: () => publicManagerRef.current,
+    // getPublicManager: () => publicManagerRef.current,
   }));
 
   useEffect(() => {

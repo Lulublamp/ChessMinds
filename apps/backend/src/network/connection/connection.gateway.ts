@@ -29,10 +29,7 @@ export class ConnectionGateway {
     console.log('New Global Connection : ' + client['user'].user.pseudo);
     this.socketsMap.set(client['user'].user.idJoueur, client);
     console.log('Checking invitations...');
-    const invitations = this.connectionService.checkForInvitations(
-      client['user'].user.idJoueur,
-    );
-    console.log(invitations);
+    this.handleGetInvitations(client);
   }
 
   handleDisconnect(client: Socket) {
@@ -59,6 +56,18 @@ export class ConnectionGateway {
       console.log('Socket not found : Queueing the invitation');
     } else {
       console.log('Socket found : Sending the invitation right now');
+      this.server.to(socket.id).emit(Nt.EVENT_TYPES.INVITATION_RECEIVED, {
+        idInviter: client['user'].user.idJoueur,
+        pseudoInviter: client['user'].user.pseudo,
+      });
     }
+  }
+
+  @SubscribeMessage(Nt.EVENT_TYPES.GET_INVITATIONS)
+  handleGetInvitations(@ConnectedSocket() client: Socket) {
+    const invitations = this.connectionService.getInvitations(
+      client['user'].user.idJoueur,
+    );
+    client.emit(Nt.EVENT_TYPES.INVITATIONS_STATUS, invitations);
   }
 }
