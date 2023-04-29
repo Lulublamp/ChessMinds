@@ -95,7 +95,6 @@ export class PrivateGameGateway {
     }
     this.gameService.inviteAmi(client['user'].user.idJoueur, idRecieve);
     this.sendInviteAmiEvent(client['user'].user, idRecieve);
-
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.INVITATION_RESPONSE)
@@ -246,11 +245,4 @@ export class PrivateGameGateway {
     }
     this.server.to(friendSocket.id).emit(Nt.EVENT_TYPES.INVITE_AMI, sender);
   }
-
-
-
-
-  
-
-  
 }

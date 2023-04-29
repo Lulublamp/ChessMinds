@@ -76,6 +76,7 @@ const App: FC = () => {
               pseudo: response.data.pseudo,
             });
             setIsLoggedIn(true);
+            authWrapperRef.current.handleSuccessfulLogin();
           })
           .catch((error) => {
             console.log(error);

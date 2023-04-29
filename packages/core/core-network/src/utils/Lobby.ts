@@ -92,6 +92,7 @@ export class Lobby {
   }
 
   getInvitations(id: number): number[] | null {
+    console.log(this.invitaions);
     if (this.invitaions.has(id)) {
       const invitaions = this.invitaions.get(id);
       if (invitaions) {
