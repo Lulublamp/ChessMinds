@@ -158,6 +158,22 @@ const App: FC = () => {
     );
   };
 
+  useEffect(() => {
+    if (socketGlobal) {
+      socketGlobal.listenToFriendInvitations((invitations) => {
+        console.log('Received friend invitations', invitations);
+        // Traiter les invitations ici
+      });
+    }
+
+    // cleanup function
+    return () => {
+      if (socketGlobal) {
+        socketGlobal.stopListeningToFriendInvitations();
+      }
+    };
+  }, [socketGlobal]);
+  
   return (
     <PublicContext.Provider value={{ publicManager: socketGlobal}}>
       <UserContext.Provider value={{ user, setUser }}>

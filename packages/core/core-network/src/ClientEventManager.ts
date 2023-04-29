@@ -21,12 +21,12 @@ export type IRespond =
   | eILeaveRoomEvent
   | eIMatchMakingStateEvent
 type Check<T, R, K> = T extends R ? K : never;
-type CheckArgs<T , R> = T extends never ? never : R
+type CheckArgs<T, R> = T extends never ? never : R
 
 export class EventEmitter {
   readonly socket: Socket;
 
-  constructor(urlServe: string , socketNameSpace: NAMESPACE_TYPES , token: string) {
+  constructor(urlServe: string, socketNameSpace: NAMESPACE_TYPES, token: string) {
     console.log("Connecting socket : ", token);
     // const serve = "${API_BASE_URL}"
     console.log(`connect to ${urlServe}/${socketNameSpace}`)
@@ -69,7 +69,7 @@ export class ClientEventManager<
   private matchId: string | null = null
 
   constructor(urlServe: string, type: T, token: string) {
-    super(urlServe , type , token);
+    super(urlServe, type, token);
     this.type = type;
   }
 
@@ -82,7 +82,7 @@ export class ClientEventManager<
 
   public joinMatchMakingEvent(data: Check<T, MATCH_MAKING, eIJoinQueueEvent>) {
     if (!this.validateEmit(NAMESPACE_TYPES.MATCH_MAKING)) return;
-    this.send(EVENT_TYPES.JOIN_QUEUE , data);
+    this.send(EVENT_TYPES.JOIN_QUEUE, data);
   }
 
   public listenToIncomingMatch(
@@ -92,7 +92,7 @@ export class ClientEventManager<
     this.socket.on(EVENT_TYPES.INCOMING_CATCH, (game: IGame) => {
       console.log("there is a match !");
       payload.gameSetter(() => game);
-    
+
       payload.colorSetter(() =>
         game.white_player.name == payload.name ? true : false
       );
@@ -105,31 +105,31 @@ export class ClientEventManager<
         e.classList.add("animation-start");
       });
 
-      const gameManager = new ClientEventManager<IN_GAME>(payload.url, NAMESPACE_TYPES.IN_GAME , "")
-      gameManager.attach(game.matchId , payload.name)
+      const gameManager = new ClientEventManager<IN_GAME>(payload.url, NAMESPACE_TYPES.IN_GAME, "")
+      gameManager.attach(game.matchId, payload.name)
       payload.gameRef.current = gameManager;
       payload.nextGameManager(() => gameManager)
     });
   }
 
-  public attach(matchId: Check<T , IN_GAME , string> , name: CheckArgs<typeof matchId , string>){
+  public attach(matchId: Check<T, IN_GAME, string>, name: CheckArgs<typeof matchId, string>) {
     this.matchId = matchId
-    this.send(EVENT_TYPES.ATTACH , {matchId , name})
+    this.send(EVENT_TYPES.ATTACH, { matchId, name })
   }
 
-  public networkMove(data: Check<T , IN_GAME , {from: string, to: string}>) {
+  public networkMove(data: Check<T, IN_GAME, { from: string, to: string }>) {
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
-    this.send(EVENT_TYPES.MAKE_MOVE , {matchId: this.matchId , ...data});
+    this.send(EVENT_TYPES.MAKE_MOVE, { matchId: this.matchId, ...data });
   }
-  
-  public listenToNetworkMove(payload: Check<T , IN_GAME , rINetworkMoveEvent>, onGameEnd: (gameResult: any) => void){
+
+  public listenToNetworkMove(payload: Check<T, IN_GAME, rINetworkMoveEvent>, onGameEnd: (gameResult: any) => void) {
     if (this.matchId == null) return;
     console.log('listen to network move');
-  
+
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
     this.socket.on(EVENT_TYPES.MOVES, (from: string, to: string, gameResult: any) => {
       console.log('move received', from, to);
-  
+
       payload.chessGame.setBoard(payload.boardHistory[payload.boardHistory.length - 1].copyBoard());
       const currentTurn = payload.chessGame.getCurrentTurn() == Color.White ? 'white' : 'black';
       console.log('current game', payload.chessGame);
@@ -137,7 +137,7 @@ export class ClientEventManager<
       payload.boardHistory.push(payload.chessGame.getBoard().copyBoard());
       console.log('board history', payload.boardHistory);
       payload.setCurrentIndex(payload.boardHistory.length - 1);
-  
+
       // Gérer le résultat de la partie
       if (gameResult) {
         if (gameResult.status === 'checkmate') {
@@ -153,7 +153,7 @@ export class ClientEventManager<
         }
         return; // Ne pas continuer avec la mise à jour des mouvements si la partie est terminée
       }
-  
+
       let thisMove: Move | null = null;
       if (payload.movesData.length == 0) {
         thisMove = {
@@ -183,7 +183,7 @@ export class ClientEventManager<
           };
         }
       }
-  
+
       payload.setMovesData((current) => {
         currentTurn == 'black' ? current.pop() : null;
         const moveAfter = [...current, thisMove!];
@@ -193,22 +193,22 @@ export class ClientEventManager<
     });
   }
 
-  public firstMove(payload: Check<T , IN_GAME , eIFirstMoveEvent>){
+  public firstMove(payload: Check<T, IN_GAME, eIFirstMoveEvent>) {
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
-    console.log('first move PAYLOAD' , payload);
-    this.send(EVENT_TYPES.FIRST_MOVE , payload);
+    console.log('first move PAYLOAD', payload);
+    this.send(EVENT_TYPES.FIRST_MOVE, payload);
   }
 
-  public listenToTime(payload: Check<T , IN_GAME , rITimeEvent>){
+  public listenToTime(payload: Check<T, IN_GAME, rITimeEvent>) {
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
-    this.socket.on(EVENT_TYPES.TIMER , (time) => {
+    this.socket.on(EVENT_TYPES.TIMER, (time) => {
       //console.log('time received' , time);
       const thisTime = payload.id == 'white' ? time.whiteTime : time.blackTime
       const timeInStringMinute = Math.floor(thisTime / 60).toString();
-      console.log('time in string minute' , timeInStringMinute);
+      console.log('time in string minute', timeInStringMinute);
       let timeInStringSecond = (thisTime % 60).toString();
-      if (timeInStringSecond.length == 1){
-        timeInStringSecond = '0' + timeInStringSecond 
+      if (timeInStringSecond.length == 1) {
+        timeInStringSecond = '0' + timeInStringSecond
       }
       //console.log('time in string second' , timeInStringSecond);
       //console.log(payload.time)
@@ -216,10 +216,10 @@ export class ClientEventManager<
     })
   }
 
-  public listenToTimeout(payload: Check<T , IN_GAME , rITimeoutEvent>){
+  public listenToTimeout(payload: Check<T, IN_GAME, rITimeoutEvent>) {
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
-    this.socket.on(EVENT_TYPES.TIME_OUT , (timeout) => {
-      console.log('timeout received' , timeout);
+    this.socket.on(EVENT_TYPES.TIME_OUT, (timeout) => {
+      console.log('timeout received', timeout);
       payload.gameOver(() => true)
       payload.onGameEnd('')
     })
@@ -229,9 +229,23 @@ export class ClientEventManager<
     this.socket.close();
   }
 
-  public SendInvite(payload : Check<T , PRIVATE_GAME , eISendEnviteEvent>){
+  public SendInvite(payload: Check<T, PRIVATE_GAME, eISendEnviteEvent>) {
     if (!this.validateEmit(NAMESPACE_TYPES.PRIVATE_GAME)) return;
-    this.send(EVENT_TYPES.INVITE_AMI , payload)
+    this.send(EVENT_TYPES.INVITE_AMI, payload);
+    console.log('invite sent', payload);  
   }
-  
+
+  public listenToFriendInvitations(callback: (invitations: number[]) => void) {
+    if (!this.validateEmit(NAMESPACE_TYPES.PRIVATE_GAME)) return;
+    this.socket.on(EVENT_TYPES.INVITE_AMI, (invitations: number[]) => {
+      console.log('Invitations received', invitations);
+      callback(invitations);
+    });
+  }
+
+  public stopListeningToFriendInvitations() {
+    if (!this.validateEmit(NAMESPACE_TYPES.PRIVATE_GAME)) return;
+    this.socket.off(EVENT_TYPES.INVITE_AMI);
+  }
+
 }

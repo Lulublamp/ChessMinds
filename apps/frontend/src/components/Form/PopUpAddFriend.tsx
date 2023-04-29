@@ -35,7 +35,7 @@ const PopUpAddFriend: React.FC<Props> = ({ closePopUp }) => {
       });
       if (response.data) {
         console.log("Player Found");
-        return response.data.idJoueur;
+        return response.data;
       } else {
         console.log("Player Not Found");
         return -1;
@@ -58,12 +58,12 @@ const PopUpAddFriend: React.FC<Props> = ({ closePopUp }) => {
       return;
     }
     let idJoueurInvite = await findIdPlayer(inputValue, inputValue);
-    console.log("idJoueurInvite: ", idJoueurInvite);
-    if (idJoueurInvite === -1) {
+    if (idJoueurInvite === undefined || idJoueurInvite === -1) {
       setStatusMessage("Joueur non trouvé");
       setStatusClass("error");
       return;
     }
+    console.log("idJoueurInvite: ", idJoueurInvite);
     Globalsocket!.SendInvite({ idJoueur: Number(user.user?.id!), idJoueurInvite: idJoueurInvite });
     setStatusMessage("Demande envoyée");
     setStatusClass("success");

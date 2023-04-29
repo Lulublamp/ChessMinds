@@ -29,6 +29,7 @@ const AuthWrapper = forwardRef((props: AuthWrapperProps, ref) =>{
     const _clientManager = new ClientEventManager<PRIVATE_GAME>(import.meta.env.VITE_SERVER_URL || `${API_BASE_URL}`, NAMESPACE_TYPES.PRIVATE_GAME, localStorage.getItem("accessToken")!);
     setPublicManager(() => _clientManager);
     publicManagerRef.current = _clientManager;
+
   };
   
   useImperativeHandle(ref, () => ({
