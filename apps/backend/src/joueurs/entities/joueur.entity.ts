@@ -31,7 +31,7 @@ export class Joueur {
   dateInscription: Date;
 
   @Column({nullable: true})
-  image: string;
+  image: number;
 
   @ManyToMany(() => Joueur , (user) => user.amis )
   @JoinTable()

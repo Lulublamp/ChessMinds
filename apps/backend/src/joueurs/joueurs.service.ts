@@ -21,7 +21,7 @@ export class JoueursService {
     @InjectRepository(Joueur)
     private readonly joueursRepository: Repository<Joueur>,
     private readonly classementService: ClassementService,
-  ) {}
+  ) { }
 
   async inscriptionJoueur(joueur: Joueur): Promise<Joueur> {
     const existingJoueurByEmail = await this.joueursRepository.findOne({
@@ -176,4 +176,57 @@ export class JoueursService {
     }
     return joueurTrouve.dateInscription;
   }
+
+  async updatePseudo(joueurId: number, nouveauPseudo: string): Promise<Joueur> {
+    const joueur = await this.joueursRepository.findOne({
+      where: { idJoueur: joueurId },
+    });
+    if (!joueur) {
+      throw new PlayerNotFound();
+    }
+    const existingJoueurByPseudo = await this.joueursRepository.findOne({
+      where: { pseudo: nouveauPseudo },
+    });
+    if (existingJoueurByPseudo) {
+      throw new PseudoPlayerAlreadyExists();
+    }
+    joueur.pseudo = nouveauPseudo;
+    const joueurMisAJour = await this.joueursRepository.save(joueur);
+    return joueurMisAJour;
+  }
+
+  async updateEmail(joueurId: number, nouveauEmail: string): Promise<Joueur> {
+    const joueur = await this.joueursRepository.findOne({
+      where: { idJoueur: joueurId },
+    });
+    if (!joueur) {
+      throw new PlayerNotFound();
+    }
+    const existingJoueurByEmail = await this.joueursRepository.findOne({
+      where: { adresseMail: nouveauEmail },
+    });
+    if (existingJoueurByEmail) {
+      throw new EmailPlayerAlreadyExists();
+    }
+    joueur.adresseMail = nouveauEmail;
+    const joueurMisAJour = await this.joueursRepository.save(joueur);
+    return joueurMisAJour;
+  }
+
+  async updateIconId(joueurId: number, nouvelIconId: number): Promise<Joueur> {
+    const joueur = await this.joueursRepository.findOne({
+      where: { idJoueur: joueurId },
+    });
+    
+    if (!joueur) {
+      throw new PlayerNotFound();
+    }
+    
+    joueur.image = nouvelIconId;
+  
+    const joueurMisAJour = await this.joueursRepository.save(joueur);
+    return joueurMisAJour;
+  }
+  
+
 }

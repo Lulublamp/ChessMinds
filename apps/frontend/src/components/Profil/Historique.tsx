@@ -27,7 +27,7 @@ const Historique: React.FC = () => {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
       });
-
+      //console.log('Historique des parties récupéré avec succès:', response.data);
       // map response data to match GameHistory type
       const mappedData = response.data.map((game: any) => {
         const date = new Date(game.partie.datePartie);
