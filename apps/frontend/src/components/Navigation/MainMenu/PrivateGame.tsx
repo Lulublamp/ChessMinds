@@ -8,9 +8,10 @@ import { MATCHMAKING_MODES_TIMERS} from '@TRPI/core/core-network';
 
 interface Props {
   onBackClick: () => void;
+  lstIdInvitations: number[];
 }
 
-const PrivateGame: React.FC<Props> = ({ onBackClick }) => {
+const PrivateGame: React.FC<Props> = ({ onBackClick, lstIdInvitations }) => {
   const [selectedTimeMod, setSelectedTimeMod] = useState<MATCHMAKING_MODES_TIMERS>('bullet');
   const [isReady, setisReady] = useState<string>('unready');
 
@@ -51,7 +52,7 @@ const PrivateGame: React.FC<Props> = ({ onBackClick }) => {
             <PlayButton selectedTimeMod={selectedTimeMod} isRanked={'private'} />
           </div>
         </div>
-        <FriendsList />
+        <FriendsList lstIdInvitations={lstIdInvitations} />
       </div>
     </section>
   );

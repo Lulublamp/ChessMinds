@@ -123,38 +123,25 @@ export class JoueursService {
     return joueurTrouve;
   }
 
-  async addFriend(email: string, pseudo: string) {
-    const joueur = await this.findJoueurByEmail({ adresseMail: email });
-    const maybeFriend = await this.findJoueurByFullPseudo({
-      pseudo: pseudo,
-    });
-
-    console.log(joueur.amis);
-
-    if (!joueur.amis) {
-      joueur.amis = [];
+  async addFriend(joueurId: number, friendId: number) {
+    const joueur = await this.joueursRepository.findOne({ where: { idJoueur: joueurId }, relations: ['amis'] });
+    const maybeFriend = await this.joueursRepository.findOne({ where: { idJoueur: friendId }, relations: ['amis'] });
+    if (!joueur || !maybeFriend) {
+      throw new PlayerNotFound();
     }
-
-    if (!maybeFriend.amis) {
-      maybeFriend.amis = [];
+    if (joueur.amis.some(amis => amis.idJoueur === maybeFriend.idJoueur)) {
+      throw new AlreadyFriends();
     }
-
-    if (joueur.amis.includes(maybeFriend)) throw new AlreadyFriends();
-
-    console.log(joueur.amis);
-
     joueur.amis.push(maybeFriend);
-    maybeFriend.amis.push(joueur);
     try {
       await this.joueursRepository.save(joueur);
-      await this.joueursRepository.save(maybeFriend);
-
       console.log('Friend added');
     } catch (error) {
-      console.log(error);
+      console.error(error);
       throw new Error('Could not add friend');
     }
   }
+
 
   async getAmis(joueur: Joueur): Promise<Joueur[]> {
     const joueurTrouve = await this.joueursRepository.findOne({
@@ -217,16 +204,53 @@ export class JoueursService {
     const joueur = await this.joueursRepository.findOne({
       where: { idJoueur: joueurId },
     });
-    
+
     if (!joueur) {
       throw new PlayerNotFound();
     }
-    
+
     joueur.image = nouvelIconId;
-  
+
     const joueurMisAJour = await this.joueursRepository.save(joueur);
     return joueurMisAJour;
   }
-  
+
+  async getPlayerDetails(joueurId: number): Promise<any> {
+    const joueur = await this.joueursRepository.findOne({
+      where: { idJoueur: joueurId },
+    });
+    if (!joueur) {
+      throw new PlayerNotFound();
+    }
+    const classement = await this.classementService.getEloByUserId(joueur.toDto());
+    if (!classement) {
+      throw new Error('Classement introuvable');
+    }
+    return {
+      pseudo: joueur.pseudo,
+      image: joueur.image,
+      eloActuelle: {
+        blitz: classement.elo_blitz,
+        bullet: classement.elo_bullet,
+        rapide: classement.elo_rapide,
+      },
+    };
+  }
+
+  async areFriends(joueurId: number, friendId: number): Promise<boolean> {
+    const joueur = await this.joueursRepository.findOne({ where: { idJoueur: joueurId }, relations: ['amis'] });
+    if (!joueur) {
+      throw new PlayerNotFound();
+    }
+    return joueur.amis.some(amis => amis.idJoueur === Number(friendId));
+  }
+
+  async getFriends(joueurId: number): Promise<number[]> {
+    const joueur = await this.joueursRepository.findOne({ where: { idJoueur: joueurId }, relations: ['amis'] });
+    if (!joueur) {
+      throw new PlayerNotFound();
+    }
+    return joueur.amis.map(amis => amis.idJoueur);
+  }
 
 }

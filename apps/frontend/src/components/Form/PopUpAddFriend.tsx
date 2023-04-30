@@ -45,6 +45,20 @@ const PopUpAddFriend: React.FC<Props> = ({ closePopUp }) => {
       return -1;
     }
   };
+
+  const checkIfAlreadyFriends = async (friendId: number): Promise<boolean> => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/joueurs/friends/${friendId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
+  };
   
   const handleSubmit = async () => {
     if (inputValue === "") {
@@ -63,13 +77,18 @@ const PopUpAddFriend: React.FC<Props> = ({ closePopUp }) => {
       setStatusClass("error");
       return;
     }
+    if (await checkIfAlreadyFriends(idJoueurInvite)) {
+      setStatusMessage("Vous êtes déjà amis avec cet utilisateur");
+      setStatusClass("error");
+      return;
+    }
     console.log("idJoueurInvite: ", idJoueurInvite);
     Globalsocket!.sendFriendInvitations({
       idInvite: idJoueurInvite,
     })
-    // Globalsocket!.SendInvite({ idJoueur: Number(user.user?.id!), idJoueurInvite: idJoueurInvite });
-    setStatusMessage("Demande d'ami simulé");
+    setStatusMessage("Demande d'ami envoyée");
     setStatusClass("success");
+    setInputValue("");
   };
   
   return (

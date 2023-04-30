@@ -6,7 +6,11 @@ import FriendsList from '../../components/Profil/FriendsList';
 import PopupModifProfil from '../../components/Profil/PopupModifProfil';
 import './styleProfil.css';
 
-const Profil: React.FC = () => {
+interface ProfilProps {
+  lstIdInvitations: number[];
+}
+
+const Profil: React.FC<ProfilProps> = ({lstIdInvitations}) => {
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
 
@@ -24,7 +28,7 @@ const Profil: React.FC = () => {
         </div>
         <div className="rightContainer">
           <Statistiques />
-          <FriendsList />
+          <FriendsList lstIdInvitations={lstIdInvitations} />
         </div>
       </section>
       {isPopupOpen && <PopupModifProfil togglePopup={togglePopup}/>}

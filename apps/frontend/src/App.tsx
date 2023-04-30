@@ -26,6 +26,7 @@ const App: FC = () => {
   const [showSignupPopup, setShowSignupPopup] = useState(false);
   const [showMatchmaking, setShowMatchmaking] = useState(false);
   const [showPrivateGame, setShowPrivateGame] = useState(false);
+  const [lstIdInvitations, setLstIdInvitations] = useState<number[]>([]);
   const [darkMode, setDarkMode] = useState(false);
   const authWrapperRef = useRef<any>(null);
 
@@ -80,7 +81,7 @@ const App: FC = () => {
               pseudo: response.data.pseudo,
             });
             setIsLoggedIn(true);
-            // authWrapperRef.current.handleSuccessfulLogin();
+            authWrapperRef.current.handleSuccessfulLogin();
           })
           .catch((error) => {
             console.log(error);
@@ -93,9 +94,9 @@ const App: FC = () => {
     else {
       if (!isLoggedIn)
         setIsLoggedIn(true);
-      // else {
-      //   authWrapperRef.current.handleSuccessfulLogin();
-      // }
+      else {
+         authWrapperRef.current.handleSuccessfulLogin();
+      }
     }
   };
 
@@ -110,6 +111,9 @@ const App: FC = () => {
       const _clientManager = new ClientEventManager<CONNECTION>(import.meta.env.VITE_SERVER_URL || `${API_BASE_URL}`, NAMESPACE_TYPES.CONNECTION, localStorage.getItem("accessToken")!);
       setSocketGlobal(() => _clientManager);
       socketGlobalRef.current = _clientManager;
+      socketGlobalRef.current.listenToInvitationsStatus({SetteurLstIdInvite : setLstIdInvitations, lstIdInvite : lstIdInvitations});
+      socketGlobalRef.current.listenToIncomingInvitations({SetteurLstIdInvite : setLstIdInvitations, lstIdInvite : lstIdInvitations});
+      socketGlobalRef.current.getInvitations(null);
     }
 
     return () => {
@@ -166,7 +170,7 @@ const App: FC = () => {
       return <Matchmaking onBackClick={onBackClickMenu} />;
     }
     if (showPrivateGame) {
-      return <PrivateGame onBackClick={onBackClickMenu} />;
+      return <PrivateGame onBackClick={onBackClickMenu} lstIdInvitations={lstIdInvitations} />;
     }
     return (
       <MainMenu
@@ -203,7 +207,7 @@ const App: FC = () => {
               />
               <Route path="/Game" element={<Game />} />
               <Route path="/Classement" element={<Classement />} />
-              <Route path="/Profil" element={<Profil />} />
+              <Route path="/Profil" element={<Profil lstIdInvitations={lstIdInvitations}/>} />
               <Route path='/Apprendre' element={<Apprendre />} />
               <Route path='/Replay' element={<Replay />} />
             </Routes>

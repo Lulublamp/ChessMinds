@@ -26,18 +26,21 @@ export class ConnectionService {
   }
 
   public removeInvitation(idJoueur: number, idInvited: number) {
-    if (this.invitations.has(idInvited)) {
-      const invitations = this.invitations.get(idInvited);
-      if (invitations) {
-        const index = invitations.indexOf(idJoueur);
-        if (index > -1) {
-          invitations.splice(index, 1);
-        }
-        this.invitations.set(idInvited, invitations);
-      }
+    if (!this.invitations.has(idJoueur)) {
+      return;  
     }
+    const invitations = this.invitations.get(idJoueur);
+    if (!invitations) {
+      return;  
+    }
+    const index = invitations.indexOf(idInvited);
+    if (index === -1) {
+      return;  
+    }
+    invitations.splice(index, 1);
   }
-
+  
+  
   public getInvitations(idJoueur: number) {
     if (this.invitations.has(idJoueur)) {
       return this.invitations.get(idJoueur);

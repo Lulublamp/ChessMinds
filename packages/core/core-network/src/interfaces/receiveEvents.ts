@@ -54,3 +54,8 @@ export interface rITimeoutEvent {
   gameOver: ReactSetter<boolean>;
   onGameEnd: (gameResult : any) => void;
 }
+
+export interface rIInvitationFriendEvent {
+  SetteurLstIdInvite: ReactSetter<number[]>;
+  lstIdInvite: number[];
+}

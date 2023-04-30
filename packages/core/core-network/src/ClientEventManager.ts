@@ -10,7 +10,7 @@ import {
   eIInviteFriend,
 } from "./interfaces/emitEvents";
 import { CONNECTION, IN_GAME, MATCH_MAKING, NAMESPACE_TYPES, PRIVATE, PRIVATE_GAME } from "./Namespace";
-import { Move, rICreateRoomEvent, rIIncomingGameEvent, rINetworkMoveEvent, rITimeEvent, rITimeoutEvent } from "./interfaces/receiveEvents";
+import { Move, rICreateRoomEvent, rIIncomingGameEvent, rIInvitationFriendEvent, rINetworkMoveEvent, rITimeEvent, rITimeoutEvent } from "./interfaces/receiveEvents";
 import { IGame } from "./interfaces/game";
 // import { PrivateLobby } from "./utils/Lobby";
 import { ChessBoard, Color } from "../../core-algo";
@@ -246,17 +246,19 @@ export class ClientEventManager<
     this.send(EVENT_TYPES.GET_INVITATIONS, null);
   }
 
-  public listenToInvitationsStatus(payload: Check<T, CONNECTION, null>) {
+  public listenToInvitationsStatus(payload: Check<T, CONNECTION, rIInvitationFriendEvent>) {
     if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
     this.socket.on(EVENT_TYPES.INVITATIONS_STATUS, (invitations: number[]) => {
       console.log('All Invitations', invitations);
+      payload.SetteurLstIdInvite(() => invitations);
     });
   }
 
-  public listenToIncomingInvitations(payload: Check<T, CONNECTION, null>) {
+  public listenToIncomingInvitations(payload: Check<T, CONNECTION, rIInvitationFriendEvent>) {
     if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
     this.socket.on(EVENT_TYPES.INVITATION_RECEIVED, (invitations) => {
       console.log('Invitations received', invitations);
+      payload.SetteurLstIdInvite(() => [...payload.lstIdInvite, invitations.idInviter]);
     });
   }
 }

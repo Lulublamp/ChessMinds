@@ -10,7 +10,8 @@ import {
   HttpStatus,
   UseGuards,
   Query,
-  Put
+  Put,
+  UnauthorizedException
 } from '@nestjs/common';
 import { JoueurDto } from './DTO/joueurs.dto';
 import { JoueursService } from './joueurs.service';
@@ -49,16 +50,19 @@ export class JoueursController {
     }
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('friends/add')
-  async addFriend(@Body() payload: Pick<Joueur, 'adresseMail' | 'pseudo'>) {
+  async addFriend(@Body() payload: { joueurId: number, friendId: number }, @Request() req) {
     try {
-      console.log(payload);
+      if (req.user.idJoueur !== payload.joueurId) {
+        throw new UnauthorizedException('Vous n\'êtes pas autorisé à effectuer cette action.');
+      }
       return await this.joueursService.addFriend(
-        payload.adresseMail,
-        payload.pseudo,
+        payload.joueurId,
+        payload.friendId,
       );
     } catch (error) {
-      throw new NotFoundException("Erreur lors de l'ajout de l'ami");
+      throw new NotFoundException("Erreur lors de l'ajout de l'ami", error);
     }
   }
 
@@ -185,5 +189,43 @@ export class JoueursController {
     }
   }
 
+  @Get('PlayerDetails/:id')
+  async getPlayerInfo(@Param('id') id: number): Promise<any> {
+    try {
+      return await this.joueursService.getPlayerDetails(id);
+    } catch (error) {
+      if (error instanceof PlayerNotFound) {
+        throw new NotFoundException("Erreur lors de la recherche du joueur");
+      } else {
+        throw new HttpException(
+          {
+            status: HttpStatus.INTERNAL_SERVER_ERROR,
+            error: "Erreur lors de la récupération des informations du joueur",
+          },
+          HttpStatus.INTERNAL_SERVER_ERROR,
+        );
+      }
+    }
+  }
 
+  @UseGuards(JwtAuthGuard)
+  @Get('friends/:friendId')
+  async areFriends(@Request() req, @Param('friendId') friendId: number): Promise<boolean> {
+    const joueurId = req.user.idJoueur;
+    try {
+      return await this.joueursService.areFriends(joueurId, friendId);
+    } catch (error) {
+      throw new NotFoundException("Erreur lors de la vérification de l'amitié", error);
+    }
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('Getfriends')
+  async getFriends(@Request() req): Promise<number[]> {
+    try {
+      return await this.joueursService.getFriends(req.user.idJoueur);
+    } catch (error) {
+      throw new NotFoundException("Erreur lors de la récupération des amis", error);
+    }
+  }
 }

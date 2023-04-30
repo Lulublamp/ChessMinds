@@ -23,7 +23,7 @@ export class ConnectionGateway {
   constructor(
     private connectionService: ConnectionService,
     private matchMakingService: MatchMakingService,
-  ) {}
+  ) { }
 
   handleConnection(client: Socket) {
     console.log('New Global Connection : ' + client['user'].user.pseudo);
@@ -58,7 +58,6 @@ export class ConnectionGateway {
       console.log('Socket found : Sending the invitation right now');
       this.server.to(socket.id).emit(Nt.EVENT_TYPES.INVITATION_RECEIVED, {
         idInviter: client['user'].user.idJoueur,
-        pseudoInviter: client['user'].user.pseudo,
       });
     }
   }
@@ -68,7 +67,7 @@ export class ConnectionGateway {
     const invitations = this.connectionService.getInvitations(
       client['user'].user.idJoueur,
     );
-    client.emit(Nt.EVENT_TYPES.INVITATIONS_STATUS, invitations);
+    this.server.emit(Nt.EVENT_TYPES.INVITATIONS_STATUS, invitations);
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.PROCESS_INVITATION)
@@ -80,5 +79,6 @@ export class ConnectionGateway {
       client['user'].user.idJoueur,
       payload.idInvite,
     );
+    this.handleGetInvitations(client);
   }
 }
