@@ -55,6 +55,8 @@ const Game = () => {
 
   const [matchMakingPayload, setMatchMakingPayload] = useState<eIJoinQueueEvent | null>(null);
 
+  const isPrivate = false;
+
   const fetchEloData = async (timeMode: MATCHMAKING_MODES_TIMERS) => {
     try {
       const response = await axios.get(`${API_BASE_URL}/classement/elo`, {
@@ -94,12 +96,16 @@ const Game = () => {
 
       console.log(user)
 
-
+      
       const payload: eIJoinQueueEvent = {
         options: {
           mode: isRanked as MATCHMAKING_MODE,
           timer: selectedTimeMode as MATCHMAKING_MODES_TIMERS
         }
+      }
+      if (isPrivate) {
+        console.log('its private'); 
+        payload.options.mode = MATCHMAKING_MODE.PRIVATE;
       }
       console.log('payload', payload);
       setMatchMakingPayload(payload);
@@ -116,6 +122,11 @@ const Game = () => {
       }
       newClientManager.listenToIncomingMatch(listeningPayload)
       newClientManager.joinMatchMakingEvent(payload)
+      
+        
+
+
+
       setClientManager(() => newClientManager);
       clientManagerRef.current = newClientManager;
       console.log('mounted in here finished');

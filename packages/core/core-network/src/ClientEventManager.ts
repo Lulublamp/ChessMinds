@@ -224,14 +224,21 @@ export class ClientEventManager<
     })
   }
 
+  
   public close() {
     this.socket.close();
   }
 
   public sendFriendInvitations(payload: Check<T, CONNECTION, eIInviteFriend>) {
     if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
-    console.log('invite sent', payload);  
+    console.log('Invite sent', payload);
     this.send(EVENT_TYPES.INVITE_FRIEND, payload);
+  }
+
+  public processInvitation(payload: Check<T , CONNECTION , eIInviteFriend>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    console.log('Process invitation', payload);
+    this.send(EVENT_TYPES.PROCESS_INVITATION , payload);
   }
 
   public getInvitations(payload: Check<T, CONNECTION, null>) {
@@ -252,19 +259,4 @@ export class ClientEventManager<
       console.log('Invitations received', invitations);
     });
   }
-
-
-  // public listenToFriendInvitations(callback: (invitations: number[]) => void) {
-  //   if (!this.validateEmit(NAMESPACE_TYPES.PRIVATE_GAME)) return;
-  //   this.socket.on(EVENT_TYPES.INVITE_AMI, (invitations: number[]) => {
-  //     console.log('Invitations received', invitations);
-  //     callback(invitations);
-  //   });
-  // }
-
-  // public stopListeningToFriendInvitations() {
-  //   if (!this.validateEmit(NAMESPACE_TYPES.PRIVATE_GAME)) return;
-  //   this.socket.off(EVENT_TYPES.INVITE_AMI);
-  // }
-
 }

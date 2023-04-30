@@ -35,7 +35,7 @@ const AuthWrapper = forwardRef((props: AuthWrapperProps, ref) =>{
   
   useImperativeHandle(ref, () => ({
     handleSuccessfulLogin,
-    // getPublicManager: () => publicManagerRef.current,
+    // getPublicManager: () => publicManagervRef.current,
   }));
 
   useEffect(() => {

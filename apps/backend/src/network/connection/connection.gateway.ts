@@ -70,4 +70,15 @@ export class ConnectionGateway {
     );
     client.emit(Nt.EVENT_TYPES.INVITATIONS_STATUS, invitations);
   }
+
+  @SubscribeMessage(Nt.EVENT_TYPES.PROCESS_INVITATION)
+  handleProcessInvitation(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: Nt.eIInviteFriend,
+  ) {
+    this.connectionService.removeInvitation(
+      client['user'].user.idJoueur,
+      payload.idInvite,
+    );
+  }
 }
