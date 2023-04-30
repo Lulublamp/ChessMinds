@@ -9,6 +9,7 @@ import { IGame } from "../interfaces/game";
 export class Queue {
   protected games: IGame[] = [];
   protected queue: IRPlayer[] = [];
+  protected privateQueue: Map<string , IRPlayer[]> = new Map<string, IRPlayer[]>();
   protected coupledGames: Map<string, ChessGame> = new Map<string, ChessGame>();
   private matchStarted: Map<string, IGame> = new Map();
   private matchPending: Map<string, IGame> = new Map();
@@ -189,5 +190,32 @@ export class Queue {
       return 7;
     }
     return null;
+  }
+
+  public addToPrivateQueue(key: string, player: IRPlayer): void {
+    if (!this.privateQueue.has(key)) {
+      this.privateQueue.set(key, []);
+    }
+    this.privateQueue.get(key)!.push(player);
+  }
+
+  public getFromPrivateQueue(key: string): IRPlayer[] | undefined {
+    return this.privateQueue.get(key);
+  }
+
+  public removeFromPrivateQueue(key: string, playerId: string): void {
+    if (this.privateQueue.has(key)) {
+      const players = this.privateQueue.get(key);
+      if (players) {
+        this.privateQueue.set(
+          key,
+          players.filter((player) => player.id !== playerId)
+        );
+      }
+    }
+  }
+
+  public deletePrivateQueue(key: string): void {
+    this.privateQueue.delete(key);
   }
 }

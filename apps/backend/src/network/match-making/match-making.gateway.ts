@@ -59,7 +59,7 @@ export class MatchMakingGateway {
     // console.log('player : ');
     // console.log(player);
     if (options.mode === Nt.MATCHMAKING_MODE.PRIVATE) {
-      console.log('error: private game not implemented in queue');
+      console.log('private game not implemented yet !');
       return;
     }
     // console.log('playerPayload : ');

@@ -7,8 +7,9 @@ import {
   eIMatchMakingStateEvent,
   eIFirstMoveEvent,
   eISendEnviteEvent,
+  eIInviteFriend,
 } from "./interfaces/emitEvents";
-import { IN_GAME, MATCH_MAKING, NAMESPACE_TYPES, PRIVATE, PRIVATE_GAME } from "./Namespace";
+import { CONNECTION, IN_GAME, MATCH_MAKING, NAMESPACE_TYPES, PRIVATE, PRIVATE_GAME } from "./Namespace";
 import { Move, rICreateRoomEvent, rIIncomingGameEvent, rINetworkMoveEvent, rITimeEvent, rITimeoutEvent } from "./interfaces/receiveEvents";
 import { IGame } from "./interfaces/game";
 // import { PrivateLobby } from "./utils/Lobby";
@@ -27,8 +28,6 @@ export class EventEmitter {
   readonly socket: Socket;
 
   constructor(urlServe: string, socketNameSpace: NAMESPACE_TYPES, token: string) {
-    console.log("Connecting socket : ", token);
-    // const serve = "${API_BASE_URL}"
     console.log(`connect to ${urlServe}/${socketNameSpace}`)
     this.socket = io(`${urlServe}/${socketNameSpace}`, {
       transports: ["websocket"],
@@ -225,27 +224,39 @@ export class ClientEventManager<
     })
   }
 
+  
   public close() {
     this.socket.close();
   }
 
-  public SendInvite(payload: Check<T, PRIVATE_GAME, eISendEnviteEvent>) {
-    if (!this.validateEmit(NAMESPACE_TYPES.PRIVATE_GAME)) return;
-    this.send(EVENT_TYPES.INVITE_AMI, payload);
-    console.log('invite sent', payload);  
+  public sendFriendInvitations(payload: Check<T, CONNECTION, eIInviteFriend>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    console.log('Invite sent', payload);
+    this.send(EVENT_TYPES.INVITE_FRIEND, payload);
   }
 
-  public listenToFriendInvitations(callback: (invitations: number[]) => void) {
-    if (!this.validateEmit(NAMESPACE_TYPES.PRIVATE_GAME)) return;
-    this.socket.on(EVENT_TYPES.INVITE_AMI, (invitations: number[]) => {
-      console.log('Invitations received', invitations);
-      callback(invitations);
+  public processInvitation(payload: Check<T , CONNECTION , eIInviteFriend>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    console.log('Process invitation', payload);
+    this.send(EVENT_TYPES.PROCESS_INVITATION , payload);
+  }
+
+  public getInvitations(payload: Check<T, CONNECTION, null>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    this.send(EVENT_TYPES.GET_INVITATIONS, null);
+  }
+
+  public listenToInvitationsStatus(payload: Check<T, CONNECTION, null>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    this.socket.on(EVENT_TYPES.INVITATIONS_STATUS, (invitations: number[]) => {
+      console.log('All Invitations', invitations);
     });
   }
 
-  public stopListeningToFriendInvitations() {
-    if (!this.validateEmit(NAMESPACE_TYPES.PRIVATE_GAME)) return;
-    this.socket.off(EVENT_TYPES.INVITE_AMI);
+  public listenToIncomingInvitations(payload: Check<T, CONNECTION, null>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    this.socket.on(EVENT_TYPES.INVITATION_RECEIVED, (invitations) => {
+      console.log('Invitations received', invitations);
+    });
   }
-
 }

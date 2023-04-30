@@ -28,7 +28,6 @@ export class AuthenticatedSocketAdapter extends IoAdapter {
     try {
       socket.user = {};
       const user = await this.authService.validateToken(token);
-      console.log('match-making: AuthenticatedSocketAdapter success')
       socket.user = user;
       const inQueue = this.matchMakingServer.checkPlayerInQueue(user.user.idJoueur);
       const inGame = this.matchMakingServer.checkPlayerInGame(user.user.idJoueur);
@@ -51,6 +50,10 @@ export class AuthenticatedSocketAdapter extends IoAdapter {
     
     server.of(Nt.NAMESPACE_TYPES.MATCH_MAKING).use(async (socket: any, next) => {
       console.log('match-making: AuthenticatedSocketAdapter')
+      await this.validate(socket, next);
+    });
+
+    server.of(Nt.NAMESPACE_TYPES.CONNECTION).use(async (socket: any, next) => {
       await this.validate(socket, next);
     });
 
