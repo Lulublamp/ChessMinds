@@ -116,7 +116,7 @@ export class ClientEventManager<
     this.send(EVENT_TYPES.ATTACH, { matchId, name })
   }
 
-  public networkMove(data: Check<T, IN_GAME, { from: string, to: string }>) {
+  public networkMove(data: Check<T, IN_GAME, { from: string, to: string, promotion? : string }>) {
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
     this.send(EVENT_TYPES.MAKE_MOVE, { matchId: this.matchId, ...data });
   }
@@ -125,10 +125,10 @@ export class ClientEventManager<
     if (this.matchId == null) return;
     console.log('listen to network move');
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
-    this.socket.on(EVENT_TYPES.MOVES, (from: string, to: string, gameResult: any) => {
+    this.socket.on(EVENT_TYPES.MOVES, (from: string, to: string,promotion : string, gameResult: any) => {
       console.log('move received', from, to);
       const currentTurn = payload.chessGame.getCurrentTurn() == Color.White ? 'white' : 'black';
-      payload.chessGame.makeMove(from, to);
+      payload.chessGame.makeMove(from, to,promotion);
       payload.boardHistory.push(payload.chessGame.getBoard().copyBoard());
       payload.setCurrentIndex(payload.boardHistory.length - 1);
       // Gérer le résultat de la partie
@@ -198,7 +198,7 @@ export class ClientEventManager<
       //console.log('time received' , time);
       const thisTime = payload.id == 'white' ? time.whiteTime : time.blackTime
       const timeInStringMinute = Math.floor(thisTime / 60).toString();
-      console.log('time in string minute', timeInStringMinute);
+      //console.log('time in string minute', timeInStringMinute);
       let timeInStringSecond = (thisTime % 60).toString();
       if (timeInStringSecond.length == 1) {
         timeInStringSecond = '0' + timeInStringSecond

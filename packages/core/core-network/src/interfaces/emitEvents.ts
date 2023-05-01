@@ -37,6 +37,7 @@ export interface eIMakeMoveEvent {
   matchId: string,
   from: string,
   to: string,
+  promotion?: string
 }
 
 export interface eIFirstMoveEvent {

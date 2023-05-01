@@ -10,7 +10,7 @@ import AbandonButton from '../../components/Button/AbandonButton';
 import BottomMenuMobile from '../../components/ChessGame/BottomMenuMobile';
 import ChessBoardRenderer from '../../components/ChessGame/ChessBoard';
 import MovesListMobile from '../../components/ChessGame/TableCoupMobile';
-import { ChessBoard, ChessGame, Pawn, Color, ChessPiece } from '@TRPI/core/core-algo';
+import { ChessBoard, ChessGame, Pawn, Color, ChessPiece, Rook, Knight, Bishop, Queen } from '@TRPI/core/core-algo';
 import FindPlayer from '../../components/ChessGame/FindPlayer';
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { ClientEventManager, eIJoinQueueEvent, IGame, IN_GAME, MATCHMAKING_MODE, MATCHMAKING_MODES_TIMERS, MATCH_MAKING, NAMESPACE_TYPES } from '@TRPI/core/core-network';
@@ -45,6 +45,7 @@ const Game = () => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [playerisWhite, setPlayerisWhite] = useState(false);
   const [showEndPopup, setShowEndPopup] = useState(false);
+  const [fromToPromotion, setFromToPromotion] = useState<string[]>([]);
   const [showPromotionPopup, setShowPromotionPopup] = useState(false);
   const [_game, set_Game] = useState<IGame | null>(null);
   const [chessGame, setChessGame] = useState<ChessGame | null>(new ChessGame());
@@ -149,16 +150,18 @@ const Game = () => {
     setShowEndPopup(true);
   };
 
-  const handleShowPromotion = () => {
+  const handleShowPromotion = (from : string, to : string) => {
     setShowPromotionPopup(true);
+    setFromToPromotion([from, to]);
   };
 
   const handleClosePromotion = () => {
     setShowPromotionPopup(false);
   };
 
-  const handlePromotion = (piece: ChessPiece) => {
-    if (chessGame === null) return;
+  const handlePromotion = (from : string, to:string,piece: string) => {
+    if (chessGame === null || !gameManager) return;
+    gameManager.networkMove({from, to, promotion : piece});
   };
 
   const handleNewGame = () => {
@@ -247,7 +250,7 @@ const Game = () => {
       />
       <section className="chessGame">
         {showPromotionPopup && (
-          <PopUpPromotion choosePiece={handlePromotion} closePopUp={handleClosePromotion}/>)
+          <PopUpPromotion choosePiece={handlePromotion} closePopUp={handleClosePromotion} from={fromToPromotion[0]} to={fromToPromotion[1]}/>)
         }
         <MovesListMobile moves={movesData} />
         <div className="leftContainer">
@@ -280,7 +283,7 @@ const Game = () => {
           />
         </div>
         <div className="chessBoardContainer">
-          <ChessBoardRenderer onGameEnd={handleGameEnd} onShowPromotionPopup={handleShowPromotion}/>
+          <ChessBoardRenderer onGameEnd={handleGameEnd} onShowPromotionPopup={handleShowPromotion} onClosePromotionPopup={handleClosePromotion}/>
         </div>
         <div className="rightContainer">
           <MovesList moves={movesData} />

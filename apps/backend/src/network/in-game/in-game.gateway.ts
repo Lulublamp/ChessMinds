@@ -231,7 +231,8 @@ export class InGameGateway {
     @MessageBody() movePayload: Nt.eIMakeMoveEvent,
     @ConnectedSocket() client: Socket,
   ) {
-    const { matchId, from, to } = movePayload;
+    const { matchId, from, to, promotion } = movePayload;
+    console.log('Promotion', promotion);
     const coupledGames = this.matchMakingService.queue.coupledGamesMap;
     console.log(coupledGames);
     if (!coupledGames.has(matchId)) {
@@ -241,7 +242,7 @@ export class InGameGateway {
     const game = coupledGames.get(matchId);
     let gameResult = null;
     try {
-      gameResult = game.makeMove(from, to);
+      gameResult = game.makeMove(from, to, promotion);
     } catch (error) {
       console.log('error: invalid move !!');
       console.log(error);
@@ -284,7 +285,7 @@ export class InGameGateway {
     const newId = timer.continueTimer();
     this.timers.set(matchId, newId);
 
-    this.server.to(matchId).emit(Nt.EVENT_TYPES.MOVES, from, to, gameResult);
+    this.server.to(matchId).emit(Nt.EVENT_TYPES.MOVES, from, to, promotion, gameResult);
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.SEND_CHAT_MESSAGE)

@@ -103,7 +103,7 @@ export class ChessGame {
     }
   }
 
-  public makeMove(from: string, to: string) {
+  public makeMove(from: string, to: string, promotion?: string) {
     const fromPiece = this.board.getPieceAt(from);
     if (!fromPiece) {
       throw new Error("No piece at the specified position");
@@ -141,9 +141,6 @@ export class ChessGame {
         this.blackPlayer.removePiece(toPiece);
       }
     }
-
-
-
     this.board.movePiece(from, to);
     // Vérifier si c'est une capture en passant si c'est le cas, on supprime la pièce capturée
     if (fromPiece instanceof Pawn && !toPiece && Math.abs(from.charCodeAt(0) - to.charCodeAt(0)) === 1) {
@@ -197,16 +194,32 @@ export class ChessGame {
       fromPiece.setDoubleMove();
     }
 
-
-    // Si le pion est sur la dernière rangée, on le transforme en reine
+    // Si le pion est sur la dernière rangée, on le transforme en la pièce spécifiée
     if (fromPiece instanceof Pawn && (to[1] === "1" || to[1] === "8")) {
-      const queen = new Queen(fromPiece.color, to);
-      this.board.setPieceAt(to, queen);
+      let promotedPiece;
+      console.log("promotion",promotion);
+      switch (promotion) {
+        case "queen":
+          promotedPiece = new Queen(fromPiece.color, to);
+          break;
+        case "rook":
+          promotedPiece = new Rook(fromPiece.color, to);
+          break;
+        case "bishop":
+          promotedPiece = new Bishop(fromPiece.color, to);
+          break;
+        case "knight":
+          promotedPiece = new Knight(fromPiece.color, to);
+          break;
+        default:
+          throw new Error("Invalid promotion piece");
+      }
+      this.board.setPieceAt(to, promotedPiece);
       if (fromPiece.color === Color.White) {
-        this.whitePlayer.addPiece(queen);
+        this.whitePlayer.addPiece(promotedPiece);
         this.whitePlayer.removePiece(fromPiece);
       } else {
-        this.blackPlayer.addPiece(queen);
+        this.blackPlayer.addPiece(promotedPiece);
         this.blackPlayer.removePiece(fromPiece);
       }
     }

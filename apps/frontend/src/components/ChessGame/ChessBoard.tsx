@@ -9,10 +9,11 @@ import { random } from "lodash";
 
 interface Props{
   onGameEnd: (gameResult : any) => void;
-  onShowPromotionPopup: () => void;
+  onShowPromotionPopup: (from:string, to : string) => void;
+  onClosePromotionPopup: () => void;
 }
 
-const ChessBoardRenderer: React.FC<Props> = ({onGameEnd, onShowPromotionPopup}) => {
+const ChessBoardRenderer: React.FC<Props> = ({onGameEnd, onShowPromotionPopup,onClosePromotionPopup}) => {
 
   const playerIsWhite = usePlayerIsWhite()
   const [gameManager , setGameManager] = useGameManager();
@@ -60,9 +61,11 @@ const ChessBoardRenderer: React.FC<Props> = ({onGameEnd, onShowPromotionPopup}) 
     console.log('force updating');
   }, [_fu])
 
-
   useEffect(() => {
     console.log('updating moves data');
+    onClosePromotionPopup();
+    setSelectedCase(null);
+    setLegalMoves([]);
   }, [movesData])
 
   const onCaseClick = (row: number, col: number) => {
@@ -74,14 +77,14 @@ const ChessBoardRenderer: React.FC<Props> = ({onGameEnd, onShowPromotionPopup}) 
     if (legalMoves.includes(coordinate) && selectedCase !== null) {
       if (playerIsWhite && chessGame!.getCurrentTurn() === Color.Black) return;
       if (!playerIsWhite && chessGame!.getCurrentTurn() === Color.White) return;
-      if (piece instanceof Pawn) {
-        console.log("row",row);
-        if ((playerIsWhite && row === 0) || (!playerIsWhite && row === 7)) {
-          onShowPromotionPopup();
+      let from = String.fromCharCode("a".charCodeAt(0) + selectedCase.row) + (8 - selectedCase.col);
+      let isPawn = board.getPieceAt(from);
+      if (isPawn instanceof Pawn) {
+        if(col === 0 || col === 7) {
+          onShowPromotionPopup(from, coordinate);
           return;
         }
       }
-      let from = String.fromCharCode("a".charCodeAt(0) + selectedCase.row) + (8 - selectedCase.col);
       let to = coordinate;
       if (boardHistory.length == 1) {
         console.log('first move network')
