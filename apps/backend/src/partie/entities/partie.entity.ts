@@ -19,7 +19,7 @@ export class Partie {
   rencontre: Rencontre;
 
   @CreateDateColumn({nullable:false})
-  datePartie: number;
+  datePartie: Date;
 
   @Column({nullable:false})
   eloBlanc: number;

@@ -6,13 +6,13 @@ import { API_BASE_URL } from "../../config";
 
 interface Props {
   onIconClick: () => void;
+  iconId: number;
 }
 
-const ProfileSettings: React.FC<Props> = ({ onIconClick }) => {
+const ProfileSettings: React.FC<Props> = ({ onIconClick, iconId }) => {
   const user = useContext(UserContext);
   const [pseudo, setPseudo] = useState(user?.user?.pseudo || "");
   const [email, setEmail] = useState(user?.user?.email || "");
-  const [iconId, setIconId] = useState(0);
 
 
   const handlePseudoChange = (event: React.ChangeEvent<HTMLInputElement>) => {

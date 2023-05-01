@@ -5,6 +5,7 @@ import { API_BASE_URL } from '../../config';
 
 interface FriendCardProps {
   idJoueur: number;
+  defiMode : boolean;
 }
 
 interface PlayerDetails {
@@ -13,7 +14,7 @@ interface PlayerDetails {
   imageId: number;
 }
 
-const FriendCard: React.FC<FriendCardProps> = ({idJoueur}) => {
+const FriendCard: React.FC<FriendCardProps> = ({idJoueur, defiMode}) => {
   
   const [playerDetails, setPlayerDetails] = useState<PlayerDetails | null>(null);
 
@@ -42,7 +43,8 @@ const FriendCard: React.FC<FriendCardProps> = ({idJoueur}) => {
       <ProfileImage id={playerDetails.imageId} />
       <span>{playerDetails.pseudo}</span>
       <span>{playerDetails.eloMax}</span>
-      <button>View Profil</button>
+      {defiMode && <button>Défier</button>}
+      {!defiMode && <button>Voir profil</button>}
     </div>
   );
 };

@@ -30,7 +30,7 @@ export class Joueur {
   @CreateDateColumn()
   dateInscription: Date;
 
-  @Column({nullable: true})
+  @Column({nullable: false , default: 0})
   image: number;
 
   @ManyToMany(() => Joueur , (user) => user.amis )

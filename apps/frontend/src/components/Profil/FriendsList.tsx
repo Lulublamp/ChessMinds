@@ -8,9 +8,10 @@ import './FriendList.css'
 
 interface FriendProps {
   lstIdInvitations: number[];
+  defiMode: boolean;
 }
 
-const FriendsList: React.FC<FriendProps> = ({ lstIdInvitations }) => {
+const FriendsList: React.FC<FriendProps> = ({ lstIdInvitations, defiMode }) => {
 
   const [showPopUp, setShowPopUp] = useState(false);
   const [showInvitation, setShowInvitation] = useState(false);
@@ -77,7 +78,7 @@ const FriendsList: React.FC<FriendProps> = ({ lstIdInvitations }) => {
         {!showInvitation && (
           <div>
             {lstFriends.map((friend: any,index) => (
-              <FriendCard key={index} idJoueur={friend} />
+              <FriendCard key={index} idJoueur={friend} defiMode={defiMode}/>
             ))}
           </div>
         )}

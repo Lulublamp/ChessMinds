@@ -1,6 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
 import GameHistoryRow from './GameHistoryRow';
-import { UserContext } from '../UserContext';
 import axios from 'axios';
 import { API_BASE_URL } from '../../config';
 
@@ -18,7 +17,6 @@ const Historique: React.FC = () => {
   };
 
   const [gameHistory, setGameHistory] = useState<GameHistory[] | null>(null);
-  const user = useContext(UserContext);
   
   const fetchGameHistory = async () => {
     try {
@@ -30,6 +28,7 @@ const Historique: React.FC = () => {
       //console.log('Historique des parties récupéré avec succès:', response.data);
       // map response data to match GameHistory type
       const mappedData = response.data.map((game: any) => {
+        if(!game.partie.datePartie) return null;
         const date = new Date(game.partie.datePartie);
       
         return {

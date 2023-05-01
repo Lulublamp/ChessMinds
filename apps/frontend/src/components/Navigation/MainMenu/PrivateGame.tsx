@@ -52,7 +52,7 @@ const PrivateGame: React.FC<Props> = ({ onBackClick, lstIdInvitations }) => {
             <PlayButton selectedTimeMod={selectedTimeMod} isRanked={'private'} />
           </div>
         </div>
-        <FriendsList lstIdInvitations={lstIdInvitations} />
+        <FriendsList lstIdInvitations={lstIdInvitations} defiMode={true} />
       </div>
     </section>
   );

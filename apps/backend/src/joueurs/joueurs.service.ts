@@ -142,7 +142,6 @@ export class JoueursService {
     }
   }
 
-
   async getAmis(joueur: Joueur): Promise<Joueur[]> {
     const joueurTrouve = await this.joueursRepository.findOne({
       where: { idJoueur: joueur.idJoueur },
@@ -234,6 +233,7 @@ export class JoueursService {
         bullet: classement.elo_bullet,
         rapide: classement.elo_rapide,
       },
+      dateInscription : joueur.dateInscription,
     };
   }
 

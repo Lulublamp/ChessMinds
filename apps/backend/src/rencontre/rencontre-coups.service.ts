@@ -53,7 +53,7 @@ export class RencontreCoupsService {
     // Créez une nouvelle instance de Partie
     const newPartie = this.partieRepository.create({
       rencontre: savedRencontre,
-      datePartie: new Date().getDate(),
+      datePartie: new Date(),
       eloBlanc: eloB,
       eloNoir: eloN,
     });

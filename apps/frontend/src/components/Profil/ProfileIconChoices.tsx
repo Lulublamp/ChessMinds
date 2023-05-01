@@ -6,9 +6,10 @@ import { UserContext } from '../UserContext';
 
 interface Props {
   onIconClick: () => void;
+  handleUpdateIconId: (iconId: number) => void;
 }
 
-const ProfileIconChoices: React.FC<Props> = ({ onIconClick }) => {
+const ProfileIconChoices: React.FC<Props> = ({ onIconClick, handleUpdateIconId }) => {
   const user = useContext(UserContext);
   const icons = [
     "IconPlayer1.png",
@@ -32,10 +33,9 @@ const ProfileIconChoices: React.FC<Props> = ({ onIconClick }) => {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         });
-        console.log("ID de l'icône mis à jour avec succès:", response.data);
-        if (response.data.image) {
-          onIconClick();
-        }
+        //console.log("ID de l'icône mis à jour avec succès:", response.data, iconId);
+        onIconClick();
+        handleUpdateIconId(iconId);
       } catch (error) {
         console.error("Erreur lors de la mise à jour de l'ID de l'icône:", error);
       }
@@ -48,7 +48,7 @@ const ProfileIconChoices: React.FC<Props> = ({ onIconClick }) => {
   return (
     <div className="ProfilIconChoices">
       {icons.map((icon, index) => (
-        <ProfileImage id={index}  alt={`Icon Player ${index + 1}`} onclick={() => updateIconId(index)}/>
+        <ProfileImage id={index} key={index} alt={`Icon Player ${index + 1}`} onclick={() => updateIconId(index)}/>
       ))}
     </div>
   );;
