@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import ProfileImage from '../Logo_Icon/ProfileImage';
 import axios from 'axios';
 import { API_BASE_URL } from '../../config';
+import { useNavigate } from 'react-router-dom';
 
 interface FriendCardProps {
   idJoueur: number;
@@ -17,6 +18,12 @@ interface PlayerDetails {
 const FriendCard: React.FC<FriendCardProps> = ({idJoueur, defiMode}) => {
   
   const [playerDetails, setPlayerDetails] = useState<PlayerDetails | null>(null);
+
+  const navigate = useNavigate();
+
+  const handleVoirProfil = () => {
+    navigate(`/Profil?idPlayer=${idJoueur}`);
+  };
 
   useEffect(() => {
     handleGetFriend();
@@ -44,7 +51,7 @@ const FriendCard: React.FC<FriendCardProps> = ({idJoueur, defiMode}) => {
       <span>{playerDetails.pseudo}</span>
       <span>{playerDetails.eloMax}</span>
       {defiMode && <button>Défier</button>}
-      {!defiMode && <button>Voir profil</button>}
+      {!defiMode && <button onClick={handleVoirProfil}>Voir profil</button>}
     </div>
   );
 };

@@ -37,7 +37,7 @@ const MainCadre: React.FC<Props> = ({togglePopup,PlayerDetails}) => {
       <div>
         <ProfileImage id={PlayerDetails.imageId} />
         <div>
-          <span>{user.user?.pseudo}</span>
+          <span>{PlayerDetails.pseudo}</span>
           <div>
             <Elo elo={PlayerDetails.elo_bullet} svgType="bullet" />
             <Elo elo={PlayerDetails.elo_blitz} svgType="blitz" />
@@ -46,7 +46,7 @@ const MainCadre: React.FC<Props> = ({togglePopup,PlayerDetails}) => {
           <span>Membre depuis le {PlayerDetails.dateInscription ? formatDate(PlayerDetails.dateInscription) : "XX/XX/XXXX"}</span>
         </div>
       </div>
-      <ModifContainer openPopUp={togglePopup}/>
+      {user.user.pseudo === PlayerDetails.pseudo && ( <ModifContainer openPopUp={togglePopup}/> )}
     </div>
   );
 };

@@ -8,7 +8,7 @@ import axios from 'axios';
 import { API_BASE_URL } from '../../config';
 import './styleProfil.css';
 import { UserContext, User } from '../../components/UserContext';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 
 interface ProfilProps {
   lstIdInvitations: number[];
@@ -23,22 +23,24 @@ export interface PlayerDetails {
   dateInscription: Date;
 }
 
-
-const Profil: React.FC<ProfilProps> = ({lstIdInvitations}) => {
+const Profil: React.FC<ProfilProps> = ({ lstIdInvitations }) => {
 
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [PlayerDetails, setPlayerDetails] = useState<PlayerDetails>();
   const user = useContext(UserContext);
   const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
-  
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  const idPlayer = query.get('idPlayer');
+
   const togglePopup = () => {
     setIsPopupOpen(!isPopupOpen);
   };
 
-  const getInfoPlayer = async () => {
+  const getInfoPlayer = async (id: string) => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/joueurs/PlayerDetails/${user.user?.id}`);
+      const response = await axios.get(`${API_BASE_URL}/joueurs/PlayerDetails/${id}`);
       setPlayerDetails({
         pseudo: response.data.pseudo,
         elo_bullet: response.data.eloActuelle.bullet,
@@ -57,6 +59,20 @@ const Profil: React.FC<ProfilProps> = ({lstIdInvitations}) => {
       ...PlayerDetails!,
       imageId: iconId
     });
+  };
+
+  const checkIfisFriends = async (friendId: number): Promise<boolean> => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/joueurs/friends/${friendId}`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+        },
+      });
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      return false;
+    }
   };
 
 
@@ -87,12 +103,22 @@ const Profil: React.FC<ProfilProps> = ({lstIdInvitations}) => {
   }, []);
 
   useEffect(() => {
-    if(user.user) {
-      getInfoPlayer();
+    const checkFriendshipAndFetchInfo = async () => {
+      if (user.user) {
+        if (idPlayer) {
+          const isFriend = await checkIfisFriends(Number(idPlayer));
+          if (isFriend) {
+            getInfoPlayer(idPlayer);
+          }
+        } else {
+          getInfoPlayer(user.user.id);
+        }
+      }
     }
-  }, [user.user]);
+    checkFriendshipAndFetchInfo();
+  }, [user.user, idPlayer, location]);
 
-  if(!PlayerDetails) {
+  if (!PlayerDetails) {
     return <div>Chargement...</div>
   }
 
@@ -100,15 +126,15 @@ const Profil: React.FC<ProfilProps> = ({lstIdInvitations}) => {
     <>
       <section className="Profil">
         <div className="leftContainer">
-          <MainCadre togglePopup={togglePopup} PlayerDetails={PlayerDetails}/>
+          <MainCadre togglePopup={togglePopup} PlayerDetails={PlayerDetails} />
           <Historique />
         </div>
         <div className="rightContainer">
           <Statistiques />
-          <FriendsList lstIdInvitations={lstIdInvitations} defiMode={false}/>
+          {user.user?.pseudo === PlayerDetails.pseudo && <FriendsList lstIdInvitations={lstIdInvitations} defiMode={false} />}
         </div>
       </section>
-      {isPopupOpen && <PopupModifProfil togglePopup={togglePopup} iconId={PlayerDetails.imageId} handleUpdateIconId={handleUpdateIconId}/>}
+      {isPopupOpen && <PopupModifProfil togglePopup={togglePopup} iconId={PlayerDetails.imageId} handleUpdateIconId={handleUpdateIconId} />}
     </>
   );
 };
