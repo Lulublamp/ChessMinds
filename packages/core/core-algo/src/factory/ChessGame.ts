@@ -122,7 +122,6 @@ export class ChessGame {
     //Stocker la partie précédente pour revenir en arrière d'un coup
     const previousGame = this.CopyGame();
 
-
     //Verfier si on est encore en échec après le déplacement
     const copygame = this.CopyGame();
     const king =
@@ -143,6 +142,9 @@ export class ChessGame {
       }
     }
 
+
+
+    this.board.movePiece(from, to);
     // Vérifier si c'est une capture en passant si c'est le cas, on supprime la pièce capturée
     if (fromPiece instanceof Pawn && !toPiece && Math.abs(from.charCodeAt(0) - to.charCodeAt(0)) === 1) {
       const direction = fromPiece.color === Color.White ? -1 : 1;
@@ -158,13 +160,6 @@ export class ChessGame {
       }
     }
 
-    // Réinitialiser les pions qui ont effectué un double pas au tour précédent
-    this.pawnsWithDoubleMove.forEach((pawn) => {
-      pawn.resetDoubleMove();
-    });
-    this.pawnsWithDoubleMove = [];
-
-    this.board.movePiece(from, to);
     // Sauvegardez le coup joué dans movesHistory
     this.movesHistory.push({
       from,
@@ -187,12 +182,19 @@ export class ChessGame {
       };
     }
 
+    // Réinitialiser les pions qui ont effectué un double pas au tour précédent
+    this.pawnsWithDoubleMove.forEach((pawn) => {
+      pawn.resetDoubleMove();
+    });
+    this.pawnsWithDoubleMove = [];
+
     // Si le pion a fait un double pas, on l'ajoute à la liste des pions pouvant être capturés en passant
     if (
       fromPiece instanceof Pawn &&
       Math.abs(from.charCodeAt(1) - to.charCodeAt(1)) === 2
     ) {
       this.pawnsWithDoubleMove.push(fromPiece);
+      fromPiece.setDoubleMove();
     }
 
 
@@ -295,7 +297,7 @@ export class ChessGame {
     return this.board;
   }
 
-  public getMovesHistory(): Array<{from: string, to: string, piece: string, color: Color}> {
+  public getMovesHistory(): Array<{ from: string, to: string, piece: string, color: Color }> {
     return this.movesHistory;
   }
 
@@ -344,8 +346,6 @@ export class ChessGame {
   public getLegalMovesForPieceAt(position: string): string[] {
     const piece = this.board.getPieceAt(position);
     if (!piece) {
-      console.log(this.board);
-      console.log(position);
       throw new Error("No piece at the specified position");
     }
 
@@ -442,11 +442,11 @@ export class ChessGame {
       throw new Error('No previous game state available to cancel the move.');
       return;
     }
-    if(this.currentTurn === realColor) {
+    if (this.currentTurn === realColor) {
       throw new Error('It is not your turn to cancel the move.');
       return;
     }
-    
+
     this.board = this.previousGame.board;
     this.whitePlayer = this.previousGame.whitePlayer;
     this.blackPlayer = this.previousGame.blackPlayer;
@@ -459,6 +459,6 @@ export class ChessGame {
     this.QueenSideCastlingBlack = this.previousGame.QueenSideCastlingBlack;
     this.QueenSideCastlingWhite = this.previousGame.QueenSideCastlingWhite;
     this.previousGame = this.previousGame.previousGame;
-    
+
   }
 }

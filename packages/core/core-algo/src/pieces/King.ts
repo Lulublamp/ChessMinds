@@ -1,5 +1,5 @@
 import { ChessGame } from "../factory/ChessGame";
-import { ChessPiece , Color } from "./ChessPiece";
+import { ChessPiece, Color } from "./ChessPiece";
 
 
 export class King extends ChessPiece {
@@ -9,6 +9,13 @@ export class King extends ChessPiece {
 
     // Check if the destination is valid
     if (!this.isValidDestination(destination, board)) {
+      return false;
+    }
+
+    // Get the position of the opponent's king
+    const opponentColor = this.color === Color.White ? Color.Black : Color.White;
+    const opponentKing = opponentColor === Color.White ? game.getBoard().getWhiteKing() : game.getBoard().getBlackKing();
+    if (this.isAdjacent(destination, opponentKing.position)) {
       return false;
     }
 
@@ -90,7 +97,7 @@ export class King extends ChessPiece {
         }
       }
     }
-  
+
     for (let i = 0; i < opponentPieces.length; i++) {
       if (opponentPieces[i].isValidMove(destination, gameCopy)) {
         return true;
@@ -141,4 +148,12 @@ export class King extends ChessPiece {
 
     return legalMoves;
   }
+
+  isAdjacent(position1: string, position2: string): boolean {
+    const [file1, rank1] = position1.split("");
+    const [file2, rank2] = position2.split("");
+    const dx = Math.abs(file1.charCodeAt(0) - file2.charCodeAt(0));
+    const dy = Math.abs(parseInt(rank1) - parseInt(rank2));
+    return dx <= 1 && dy <= 1;
+}
 }

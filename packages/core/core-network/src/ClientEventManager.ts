@@ -124,19 +124,13 @@ export class ClientEventManager<
   public listenToNetworkMove(payload: Check<T, IN_GAME, rINetworkMoveEvent>, onGameEnd: (gameResult: any) => void) {
     if (this.matchId == null) return;
     console.log('listen to network move');
-
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
     this.socket.on(EVENT_TYPES.MOVES, (from: string, to: string, gameResult: any) => {
       console.log('move received', from, to);
-
-      payload.chessGame.setBoard(payload.boardHistory[payload.boardHistory.length - 1].copyBoard());
       const currentTurn = payload.chessGame.getCurrentTurn() == Color.White ? 'white' : 'black';
-      console.log('current game', payload.chessGame);
       payload.chessGame.makeMove(from, to);
       payload.boardHistory.push(payload.chessGame.getBoard().copyBoard());
-      console.log('board history', payload.boardHistory);
       payload.setCurrentIndex(payload.boardHistory.length - 1);
-
       // Gérer le résultat de la partie
       if (gameResult) {
         if (gameResult.status === 'checkmate') {

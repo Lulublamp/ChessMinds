@@ -50,7 +50,6 @@ export class Pawn extends ChessPiece {
         if (pieceAtIntermediateSquare !== null) {
           return false;
         }
-        this.doubleMove = true;
         return true;
       }
 
@@ -78,6 +77,7 @@ export class Pawn extends ChessPiece {
         leftPiece.doubleMove &&
         endFile === String.fromCharCode(startFile.charCodeAt(0) - 1)
       ) {
+        console.log("Prise en passant");
         return true;
       } else if (
         rightPiece !== null &&
@@ -119,7 +119,6 @@ export class Pawn extends ChessPiece {
         if (pieceAtIntermediateSquare !== null) {
           return false;
         }
-        this.doubleMove = true;
         return true;
       }
 
@@ -165,6 +164,10 @@ export class Pawn extends ChessPiece {
 
   public resetDoubleMove() {
     this.doubleMove = false;
+  }
+
+  public setDoubleMove() {
+    this.doubleMove = true;
   }
 
   getLegalMoves(game: ChessGame): string[] {

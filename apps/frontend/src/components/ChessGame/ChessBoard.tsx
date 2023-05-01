@@ -70,7 +70,6 @@ const ChessBoardRenderer: React.FC<Props> = ({onGameEnd}) => {
     let piece: ChessPiece | null = board.getPieceAt(coordinate);
     if (playerIsWhite && (piece?.color === Color.Black && !legalMoves.includes(coordinate))) return;
     if (!playerIsWhite && (piece?.color === Color.White && !legalMoves.includes(coordinate))) return;
-
     if (legalMoves.includes(coordinate) && selectedCase !== null) {
       if (playerIsWhite && chessGame!.getCurrentTurn() === Color.Black) return;
       if (!playerIsWhite && chessGame!.getCurrentTurn() === Color.White) return;
@@ -82,7 +81,6 @@ const ChessBoardRenderer: React.FC<Props> = ({onGameEnd}) => {
           game: _game as IGame,//C'est un MaybeGame donc on force le type vu qu'on est sûr qu'il est défini ;)
         });
       }
-      console.log(boardHistory.length)
       gameManager?.networkMove({
         from, to
     });
