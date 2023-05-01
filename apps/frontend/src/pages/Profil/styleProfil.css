@@ -1,5 +1,5 @@
 .Profil {
-  background-color: #fff;
+  background-color: var(--background-color);
   width: 90%;
   margin: auto;
   height: calc(100vh - 100px);
@@ -20,21 +20,25 @@
 .Profil .leftContainer .MainCadre {
   width: 783px;
   height: 270px;
-  background-color: #fff;
+  background-color: var(--background-color);
   border: solid 2px var(--font-color);
   border-radius: 7px;
-  filter: drop-shadow(8px 8px 0px var(--font-color));
+  box-shadow: 4px 4px 0px var(--drop-shadow);
   display: flex;
   position: relative;
+}
+
+.Profil .leftContainer .MainCadre svg path {
+  fill: var(--font-color);
 }
 
 .Profil .leftContainer .Historique {
   width: 783px;
   height: 500px;
-  background-color: #fff;
+  background-color: var(--background-color);
   border: solid 2px var(--font-color);
   border-radius: 7px;
-  filter: drop-shadow(8px 8px 0px var(--font-color));
+  filter: drop-shadow(8px 8px 0px var(--drop-shadow));
   display: flex;
   position: relative;
   flex-direction: column;
@@ -43,10 +47,10 @@
 .Profil .rightContainer .Statistiques {
   width: 496px;
   height: 370px;
-  background-color: #fff;
+  background-color: var(--background-color);
   border: solid 2px var(--font-color);
   border-radius: 7px;
-  filter: drop-shadow(8px 8px 0px var(--font-color));
+  filter: drop-shadow(8px 8px 0px var(--drop-shadow));
   display: flex;
   position: relative;
   flex-direction: column;
@@ -129,19 +133,21 @@
   margin-left: 8px;
 }
 
-.Profil .leftContainer .Historique header, .Profil .leftContainer .Historique main {
+.Profil .leftContainer .Historique header,
+.Profil .leftContainer .Historique main {
   display: flex;
   flex-direction: column;
   width: 100%;
 }
 
-.Profil .leftContainer .Historique main{
+.Profil .leftContainer .Historique main {
   max-height: 78%;
   overflow-y: auto;
   flex-shrink: 0;
 }
 
-.Profil .leftContainer .Historique>header>div, .Profil .leftContainer .Historique>main>div {
+.Profil .leftContainer .Historique>header>div,
+.Profil .leftContainer .Historique>main>div {
   border-bottom: solid 2px var(--font-color);
 }
 
@@ -178,8 +184,7 @@
   text-align: center;
 }
 
-.Profil .leftContainer .Historique main >div
-{
+.Profil .leftContainer .Historique main>div {
   display: flex;
   flex-direction: row;
   width: 100%;
@@ -189,42 +194,47 @@
   flex-shrink: 0;
 }
 
-.Profil .leftContainer .Historique header>div>span:first-of-type, .Profil .leftContainer .Historique main >div >*:nth-child(1) {
+.Profil .leftContainer .Historique header>div>span:first-of-type,
+.Profil .leftContainer .Historique main>div>*:nth-child(1) {
   width: 296px;
 }
 
-.Profil .leftContainer .Historique header>div>span:nth-of-type(2), .Profil .leftContainer .Historique main >div> *:nth-child(2) {
+.Profil .leftContainer .Historique header>div>span:nth-of-type(2),
+.Profil .leftContainer .Historique main>div>*:nth-child(2) {
   width: 60px;
 }
 
-.Profil .leftContainer .Historique header>div>span:nth-of-type(3), .Profil .leftContainer .Historique main >div> *:nth-child(3) {
+.Profil .leftContainer .Historique header>div>span:nth-of-type(3),
+.Profil .leftContainer .Historique main>div>*:nth-child(3) {
   width: 100px;
 }
 
-.Profil .leftContainer .Historique header>div>span:nth-of-type(4), .Profil .leftContainer .Historique main >div> *:nth-child(4) {
+.Profil .leftContainer .Historique header>div>span:nth-of-type(4),
+.Profil .leftContainer .Historique main>div>*:nth-child(4) {
   width: 100px;
 }
 
-.Profil .leftContainer .Historique header>div>span:nth-of-type(5), .Profil .leftContainer .Historique main >div> *:nth-child(5) {
+.Profil .leftContainer .Historique header>div>span:nth-of-type(5),
+.Profil .leftContainer .Historique main>div>*:nth-child(5) {
   width: 100px;
 }
 
-.Profil .leftContainer .Historique main >div span{
+.Profil .leftContainer .Historique main>div span {
   font-size: 15px;
   font-weight: bold;
   color: var(--font-color);
   text-align: center;
 }
 
-.Profil .leftContainer .Historique main >div .win{
+.Profil .leftContainer .Historique main>div .win {
   color: #47E639;
 }
 
-.Profil .leftContainer .Historique main >div .loose{
+.Profil .leftContainer .Historique main>div .loose {
   color: #E63946;
 }
 
-.Profil .leftContainer .Historique main >div button{
+.Profil .leftContainer .Historique main>div button {
   width: 90px;
   height: 36px;
   border: none;
@@ -236,39 +246,39 @@
   cursor: pointer;
 }
 
-.Profil .leftContainer .Historique main >div> div:first-of-type{
+.Profil .leftContainer .Historique main>div>div:first-of-type {
   display: flex;
   flex-direction: column;
 }
 
-.Profil .leftContainer .Historique main >div> div:first-of-type > span:first-of-type{
+.Profil .leftContainer .Historique main>div>div:first-of-type>span:first-of-type {
   margin-bottom: 4px;
 }
 
-.Profil .rightContainer .Statistiques > span{
+.Profil .rightContainer .Statistiques>span {
   font-size: 20px;
   font-weight: bold;
   color: var(--font-color);
 }
 
-.Profil .rightContainer .Statistiques > div{
+.Profil .rightContainer .Statistiques>div {
   margin-top: 10px;
   border-top: solid 2px var(--font-color);
 }
 
 
-.Profil .rightContainer .Statistiques > div span{
+.Profil .rightContainer .Statistiques>div span {
   font-size: 20px;
   color: var(--font-color);
 }
 
-.Profil .rightContainer .Statistiques > div > div{
+.Profil .rightContainer .Statistiques>div>div {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
 }
 
-.Profil .rightContainer .Statistiques > div:first-of-type{
+.Profil .rightContainer .Statistiques>div:first-of-type {
   height: 50%;
   display: flex;
   flex-direction: column;
@@ -276,10 +286,29 @@
 }
 
 
-.Profil .rightContainer .Statistiques > div:last-of-type{
+.Profil .rightContainer .Statistiques>div:last-of-type {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
   height: 25%;
   align-items: center;
+}
+
+@media (max-width: 1300px) {
+  .Profil {
+    width: 98%;
+    height: auto;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .Profil > div > div {
+    margin-top: 20px;
+  }
+}
+
+@media (max-width: 800px){
+  .Profil .leftContainer .MainCadre, .Profil .leftContainer .Historique{
+    width: 95%;
+  }
 }
