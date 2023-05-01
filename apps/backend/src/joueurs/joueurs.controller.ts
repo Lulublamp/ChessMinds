@@ -52,13 +52,10 @@ export class JoueursController {
 
   @UseGuards(JwtAuthGuard)
   @Post('friends/add')
-  async addFriend(@Body() payload: { joueurId: number, friendId: number }, @Request() req) {
+  async addFriend(@Body() payload: { friendId: number }, @Request() req) {
     try {
-      if (req.user.idJoueur !== payload.joueurId) {
-        throw new UnauthorizedException('Vous n\'êtes pas autorisé à effectuer cette action.');
-      }
       return await this.joueursService.addFriend(
-        payload.joueurId,
+        req.user.idJoueur,
         payload.friendId,
       );
     } catch (error) {

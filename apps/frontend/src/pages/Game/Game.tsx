@@ -19,6 +19,7 @@ import { GameContext } from '../../contexts/GameContext';
 import { useGameInfoContext } from '../../components/ChessGame/GameInfoProvider';
 import { UserContext } from '../../components/UserContext';
 import ChessGameEndPopup from '../../components/ChessGame/ChessGameEndPopup';
+import PopUpPromotion from '../../components/ChessGame/PopUpPromotion ';
 import axios from 'axios';
 import { API_BASE_URL } from '../../config';
 
@@ -44,6 +45,7 @@ const Game = () => {
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [playerisWhite, setPlayerisWhite] = useState(false);
   const [showEndPopup, setShowEndPopup] = useState(false);
+  const [showPromotionPopup, setShowPromotionPopup] = useState(false);
   const [_game, set_Game] = useState<IGame | null>(null);
   const [chessGame, setChessGame] = useState<ChessGame | null>(new ChessGame());
   const { selectedTimeMode, isRanked } = useGameInfoContext();
@@ -79,10 +81,8 @@ const Game = () => {
   };
 
   useEffect(() => {
-
     if (clientManager) return;
     console.log('mounted in here');
-
     const fetchDataAndInitClient = async () => {
       await fetchEloData(selectedTimeMode);
       setBoardHistory(() => [findChessGame.getBoard().copyBoard()]);
@@ -93,10 +93,7 @@ const Game = () => {
         navigate('/MainMenu');
         return;
       }
-
       console.log(user)
-
-      
       const payload: eIJoinQueueEvent = {
         options: {
           mode: isRanked as MATCHMAKING_MODE,
@@ -122,30 +119,19 @@ const Game = () => {
       }
       newClientManager.listenToIncomingMatch(listeningPayload)
       newClientManager.joinMatchMakingEvent(payload)
-      
-        
-
-
-
       setClientManager(() => newClientManager);
       clientManagerRef.current = newClientManager;
       console.log('mounted in here finished');
     }
 
     fetchDataAndInitClient();
-
     return () => {
       console.log('unmounting...');
       console.log('clientManager', clientManagerRef.current);
       console.log('gameManager', gameManager);
       clientManagerRef.current?.close();
-      // eslint-disable-next-line react-hooks/exhaustive-deps
       gameManagerRef.current?.close();
     }
-
-
-
-
   }, []);
 
   const handleGameEnd = (gameResult: any) => {
@@ -160,7 +146,19 @@ const Game = () => {
         rankingChange: -15
       }
     );
-    setShowEndPopup(true); // Afficher la popup de fin de partie
+    setShowEndPopup(true);
+  };
+
+  const handleShowPromotion = () => {
+    setShowPromotionPopup(true);
+  };
+
+  const handleClosePromotion = () => {
+    setShowPromotionPopup(false);
+  };
+
+  const handlePromotion = (piece: ChessPiece) => {
+    if (chessGame === null) return;
   };
 
   const handleNewGame = () => {
@@ -248,6 +246,9 @@ const Game = () => {
         show={!PlayerIsFind}
       />
       <section className="chessGame">
+        {showPromotionPopup && (
+          <PopUpPromotion choosePiece={handlePromotion} closePopUp={handleClosePromotion}/>)
+        }
         <MovesListMobile moves={movesData} />
         <div className="leftContainer">
           <PlayerContainer
@@ -279,7 +280,7 @@ const Game = () => {
           />
         </div>
         <div className="chessBoardContainer">
-          <ChessBoardRenderer onGameEnd={handleGameEnd} />
+          <ChessBoardRenderer onGameEnd={handleGameEnd} onShowPromotionPopup={handleShowPromotion}/>
         </div>
         <div className="rightContainer">
           <MovesList moves={movesData} />

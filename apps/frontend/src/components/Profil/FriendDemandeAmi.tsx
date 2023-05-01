@@ -39,13 +39,18 @@ const FriendCardInvitation: React.FC<FriendCardInvitationProps> = ({idJoueur}) =
   }, [idJoueur]);
 
   const acceptFriendRequest = async () => {
+    const token = localStorage.getItem("accessToken");
+    if (!token) {
+      console.error("No access token found in local storage.");
+      return;
+    }
     try {
       await axios.post(
         `${API_BASE_URL}/joueurs/friends/add`,
-        { joueurId: user.user?.id, friendId : idJoueur },
+        {friendId : idJoueur },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+            Authorization: `Bearer ${token}`,
           },
         }
       );

@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { ChessGame, ChessPiece, ChessBoard, Color } from "@TRPI/core/core-algo";
+import { ChessGame, ChessPiece, ChessBoard, Color, Pawn } from "@TRPI/core/core-algo";
 import DisplayPiece from "./DisplayPiece";
 import "./ChessBoardStyle.css";
 import { ClientEventManager, IGame, IN_GAME } from "@TRPI/core/core-network";
@@ -9,9 +9,10 @@ import { random } from "lodash";
 
 interface Props{
   onGameEnd: (gameResult : any) => void;
+  onShowPromotionPopup: () => void;
 }
 
-const ChessBoardRenderer: React.FC<Props> = ({onGameEnd}) => {
+const ChessBoardRenderer: React.FC<Props> = ({onGameEnd, onShowPromotionPopup}) => {
 
   const playerIsWhite = usePlayerIsWhite()
   const [gameManager , setGameManager] = useGameManager();
@@ -73,6 +74,13 @@ const ChessBoardRenderer: React.FC<Props> = ({onGameEnd}) => {
     if (legalMoves.includes(coordinate) && selectedCase !== null) {
       if (playerIsWhite && chessGame!.getCurrentTurn() === Color.Black) return;
       if (!playerIsWhite && chessGame!.getCurrentTurn() === Color.White) return;
+      if (piece instanceof Pawn) {
+        console.log("row",row);
+        if ((playerIsWhite && row === 0) || (!playerIsWhite && row === 7)) {
+          onShowPromotionPopup();
+          return;
+        }
+      }
       let from = String.fromCharCode("a".charCodeAt(0) + selectedCase.row) + (8 - selectedCase.col);
       let to = coordinate;
       if (boardHistory.length == 1) {
@@ -84,7 +92,6 @@ const ChessBoardRenderer: React.FC<Props> = ({onGameEnd}) => {
       gameManager?.networkMove({
         from, to
     });
-      // chessGame.makeMove(from, to);
       setSelectedCase(null);
       setLegalMoves([]);
       return;
