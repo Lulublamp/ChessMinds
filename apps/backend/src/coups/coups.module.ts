@@ -6,6 +6,6 @@ import { Coups } from './entities/coups.entity';
 @Module({
   imports: [TypeOrmModule.forFeature([Coups])],
   providers: [CoupsService],
-  exports: [CoupsService],
+  exports: [CoupsService, TypeOrmModule],
 })
 export class CoupsModule {}
