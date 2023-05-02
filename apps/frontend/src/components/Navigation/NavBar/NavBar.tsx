@@ -9,10 +9,11 @@ interface Props {
   onPlayClick: () => void;
   onLogoutClick: () => void;
   toggleDarkMode: () => void;
+  lstIdInvitations : number[];
 }
 
-const Navbar: React.FC<Props> = ({ onPlayClick, onLogoutClick, toggleDarkMode }) => {
-  
+const Navbar: React.FC<Props> = ({ onPlayClick, onLogoutClick, toggleDarkMode, lstIdInvitations }) => {
+
   const user = useContext(UserContext);
   const navigate = useNavigate();
 
@@ -40,7 +41,7 @@ const Navbar: React.FC<Props> = ({ onPlayClick, onLogoutClick, toggleDarkMode })
 
   return (
     <nav>
-      <HamburgerMenu onPlayClick={onPlayClick} goClassementPage={goClassementPage} toggleDarkModeClick={toggleDarkModeClick}/>
+      <HamburgerMenu onPlayClick={onPlayClick} goClassementPage={goClassementPage} toggleDarkModeClick={toggleDarkModeClick} />
       <div className="nav-container">
         <div onClick={goHomePage} className="logo-container">
           <Logo width={65} height={65} />
@@ -64,10 +65,17 @@ const Navbar: React.FC<Props> = ({ onPlayClick, onLogoutClick, toggleDarkMode })
       </div>
       <div className="button-container">
         {user.user && (
-          <svg onClick={goToProfilePage} width="39" height="43" viewBox="0 0 39 43" fill="none">
-            <path d="M31.5312 41.3753H7.46875C4.44844 41.3753 2 38.9268 2 35.9065C2 26.9798 15.125 27.1565 19.5 27.1565C23.875 27.1565 37 26.9798 37 35.9065C37 38.9268 34.5516 41.3753 31.5312 41.3753Z" stroke="#212121" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-            <path d="M19.5 19.5C24.3325 19.5 28.25 15.5825 28.25 10.75C28.25 5.91751 24.3325 2 19.5 2C14.6675 2 10.75 5.91751 10.75 10.75C10.75 15.5825 14.6675 19.5 19.5 19.5Z" stroke="#212121" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
+          <div>
+            <svg onClick={goToProfilePage} width="39" height="43" viewBox="0 0 39 43" fill="none">
+              <path d="M31.5312 41.3753H7.46875C4.44844 41.3753 2 38.9268 2 35.9065C2 26.9798 15.125 27.1565 19.5 27.1565C23.875 27.1565 37 26.9798 37 35.9065C37 38.9268 34.5516 41.3753 31.5312 41.3753Z" stroke="#212121" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+              <path d="M19.5 19.5C24.3325 19.5 28.25 15.5825 28.25 10.75C28.25 5.91751 24.3325 2 19.5 2C14.6675 2 10.75 5.91751 10.75 10.75C10.75 15.5825 14.6675 19.5 19.5 19.5Z" stroke="#212121" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
+            </svg>
+            {
+              lstIdInvitations.length > 0 && (
+                <span>{lstIdInvitations.length}</span>
+              )
+            }
+          </div>
         )}
         <button className="nav-button play play-btn" type="button" onClick={onPlayClick}>
           Jouer

@@ -136,8 +136,10 @@ export class JoueursService {
       throw new AlreadyFriends();
     }
     joueur.amis.push(maybeFriend);
+    maybeFriend.amis.push(joueur);
     try {
       await this.joueursRepository.save(joueur);
+      await this.joueursRepository.save(maybeFriend);
       console.log('Friend added');
     } catch (error) {
       console.error(error);
@@ -249,8 +251,6 @@ export class JoueursService {
     return joueur.amis.some(amis => amis.idJoueur === maybeFriend.idJoueur);
   }
   
-  
-
   async getFriends(joueurId: number): Promise<number[]> {
     const joueur = await this.joueursRepository.findOne({ where: { idJoueur: joueurId }, relations: ['amis'] });
     if (!joueur) {

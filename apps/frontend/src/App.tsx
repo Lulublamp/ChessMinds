@@ -187,7 +187,7 @@ const App: FC = () => {
     <PublicContext.Provider value={{ publicManager: socketGlobal}}>
       <UserContext.Provider value={{ user, setUser }}>
         <HashRouter>
-          <Navbar onPlayClick={handleLoginPopupClick} onLogoutClick={handleLogout} toggleDarkMode={togleDarkMode} />
+          <Navbar onPlayClick={handleLoginPopupClick} onLogoutClick={handleLogout} toggleDarkMode={togleDarkMode} lstIdInvitations={lstIdInvitations} />
           <GameInfoProvider>
             <Routes>
               <Route

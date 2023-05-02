@@ -179,8 +179,28 @@ nav .button-container .download svg {
   margin-left: 4px;
 }
 
-nav .button-container .download svg path, nav .button-container > svg:first-of-type path {
+nav .button-container .download svg path, nav .button-container > div > svg:first-of-type path {
   stroke: var(--font-color);
+}
+
+nav .button-container > div {
+  position: relative;
+}
+
+nav .button-container > div > span {
+  position: absolute;
+  top: -11px;
+  right: -11px;
+  width: 20px;
+  height: 20px;
+  color: #fff;
+  background-color: #E63946;
+  border-radius: 100%;
+  font-size: 14px;
+  font-weight: bold;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .hamburger,
