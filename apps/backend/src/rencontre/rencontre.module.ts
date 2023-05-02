@@ -8,5 +8,6 @@ import { RencontreService } from './rencontre.service';
   imports: [TypeOrmModule.forFeature([Rencontre])],
   controllers: [RencontreController],
   providers: [RencontreService],
+  exports: [RencontreService],
 })
 export class RencontreModule {}

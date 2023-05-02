@@ -8,6 +8,8 @@ import { JoueurDto } from 'src/joueurs/DTO/joueurs.dto';
 import { JoueursService } from 'src/joueurs/joueurs.service';
 import { ClassementService } from 'src/classement/classement.service';
 import { Nt } from '@TRPI/core';
+import { TypePartie } from 'src/classement/entities/classement.entity';
+import { Joueur } from 'src/joueurs/entities/joueur.entity';
 
 export interface RencontreWithPseudos {
   pseudoJoueurBlanc: string;
@@ -28,6 +30,23 @@ export class RencontreCoupsService {
     private joueurService: JoueursService,
     private classementService: ClassementService,
   ) { }
+
+  private calculateEloGain(player: { Elo: number; score: number; }, opponent: { Elo: number; score: number; }, kFactor: number): number {
+    const expectedScore = 1 / (1 + Math.pow(10, (opponent.Elo - player.Elo) / 400));
+    const newRating = player.Elo + kFactor * (player.score - expectedScore);
+    return newRating;
+  }
+
+  private calculateKFactor(rating: number): number {
+    if (rating < 2000) {
+      return 40;
+    } else if (rating < 2400) {
+      return 20;
+    } else {
+      return 10;
+    }
+  }
+
 
   async saveRencontre(rencontre: Partial<RencontreWithPseudos>): Promise<Rencontre> {
     const joueurBlanc = await this.joueurService.findJoueurByPseudo({ pseudo: rencontre.pseudoJoueurBlanc });
@@ -61,6 +80,23 @@ export class RencontreCoupsService {
     // Sauvegardez la Partie
     await this.partieRepository.save(newPartie);
 
+    //update elo
+    const kFactor = this.calculateKFactor(eloB);
+    const newEloB = this.calculateEloGain({ Elo: eloB, score: rencontre.vainqueur === 1 ? 1 : 0 }, { Elo: eloN, score: rencontre.vainqueur === 1 ? 0 : 1 }, kFactor);
+    const newEloN = this.calculateEloGain({ Elo: eloN, score: rencontre.vainqueur === 2 ? 1 : 0 }, { Elo: eloB, score: rencontre.vainqueur === 2 ? 0 : 1 }, kFactor);
+
+    if (rencontre.timer === Nt.MATCHMAKING_MODES_TIMERS.BULLET) {
+      await this.classementService.updateElo(joueurBlanc.idJoueur, newEloB, TypePartie.BULLET);
+      await this.classementService.updateElo(joueurNoir.idJoueur, newEloN, TypePartie.BULLET);
+    } else if (rencontre.timer === Nt.MATCHMAKING_MODES_TIMERS.BLITZ) {
+      await this.classementService.updateElo(joueurBlanc.idJoueur, newEloB, TypePartie.BLITZ);
+      await this.classementService.updateElo(joueurNoir.idJoueur, newEloN, TypePartie.BLITZ);
+    } else {
+      await this.classementService.updateElo(joueurBlanc.idJoueur, newEloB, TypePartie.RAPIDE);
+      await this.classementService.updateElo(joueurNoir.idJoueur, newEloN, TypePartie.RAPIDE);
+    }
+    console.log('elo gain joueur blanc : ' + newEloB);
+    console.log('elo gain joueur noir : ' + newEloN);
     return savedRencontre;
   }
 

@@ -8,5 +8,6 @@ import { Classement } from './entities/classement.entity';
   imports: [TypeOrmModule.forFeature([Classement])],
   controllers: [ClassementController],
   providers: [ClassementService],
+  exports: [ClassementService]
 })
 export class ClassementModule {}

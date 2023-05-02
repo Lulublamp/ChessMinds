@@ -102,7 +102,18 @@ export class ClassementService {
       .getMany();
   }
 
-
+  async updateElo(joueurId: number, newElo: number, typePartie: TypePartie) {
+    // Trouver le classement actuel du joueur
+    const classement = await this.classementRepository.findOne({
+      where: { user_id: { idJoueur: joueurId } },
+    });
+    // Vérifier si le classement a été trouvé
+    if (!classement) {
+      throw new NotFoundException('Classement introuvable pour cet utilisateur');
+    }
+    classement[typePartie] = newElo;
+    await this.classementRepository.save(classement);
+  }
 }
 
 

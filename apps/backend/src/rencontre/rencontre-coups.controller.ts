@@ -17,15 +17,15 @@ import { JwtAuthGuard } from 'src/auth/jwt-auth.gard';
 export class RencontreCoupsController {
   constructor(private readonly rencontreCoupsService: RencontreCoupsService) { }
 
-  @Post('rencontre')
+  /*@Post('rencontre')
   async saveRencontre(@Body() rencontre: Partial<RencontreWithPseudos>): Promise<Rencontre> {
     return this.rencontreCoupsService.saveRencontre(rencontre);
-  }
+  }*/
 
-  @Post('coup')
+  /*@Post('coup')
   async saveCoup(@Body() coup: Partial<Coups>): Promise<Coups> {
     return this.rencontreCoupsService.saveCoup(coup);
-  }
+  }*/
 
   @UseGuards(JwtAuthGuard)
   @Get('stats')
