@@ -10,9 +10,10 @@ import {
   PlayerNotFound,
 } from 'src/errors/bErrors';
 import { comparePassword, hashPassword } from 'src/utils/bcrypt';
-import { Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import { JoueurDto } from './DTO/joueurs.dto';
 import { Joueur } from './entities/joueur.entity';
+import { Amis } from 'src/amis/entities/amis.entity';
 import { ClassementService } from 'src/classement/classement.service';
 
 @Injectable()
@@ -21,6 +22,8 @@ export class JoueursService {
     @InjectRepository(Joueur)
     private readonly joueursRepository: Repository<Joueur>,
     private readonly classementService: ClassementService,
+    @InjectRepository(Amis)
+    private amisRepository: Repository<Amis>
   ) { }
 
   async inscriptionJoueur(joueur: Joueur): Promise<Joueur> {
@@ -239,11 +242,14 @@ export class JoueursService {
 
   async areFriends(joueurId: number, friendId: number): Promise<boolean> {
     const joueur = await this.joueursRepository.findOne({ where: { idJoueur: joueurId }, relations: ['amis'] });
-    if (!joueur) {
+    const maybeFriend = await this.joueursRepository.findOne({ where: { idJoueur: friendId }, relations: ['amis'] });
+    if (!joueur || !maybeFriend) {
       throw new PlayerNotFound();
     }
-    return joueur.amis.some(amis => amis.idJoueur === Number(friendId));
+    return joueur.amis.some(amis => amis.idJoueur === maybeFriend.idJoueur);
   }
+  
+  
 
   async getFriends(joueurId: number): Promise<number[]> {
     const joueur = await this.joueursRepository.findOne({ where: { idJoueur: joueurId }, relations: ['amis'] });
