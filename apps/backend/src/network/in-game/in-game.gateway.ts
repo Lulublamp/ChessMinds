@@ -8,41 +8,11 @@ import {
 import { Nt } from '@TRPI/core';
 import { Socket, Server } from 'socket.io';
 import { MatchMakingService } from '../match-making/match-making.service';
+import { RencontreCoupsService } from 'src/rencontre/rencontre-coups.service';
 import { Echiquier } from 'src/coups/entities/coups.entity';
 import { IGame } from '@TRPI/core/core-network';
 import { JoinQueuOption } from '@TRPI/core/core-network/src/MatchMaking';
-import axios from 'axios';
 
-async function saveRencontre(rencontre) {
-  const response = await axios.post(
-    'http://localhost:10001/rencontre-coups/rencontre',
-    rencontre,
-  );
-  return response.data;
-}
-
-async function saveCoup(coup) {
-  const response = await axios.post(
-    'http://localhost:10001/rencontre-coups/coup',
-    coup,
-  );
-  return response.data;
-}
-
-async function savePartie(rencontre, coups) {
-  try {
-    const savedRencontre = await saveRencontre(rencontre);
-
-    for (const coup of coups) {
-      coup.idRencontre = savedRencontre;
-      await saveCoup(coup);
-    }
-
-    console.log('Partie sauvegardée avec succès');
-  } catch (error) {
-    console.error('Erreur lors de la sauvegarde de la partie', error);
-  }
-}
 
 function positionToNumber(position: string): number | null {
   const positionLower = position.toLowerCase();
@@ -87,10 +57,33 @@ export class InGameGateway {
   private delayMap = new Map<string, Nt.DelayTimer>();
   private timeoutMap = new Map<string, Nt.DelayTimer>();
 
-  constructor(private matchMakingService: MatchMakingService) {}
-
+  constructor(private matchMakingService: MatchMakingService, private rencontreService : RencontreCoupsService) { }
+  
   afterInit() {
     console.log('in-game: Init');
+  }
+
+  async  saveRencontre(rencontre) {
+    this.rencontreService.saveRencontre(rencontre);
+  }
+  
+  async saveCoup(coup) {
+    this.rencontreService.saveCoup(coup);
+  }
+  
+  async savePartie(rencontre, coups) {
+    try {
+      const savedRencontre = await this.saveRencontre(rencontre);
+  
+      for (const coup of coups) {
+        coup.idRencontre = savedRencontre;
+        await this.saveCoup(coup);
+      }
+  
+      console.log('Partie sauvegardée avec succès');
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde de la partie', error);
+    }
   }
 
   handleConnection(client: Socket) {
@@ -260,26 +253,24 @@ export class InGameGateway {
         pseudoJoueurBlanc: names.joueurBlanc,
         pseudoJoueurNoir: names.joueurNoir,
         vainqueur: gameResult.winner,
-        timer : Nt.MATCHMAKING_MODES_TIMERS.BLITZ //A MODIFIER
+        timer: Nt.MATCHMAKING_MODES_TIMERS.BLITZ //A MODIFIER
       };
 
-      const coups = game.getMovesHistory().map((move,index) => ({
+      const coups = game.getMovesHistory().map((move, index) => ({
         idRencontre: null, // Cette valeur sera remplacée par l'ID de la rencontre sauvegardée
         caseSource: positionToNumber(move.from),
         caseDestination: positionToNumber(move.to),
         piece: formate_piece(move.piece),
         couleur: formate_color(move.color),
-        ordre : index+1
+        ordre: index + 1
       }));
 
       try {
-        savePartie(rencontre, coups);
+        this.savePartie(rencontre, coups);
       } catch (error) {
         console.error('Erreur lors de la sauvegarde de la partie', error);
       }
-
       this.matchMakingService.queue.destroyGame(matchId);
-      // this.timersMap.delete(matchId);
     }
     const timer = this.timersMap.get(matchId);
     const newId = timer.continueTimer();
@@ -347,10 +338,10 @@ export class InGameGateway {
 
     const coupledGame = this.matchMakingService.queue.coupledGamesMap.get(payload.matchId);
 
-    try{
+    try {
       coupledGame.cancelMove(playerColor);
     }
-    catch(error){
+    catch (error) {
       console.log('error: invalid cancel move !!');
       console.log(error);
       return;
@@ -365,7 +356,7 @@ export class InGameGateway {
     } else {
       console.log('error: opponent not found CANCEL_MOVE');
     }
-    
+
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.CANCEL_MOVE_RESPONSE)
@@ -457,5 +448,5 @@ export class InGameGateway {
   }
 
 
-  
+
 }
