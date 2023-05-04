@@ -67,7 +67,9 @@ export class ConnectionGateway {
     const invitations = this.connectionService.getInvitations(
       client['user'].user.idJoueur,
     );
-    this.server.emit(Nt.EVENT_TYPES.INVITATIONS_STATUS, invitations);
+    this.server
+      .to(client.id)
+      .emit(Nt.EVENT_TYPES.INVITATIONS_STATUS, invitations);
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.PROCESS_INVITATION)
