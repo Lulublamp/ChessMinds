@@ -69,4 +69,8 @@ export class Bishop extends ChessPiece {
 
     return legalMoves;
   }
+
+  public getPieceCode(): string {
+    return "b";
+  }
 }

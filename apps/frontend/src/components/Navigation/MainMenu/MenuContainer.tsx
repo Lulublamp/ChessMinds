@@ -15,10 +15,14 @@ const MenuContainer: React.FC<Props> = ({onLogoutClick,onNewGameClick, onPrivate
     navigate('/Profil');
   };
 
+  const goToAi = () => {
+    navigate('/GameAi');
+  };
+
   return (
     <div className="menu-container">
       <button onClick={onNewGameClick}>🕹️ Nouvelle partie</button>
-      <button>🤖 VS l’ordinateur</button>
+      <button onClick={goToAi}>🤖 VS l’ordinateur</button>
       <button onClick={onPrivateGameClick}>🤝 Défier un ami</button>
       <button>🎓 Apprendre</button>
       <button onClick={goToProfil}>🏆 Mon profil</button>

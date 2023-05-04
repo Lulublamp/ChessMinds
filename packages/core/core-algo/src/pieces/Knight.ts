@@ -61,7 +61,12 @@ export class Knight extends ChessPiece {
         }
       }
     }
-
     return legalMoves;
   }
+
+  public getPieceCode(): string {
+    return "n";
+  }
+
+  
 }

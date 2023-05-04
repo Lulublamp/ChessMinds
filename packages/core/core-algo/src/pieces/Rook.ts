@@ -65,4 +65,8 @@ export class Rook extends ChessPiece {
 
     return legalMoves;
   }
+
+  public getPieceCode(): string {
+    return "r";
+  }
 }

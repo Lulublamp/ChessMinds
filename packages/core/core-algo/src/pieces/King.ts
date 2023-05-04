@@ -156,4 +156,8 @@ export class King extends ChessPiece {
     const dy = Math.abs(parseInt(rank1) - parseInt(rank2));
     return dx <= 1 && dy <= 1;
 }
+
+public getPieceCode(): string {
+  return "k";
+}
 }

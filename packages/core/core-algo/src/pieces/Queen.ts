@@ -81,4 +81,8 @@ export class Queen extends ChessPiece {
 
     return legalMoves;
   }
+
+  public getPieceCode(): string {
+    return "q";
+  }
 }

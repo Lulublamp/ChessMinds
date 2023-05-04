@@ -197,7 +197,7 @@ export class ChessGame {
     // Si le pion est sur la dernière rangée, on le transforme en la pièce spécifiée
     if (fromPiece instanceof Pawn && (to[1] === "1" || to[1] === "8")) {
       let promotedPiece;
-      console.log("promotion",promotion);
+      console.log("promotion", promotion);
       switch (promotion) {
         case "queen":
           promotedPiece = new Queen(fromPiece.color, to);
@@ -472,6 +472,82 @@ export class ChessGame {
     this.QueenSideCastlingBlack = this.previousGame.QueenSideCastlingBlack;
     this.QueenSideCastlingWhite = this.previousGame.QueenSideCastlingWhite;
     this.previousGame = this.previousGame.previousGame;
-
   }
+
+  public generateFEN(): string {
+    let fen = "";
+
+    // Génère la position des pièces sur l'échiquier
+    for (let row = 7; row >= 0; row--) {
+      let emptySquares = 0;
+
+      for (let col = 0; col < 8; col++) {
+        const piece = this.board.getBoard()[row][col];
+
+        if (piece === null) {
+          emptySquares++;
+        } else {
+          if (emptySquares > 0) {
+            fen += emptySquares;
+            emptySquares = 0;
+          }
+
+          const pieceCode = piece.getPieceCode();
+          fen += piece.color === Color.White ? pieceCode.toUpperCase() : pieceCode.toLowerCase();
+        }
+      }
+
+      if (emptySquares > 0) {
+        fen += emptySquares;
+      }
+
+      if (row > 0) {
+        fen += "/";
+      }
+    }
+
+    // la couleur du joueur dont c'est le tour
+    fen += " " + (this.currentTurn === Color.White ? "w" : "b");
+
+    //les droits de roque
+    fen += " ";
+    if (this.KingSideCastlingWhite) {
+      fen += "K";
+    }
+    if (this.QueenSideCastlingWhite) {
+      fen += "Q";
+    }
+    if (this.KingSideCastlingBlack) {
+      fen += "k";
+    }
+    if (this.QueenSideCastlingBlack) {
+      fen += "q";
+    }
+    if (!this.KingSideCastlingWhite && !this.QueenSideCastlingWhite && !this.KingSideCastlingBlack && !this.QueenSideCastlingBlack) {
+      fen += "-";
+    }
+
+    // Ajoute la prise en passant
+    fen += " ";
+    if (this.pawnsWithDoubleMove.length > 0) {
+      const lastPawn = this.pawnsWithDoubleMove[this.pawnsWithDoubleMove.length - 1];
+      // La case de prise en passant est juste derrière le pion (selon la couleur du pion)
+      const pawnFile = lastPawn.position.charCodeAt(0);
+      const pawnRank = parseInt(lastPawn.position.charAt(1));
+      const enPassantRank = lastPawn.color === Color.White ? pawnRank - 1 : pawnRank + 1;
+      const enPassantSquare = String.fromCharCode(pawnFile) + enPassantRank;
+      fen += enPassantSquare;
+    } else {
+      fen += "-";
+    }
+
+    //la demi-règle des 50 coups (à compléter)
+    fen += " 0";
+
+    fen += this.movesHistory.length;
+
+    return fen;
+  }
+
+
 }

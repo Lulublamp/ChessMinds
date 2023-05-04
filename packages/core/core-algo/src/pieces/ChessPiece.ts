@@ -101,6 +101,10 @@ export abstract class ChessPiece {
   public copyPiece(): ChessPiece {
     return new (this.constructor as any)(this.color, this.position);
   }
+
+  public getPieceCode(): string {
+    return "";
+  }
 }
 
 

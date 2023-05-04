@@ -198,4 +198,8 @@ export class Pawn extends ChessPiece {
 
     return legalMoves;
   }
+
+  public getPieceCode(): string {
+    return "p";
+  }
 }

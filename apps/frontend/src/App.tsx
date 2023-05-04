@@ -16,6 +16,7 @@ import axios from 'axios';
 import { API_BASE_URL } from './config';
 import { PublicContext } from './contexts/ContextPublicManager';
 import { CONNECTION, ClientEventManager, NAMESPACE_TYPES } from '@TRPI/core/core-network';
+import GameAI from './pages/Game/GameAi';
 
 const App: FC = () => {
 
@@ -208,6 +209,7 @@ const App: FC = () => {
               <Route path="/Classement" element={<Classement />} />
               <Route path="/Profil" element={<Profil lstIdInvitations={lstIdInvitations}/>} />
               <Route path='/Replay' element={<Replay />} />
+              <Route path="/GameAi" element={<GameAI />} />
             </Routes>
           </GameInfoProvider>
           <AuthWrapper
