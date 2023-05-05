@@ -12,7 +12,6 @@
   flex-direction: column;
   box-shadow: 4px 4px 0px #212121;
   animation: slideInFromLeft 0.7s ease-out;
-  z-index: 100;
 }
 
 .PopUpInvitationLobby span{

@@ -2,8 +2,6 @@ import { JoinQueuOption } from "../MatchMaking";
 import { MATCHMAKING_MODES_TIMERS } from "../Namespace";
 import { ChatMessage } from "../utils/Chat";
 import { IGame } from "./game";
-import { IMMPlayer } from "./mmplayer";
-import { ReactSetter } from "./receiveEvents";
 
 
 
