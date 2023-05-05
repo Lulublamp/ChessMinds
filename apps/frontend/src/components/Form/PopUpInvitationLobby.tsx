@@ -4,7 +4,7 @@ import { PGinvitations } from '@TRPI/core/core-network';
 
 interface PopUpInvitationLobbyProps {
   invitation: PGinvitations;
-  onAccept: (idInviter: number, lobbyId: string) => void;
+  onAccept: () => void;
   onDecline: () => void;
 }
 

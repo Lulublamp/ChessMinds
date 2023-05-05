@@ -207,7 +207,7 @@ const App: FC = () => {
     );
   };
 
-  const onAcceptPG = (idInviter: number, lobbyId: string) => {
+  const onAcceptPG = () => {
     console.log("accept private game");
     socketGlobalRef.current?.processPGInvitation({
       idInviter: PGInvitations[0].idJoueur,
