@@ -26,7 +26,6 @@ export class ChessGame {
   private KingSideCastlingBlack: boolean = true; // le roque à droite est-il possible pour le joueur noir ?
   private movesHistory: Array<{ from: string, to: string, piece: string, color: Color }> = [];
 
-
   constructor() {
     this.board = new ChessBoard();
     this.whitePlayer = new Player(Color.White);

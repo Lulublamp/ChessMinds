@@ -292,6 +292,8 @@ const GameAI = () => {
           rankingChange={gameEndInfo.rankingChange}
           onNewGame={NewGame} // Implémentez cette fonction pour gérer la création d'une nouvelle partie
           onReturn={BackToMenu} // Implémentez cette fonction pour gérer le retour à l'écran précédent
+          idImageP1={0}
+          idImageP2={8}
         />
       )}
       <MovesListMobile moves={movesData} />
@@ -302,6 +304,7 @@ const GameAI = () => {
           playerScore={eloAi}
           playerScorePieceValue={0}
           time="inf"
+          idIcon={8}
         />
         <PlayerContainerAffichage
           isWhitePlayer={playerisWhite}
@@ -309,6 +312,7 @@ const GameAI = () => {
           playerScore={elo}
           playerScorePieceValue={0}
           time="inf"
+          idIcon={0}
         />
       </div>
       <div className='TopContainer Mobile'>
@@ -318,6 +322,7 @@ const GameAI = () => {
           playerScore={elo}
           playerScorePieceValue={2}
           time="inf"
+          idIcon={0}
         />
       </div>
       <div className="chessBoardContainer">
@@ -339,6 +344,7 @@ const GameAI = () => {
           playerScorePieceValue={2}
           time="inf"
           enHaut={false}
+          idIcon={8}
         />
       </div>
       <BottomMenuMobile

@@ -52,9 +52,11 @@ const Game = () => {
   const { selectedTimeMode, isRanked } = useGameInfoContext();
   const user = useContext(UserContext);
   const [elo, setElo] = useState<number>(0);
+  const [idIcon, setIdIcon] = useState<number[]>([]);
   const findChessGame = new ChessGame();
   const [gameEndInfo, setGameEndInfo] = useState<GameEndInfo | null>(null);
   const localStorage = window.localStorage;
+
 
   const [matchMakingPayload, setMatchMakingPayload] = useState<eIJoinQueueEvent | null>(null);
 
@@ -81,6 +83,17 @@ const Game = () => {
     }
   };
 
+  const fetchIconData = async () => {
+    if(!_game)return;
+    try{
+      const whitePlayerData = await axios.get(`${API_BASE_URL}/joueurs/PlayerDetails/${_game?.white_player.id}`);
+      const blackPlayerData = await axios.get(`${API_BASE_URL}/joueurs/PlayerDetails/${_game?.black_player.id}`);
+      setIdIcon([whitePlayerData.data.image, blackPlayerData.data.image]);
+    }catch(error){
+      console.error("Erreur lors de la récupération des données icon:", error);
+    }
+  };
+
   useEffect(() => {
     if (clientManager) return;
     console.log('mounted in here');
@@ -102,7 +115,7 @@ const Game = () => {
         }
       }
       if (isPrivate) {
-        console.log('its private'); 
+        console.log('its private');
         payload.options.mode = MATCHMAKING_MODE.PRIVATE;
       }
       console.log('payload', payload);
@@ -150,7 +163,7 @@ const Game = () => {
     setShowEndPopup(true);
   };
 
-  const handleShowPromotion = (from : string, to : string) => {
+  const handleShowPromotion = (from: string, to: string) => {
     setShowPromotionPopup(true);
     setFromToPromotion([from, to]);
   };
@@ -159,9 +172,9 @@ const Game = () => {
     setShowPromotionPopup(false);
   };
 
-  const handlePromotion = (from : string, to:string,piece: string) => {
+  const handlePromotion = (from: string, to: string, piece: string) => {
     if (chessGame === null || !gameManager) return;
-    gameManager.networkMove({from, to, promotion : piece});
+    gameManager.networkMove({ from, to, promotion: piece });
   };
 
   const handleNewGame = () => {
@@ -174,11 +187,6 @@ const Game = () => {
   };
 
   const [PlayerIsFind, setFindPlayer] = useState(false);
-
-  const PlayerFind = (_playerisWhite: boolean) => {
-    setFindPlayer(true);
-    setPlayerisWhite(_playerisWhite);
-  };
 
   const cancelMatchmaking = () => {
     console.log('cancelMatchmaking');
@@ -214,6 +222,10 @@ const Game = () => {
     console.log('Propose Nulle');
   }
 
+  useEffect(() => {
+    fetchIconData();
+  }, [PlayerIsFind]);
+
   return (
     <GameContext.Provider value={{
       clientManager: clientManager,
@@ -242,6 +254,8 @@ const Game = () => {
           rankingChange={gameEndInfo.rankingChange}
           onNewGame={handleNewGame} // Implémentez cette fonction pour gérer la création d'une nouvelle partie
           onReturn={handleReturn} // Implémentez cette fonction pour gérer le retour à l'écran précédent
+          idImageP1={idIcon ? idIcon[0] : 0}
+          idImageP2={idIcon ? idIcon[1] : 0}
         />
       )}
 
@@ -250,7 +264,7 @@ const Game = () => {
       />
       <section className="chessGame">
         {showPromotionPopup && (
-          <PopUpPromotion choosePiece={handlePromotion} closePopUp={handleClosePromotion} from={fromToPromotion[0]} to={fromToPromotion[1]}/>)
+          <PopUpPromotion choosePiece={handlePromotion} closePopUp={handleClosePromotion} from={fromToPromotion[0]} to={fromToPromotion[1]} />)
         }
         <MovesListMobile moves={movesData} />
         <div className="leftContainer">
@@ -261,6 +275,7 @@ const Game = () => {
             playerScorePieceValue={2}
             time="10:00"
             enHaut={true}
+            idIcon={idIcon?idIcon[0] : 0}
           />
           <Chat />
           <PlayerContainer
@@ -270,6 +285,7 @@ const Game = () => {
             playerScorePieceValue={2}
             time="10:00"
             enHaut={false}
+            idIcon={idIcon?idIcon[1] : 0}
           />
         </div>
         <div className='TopContainer Mobile'>
@@ -280,10 +296,11 @@ const Game = () => {
             playerScorePieceValue={2}
             time="10:00"
             enHaut={true}
+            idIcon={0}
           />
         </div>
         <div className="chessBoardContainer">
-          <ChessBoardRenderer onGameEnd={handleGameEnd} onShowPromotionPopup={handleShowPromotion} onClosePromotionPopup={handleClosePromotion}/>
+          <ChessBoardRenderer onGameEnd={handleGameEnd} onShowPromotionPopup={handleShowPromotion} onClosePromotionPopup={handleClosePromotion} />
         </div>
         <div className="rightContainer">
           <MovesList moves={movesData} />
@@ -302,9 +319,10 @@ const Game = () => {
             playerScorePieceValue={2}
             time="10:00"
             enHaut={false}
+            idIcon={0}
           />
         </div>
-        <BottomMenuMobile 
+        <BottomMenuMobile
           onAbandon={Abandon}
           onDraw={ProposeNulle}
           onPreviousMove={PreviousMove}

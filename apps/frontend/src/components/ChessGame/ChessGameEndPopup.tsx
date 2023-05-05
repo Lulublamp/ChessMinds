@@ -6,6 +6,8 @@ interface Props {
   winner: string;
   playerName1: string;
   playerName2: string;
+  idImageP1: number;
+  idImageP2: number;
   gameType: string;
   ranking: number;
   rankingChange: number;
@@ -46,6 +48,8 @@ const ChessGameEndPopup: React.FC<Props> = ({
   rankingChange,
   onNewGame,
   onReturn,
+  idImageP1,
+  idImageP2
 }) => {
   return (
     <div className="PopUpFinDePartie">
@@ -55,7 +59,7 @@ const ChessGameEndPopup: React.FC<Props> = ({
           <h2>{winner} ont gagné</h2>
           <div>
             <div>
-              <ProfileImage id={0} alt="Icon Player 1" />
+              <ProfileImage id={idImageP1} alt="Icon Player 1" />
               <span>{playerName1}</span>
             </div>
             <div>
@@ -63,7 +67,7 @@ const ChessGameEndPopup: React.FC<Props> = ({
               <span>{gameType}</span>
             </div>
             <div>
-              <ProfileImage id={0} alt="Icon Player 2" />
+              <ProfileImage id={idImageP2} alt="Icon Player 2" />
               <span>{playerName2}</span>
             </div>
           </div>
