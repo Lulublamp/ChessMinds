@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Nt } from '@TRPI/core';
+import { IMMPlayer } from '@TRPI/core/core-network';
 import { Classement } from 'src/classement/entities/classement.entity';
 
 @Injectable()
@@ -69,5 +70,29 @@ export class MatchMakingService {
       return maybeMatchId;
     }
     return true;
+  }
+
+  public createLobby(player: Nt.IMMPlayer, socketId: string): string {
+    const comb = `${socketId}-${player.id}`;
+    this.queue.addToPrivateQueue(comb, player);
+    return comb;
+  }
+
+  public joinLobby(comb: string, player: Nt.IMMPlayer): IMMPlayer[] | null {
+    this.queue.addToPrivateQueue(comb, player);
+    const lobby = this.queue.getFromPrivateQueue(comb);
+
+    if (lobby) {
+      return lobby;
+    }
+    return null;
+  }
+
+  public static getDefaultOptions(): Nt.JoinQueuOption {
+    const defaultOpt: Nt.JoinQueuOption = {
+      mode: Nt.MATCHMAKING_MODE.PRIVATE,
+      timer: Nt.MATCHMAKING_MODES_TIMERS.BLITZ,
+    };
+    return defaultOpt;
   }
 }
