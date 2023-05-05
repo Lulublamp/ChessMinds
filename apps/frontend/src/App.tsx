@@ -15,10 +15,11 @@ import AuthWrapper from './components/Navigation/AuthWrapper';
 import axios from 'axios';
 import { API_BASE_URL } from './config';
 import { PublicContext } from './contexts/ContextPublicManager';
-import { CONNECTION, ClientEventManager, NAMESPACE_TYPES, PGinvitations } from '@TRPI/core/core-network';
+import { CONNECTION, ClientEventManager, IMMPlayer, NAMESPACE_TYPES, PGinvitations } from '@TRPI/core/core-network';
 import GameAI from './pages/Game/GameAi';
 import AiMenu from './components/Navigation/MainMenu/AiMenu';
 import PopUpInvitationLobby from './components/Form/PopUpInvitationLobby';
+import { set } from 'lodash';
 
 const App: FC = () => {
 
@@ -32,10 +33,11 @@ const App: FC = () => {
   const [showPopupInvitationLobby, setShowPopupInvitationLobby] = useState(false);
   const [lstIdInvitations, setLstIdInvitations] = useState<number[]>([]);
   const [darkMode, setDarkMode] = useState(false);
-  
-  const [PGInvitations , setPGInvitations] = useState<PGinvitations[]>([]);
-  const authWrapperRef = useRef<any>(null);
 
+  const [PGInvitations , setPGInvitations] = useState<PGinvitations[]>([]);
+  const [lobbyPlayer, setLobbyPlayer] = useState<IMMPlayer[]>([]);
+  const lobbyPlayerRef = useRef<IMMPlayer[]>([]);
+  const authWrapperRef = useRef<any>(null);
 
   const [socketGlobal, setSocketGlobal] = useState<ClientEventManager<CONNECTION> | null>(null);
   const socketGlobalRef = useRef<ClientEventManager<CONNECTION> | null>(null);
@@ -124,6 +126,12 @@ const App: FC = () => {
         setPopup: setShowPopupInvitationLobby,
         setPGInvitations: setPGInvitations,
       });
+      socketGlobalRef.current.listenToJoinLobby({
+        goToPrivateGame : goToPrivateGame,
+        Settlobby : setLobbyPlayer,
+        userId : Number(user.id),
+        lobbyRef : lobbyPlayerRef,
+      });
     }
     
 
@@ -148,6 +156,13 @@ const App: FC = () => {
       setShowLoginPopup(false);
       setShowSignupPopup(true);
     }
+  };
+
+  const goToPrivateGame = () => {
+    authWrapperRef.current.handleGoToMainMenu();
+    setShowMatchmaking(false);
+    setShowAiMenu(false);
+    setShowPrivateGame(true);
   };
 
   const handleSwitchToLogin = () => {
@@ -190,7 +205,13 @@ const App: FC = () => {
       return <Matchmaking onBackClick={onBackClickMenu} />;
     }
     if (showPrivateGame) {
-      return <PrivateGame onBackClick={onBackClickMenu} lstIdInvitations={lstIdInvitations} />;
+      return <PrivateGame 
+        onBackClick={onBackClickMenu} 
+        lstIdInvitations={lstIdInvitations} 
+        Lobby={lobbyPlayer} 
+        LobbySetteur={setLobbyPlayer}
+        idMatch={PGInvitations.length >= 1 ? PGInvitations[0].lobbyId : null} 
+      />;
     }
     if(showAiMenu){
       return <AiMenu onBackClick={onBackClickMenu} />;

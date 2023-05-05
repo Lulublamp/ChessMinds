@@ -25,8 +25,13 @@ const AuthWrapper = forwardRef((props: AuthWrapperProps, ref) =>{
     navigate('/MainMenu');
   };
   
+  const handleGoToMainMenu = () => {
+    navigate('/MainMenu');
+  };
+
   useImperativeHandle(ref, () => ({
     handleSuccessfulLogin,
+    handleGoToMainMenu
   }));
 
   useEffect(() => {
