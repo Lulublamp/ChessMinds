@@ -4,6 +4,7 @@ import MenuContainer from './MenuContainer';
 import imageBanner from '../../../images/0_2.png';
 import imageBannerDark from '../../../images/0_2_dark.png';
 import { UserContext, User } from '../../UserContext';
+import PopUpDefiAmi from './PopUpDefiAmi';
 import { useNavigate } from 'react-router-dom';
 import './styleMenu.css';
 import axios from 'axios';
@@ -14,12 +15,14 @@ interface Props {
   onNewGameClick: () => void;
   onPrivateGameClick: () => void;
   onAiGameClick: () => void;
+  onJoinGameClick: () => void;
   isDarkMode: boolean;
 }
 
-const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick, onPrivateGameClick, isDarkMode,onAiGameClick }) => {
+const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick, onPrivateGameClick, isDarkMode,onAiGameClick, onJoinGameClick}) => {
   const user = useContext(UserContext);
   const { setUser } = useContext(UserContext);
+  const [showPrivateGamePopup, setShowPrivateGamePopup] = React.useState(false);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -50,8 +53,14 @@ const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick, onPrivateGam
   }, [user, navigate, setUser]);
 
 
+  const ShowPopUp = () => {
+    setShowPrivateGamePopup(true);
+  }
+
+
   return (
     <section className="MainMenu">
+      {showPrivateGamePopup && <PopUpDefiAmi onClose={() => setShowPrivateGamePopup(false)} onJoinLobby={onJoinGameClick} onCreateLobby={onPrivateGameClick}/> }
       <div>
         <div className="left-container">
           <EloContainer />
@@ -62,7 +71,7 @@ const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick, onPrivateGam
           <MenuContainer
             onLogoutClick={onLogoutClick}
             onNewGameClick={onNewGameClick}
-            onPrivateGameClick={onPrivateGameClick}
+            onPrivateGameClick={ShowPopUp}
             onAiGameClick={onAiGameClick}
           />
         </div>
