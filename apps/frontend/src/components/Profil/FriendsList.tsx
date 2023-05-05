@@ -9,7 +9,7 @@ import './FriendList.css'
 interface FriendProps {
   lstIdInvitations: number[];
   defiMode: boolean;
-  onDefi?: () => void;
+  onDefi?: (id: number) => void;
 }
 
 const FriendsList: React.FC<FriendProps> = ({ lstIdInvitations, defiMode, onDefi }) => {

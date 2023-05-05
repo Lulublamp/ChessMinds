@@ -14,6 +14,7 @@ export class ChessGame {
   private whitePlayer: Player; // le joueur blanc
   private blackPlayer: Player; // le joueur noir
   private currentTurn: Color; // la couleur du joueur qui doit jouer le prochain tour
+  private sameMoves: number; // le nombre de coups identiques joués
 
   //Utiliser un tableau permet de rendre le code plus flexible et adaptable à des modifications éventuelles.
   //Cela pourrait être utile dans le cas où la logique du jeu est modifiée pour autoriser plus d'un pion à effectuer un double déplacement, par exemple
@@ -33,6 +34,7 @@ export class ChessGame {
     this.previousGame = null;
     this.currentTurn = Color.White;
     this.initializePieces();
+    this.sameMoves = 0;
   }
 
   public vierge() {
@@ -116,6 +118,21 @@ export class ChessGame {
     }
     if (!fromPiece.isValidMove(to, this)) {
       throw new Error("Invalid move for this piece");
+    }
+    //Si les 2 joueurs ont fait 3 fois le même coup, c'est un pat
+    if(from === this.movesHistory[this.movesHistory.length - 2]?.to && to === this.movesHistory[this.movesHistory.length - 2]?.from) {
+      console.log("same move");
+      this.sameMoves++;
+      console.log(this.sameMoves);
+    }
+    else {
+      this.sameMoves = 0;
+    }
+    if(this.sameMoves === 4) {
+      return {
+        status: 'stalemate',
+        message: 'Stalemate',
+      };
     }
 
     //Stocker la partie précédente pour revenir en arrière d'un coup

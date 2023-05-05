@@ -75,3 +75,19 @@ export interface eISendEnviteEvent {
 export interface eIInviteFriend {
   idInvite: number;
 }
+
+
+export interface eIJoinLobby {
+  lobbyId: string;
+}
+
+export interface eIPGInvitation {
+  idInvite: number;
+  lobbyId: string;
+}
+
+export interface eIPGProcess {
+  idInviter: number;
+  lobbyId: string;
+  accept: boolean;
+}

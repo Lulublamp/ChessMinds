@@ -7,7 +7,7 @@ import { useNavigate } from 'react-router-dom';
 interface FriendCardProps {
   idJoueur: number;
   defiMode : boolean;
-  handleDefiClick?: () => void;
+  handleDefiClick?: (id: number) => void;
 }
 
 interface PlayerDetails {
@@ -27,7 +27,7 @@ const FriendCard: React.FC<FriendCardProps> = ({idJoueur, defiMode, handleDefiCl
   };
 
   const handleDefi = () => {
-    if(handleDefiClick) handleDefiClick();
+    if(handleDefiClick) handleDefiClick(idJoueur);
   };
 
   useEffect(() => {
