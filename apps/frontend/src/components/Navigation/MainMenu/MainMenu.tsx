@@ -13,10 +13,11 @@ interface Props {
   onLogoutClick: () => void;
   onNewGameClick: () => void;
   onPrivateGameClick: () => void;
+  onAiGameClick: () => void;
   isDarkMode: boolean;
 }
 
-const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick, onPrivateGameClick, isDarkMode }) => {
+const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick, onPrivateGameClick, isDarkMode,onAiGameClick }) => {
   const user = useContext(UserContext);
   const { setUser } = useContext(UserContext);
   const navigate = useNavigate();
@@ -62,6 +63,7 @@ const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick, onPrivateGam
             onLogoutClick={onLogoutClick}
             onNewGameClick={onNewGameClick}
             onPrivateGameClick={onPrivateGameClick}
+            onAiGameClick={onAiGameClick}
           />
         </div>
         <div className="right-container">

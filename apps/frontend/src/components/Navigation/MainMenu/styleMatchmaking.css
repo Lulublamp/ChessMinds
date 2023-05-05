@@ -52,7 +52,7 @@
   top: 8px;
 }
 
-.left-container>span:first-of-type {
+.Matchmaking .left-container>span:first-of-type {
   margin-top: 45px;
   color: var(--font-color);
   font-size: 22px;
@@ -110,7 +110,7 @@
   margin-left: 5px;
 }
 
-.menu-container {
+.Matchmaking .menu-container {
   display: flex;
   flex-direction: column;
   justify-content: start;
@@ -188,7 +188,7 @@
   height: 0;
 }
 
-.slider {
+.Matchmaking .slider {
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -200,7 +200,7 @@
   border-radius: 34px;
 }
 
-.slider:before {
+.Matchmaking .slider:before {
   position: absolute;
   content: "";
   height: 26px;

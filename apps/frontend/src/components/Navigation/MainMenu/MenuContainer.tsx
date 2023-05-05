@@ -5,9 +5,10 @@ interface Props {
   onLogoutClick: () => void;
   onNewGameClick: () => void;
   onPrivateGameClick: () => void;
+  onAiGameClick: () => void;
 }
 
-const MenuContainer: React.FC<Props> = ({onLogoutClick,onNewGameClick, onPrivateGameClick }) => {
+const MenuContainer: React.FC<Props> = ({onLogoutClick,onNewGameClick, onPrivateGameClick,onAiGameClick }) => {
   
   const navigate = useNavigate();
 
@@ -15,14 +16,10 @@ const MenuContainer: React.FC<Props> = ({onLogoutClick,onNewGameClick, onPrivate
     navigate('/Profil');
   };
 
-  const goToAi = () => {
-    navigate('/GameAi');
-  };
-
   return (
     <div className="menu-container">
       <button onClick={onNewGameClick}>🕹️ Nouvelle partie</button>
-      <button onClick={goToAi}>🤖 VS l’ordinateur</button>
+      <button onClick={onAiGameClick}>🤖 VS l’ordinateur</button>
       <button onClick={onPrivateGameClick}>🤝 Défier un ami</button>
       <button>🎓 Apprendre</button>
       <button onClick={goToProfil}>🏆 Mon profil</button>

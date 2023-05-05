@@ -17,6 +17,7 @@ import { API_BASE_URL } from './config';
 import { PublicContext } from './contexts/ContextPublicManager';
 import { CONNECTION, ClientEventManager, NAMESPACE_TYPES } from '@TRPI/core/core-network';
 import GameAI from './pages/Game/GameAi';
+import AiMenu from './components/Navigation/MainMenu/AiMenu';
 
 const App: FC = () => {
 
@@ -24,6 +25,7 @@ const App: FC = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [showLoginPopup, setShowLoginPopup] = useState(false);
   const [showSignupPopup, setShowSignupPopup] = useState(false);
+  const [showAiMenu, setShowAiMenu] = useState(false);
   const [showMatchmaking, setShowMatchmaking] = useState(false);
   const [showPrivateGame, setShowPrivateGame] = useState(false);
   const [lstIdInvitations, setLstIdInvitations] = useState<number[]>([]);
@@ -158,11 +160,16 @@ const App: FC = () => {
   const onBackClickMenu = () => {
     setShowMatchmaking(false);
     setShowPrivateGame(false);
+    setShowAiMenu(false);
   };
 
   const handleNewPrivateGameClick = () => {
     console.log("private game");
     setShowPrivateGame(true);
+  };
+
+  const handleAiGameClick = () => {
+    setShowAiMenu(true);
   };
 
   const getMenuElement = () => {
@@ -172,12 +179,16 @@ const App: FC = () => {
     if (showPrivateGame) {
       return <PrivateGame onBackClick={onBackClickMenu} lstIdInvitations={lstIdInvitations} />;
     }
+    if(showAiMenu){
+      return <AiMenu onBackClick={onBackClickMenu} />;
+    }
     return (
       <MainMenu
         onNewGameClick={handleNewGameClick}
         onLogoutClick={handleLogout}
         onPrivateGameClick={handleNewPrivateGameClick}
         isDarkMode={darkMode}
+        onAiGameClick={handleAiGameClick}
       />
     );
   };

@@ -92,6 +92,7 @@ const ChessBoardRenderer: React.FC<Props> = ({onGameEnd, onShowPromotionPopup,on
           game: _game as IGame,//C'est un MaybeGame donc on force le type vu qu'on est sûr qu'il est défini ;)
         });
       }
+      console.log('network move' , from , to)
       gameManager?.networkMove({
         from, to
     });

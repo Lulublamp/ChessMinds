@@ -19,6 +19,7 @@ import PopUpPromotion from '../../components/ChessGame/PopUpPromotion ';
 import axios from 'axios';
 import { MATCHMAKING_MODES_TIMERS } from '@TRPI/core/core-network';
 import DisplayPiece from '../../components/ChessGame/DisplayPiece';
+import { set } from 'lodash';
 
 type GameEndInfo = {
   winner: string;
@@ -32,9 +33,10 @@ type GameEndInfo = {
 const GameAI = () => {
 
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const [movesData, setMovesData] = useState<Move[]>([]);
-  const [boardHistory, setBoardHistory] = useState<ChessBoard[]>([]);
-  const [currentIndex, setCurrentIndex] = useState<number>(0);
+  const [boardHistory, setBoardHistory] = useState<ChessBoard[]>([new ChessGame().getBoard()]);
+  const [currentIndex, setCurrentIndex] = useState<number>(1);
   const [playerisWhite, setPlayerisWhite] = useState(true);
   const [showEndPopup, setShowEndPopup] = useState(false);
   const [fromToPromotion, setFromToPromotion] = useState<string[]>([]);
@@ -42,17 +44,26 @@ const GameAI = () => {
   const [chessGame, setChessGame] = useState<ChessGame | null>(new ChessGame());
   const user = useContext(UserContext);
   const [elo, setElo] = useState<number>(0);
+  const [eloAi, setEloAi] = useState<number>(0);
   const [gameEndInfo, setGameEndInfo] = useState<GameEndInfo | null>(null);
   const [selectedCase, setSelectedCase] = useState<{ row: number, col: number } | null>(null);
   const [legalMoves, setLegalMoves] = useState<string[]>([]);
-  const [moveCount, setMoveCount] = useState(0); //Pour forcer le rafraichissement du composant Moyen :( A REVOIR
-  const [thisMove, setThisMove] = useState<Move | null>(null);
+
+  useEffect(() => {
+    const eloAiFromUrl = searchParams.get('eloAi');
+    if (eloAiFromUrl) {
+      setEloAi(parseInt(eloAiFromUrl));
+    }
+    else {
+      setEloAi(3600);
+    }
+  }, []);
 
   const handleGameEnd = (gameResult: any) => {
     setGameEndInfo(
       {
         winner: gameResult.winner,
-        playerName1: "Player 1",
+        playerName1: user.user?.pseudo || "Joueur 1",
         playerName2: "AI",
         gameType: MATCHMAKING_MODES_TIMERS.RAPID, //Faudrait un type spécial AI
         ranking: elo,
@@ -76,46 +87,51 @@ const GameAI = () => {
     chessGame.makeMove(from, to, piece);
   };
 
-  const PreviousMove = () => {
-    console.log('Previous move');
-    console.log(boardHistory, currentIndex);
-    if (boardHistory.length > 0 && currentIndex > 0) {
-      const newBoard = boardHistory[currentIndex - 1];
-      chessGame?.setBoard(newBoard);
-      setCurrentIndex(currentIndex - 1);
-    }
+  const NewGame = () => {
+    console.log('New game');
+    setChessGame(new ChessGame());
+    setMovesData([]);
+    setBoardHistory([new ChessGame().getBoard()]);
+    setCurrentIndex(1);
+    setPlayerisWhite(true);
+    setLegalMoves([]);
+    setShowEndPopup(false);
   }
 
-  const handleAiTurn = async () => {
+  const BackToMenu = () => {
+    navigate("/MainMenu");
+  }
+
+  const handleAiTurn = async (playerMove : any | null) => {
     if (!chessGame) return;
     let fen = chessGame.generateFEN();
     try {
-      const response = await axios.post(`https://lucas-blampied.fr/ChessAi/test.php`, { fen: fen });
+      const response = await axios.post(`https://lucas-blampied.fr/ChessAi/test.php`, { fen: fen, elo: eloAi });
       //const response = { data: { bestmove: "d7d5" } };
-      console.log(response.data);
       if (response.data.bestmove) {
         let from = response.data.bestmove[0] + response.data.bestmove[1];
         let to = response.data.bestmove[2] + response.data.bestmove[3];
-        chessGame.makeMove(from, to);
-        /*A FIX
-        const lastMove = movesData[movesData.length - 1];
-        console.log(movesData);
-        let newMove = {
-          turn: lastMove.turn,
-          white: lastMove.white,
-          whitePiece: lastMove.whitePiece,
-          black: to,
-          blackPiece: chessGame.getBoard().getPieceAt(to),
-        };
-        setThisMove(newMove);
-        setMovesData((current) => {
-          const newCurrent = [...current];
-          newCurrent.pop();
-          const moveAfter = [...newCurrent, newMove];
-          return moveAfter;
-        });*/
-        // Increment moveCount to force a re-render
-        setMoveCount(moveCount + 1);
+        const gameResult = chessGame.makeMove(from, to);
+        if(gameResult){
+          handleGameEnd(gameResult);
+        }
+        if (playerMove == null) {
+          let newMove = {
+            turn: 1,
+            white: null,
+            whitePiece: null,
+            black: to,
+            blackPiece: chessGame.getBoard().getPieceAt(to),
+          };
+          setMovesData((current) => [...current, newMove]);
+        } else {
+          let lastMove = playerMove; //Degueu mais pas le temps de faire mieux
+          lastMove.black = to;
+          lastMove.blackPiece = chessGame.getBoard().getPieceAt(to);
+          setMovesData((current) => [...current.slice(0, -1), lastMove]);
+        }
+        setCurrentIndex(currentIndex + 1);
+        boardHistory.push(chessGame.getBoard().copyBoard());
       } else {
         console.log("No best move received from API.");
       }
@@ -125,8 +141,6 @@ const GameAI = () => {
   }
 
   const NextMove = () => {
-    console.log('Next move');
-    console.log(boardHistory, currentIndex);
     if (boardHistory.length > 0 && currentIndex < boardHistory.length - 1) {
       const newBoard = boardHistory[currentIndex + 1];
       chessGame?.setBoard(newBoard);
@@ -134,8 +148,20 @@ const GameAI = () => {
     }
   }
 
+  const PreviousMove = () => {
+    if (boardHistory.length > 0 && currentIndex > 0) {
+      const newBoard = boardHistory[currentIndex - 1];
+      chessGame?.setBoard(newBoard);
+      setCurrentIndex(currentIndex - 1);
+    }
+  }
+  
   const Abandon = () => {
-    console.log('Abandon');
+    handleGameEnd({
+      status: 'abandon',
+      winner: chessGame!.getCurrentTurn() === Color.White ? Color.Black : Color.White,
+      message: `Checkmate Winner: ${chessGame!.getCurrentTurn()}`,
+    });
   }
 
   const onCaseClick = (row: number, col: number) => {
@@ -159,18 +185,21 @@ const GameAI = () => {
       let to = coordinate;
       setSelectedCase(null);
       setLegalMoves([]);
-      chessGame.makeMove(from, to);
-      /*A FIX
+      let gameResult = chessGame.makeMove(from, to);
+      boardHistory.push(chessGame.getBoard().copyBoard());
+      setCurrentIndex(currentIndex + 1);
+      if(gameResult){
+        handleGameEnd(gameResult);
+      }
       let newMove = {
-        turn: moveCount,
+        turn: movesData.length + 1,
         white: to,
         whitePiece: chessGame.getBoard().getPieceAt(to),
         black: null,
         blackPiece: null,
       };
-      setThisMove(newMove);
-      setMovesData((current) => [...current, newMove]);*/
-      handleAiTurn();
+      setMovesData((current) => [...current, newMove]);
+      handleAiTurn(newMove);
       return;
     }
 
@@ -253,12 +282,24 @@ const GameAI = () => {
       {showPromotionPopup && (
         <PopUpPromotion choosePiece={handlePromotion} closePopUp={handleClosePromotion} from={fromToPromotion[0]} to={fromToPromotion[1]} />)
       }
+     {showEndPopup && gameEndInfo && (
+        <ChessGameEndPopup
+          winner={gameEndInfo.winner ? 'Les noirs' : 'Les blancs'}
+          playerName1={gameEndInfo.playerName1}
+          playerName2={gameEndInfo.playerName2}
+          gameType={gameEndInfo.gameType}
+          ranking={gameEndInfo.ranking}
+          rankingChange={gameEndInfo.rankingChange}
+          onNewGame={NewGame} // Implémentez cette fonction pour gérer la création d'une nouvelle partie
+          onReturn={BackToMenu} // Implémentez cette fonction pour gérer le retour à l'écran précédent
+        />
+      )}
       <MovesListMobile moves={movesData} />
       <div className="leftContainer">
       <PlayerContainerAffichage
           isWhitePlayer={playerisWhite}
           playerName={"AI"}
-          playerScore={3600}
+          playerScore={eloAi}
           playerScorePieceValue={0}
           time="inf"
         />

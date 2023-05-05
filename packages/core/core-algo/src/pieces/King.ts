@@ -74,6 +74,43 @@ export class King extends ChessPiece {
       }
     }
 
+    // Pour le roi noir
+    if (game.canRoqueKingSide(this.color) && destination === "g8") {
+      // Les cases entre le roi et la tour doivent être vides
+      if (board.getPieceAt("f8") === null && board.getPieceAt("g8") === null) {
+        // Le roi ne doit pas être en échec
+        if (!this.isKingInCheck("e8", game)) {
+          // La case entre le roi et la tour ne doit pas être attaquée par une pièce adverse
+          if (
+            !this.isKingInCheck("f8", game) &&
+            !this.isKingInCheck("g8", game)
+          ) {
+            return true;
+          }
+        }
+      }
+    }
+
+    if (game.canRoqueQueenSide(this.color) && destination === "c8") {
+      // Les cases entre le roi et la tour doivent être vides
+      if (
+        board.getPieceAt("b8") === null &&
+        board.getPieceAt("c8") === null &&
+        board.getPieceAt("d8") === null
+      ) {
+        // Le roi ne doit pas être en échec
+        if (!this.isKingInCheck("e8", game)) {
+          // La case entre le roi et la tour ne doit pas être attaquée par une pièce adverse
+          if (
+            !this.isKingInCheck("c8", game) &&
+            !this.isKingInCheck("d8", game)
+          ) {
+            return true;
+          }
+        }
+      }
+    }
+
     return false;
   }
 
@@ -155,9 +192,9 @@ export class King extends ChessPiece {
     const dx = Math.abs(file1.charCodeAt(0) - file2.charCodeAt(0));
     const dy = Math.abs(parseInt(rank1) - parseInt(rank2));
     return dx <= 1 && dy <= 1;
-}
+  }
 
-public getPieceCode(): string {
-  return "k";
-}
+  public getPieceCode(): string {
+    return "k";
+  }
 }

@@ -189,7 +189,7 @@
   height: 0;
 }
 
-.slider {
+.PrivateLobby .slider {
   position: absolute;
   cursor: pointer;
   top: 0;
@@ -201,7 +201,7 @@
   border-radius: 34px;
 }
 
-.slider:before {
+.PrivateLobby .slider:before {
   position: absolute;
   content: "";
   height: 26px;
