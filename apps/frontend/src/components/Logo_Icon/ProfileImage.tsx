@@ -7,6 +7,7 @@ import iconPlayer5 from "../../images/ProfilIcon/IconPlayer5.png";
 import iconPlayer6 from "../../images/ProfilIcon/IconPlayer6.png";
 import iconPlayer7 from "../../images/ProfilIcon/IconPlayer7.png";
 import iconPlayer8 from "../../images/ProfilIcon/IconPlayer8.png";
+import iconAi from "../../images/ProfilIcon/IconAi.png";
 
 interface Props {
   id: number;
@@ -25,6 +26,7 @@ const ProfileImage: React.FC<Props> = ({ id, alt, className,onclick }) => {
     iconPlayer6,
     iconPlayer7,
     iconPlayer8,
+    iconAi,
   ];
 
   return <img src={images[id]} alt={alt || `Icon Player ${id + 1}`} className={className} onClick={onclick} />;

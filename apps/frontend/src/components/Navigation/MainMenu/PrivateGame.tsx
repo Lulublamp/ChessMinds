@@ -23,6 +23,10 @@ const PrivateGame: React.FC<Props> = ({ onBackClick, lstIdInvitations }) => {
     setisReady(checked);
   };
 
+  const handleDefi = () => {
+    //DEFI
+  };
+
   return (
     <section className="PrivateLobby">
       <div>
@@ -52,7 +56,7 @@ const PrivateGame: React.FC<Props> = ({ onBackClick, lstIdInvitations }) => {
             <PlayButton selectedTimeMod={selectedTimeMod} isRanked={'private'} />
           </div>
         </div>
-        <FriendsList lstIdInvitations={lstIdInvitations} defiMode={true} />
+        <FriendsList lstIdInvitations={lstIdInvitations} defiMode={true} onDefi={handleDefi} />
       </div>
     </section>
   );

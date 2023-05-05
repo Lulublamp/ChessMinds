@@ -1,5 +1,5 @@
 .AiMenu {
-  background-color: #fff;
+  background-color: var(--background-color);
   height: calc(100vh - 100px);
   width: 100%;
   overflow-x: hidden;
@@ -12,7 +12,7 @@
   width: 1200px;
   max-height: 790px;
   height: 100%;
-  background-color: #fff;
+  background-color: var(--background-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -24,7 +24,7 @@
   width: auto;
   padding-left: 24px;
   height: 100%;
-  background-color: #fff;
+  background-color: var(--background-color);
   float: left;
   position: relative;
 }
@@ -74,7 +74,7 @@
   background-color: #fff;
   border-radius: 38px 38px 22px 38px;
   border: 3px solid #212121;
-  box-shadow: 11px 13px 0px #212121;
+  box-shadow: 11px 13px 0px var(--drop-shadow);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -118,8 +118,8 @@
   justify-content: center;
   align-items: center;
   background-color: #fff;
-  border: solid 2px #212121;
-  box-shadow: 4px 4px 0px #212121;
+  border: solid 2px var(--font-color);
+  box-shadow: 4px 4px 0px var(--drop-shadow);
   margin-top: 45px;
   margin-bottom: 25px;
 }
@@ -132,7 +132,7 @@
 .AiMenu .menu-container>span {
   font-size: 25px;
   font-weight: normal;
-  color: #212121;
+  color: var(--font-color);
   margin-bottom: 25px;
 }
 
@@ -181,6 +181,7 @@
   width: 20%;
   font-size: 14px;
   user-select: none;
+  color: var(--font-color);
 }
 
 .AiMenu .slider-marks span::before {
@@ -190,7 +191,7 @@
   left: 50%;
   width: 1px;
   height: 5px;
-  background-color: #000;
+  background-color: var(--font-color);
   transform: translateX(-50%);
   z-index: 1;
 }

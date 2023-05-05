@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom';
 interface FriendCardProps {
   idJoueur: number;
   defiMode : boolean;
+  handleDefiClick?: () => void;
 }
 
 interface PlayerDetails {
@@ -15,7 +16,7 @@ interface PlayerDetails {
   imageId: number;
 }
 
-const FriendCard: React.FC<FriendCardProps> = ({idJoueur, defiMode}) => {
+const FriendCard: React.FC<FriendCardProps> = ({idJoueur, defiMode, handleDefiClick}) => {
   
   const [playerDetails, setPlayerDetails] = useState<PlayerDetails | null>(null);
 
@@ -23,6 +24,10 @@ const FriendCard: React.FC<FriendCardProps> = ({idJoueur, defiMode}) => {
 
   const handleVoirProfil = () => {
     navigate(`/Profil?idPlayer=${idJoueur}`);
+  };
+
+  const handleDefi = () => {
+    if(handleDefiClick) handleDefiClick();
   };
 
   useEffect(() => {
@@ -50,7 +55,7 @@ const FriendCard: React.FC<FriendCardProps> = ({idJoueur, defiMode}) => {
       <ProfileImage id={playerDetails.imageId} />
       <span>{playerDetails.pseudo}</span>
       <span>{playerDetails.eloMax}</span>
-      {defiMode && <button>Défier</button>}
+      {defiMode && <button onClick={handleDefi}>Défier</button>}
       {!defiMode && <button onClick={handleVoirProfil}>Voir profil</button>}
     </div>
   );

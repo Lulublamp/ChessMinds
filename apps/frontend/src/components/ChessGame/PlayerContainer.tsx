@@ -12,6 +12,7 @@ interface PlayerContainerProps {
   playerScorePieceValue: number;
   time: string;
   enHaut?: boolean;
+  idIcon: number;
 }
 
 function optionToTime(option: JoinQueuOption){
@@ -32,12 +33,13 @@ export const PlayerContainerAffichage: React.FC<PlayerContainerProps> = ({
   playerScore,
   playerScorePieceValue,
   time,
+  idIcon
 }) => {
   return (
     <div className={`playerContainer ${isWhitePlayer ? "whitePlayer" : "blackPlayer"}`}>
       <div>
         <div>
-          <ProfileImage id={0} alt="Icon Player 1" />
+          <ProfileImage id={idIcon} alt="Icon Player 1" />
           <div>
             <span>{playerName}</span>
             <span>{playerScore}</span>
@@ -82,7 +84,8 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
   playerScore,
   playerScorePieceValue,
   time,
-  enHaut
+  enHaut,
+  idIcon
 }) => {
   const fpayload = useFPayload();
   const [gameManager , setGameManager] = useGameManager();
@@ -111,6 +114,7 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
       playerScore={playerScore}
       playerScorePieceValue={playerScorePieceValue}
       time={timer}
+      idIcon={idIcon}
       />)
 };
 

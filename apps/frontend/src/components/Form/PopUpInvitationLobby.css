@@ -1,0 +1,58 @@
+.PopUpInvitationLobby{
+  position: fixed;
+  bottom: 10%;
+  right: 2%;
+  width: 381px;
+  height: 150px;
+  background: #FFFFFF;
+  border: solid 2px #212121;
+  border-radius: 11px;
+  padding: 14px 20px;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 4px 4px 0px #212121;
+  animation: slideInFromLeft 0.7s ease-out;
+}
+
+.PopUpInvitationLobby span{
+  font-size: 18px;
+  font-weight: bold;
+  color: #212121;
+}
+
+.PopUpInvitationLobby > div{
+  display: flex;  
+  flex-direction: row;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 24px;
+}
+
+.PopUpInvitationLobby > div button{
+  width: 162px;
+  height: 40px;
+  border-radius: 8px;
+  border: none;
+  font-size: 18px;
+  font-weight: bold;
+  color: #fff;
+  cursor: pointer;
+}
+
+.PopUpInvitationLobby > div button:first-child{
+  background: #4CAF50;
+}
+.PopUpInvitationLobby > div button:last-child{
+  background: #E63946;
+}
+
+@keyframes slideInFromLeft {
+  0% {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
