@@ -3,9 +3,14 @@ import { Injectable } from '@nestjs/common';
 @Injectable()
 export class ConnectionService {
   protected invitations: Map<number, number[]> = new Map<number, number[]>();
+  protected PGinvitations: Map<number, number[]> = new Map<number, number[]>();
 
   get invitationsMap() {
     return this.invitations;
+  }
+
+  get PGinvitationsMap() {
+    return this.PGinvitations;
   }
 
   public addInvitation(idJoueur: number, idInvited: number): boolean {
