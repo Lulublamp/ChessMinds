@@ -253,7 +253,7 @@ export class InGameGateway {
         pseudoJoueurBlanc: names.joueurBlanc,
         pseudoJoueurNoir: names.joueurNoir,
         vainqueur: gameResult.winner,
-        timer: Nt.MATCHMAKING_MODES_TIMERS.BLITZ //A MODIFIER
+        timer: Nt.MATCHMAKING_MODES_TIMERS.BLITZ, //A MODIFIER
       };
 
       const coups = game.getMovesHistory().map((move, index) => ({

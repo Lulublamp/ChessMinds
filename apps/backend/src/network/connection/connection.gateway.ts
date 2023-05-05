@@ -91,9 +91,6 @@ export class ConnectionGateway {
   @SubscribeMessage(Nt.EVENT_TYPES.CREATE_LOBBY)
   handleCreateLobby(@ConnectedSocket() client: Socket){
     const { user } = client['user'];
-
-    
-
     const player: IMMPlayer = this.matchMakingService.mapPlayer(
       user,
       MatchMakingService.getDefaultOptions(),

@@ -23,8 +23,10 @@ const PrivateGame: React.FC<Props> = ({ onBackClick, lstIdInvitations }) => {
     setisReady(checked);
   };
 
-  const handleDefi = () => {
+  const handleDefi = (id: number) => {
     //DEFI
+    console.log('defi' , id);
+
   };
 
   return (
