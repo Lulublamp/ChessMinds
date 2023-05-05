@@ -61,6 +61,21 @@ export interface rIInvitationFriendEvent {
   lstIdInvite: number[];
 }
 
+export interface rIJoinLobbyEvent {
+  
+}
+
+export interface rIPGInvitation {
+  setPopup: ReactSetter<boolean>;
+  setPGInvitations: ReactSetter<PGinvitations[]>;
+}
+
+
+export interface PGinvitations {
+  idJoueur: number;
+  pseudo: string;
+  lobbyId: string;
+}
 export interface rIReceiveChatMessageEvent {
   setChat: ReactSetter<ChatMessage[]>;
 }

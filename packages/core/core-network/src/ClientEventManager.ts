@@ -8,12 +8,14 @@ import {
   eIFirstMoveEvent,
   eISendEnviteEvent,
   eIInviteFriend,
+  eIPGInvitation,
+  eIPGProcess,
   eISendChatMessageEvent,
   eIDrawRequestEvent,
   eIDrawResponseEvent,
 } from "./interfaces/emitEvents";
 import { CONNECTION, IN_GAME, MATCH_MAKING, NAMESPACE_TYPES, PRIVATE, PRIVATE_GAME } from "./Namespace";
-import { Move, rICreateRoomEvent, rIIncomingGameEvent, rIInvitationFriendEvent, rINetworkMoveEvent, rITimeEvent, rITimeoutEvent, rIReceiveChatMessageEvent, rIRequestChatHistoryEvent, rIReceiveDrawRequestEvent, rIReceiveDrawResponseEvent } from "./interfaces/receiveEvents";
+import { Move, PGinvitations, rICreateRoomEvent, rIIncomingGameEvent, rIInvitationFriendEvent, rIJoinLobbyEvent, rINetworkMoveEvent, rIPGInvitation, rITimeEvent, rITimeoutEvent, rIReceiveChatMessageEvent, rIRequestChatHistoryEvent, rIReceiveDrawRequestEvent, rIReceiveDrawResponseEvent } from "./interfaces/receiveEvents";
 import { IGame } from "./interfaces/game";
 // import { PrivateLobby } from "./utils/Lobby";
 import { ChessBoard, Color } from "../../core-algo";
@@ -260,6 +262,45 @@ export class ClientEventManager<
     });
   }
 
+  public createLobby(payload: Check<T, CONNECTION, null>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    this.send(EVENT_TYPES.CREATE_LOBBY, null);
+  }
+
+  public deleteLobby(payload: Check<T, CONNECTION, null>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    this.send(EVENT_TYPES.DELETE_LOBBY, null);
+  }
+
+  public listenToJoinLobby(payload: Check<T, CONNECTION, rIJoinLobbyEvent>) {
+
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    this.socket.on(EVENT_TYPES.LOBBY_STATUS, (lobby) => {
+      console.log('Lobby received', lobby);
+    });
+
+  }
+
+  public sendPGinvitation(payload: Check<T, CONNECTION, eIPGInvitation>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    this.send(EVENT_TYPES.PG_INVITATION, payload);
+  }
+
+  public listenToPGinvitation(payload: Check<T, CONNECTION, rIPGInvitation>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    this.socket.on(EVENT_TYPES.RECEIVE_PG_INVITATION, (invitations: PGinvitations) => {
+      console.log('PG Invitations received', invitations);
+      payload.setPopup(() => true);
+      payload.setPGInvitations((current) => [...current, invitations]);
+    });
+  }
+
+  public processPGInvitation(payload: Check<T, CONNECTION, eIPGProcess>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    this.send(EVENT_TYPES.PROCESS_PG_INVITATION, payload);
+  }
+
+  
   public sendChatMessage(payload: Check<T, IN_GAME, eISendChatMessageEvent>) {
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
     this.send(EVENT_TYPES.SEND_CHAT_MESSAGE, payload);
