@@ -43,13 +43,10 @@ export interface eIMakeMoveEvent {
 export interface eIFirstMoveEvent {
   game: IGame
 }
-export interface eIRequestChatHistoryEvent {
-  matchId: string;
-}
+
 
 export interface eISendChatMessageEvent extends Omit<ChatMessage, 'timestamp'> {}
 
-export interface eIReceiveChatMessageEvent extends ChatMessage {}
 
 export interface eIInviteAmisEvent {
   idJoueur: number;

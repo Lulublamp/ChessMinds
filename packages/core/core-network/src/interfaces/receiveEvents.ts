@@ -2,6 +2,7 @@ import { ChessBoard, ChessGame, ChessPiece } from "../../../core-algo";
 import { ClientEventManager } from "../ClientEventManager";
 import { IN_GAME, MATCH_MAKING } from "../Namespace";
 import { IGame } from "./game";
+import { ChatMessage } from "../utils/Chat";
 
 export interface Move {
   turn: number;
@@ -74,4 +75,12 @@ export interface PGinvitations {
   idJoueur: number;
   pseudo: string;
   lobbyId: string;
+}
+export interface rIReceiveChatMessageEvent {
+  setChat: ReactSetter<ChatMessage[]>;
+}
+
+export interface rIRequestChatHistoryEvent {
+  matchId: string;
+  setChat: ReactSetter<ChatMessage[]>;
 }

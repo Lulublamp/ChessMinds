@@ -1,14 +1,29 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./ChatStyle.css";
+import { ChatMessage } from "@TRPI/core/core-network/src/utils/Chat";
+import { useGameManager } from "../../contexts/GameContext";
+import { omit } from "lodash";
 
-interface ChatMessage {
-  message: string;
-  sender: string;
+// interface ChatMessage {
+//   message: string;
+//   sender: string;
+// }
+
+interface Props{
+  matchId: string;
+  pseudo: string;
 }
 
-const Chat: React.FC = () => {
+const Chat: React.FC<Props> = ({matchId, pseudo}) => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState("");
+
+  const [gameManager, setGameManager] = useGameManager();
+
+  useEffect(() => {
+    gameManager?.listenToChatMessage({setChat: setMessages});
+  }, [gameManager]);
+    
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setInputValue(event.target.value);
@@ -16,16 +31,20 @@ const Chat: React.FC = () => {
 
   const handleSendMessage = () => {
     if (inputValue.trim() !== "") {
-      setMessages([...messages, { message: inputValue, sender: "me" }]);
+      const message = { message: inputValue, sender: pseudo, matchId: matchId, timestamp: Date.now() };
+      setMessages([...messages, message]);
       setInputValue("");
+      gameManager?.sendChatMessage(omit(message, "timestamp"));
     }
   };
+
+
 
   return (
     <div className="chatContainer">
       <div className="messageContainer">
         {messages.map((message, index) => (
-          <div key={index} className={`message ${message.sender === "me" ? "sent" : "received"}`}>
+          <div key={index} className={`message ${message.sender === pseudo ? "sent" : "received"}`}>
             <p>{message.message}</p>
           </div>
         ))}

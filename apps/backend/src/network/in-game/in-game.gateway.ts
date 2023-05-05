@@ -281,10 +281,9 @@ export class InGameGateway {
 
   @SubscribeMessage(Nt.EVENT_TYPES.SEND_CHAT_MESSAGE)
   handleSendMessage(
-    @MessageBody() chatMessage: Omit<Nt.ChatMessage, 'timestamp'>,
+    @MessageBody() chatMessage: Nt.eISendChatMessageEvent,
     @ConnectedSocket() client: Socket,
   ) {
-    console.log('in-game: Chat message received');
 
     const chatMessageWithTimestamp: Nt.ChatMessage = {
       ...chatMessage,
@@ -295,19 +294,20 @@ export class InGameGateway {
       chatMessage.matchId,
       chatMessageWithTimestamp,
     );
-    this.server
+    client
       .to(chatMessage.matchId)
       .emit(Nt.EVENT_TYPES.RECEIVE_CHAT_MESSAGE, chatMessageWithTimestamp);
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.REQUEST_CHAT_HISTORY)
   handleRequestChatHistory(
-    @MessageBody() payload: { matchId: string },
+    @MessageBody() payload: Nt.rIRequestChatHistoryEvent,
     @ConnectedSocket() client: Socket,
   ) {
     console.log('in-game: Chat history request');
     const chatHistory = this.chatService.getChatHistory(payload.matchId);
-    client.emit(Nt.EVENT_TYPES.SEND_CHAT_HISTORY, chatHistory);
+    // client.emit(Nt.EVENT_TYPES.SEND_CHAT_HISTORY, chatHistory);
+    payload.setChat(chatHistory);
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.CANCEL_MOVE)
