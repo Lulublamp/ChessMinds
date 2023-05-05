@@ -330,8 +330,6 @@ const Game = () => {
           />
           <AbandonButton onClick={Abandon} />
           <NulleButtons onClick={ProposeNulle} />
-          <button onClick={() => DrawResponse(true)}>Accepter</button>
-          <button onClick={() => DrawResponse(false)}>Refuser</button>
         </div>
         <div className='BotContainer Mobile'>
           <PlayerContainer

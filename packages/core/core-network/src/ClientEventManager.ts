@@ -285,7 +285,6 @@ export class ClientEventManager<
   public listenToDrawRequest(payload: Check<T, IN_GAME, rIReceiveDrawRequestEvent>) {
     if(!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
     this.socket.on(EVENT_TYPES.DRAW_REQUEST, () => {
-      console.log('Request received');
       payload.setDrawRequest(() => true);
     });
   }
