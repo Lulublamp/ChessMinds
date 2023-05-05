@@ -168,6 +168,10 @@ const App: FC = () => {
     setShowPrivateGame(true);
   };
 
+  const handleJoinLobby = () => {
+
+  }
+
   const handleAiGameClick = () => {
     setShowAiMenu(true);
   };
@@ -189,6 +193,7 @@ const App: FC = () => {
         onPrivateGameClick={handleNewPrivateGameClick}
         isDarkMode={darkMode}
         onAiGameClick={handleAiGameClick}
+        onJoinGameClick={handleJoinLobby}
       />
     );
   };
