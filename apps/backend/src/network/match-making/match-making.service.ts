@@ -75,7 +75,13 @@ export class MatchMakingService {
   public createLobby(player: Nt.IMMPlayer, socketId: string): string {
     const comb = `${socketId}-${player.id}`;
     this.queue.addToPrivateQueue(comb, player);
+    console.log('[LOGS] createLobby : ', comb);
     return comb;
+  }
+
+  public deleteLobby(comb: string): void {
+    this.queue.deletePrivateQueue(comb);
+    //à voir si on doit nettoyer encore plus
   }
 
   public joinLobby(comb: string, player: Nt.IMMPlayer): IMMPlayer[] | null {

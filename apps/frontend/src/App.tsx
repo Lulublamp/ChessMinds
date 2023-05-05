@@ -15,9 +15,10 @@ import AuthWrapper from './components/Navigation/AuthWrapper';
 import axios from 'axios';
 import { API_BASE_URL } from './config';
 import { PublicContext } from './contexts/ContextPublicManager';
-import { CONNECTION, ClientEventManager, NAMESPACE_TYPES } from '@TRPI/core/core-network';
+import { CONNECTION, ClientEventManager, NAMESPACE_TYPES, PGinvitations } from '@TRPI/core/core-network';
 import GameAI from './pages/Game/GameAi';
 import AiMenu from './components/Navigation/MainMenu/AiMenu';
+import PopUpInvitationLobby from './components/Form/PopUpInvitationLobby';
 
 const App: FC = () => {
 
@@ -28,8 +29,11 @@ const App: FC = () => {
   const [showAiMenu, setShowAiMenu] = useState(false);
   const [showMatchmaking, setShowMatchmaking] = useState(false);
   const [showPrivateGame, setShowPrivateGame] = useState(false);
+  const [showPopupInvitationLobby, setShowPopupInvitationLobby] = useState(false);
   const [lstIdInvitations, setLstIdInvitations] = useState<number[]>([]);
   const [darkMode, setDarkMode] = useState(false);
+  
+  const [PGInvitations , setPGInvitations] = useState<PGinvitations[]>([]);
   const authWrapperRef = useRef<any>(null);
 
 
@@ -116,7 +120,12 @@ const App: FC = () => {
       socketGlobalRef.current.listenToInvitationsStatus({SetteurLstIdInvite : setLstIdInvitations, lstIdInvite : lstIdInvitations});
       socketGlobalRef.current.listenToIncomingInvitations({SetteurLstIdInvite : setLstIdInvitations, lstIdInvite : lstIdInvitations});
       socketGlobalRef.current.getInvitations(null);
+      socketGlobalRef.current.listenToPGinvitation({
+        setPopup: setShowPopupInvitationLobby,
+        setPGInvitations: setPGInvitations,
+      });
     }
+    
 
     return () => {
       if (socketGlobalRef.current !== null) {
@@ -198,13 +207,30 @@ const App: FC = () => {
     );
   };
 
-  
+  const onAcceptPG = (idInviter: number, lobbyId: string) => {
+    console.log("accept private game");
+    socketGlobalRef.current?.processPGInvitation({
+      idInviter: PGInvitations[0].idJoueur,
+      lobbyId: PGInvitations[0].lobbyId,
+      accept: true,
+    })
+    setShowPopupInvitationLobby(() => false);
+  }
+
+  const onDeclinePG = () => {
+    console.log("decline private game");
+    setShowPopupInvitationLobby(() => false);
+  }
+
   
   return (
     <PublicContext.Provider value={{ publicManager: socketGlobal}}>
       <UserContext.Provider value={{ user, setUser }}>
         <HashRouter>
           <Navbar onPlayClick={handleLoginPopupClick} onLogoutClick={handleLogout} toggleDarkMode={togleDarkMode} lstIdInvitations={lstIdInvitations} />
+          {
+            showPopupInvitationLobby && <PopUpInvitationLobby invitation={PGInvitations[0]} onAccept={onAcceptPG} onDecline={onDeclinePG}/>
+          }
           <GameInfoProvider>
             <Routes>
               <Route

@@ -194,11 +194,18 @@ export class Queue {
 
   public addToPrivateQueue(key: string, player: IMMPlayer) {
     if (!this.privateQueue.has(key)) {
+      console.log('Init PG')
       this.privateQueue.set(key, []);
     }
-    this.privateQueue.get(key)!.length >= 2 
-      ? null 
-      : this.privateQueue.get(key)!.push(player);
+    const currentQueue = this.privateQueue.get(key)!;
+
+    if (currentQueue.length >= 2) {
+      return null;
+    } else {
+      console.log('Add to PG')
+      this.privateQueue.set(key, [...currentQueue, player]);
+    }
+    console.log('[LOGS] addToPrivateQueue : ', this.privateQueue.get(key)!)
   }
 
   public getFromPrivateQueue(key: string): IMMPlayer[] | undefined {

@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import './stylePrivateGame.css';
 import ReadySwitch from './ReadySwitch';
 import PlayButton from '../../Button/PlayButton';
 import FriendsList from '../../Profil/FriendsList';
 import TimeMode from './TimeMode';
 import { MATCHMAKING_MODES_TIMERS} from '@TRPI/core/core-network';
+import { useGlobalSocket } from '../../../contexts/ContextPublicManager';
+import { UserContext } from '../../UserContext';
 
 interface Props {
   onBackClick: () => void;
@@ -14,6 +16,9 @@ interface Props {
 const PrivateGame: React.FC<Props> = ({ onBackClick, lstIdInvitations }) => {
   const [selectedTimeMod, setSelectedTimeMod] = useState<MATCHMAKING_MODES_TIMERS>('bullet');
   const [isReady, setisReady] = useState<string>('unready');
+  const globalSocket = useGlobalSocket();
+  const user = useContext(UserContext)
+  const matchId = `${globalSocket!['socket'].id}-${user.user?.id}`
 
   const handleTimeModeSelect = (timeMode: MATCHMAKING_MODES_TIMERS) => {
     setSelectedTimeMod(timeMode);
@@ -24,10 +29,25 @@ const PrivateGame: React.FC<Props> = ({ onBackClick, lstIdInvitations }) => {
   };
 
   const handleDefi = (id: number) => {
-    //DEFI
+    globalSocket?.sendPGinvitation({ idInvite: id, lobbyId: matchId })
     console.log('defi' , id);
 
   };
+
+  useEffect(() => {
+    console.log('Creating server lobby');
+    //if if if 
+    globalSocket?.listenToJoinLobby({})
+    globalSocket?.createLobby(null);
+    console.log(matchId)
+
+    return () => {
+      console.log('Destroying server lobby');
+      globalSocket?.deleteLobby(null);
+      //à revoir
+    }
+
+  }, []);
 
   return (
     <section className="PrivateLobby">

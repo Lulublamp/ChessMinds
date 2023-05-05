@@ -9,7 +9,7 @@ import {
 import { Socket } from 'socket.io';
 import { MatchMakingService } from '../match-making/match-making.service';
 import { ConnectionService } from './connection.service';
-import { IMMPlayer } from '@TRPI/core/core-network';
+import { DelayTimer, IMMPlayer } from '@TRPI/core/core-network';
 
 @WebSocketGateway({
   namespace: Nt.NAMESPACE_TYPES.CONNECTION,
@@ -22,6 +22,8 @@ export class ConnectionGateway {
   private socketsMap: Map<number, Socket> = new Map();
 
   private lastInviteMap: Map<number, number> = new Map();
+
+  private inviteTimersMap: Map<number, NodeJS.Timeout> = new Map();
 
   constructor(
     private connectionService: ConnectionService,
@@ -87,26 +89,35 @@ export class ConnectionGateway {
     this.handleGetInvitations(client);
   }
 
-
   @SubscribeMessage(Nt.EVENT_TYPES.CREATE_LOBBY)
   handleCreateLobby(@ConnectedSocket() client: Socket){
-    const { user } = client['user'];
+    const user = client['user'];
     const player: IMMPlayer = this.matchMakingService.mapPlayer(
       user,
       MatchMakingService.getDefaultOptions(),
     );
+    console.log('ConnectionGateway -> handleCreateLobby -> player', player);
 
-    const lobbyId = this.matchMakingService.createLobby(user, client.id);
+    const lobbyId = this.matchMakingService.createLobby(player, client.id);
+
   }
 
+  @SubscribeMessage(Nt.EVENT_TYPES.DELETE_LOBBY)
+  handleLeaveLobby(@ConnectedSocket() client: Socket){
+    const user = client['user'];
+    const lobbyId = this.matchMakingService.deleteLobby(
+      `${client.id}-${client['user'].user.idJoueur}`,
+    );
+
+    this.server.to(lobbyId).emit(Nt.EVENT_TYPES.LOBBY_STATUS, null);
+  }
 
   @SubscribeMessage(Nt.EVENT_TYPES.JOIN_LOBBY)
   handleJoinLobby(
     @ConnectedSocket() client: Socket,
-    @MessageBody() payload: Nt.eIJoinLobby
+    @MessageBody() payload: Nt.eIJoinLobby,
   ) {
-
-    const { user } = client['user'];
+    const user = client['user'];
     const { lobbyId } = payload;
 
     const player: IMMPlayer = this.matchMakingService.mapPlayer(
@@ -134,6 +145,8 @@ export class ConnectionGateway {
     const { idInvite } = payload;
     const { user } = client['user'];
 
+    console.log('ConnectionGateway -> handlePGInvitation');
+
     const socket = this.socketsMap.get(idInvite);
 
     if (socket == null) {
@@ -144,14 +157,24 @@ export class ConnectionGateway {
     const lastInviter = this.lastInviteMap.get(user.idJoueur);
     const canInvite = lastInviter == null || lastInviter != idInvite;
 
+    console.log(
+      'ConnectionGateway -> handlePGInvitation -> canInvite',
+      canInvite,
+    );
+
     if (!canInvite) {
+      const timer = new Nt.DelayTimer(() => {
+        this.lastInviteMap.delete(user.idJoueur);
+      }, 3000);
+      timer.start();
       return;
     }
 
     this.lastInviteMap.set(user.idJoueur, idInvite);
-    this.server.to(socket).emit(Nt.EVENT_TYPES.RECEIVE_PG_INVITATION, {
+    this.server.to(socket.id).emit(Nt.EVENT_TYPES.RECEIVE_PG_INVITATION, {
       idJoueur: user.idJoueur,
       pseudo: user.pseudo,
+      lobbyId: payload.lobbyId,
     });
   }
 
@@ -163,7 +186,9 @@ export class ConnectionGateway {
     const { idInviter, accept, lobbyId } = payload;
     const { user } = client['user'];
 
-    const socketInviter = this.socketsMap.get(idInviter)
+    console.log('ConnectionGateway -> handleProcessPGInvitation');
+
+    const socketInviter = this.socketsMap.get(idInviter);
 
     if (socketInviter == null) {
       console.log('Socket not found : Inviter disconnected');
