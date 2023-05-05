@@ -277,7 +277,10 @@ const Game = () => {
             enHaut={true}
             idIcon={idIcon?idIcon[0] : 0}
           />
-          <Chat />
+          <Chat 
+            matchId={_game?.matchId || '0'}
+            pseudo={user.user?.pseudo || 'Player'}
+          />
           <PlayerContainer
             isWhitePlayer={playerisWhite}
             playerName={_game ? playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}

@@ -8,13 +8,15 @@ import {
   eIFirstMoveEvent,
   eISendEnviteEvent,
   eIInviteFriend,
+  eISendChatMessageEvent,
 } from "./interfaces/emitEvents";
 import { CONNECTION, IN_GAME, MATCH_MAKING, NAMESPACE_TYPES, PRIVATE, PRIVATE_GAME } from "./Namespace";
-import { Move, rICreateRoomEvent, rIIncomingGameEvent, rIInvitationFriendEvent, rINetworkMoveEvent, rITimeEvent, rITimeoutEvent } from "./interfaces/receiveEvents";
+import { Move, rICreateRoomEvent, rIIncomingGameEvent, rIInvitationFriendEvent, rINetworkMoveEvent, rITimeEvent, rITimeoutEvent, rIReceiveChatMessageEvent, rIRequestChatHistoryEvent } from "./interfaces/receiveEvents";
 import { IGame } from "./interfaces/game";
 // import { PrivateLobby } from "./utils/Lobby";
 import { ChessBoard, Color } from "../../core-algo";
 import { PrivateLobby } from "./utils/Lobby";
+import { ChatMessage } from "./utils/Chat";
 
 
 
@@ -255,4 +257,22 @@ export class ClientEventManager<
       payload.SetteurLstIdInvite(() => [...payload.lstIdInvite, invitations.idInviter]);
     });
   }
+
+  public sendChatMessage(payload: Check<T, IN_GAME, eISendChatMessageEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.send(EVENT_TYPES.SEND_CHAT_MESSAGE, payload);
+  }
+
+  public listenToChatMessage(payload: Check<T, IN_GAME, rIReceiveChatMessageEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.socket.on(EVENT_TYPES.RECEIVE_CHAT_MESSAGE, (message: ChatMessage) => {
+      payload.setChat((current) => [...current, message]);
+    });
+  }
+
+  public getChatHistory(payload: Check<T, IN_GAME, rIRequestChatHistoryEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.send(EVENT_TYPES.REQUEST_CHAT_HISTORY, payload);
+  }
+
 }
