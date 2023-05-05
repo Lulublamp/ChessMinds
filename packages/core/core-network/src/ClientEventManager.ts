@@ -270,13 +270,22 @@ export class ClientEventManager<
     this.send(EVENT_TYPES.DELETE_LOBBY, null);
   }
 
-  public listenToJoinLobby(payload: Check<T, CONNECTION, rIJoinLobbyEvent>) {
+  public leaveLooby(payload: Check<T, CONNECTION, null>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    console.log('leave lobby');
+    this.send(EVENT_TYPES.LEAVE_LOBBY, null);
+  }
 
+  public listenToJoinLobby(payload: Check<T, CONNECTION, rIJoinLobbyEvent>) {
     if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
     this.socket.on(EVENT_TYPES.LOBBY_STATUS, (lobby) => {
       console.log('Lobby received', lobby);
+      payload.Settlobby(() => lobby);
+      payload.lobbyRef.current = lobby;
+      if(payload.userId !== Number(lobby[0].id)){
+        payload.goToPrivateGame();
+      }
     });
-
   }
 
   public sendPGinvitation(payload: Check<T, CONNECTION, eIPGInvitation>) {
