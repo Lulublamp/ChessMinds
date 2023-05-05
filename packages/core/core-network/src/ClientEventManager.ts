@@ -9,9 +9,11 @@ import {
   eISendEnviteEvent,
   eIInviteFriend,
   eISendChatMessageEvent,
+  eIDrawRequestEvent,
+  eIDrawResponseEvent,
 } from "./interfaces/emitEvents";
 import { CONNECTION, IN_GAME, MATCH_MAKING, NAMESPACE_TYPES, PRIVATE, PRIVATE_GAME } from "./Namespace";
-import { Move, rICreateRoomEvent, rIIncomingGameEvent, rIInvitationFriendEvent, rINetworkMoveEvent, rITimeEvent, rITimeoutEvent, rIReceiveChatMessageEvent, rIRequestChatHistoryEvent } from "./interfaces/receiveEvents";
+import { Move, rICreateRoomEvent, rIIncomingGameEvent, rIInvitationFriendEvent, rINetworkMoveEvent, rITimeEvent, rITimeoutEvent, rIReceiveChatMessageEvent, rIRequestChatHistoryEvent, rIReceiveDrawRequestEvent, rIReceiveDrawResponseEvent } from "./interfaces/receiveEvents";
 import { IGame } from "./interfaces/game";
 // import { PrivateLobby } from "./utils/Lobby";
 import { ChessBoard, Color } from "../../core-algo";
@@ -273,6 +275,31 @@ export class ClientEventManager<
   public getChatHistory(payload: Check<T, IN_GAME, rIRequestChatHistoryEvent>) {
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
     this.send(EVENT_TYPES.REQUEST_CHAT_HISTORY, payload);
+  }
+
+  public sendDrawRequest(payload: Check<T, IN_GAME, eIDrawRequestEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.send(EVENT_TYPES.DRAW_REQUEST, payload);
+  }
+
+  public listenToDrawRequest(payload: Check<T, IN_GAME, rIReceiveDrawRequestEvent>) {
+    if(!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.socket.on(EVENT_TYPES.DRAW_REQUEST, () => {
+      console.log('Request received');
+      payload.setDrawRequest(() => true);
+    });
+  }
+
+  public sendDrawResponse(payload: Check<T, IN_GAME, eIDrawResponseEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.send(EVENT_TYPES.DRAW_RESPONSE, payload);
+  }
+
+  public listenToDrawResponse(payload: Check<T, IN_GAME, rIReceiveDrawResponseEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.socket.on(EVENT_TYPES.DRAW_RESPONSE, (response: any) => {
+      payload.onResponse(response.accepted);
+    });
   }
 
 }

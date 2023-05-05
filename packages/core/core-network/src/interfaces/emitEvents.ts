@@ -91,3 +91,12 @@ export interface eIPGProcess {
   lobbyId: string;
   accept: boolean;
 }
+
+export interface eIDrawRequestEvent {
+  matchId: string;
+}
+
+export interface eIDrawResponseEvent {  
+  matchId: string;
+  response: boolean;
+}

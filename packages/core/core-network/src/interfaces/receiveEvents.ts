@@ -69,3 +69,12 @@ export interface rIRequestChatHistoryEvent {
   matchId: string;
   setChat: ReactSetter<ChatMessage[]>;
 }
+
+export interface rIReceiveDrawRequestEvent {
+  setDrawRequest: ReactSetter<boolean>;
+}
+
+export interface rIReceiveDrawResponseEvent {
+  onResponse: (response: boolean) => void;
+}
+
