@@ -3,6 +3,7 @@ import { ClientEventManager } from "../ClientEventManager";
 import { IN_GAME, MATCH_MAKING } from "../Namespace";
 import { IGame } from "./game";
 import { ChatMessage } from "../utils/Chat";
+import { IMMPlayer } from "./mmplayer";
 
 export interface Move {
   turn: number;
@@ -62,7 +63,8 @@ export interface rIInvitationFriendEvent {
 }
 
 export interface rIJoinLobbyEvent {
-  
+  setlobbyPlayers: ReactSetter<IMMPlayer[]>;
+  lobbyPlayersRef: ReactRef<IMMPlayer[]>;
 }
 
 export interface rIPGInvitation {

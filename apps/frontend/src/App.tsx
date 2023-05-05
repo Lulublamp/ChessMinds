@@ -15,7 +15,7 @@ import AuthWrapper from './components/Navigation/AuthWrapper';
 import axios from 'axios';
 import { API_BASE_URL } from './config';
 import { PublicContext } from './contexts/ContextPublicManager';
-import { CONNECTION, ClientEventManager, NAMESPACE_TYPES, PGinvitations } from '@TRPI/core/core-network';
+import { CONNECTION, ClientEventManager, IMMPlayer, NAMESPACE_TYPES, PGinvitations } from '@TRPI/core/core-network';
 import GameAI from './pages/Game/GameAi';
 import AiMenu from './components/Navigation/MainMenu/AiMenu';
 import PopUpInvitationLobby from './components/Form/PopUpInvitationLobby';
@@ -32,6 +32,8 @@ const App: FC = () => {
   const [showPopupInvitationLobby, setShowPopupInvitationLobby] = useState(false);
   const [lstIdInvitations, setLstIdInvitations] = useState<number[]>([]);
   const [darkMode, setDarkMode] = useState(false);
+
+  
   
   const [PGInvitations , setPGInvitations] = useState<PGinvitations[]>([]);
   const authWrapperRef = useRef<any>(null);

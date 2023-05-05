@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect, useContext, useRef } from 'react';
 import './stylePrivateGame.css';
 import ReadySwitch from './ReadySwitch';
 import PlayButton from '../../Button/PlayButton';
 import FriendsList from '../../Profil/FriendsList';
 import TimeMode from './TimeMode';
-import { MATCHMAKING_MODES_TIMERS} from '@TRPI/core/core-network';
+import { IMMPlayer, MATCHMAKING_MODES_TIMERS} from '@TRPI/core/core-network';
 import { useGlobalSocket } from '../../../contexts/ContextPublicManager';
 import { UserContext } from '../../UserContext';
 
@@ -19,6 +19,9 @@ const PrivateGame: React.FC<Props> = ({ onBackClick, lstIdInvitations }) => {
   const globalSocket = useGlobalSocket();
   const user = useContext(UserContext)
   const matchId = `${globalSocket!['socket'].id}-${user.user?.id}`
+
+  const [lobbyPlayer, setLobbyPlayer] = useState<IMMPlayer[]>([]);
+  const lobbyPlayerRef = useRef<IMMPlayer[]>([]);
 
   const handleTimeModeSelect = (timeMode: MATCHMAKING_MODES_TIMERS) => {
     setSelectedTimeMod(timeMode);
@@ -37,13 +40,18 @@ const PrivateGame: React.FC<Props> = ({ onBackClick, lstIdInvitations }) => {
   useEffect(() => {
     console.log('Creating server lobby');
     //if if if 
-    globalSocket?.listenToJoinLobby({})
+    globalSocket?.listenToJoinLobby({
+      setlobbyPlayers: setLobbyPlayer,
+      lobbyPlayersRef: lobbyPlayerRef,
+    })
     globalSocket?.createLobby(null);
     console.log(matchId)
 
     return () => {
       console.log('Destroying server lobby');
-      globalSocket?.deleteLobby(null);
+      globalSocket?.offJoinLobby();
+      globalSocket?.destroyPrivateGameOrLeave(matchId);
+
       //à revoir
     }
 
@@ -71,6 +79,14 @@ const PrivateGame: React.FC<Props> = ({ onBackClick, lstIdInvitations }) => {
               <div>
                 <span>Pseudo 2 (825)</span>
                 <span className='notready'>Pas prêt</span>
+              </div>
+              <div>
+                <span>
+                  {lobbyPlayerRef.current.length > 0 ? lobbyPlayerRef.current[0].name : ''}
+                </span>
+                <span>
+                  {lobbyPlayerRef.current.length > 0 ? lobbyPlayerRef.current[1].name : ''}
+                </span>
               </div>
             </div>
             <ReadySwitch onReadyChange={handleReadyChange} />

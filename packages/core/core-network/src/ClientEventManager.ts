@@ -271,12 +271,17 @@ export class ClientEventManager<
   }
 
   public listenToJoinLobby(payload: Check<T, CONNECTION, rIJoinLobbyEvent>) {
-
     if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
     this.socket.on(EVENT_TYPES.LOBBY_STATUS, (lobby) => {
       console.log('Lobby received', lobby);
+      payload.setlobbyPlayers(() => lobby);
+      payload.lobbyPlayersRef.current = lobby;
     });
+  }
 
+  public offJoinLobby(){
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    this.socket.off(EVENT_TYPES.LOBBY_STATUS);
   }
 
   public sendPGinvitation(payload: Check<T, CONNECTION, eIPGInvitation>) {
@@ -298,6 +303,12 @@ export class ClientEventManager<
     this.send(EVENT_TYPES.PROCESS_PG_INVITATION, payload);
   }
 
+  public destroyPrivateGameOrLeave(payload: Check<T, CONNECTION, string>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    this.send(EVENT_TYPES.DESTROY_PRIVATE_GAME, payload);
+  }
+
+
   
   public sendChatMessage(payload: Check<T, IN_GAME, eISendChatMessageEvent>) {
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
@@ -315,5 +326,6 @@ export class ClientEventManager<
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
     this.send(EVENT_TYPES.REQUEST_CHAT_HISTORY, payload);
   }
+
 
 }
