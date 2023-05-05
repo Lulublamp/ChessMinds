@@ -258,7 +258,6 @@ export class ClientEventManager<
     });
   }
 
-<<<<<<< packages/core/core-network/src/ClientEventManager.ts
   public sendChatMessage(payload: Check<T, IN_GAME, eISendChatMessageEvent>) {
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
     this.send(EVENT_TYPES.SEND_CHAT_MESSAGE, payload);
@@ -276,7 +275,4 @@ export class ClientEventManager<
     this.send(EVENT_TYPES.REQUEST_CHAT_HISTORY, payload);
   }
 
-=======
-  
->>>>>>> packages/core/core-network/src/ClientEventManager.ts
 }
