@@ -178,6 +178,4 @@ export class ConnectionGateway {
       this.handleJoinLobby(client, { lobbyId });
     }
   }
-
-  @SubscribeMessage(Nt.EVENT_TYPES.LEAVE_LOBBY)
 }
