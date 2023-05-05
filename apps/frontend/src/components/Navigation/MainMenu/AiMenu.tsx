@@ -18,7 +18,6 @@ const AiMenu: React.FC<Props> = ({ onBackClick }) => {
   const [elo, setElo] = useState(550);
   const navigate = useNavigate();
 
-
   const getLevel = (elo: number) => {
     if (elo < 1000) return "Debutant";
     if (elo < 1600) return "Intermediaire";
