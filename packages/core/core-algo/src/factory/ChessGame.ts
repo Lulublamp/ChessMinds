@@ -150,7 +150,6 @@ export class ChessGame {
 
     //Si on mange une pièce, on la retire du joueur adverse
     if (toPiece) {
-      console.log(toPiece.getPieceCode());
       if (toPiece.color === Color.White) {
         const pieceCounter = this.blackPlayer.piecesTaken.get(toPiece.getPieceCode());
         if(pieceCounter !== undefined){
