@@ -90,7 +90,7 @@ export class ConnectionGateway {
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.CREATE_LOBBY)
-  handleCreateLobby(@ConnectedSocket() client: Socket){
+  handleCreateLobby(@ConnectedSocket() client: Socket) {
     const user = client['user'];
     const player: IMMPlayer = this.matchMakingService.mapPlayer(
       user,
@@ -102,13 +102,18 @@ export class ConnectionGateway {
 
   }
 
-  @SubscribeMessage(Nt.EVENT_TYPES.DELETE_LOBBY)
-  handleLeaveLobby(@ConnectedSocket() client: Socket){
-    const user = client['user'];
-    const lobbyId = this.matchMakingService.deleteLobby(
-      `${client.id}-${client['user'].user.idJoueur}`,
-    );
-
+  @SubscribeMessage(Nt.EVENT_TYPES.LEAVE_LOBBY)
+  handleLeaveLobby(@ConnectedSocket() client: Socket) {
+    const lobbyId = `${client.id}-${client['user'].user.idJoueur}`;
+    const host = this.matchMakingService.queue.getFromPrivateQueue(lobbyId);
+    if (!host) {
+      this.matchMakingService.deleteLobby(
+        `${client.id}-${client['user'].user.idJoueur}`,
+      );
+    }
+    else{
+      
+    }
     this.server.to(lobbyId).emit(Nt.EVENT_TYPES.LOBBY_STATUS, null);
   }
 

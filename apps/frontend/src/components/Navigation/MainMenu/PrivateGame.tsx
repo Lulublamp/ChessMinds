@@ -24,7 +24,6 @@ const PrivateGame: React.FC<Props> = ({ onBackClick, lstIdInvitations, idMatch, 
   const user = useContext(UserContext)
   const matchId = `${globalSocket!['socket'].id}-${user.user?.id}`
 
-
   const handleTimeModeSelect = (timeMode: MATCHMAKING_MODES_TIMERS) => {
     setSelectedTimeMod(timeMode);
   };
@@ -44,6 +43,10 @@ const PrivateGame: React.FC<Props> = ({ onBackClick, lstIdInvitations, idMatch, 
     globalSocket?.createLobby(null);
     console.log(matchId)
   }
+
+  useEffect(() => {
+
+  },[Lobby]);
 
   useEffect(() => {
     if (!idMatch) isHost();
