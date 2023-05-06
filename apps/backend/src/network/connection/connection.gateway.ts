@@ -126,12 +126,11 @@ export class ConnectionGateway {
     );
 
     const maybeLobby = this.matchMakingService.joinLobby(lobbyId, player);
+
     if (maybeLobby == null) {
       this.server.to(client.id).emit(Nt.EVENT_TYPES.LOBBY_NOT_FOUND);
       return;
     }
-    console.log('Joining lobby : ' + lobbyId);
-    console.log(this.matchMakingService.queue['privateQueue']);
 
     this.server
       .to([lobbyId.split('-')[0], client.id])
@@ -200,29 +199,5 @@ export class ConnectionGateway {
     if (accept) {
       this.handleJoinLobby(client, { lobbyId });
     }
-  }
-
-  @SubscribeMessage(Nt.EVENT_TYPES.DESTROY_PRIVATE_GAME)
-  hadnleDestroyPrivateGame(
-    @ConnectedSocket() client: Socket,
-    @MessageBody() payload: string,
-  ) {
-    const { user } = client['user'];
-
-    console.log(payload);
-
-    const pg = this.matchMakingService.queue.getFromPrivateQueue(payload);
-    const host = pg[0];
-
-    if (host.id != user.idJoueur) {
-      console.log('Not the host');
-      this.matchMakingService.queue.removeFromPrivateQueue(
-        payload,
-        user.idJoueur,
-      );
-      return;
-    }
-    console.log('Destroying private game');
-    this.matchMakingService.deleteLobby(payload);
   }
 }

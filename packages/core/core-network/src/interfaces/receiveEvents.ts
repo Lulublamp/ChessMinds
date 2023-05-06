@@ -63,8 +63,14 @@ export interface rIInvitationFriendEvent {
 }
 
 export interface rIJoinLobbyEvent {
-  setlobbyPlayers: ReactSetter<IMMPlayer[]>;
-  lobbyPlayersRef: ReactRef<IMMPlayer[]>;
+  goToPrivateGame: (() => void);
+  Settlobby : ReactSetter<IMMPlayer[]>;
+  lobbyRef : ReactRef<IMMPlayer[]>;
+  userId : number;
+}
+
+export interface rILeaveLobbyEvent{
+  Settlobby : ReactSetter<IMMPlayer[]>;
 }
 
 export interface rIPGInvitation {

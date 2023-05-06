@@ -15,10 +15,11 @@ import AuthWrapper from './components/Navigation/AuthWrapper';
 import axios from 'axios';
 import { API_BASE_URL } from './config';
 import { PublicContext } from './contexts/ContextPublicManager';
-import { CONNECTION, ClientEventManager, IMMPlayer, NAMESPACE_TYPES, PGinvitations } from '@TRPI/core/core-network';
+import { CONNECTION, ClientEventManager, IMMPlayer, Lobby, NAMESPACE_TYPES, PGinvitations } from '@TRPI/core/core-network';
 import GameAI from './pages/Game/GameAi';
 import AiMenu from './components/Navigation/MainMenu/AiMenu';
 import PopUpInvitationLobby from './components/Form/PopUpInvitationLobby';
+import { set } from 'lodash';
 
 const App: FC = () => {
 
@@ -33,11 +34,11 @@ const App: FC = () => {
   const [lstIdInvitations, setLstIdInvitations] = useState<number[]>([]);
   const [darkMode, setDarkMode] = useState(false);
 
-  
-  
-  const [PGInvitations , setPGInvitations] = useState<PGinvitations[]>([]);
+  const [PGInvitations, setPGInvitations] = useState<PGinvitations[]>([]);
+  const [PgIndex, setPgIndex] = useState<number>(0);
+  const [lobbyPlayer, setLobbyPlayer] = useState<IMMPlayer[]>([]);
+  const lobbyPlayerRef = useRef<IMMPlayer[]>([]);
   const authWrapperRef = useRef<any>(null);
-
 
   const [socketGlobal, setSocketGlobal] = useState<ClientEventManager<CONNECTION> | null>(null);
   const socketGlobalRef = useRef<ClientEventManager<CONNECTION> | null>(null);
@@ -103,10 +104,14 @@ const App: FC = () => {
       if (!isLoggedIn)
         setIsLoggedIn(true);
       else {
-         authWrapperRef.current.handleSuccessfulLogin();
+        authWrapperRef.current.handleSuccessfulLogin();
       }
     }
   };
+
+  useEffect(() => {
+
+  }, [Lobby]);
 
   useEffect(() => {
     if (user == null) {
@@ -119,15 +124,22 @@ const App: FC = () => {
       const _clientManager = new ClientEventManager<CONNECTION>(import.meta.env.VITE_SERVER_URL || `${API_BASE_URL}`, NAMESPACE_TYPES.CONNECTION, localStorage.getItem("accessToken")!);
       setSocketGlobal(() => _clientManager);
       socketGlobalRef.current = _clientManager;
-      socketGlobalRef.current.listenToInvitationsStatus({SetteurLstIdInvite : setLstIdInvitations, lstIdInvite : lstIdInvitations});
-      socketGlobalRef.current.listenToIncomingInvitations({SetteurLstIdInvite : setLstIdInvitations, lstIdInvite : lstIdInvitations});
+      socketGlobalRef.current.listenToInvitationsStatus({ SetteurLstIdInvite: setLstIdInvitations, lstIdInvite: lstIdInvitations });
+      socketGlobalRef.current.listenToIncomingInvitations({ SetteurLstIdInvite: setLstIdInvitations, lstIdInvite: lstIdInvitations });
       socketGlobalRef.current.getInvitations(null);
       socketGlobalRef.current.listenToPGinvitation({
         setPopup: setShowPopupInvitationLobby,
         setPGInvitations: setPGInvitations,
       });
+      socketGlobalRef.current.listenToJoinLobby({
+        goToPrivateGame: goToPrivateGame,
+        Settlobby: setLobbyPlayer,
+        userId: Number(user.id),
+        lobbyRef: lobbyPlayerRef,
+      });
+
     }
-    
+
 
     return () => {
       if (socketGlobalRef.current !== null) {
@@ -135,7 +147,7 @@ const App: FC = () => {
       }
     }
   }, [user]);
-      
+
 
   const handleCloseLoginPopup = () => {
     setShowLoginPopup(false);
@@ -150,6 +162,13 @@ const App: FC = () => {
       setShowLoginPopup(false);
       setShowSignupPopup(true);
     }
+  };
+
+  const goToPrivateGame = () => {
+    authWrapperRef.current.handleGoToMainMenu();
+    setShowMatchmaking(false);
+    setShowAiMenu(false);
+    setShowPrivateGame(true);
   };
 
   const handleSwitchToLogin = () => {
@@ -192,9 +211,16 @@ const App: FC = () => {
       return <Matchmaking onBackClick={onBackClickMenu} />;
     }
     if (showPrivateGame) {
-      return <PrivateGame onBackClick={onBackClickMenu} lstIdInvitations={lstIdInvitations} />;
+      return <PrivateGame
+        onBackClick={onBackClickMenu}
+        lstIdInvitations={lstIdInvitations}
+        Lobby={lobbyPlayer}
+        LobbySetteur={setLobbyPlayer}
+        idMatch={PGInvitations.length >= 1 ? PGInvitations[0].lobbyId : null}
+        InvitationSetteur={setPGInvitations}
+      />;
     }
-    if(showAiMenu){
+    if (showAiMenu) {
       return <AiMenu onBackClick={onBackClickMenu} />;
     }
     return (
@@ -209,29 +235,41 @@ const App: FC = () => {
     );
   };
 
-  const onAcceptPG = () => {
+  const onAcceptPG = (invitation: PGinvitations) => {
     console.log("accept private game");
+    let indexLobby = PGInvitations.findIndex((invit) => invit.lobbyId === invitation.lobbyId);
+    setPgIndex(indexLobby);
     socketGlobalRef.current?.processPGInvitation({
-      idInviter: PGInvitations[0].idJoueur,
-      lobbyId: PGInvitations[0].lobbyId,
+      idInviter: PGInvitations[indexLobby].idJoueur,
+      lobbyId: PGInvitations[indexLobby].lobbyId,
       accept: true,
     })
+    console.log("accept private game", PGInvitations[indexLobby].lobbyId);
     setShowPopupInvitationLobby(() => false);
   }
 
-  const onDeclinePG = () => {
+  const onDeclinePG = (invitation: PGinvitations) => {
     console.log("decline private game");
-    setShowPopupInvitationLobby(() => false);
-  }
+    setPGInvitations((prevState) =>
+      prevState.filter((inv) => inv.lobbyId !== invitation.lobbyId)
+    );
+  };
 
-  
+
   return (
-    <PublicContext.Provider value={{ publicManager: socketGlobal}}>
+    <PublicContext.Provider value={{ publicManager: socketGlobal }}>
       <UserContext.Provider value={{ user, setUser }}>
         <HashRouter>
           <Navbar onPlayClick={handleLoginPopupClick} onLogoutClick={handleLogout} toggleDarkMode={togleDarkMode} lstIdInvitations={lstIdInvitations} />
           {
-            showPopupInvitationLobby && <PopUpInvitationLobby invitation={PGInvitations[0]} onAccept={onAcceptPG} onDecline={onDeclinePG}/>
+            PGInvitations.map((invitation, index) => (
+              <PopUpInvitationLobby
+                key={index}
+                invitation={invitation}
+                onAccept={() => onAcceptPG(invitation)}
+                onDecline={() => onDeclinePG(invitation)}
+              />
+            ))
           }
           <GameInfoProvider>
             <Routes>
@@ -251,7 +289,7 @@ const App: FC = () => {
               />
               <Route path="/Game" element={<Game />} />
               <Route path="/Classement" element={<Classement />} />
-              <Route path="/Profil" element={<Profil lstIdInvitations={lstIdInvitations}/>} />
+              <Route path="/Profil" element={<Profil lstIdInvitations={lstIdInvitations} />} />
               <Route path='/Replay' element={<Replay />} />
               <Route path="/GameAi" element={<GameAI />} />
             </Routes>
