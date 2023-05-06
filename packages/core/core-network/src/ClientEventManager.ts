@@ -265,14 +265,8 @@ export class ClientEventManager<
     this.send(EVENT_TYPES.CREATE_LOBBY, null);
   }
 
-  public deleteLobby(payload: Check<T, CONNECTION, null>) {
-    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
-    this.send(EVENT_TYPES.DELETE_LOBBY, null);
-  }
-
   public leaveLobby(payload: Check<T, CONNECTION, null>) {
-    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
-    console.log('leave lobby');
+    if(!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
     this.send(EVENT_TYPES.LEAVE_LOBBY, null);
   }
 
