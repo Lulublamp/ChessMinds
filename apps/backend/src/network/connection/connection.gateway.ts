@@ -103,18 +103,30 @@ export class ConnectionGateway {
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.LEAVE_LOBBY)
-  handleLeaveLobby(@ConnectedSocket() client: Socket) {
-    const lobbyId = `${client.id}-${client['user'].user.idJoueur}`;
-    const host = this.matchMakingService.queue.getFromPrivateQueue(lobbyId);
-    if (!host) {
-      this.matchMakingService.deleteLobby(
-        `${client.id}-${client['user'].user.idJoueur}`,
+  handleLeaveLobby(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: Nt.eILeaveLobbyEvent,
+  ) {
+    const { isHost, lobbyId } = payload;
+
+    const hostId = payload.lobbyId.split('-')[0];
+    if (isHost == false) {
+      this.server
+        .to([hostId, client.id])
+        .emit(Nt.EVENT_TYPES.LOBBY_LEAVE, payload);
+      this.matchMakingService.queue.removeFromPrivateQueue(
+        lobbyId,
+        client['user'].user.idJoueur,
       );
+      return;
     }
-    else{
-      
-    }
-    this.server.to(lobbyId).emit(Nt.EVENT_TYPES.LOBBY_STATUS, null);
+
+    const pg = this.matchMakingService.queue.getFromPrivateQueue(lobbyId);
+    const maybeSecondId = pg.length == 2 ? pg[1].id : null;
+    this.server
+      .to([client.id, this.socketsMap.get(Number(maybeSecondId))?.id])
+      .emit(Nt.EVENT_TYPES.LOBBY_LEAVE, payload);
+    this.matchMakingService.deleteLobby(lobbyId);
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.JOIN_LOBBY)
@@ -204,5 +216,31 @@ export class ConnectionGateway {
     if (accept) {
       this.handleJoinLobby(client, { lobbyId });
     }
+  }
+
+  @SubscribeMessage(Nt.EVENT_TYPES.SWITCH_READY)
+  handleSwitchReady(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: Nt.eISwitchReady,
+  ) {
+    const { lobbyId } = payload;
+    const { user } = client['user'];
+
+    console.log('ConnectionGateway -> handleSwitchReady');
+
+    const lobby = this.matchMakingService.queue.getFromPrivateQueue(lobbyId);
+    if (lobby == null) {
+      console.log('Lobby not found : Switch ready failed' , lobbyId);
+      return;
+    }
+
+    const target = lobby[0]?.id == user.idJoueur ? 0 : 1;
+
+    this.server
+      .to([
+        this.socketsMap.get(Number(lobby[0]?.id))?.id,
+        this.socketsMap.get(Number(lobby[1]?.id))?.id,
+      ])
+      .emit(Nt.EVENT_TYPES.READY_SWITCHED, { target });
   }
 }

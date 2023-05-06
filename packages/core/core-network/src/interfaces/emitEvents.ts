@@ -93,3 +93,12 @@ export interface eIPGProcess {
   lobbyId: string;
   accept: boolean;
 }
+
+export interface eILeaveLobbyEvent {
+  lobbyId: string;
+  isHost: boolean;
+}
+
+export interface eISwitchReady {
+  lobbyId: string;
+}

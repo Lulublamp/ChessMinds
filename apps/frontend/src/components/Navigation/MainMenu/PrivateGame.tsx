@@ -4,7 +4,7 @@ import ReadySwitch from './ReadySwitch';
 import PlayButton from '../../Button/PlayButton';
 import FriendsList from '../../Profil/FriendsList';
 import TimeMode from './TimeMode';
-import { IMMPlayer, MATCHMAKING_MODES_TIMERS, PGinvitations, ReactSetter } from '@TRPI/core/core-network';
+import { IMMPlayer, MATCHMAKING_MODES_TIMERS, PGinvitations, ReactSetter, eILeaveLobbyEvent } from '@TRPI/core/core-network';
 import { useGlobalSocket } from '../../../contexts/ContextPublicManager';
 import { UserContext } from '../../UserContext';
 
@@ -24,12 +24,17 @@ const PrivateGame: React.FC<Props> = ({ onBackClick, lstIdInvitations, idMatch, 
   const user = useContext(UserContext)
   const matchId = `${globalSocket!['socket'].id}-${user.user?.id}`
 
+  const [readyArray, setReadyArray] = useState<[boolean , boolean]>([false , false]);
+
   const handleTimeModeSelect = (timeMode: MATCHMAKING_MODES_TIMERS) => {
     setSelectedTimeMod(timeMode);
   };
 
   const handleReadyChange = (checked: string) => {
     setisReady(checked);
+    console.log('A:' + idMatch)
+    console.log('B:' + matchId)
+    globalSocket?.sendSwitchReady({lobbyId: idMatch ? idMatch : matchId})
   };
 
   const handleDefi = (id: number) => {
@@ -45,7 +50,7 @@ const PrivateGame: React.FC<Props> = ({ onBackClick, lstIdInvitations, idMatch, 
   }
 
   useEffect(() => {
-
+    console.log('LOBBY HAS CHANGED BORDEL', Lobby);
   },[Lobby]);
 
   useEffect(() => {
@@ -56,16 +61,28 @@ const PrivateGame: React.FC<Props> = ({ onBackClick, lstIdInvitations, idMatch, 
         prevState.filter((invitation) => invitation.lobbyId !== idMatch)
       );
     }
+    globalSocket?.listenToLobbyLeave({
+      callback: onBackClick,
+      lobby: Lobby,
+      setLobby: LobbySetteur,
+    });
+
+    globalSocket?.listenToReadySwitched({
+      readyArray: readyArray,
+      setReadyArray: setReadyArray,
+    });
     console.log('lobby', Lobby);
     return () => {
-      if (!idMatch) {
-        console.log('Destroying server lobby');
-        globalSocket?.deleteLobby(null);
+      console.log('idMatch : ' + idMatch);
+      console.log('matchId : ' + matchId);
+      console.log('isHost', idMatch === matchId);
+
+      const payload: eILeaveLobbyEvent = {
+        lobbyId: idMatch ? idMatch : matchId,
+        isHost: idMatch ? false : true,
       }
-      else {
-        console.log('Leaving server lobby');
-        globalSocket?.leaveLobby(null);
-      }
+      globalSocket?.leaveLobby(payload);
+
       LobbySetteur([]);
     }
   }, []);
