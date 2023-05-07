@@ -146,6 +146,7 @@ export class InGameGateway {
     // const game = games.find((game) => game.socketIdWhite === client.id || game.socketIdBlack === client.id);
   }
 
+  
   @SubscribeMessage(Nt.EVENT_TYPES.ATTACH)
   handleAttach(
     @MessageBody() payload: { matchId: string; name: string },
@@ -267,7 +268,7 @@ export class InGameGateway {
         pseudoJoueurBlanc: names.joueurBlanc,
         pseudoJoueurNoir: names.joueurNoir,
         vainqueur: gameResult.winner,
-        timer: matchgame.matchOptions.timer, //A MODIFIER
+        timer: matchgame.matchOptions.timer,
       }; 
 
       const coups = game.getMovesHistory().map((move, index) => ({
@@ -280,18 +281,24 @@ export class InGameGateway {
       }));
       
       try {
-        this.savePartie(rencontre, coups, true);//A MODIFIER
+        this.savePartie(rencontre, coups, matchgame.matchOptions.mode === Nt.MATCHMAKING_MODE.RANKED);
       } catch (error) {
         console.error('Erreur lors de la sauvegarde de la partie', error);
       }
+      this.timeoutMap.get(matchId)?.stop();
+      this.delayMap.get(matchId)?.stop();
+      this.timersMap.get(matchId)?.stopTimer();
       this.matchMakingService.queue.destroyGame(matchId);
     }
-    const timer = this.timersMap.get(matchId);
-    const newId = timer.continueTimer();
-    this.timers.set(matchId, newId);
-
+    else{
+      const timer = this.timersMap.get(matchId);
+      const newId = timer.continueTimer();
+      this.timers.set(matchId, newId);
+    }
     this.server.to(matchId).emit(Nt.EVENT_TYPES.MOVES, from, to, promotion, gameResult);
   }
+
+  
 
   @SubscribeMessage(Nt.EVENT_TYPES.SEND_CHAT_MESSAGE)
   handleSendMessage(
@@ -461,9 +468,51 @@ export class InGameGateway {
     }
   
     if (payload.response) {
-      client.to(payload.matchId).emit(Nt.EVENT_TYPES.DRAW_RESPONSE, { accepted: true });
+      // Récupérer les noms des joueurs
+      const names = this.playerNames.get(payload.matchId);
+      const matchgame = this.matchMakingService.queue.gamesList.find(
+        (game) => game.matchId === payload.matchId);
+
+      let eloNoir = matchgame.black_player.elo;
+      let eloBlanc = matchgame.white_player.elo;
+      let kFactorB = this.rencontreService.calculateKFactor(eloBlanc);
+      let kFactorN = this.rencontreService.calculateKFactor(eloNoir);
+      let scoreBlanc = 0.5;
+      let scoreNoir = 0.5;
+      let neweloBlanc = this.rencontreService.calculateEloGain({ Elo: eloBlanc, score: scoreBlanc },
+        { Elo: eloNoir, score: scoreNoir}, kFactorB);
+      let neweloNoir = this.rencontreService.calculateEloGain({ Elo: eloNoir, score: scoreNoir },
+        { Elo: eloBlanc, score: scoreBlanc }, kFactorN);
+    
+      // Sauvegarder la partie
+      const rencontre = {
+        pseudoJoueurBlanc: names.joueurBlanc,
+        pseudoJoueurNoir: names.joueurNoir,
+        vainqueur: 0.5, // Match nul
+        timer: matchgame.matchOptions.timer, 
+      };
+    
+      const coups = coupledGame.getMovesHistory().map((move, index) => ({
+        idRencontre: null, // Cette valeur sera remplacée par l'ID de la rencontre sauvegardée
+        caseSource: positionToNumber(move.from),
+        caseDestination: positionToNumber(move.to),
+        piece: formate_piece(move.piece),
+        couleur: formate_color(move.color),
+        ordre: index + 1
+      }));
+    
+      try {
+        this.savePartie(rencontre, coups, matchgame.matchOptions.mode === Nt.MATCHMAKING_MODE.RANKED); 
+      } catch (error) {
+        console.error('Erreur lors de la sauvegarde de la partie', error);
+      }
+      this.timeoutMap.get(payload.matchId)?.stop();
+      this.delayMap.get(payload.matchId)?.stop();
+      this.timersMap.get(payload.matchId)?.stopTimer();
+      this.matchMakingService.queue.destroyGame(payload.matchId);
+      this.server.to(payload.matchId).emit(Nt.EVENT_TYPES.DRAW_RESPONSE, { accepted: true, neweloBlanc: neweloBlanc - eloBlanc, neweloNoir:neweloNoir - eloNoir });
     } else {
-      client.to(payload.matchId).emit(Nt.EVENT_TYPES.DRAW_RESPONSE, { accepted: false });
+      this.server.to(payload.matchId).emit(Nt.EVENT_TYPES.DRAW_RESPONSE, { accepted: false, neweloBlanc: null, neweloNoir: null });
     }
   }
 

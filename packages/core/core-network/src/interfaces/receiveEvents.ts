@@ -104,10 +104,8 @@ export interface rIReceiveDrawRequestEvent {
 }
 
 export interface rIReceiveDrawResponseEvent {
-  onResponse: (response: boolean) => void;
+  onResponse: (response: boolean, neweloBlanc: number | null, neweloNoir : number | null) => void;
 }
-
-
 
 export interface rIReadySwitched {
   readyArray: [boolean , boolean];
