@@ -11,9 +11,11 @@ import {
   eIPGInvitation,
   eIPGProcess,
   eISendChatMessageEvent,
+  eILeaveLobbyEvent,
+  eISwitchReady,
 } from "./interfaces/emitEvents";
 import { CONNECTION, IN_GAME, MATCH_MAKING, NAMESPACE_TYPES, PRIVATE, PRIVATE_GAME } from "./Namespace";
-import { Move, PGinvitations, rICreateRoomEvent, rIIncomingGameEvent, rIInvitationFriendEvent, rIJoinLobbyEvent, rINetworkMoveEvent, rIPGInvitation, rITimeEvent, rITimeoutEvent, rIReceiveChatMessageEvent, rIRequestChatHistoryEvent, rILeaveLobbyEvent } from "./interfaces/receiveEvents";
+import { Move, PGinvitations, rICreateRoomEvent, rIIncomingGameEvent, rIInvitationFriendEvent, rIJoinLobbyEvent, rINetworkMoveEvent, rIPGInvitation, rITimeEvent, rITimeoutEvent, rIReceiveChatMessageEvent, rIRequestChatHistoryEvent, rILeaveLobbyEvent, rILobbyLeaveEvent, rIReadySwitched } from "./interfaces/receiveEvents";
 import { IGame } from "./interfaces/game";
 // import { PrivateLobby } from "./utils/Lobby";
 import { ChessBoard, Color } from "../../core-algo";
@@ -265,9 +267,26 @@ export class ClientEventManager<
     this.send(EVENT_TYPES.CREATE_LOBBY, null);
   }
 
-  public leaveLobby(payload: Check<T, CONNECTION, null>) {
+  public leaveLobby(payload: Check<T, CONNECTION, eILeaveLobbyEvent>) {
     if(!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
-    this.send(EVENT_TYPES.LEAVE_LOBBY, null);
+    this.send(EVENT_TYPES.LEAVE_LOBBY, payload);
+  }
+
+  public listenToLobbyLeave(payload: Check<T, CONNECTION, rILobbyLeaveEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    this.socket.on(EVENT_TYPES.LOBBY_LEAVE, (lobby) => {
+      console.log('Lobby received', lobby);
+      if (lobby.isHost) {
+        payload?.callback();
+      } else {
+        console.log(payload)
+        const copLobbie = payload?.lobby;
+        copLobbie?.pop();
+        console.log('copLobbie', copLobbie);
+        payload?.setLobby(() => copLobbie!);
+      }
+      // payload.Settlobby(() => lobby);
+    });
   }
 
   public listenToJoinLobby(payload: Check<T, CONNECTION, rIJoinLobbyEvent>) {
@@ -317,6 +336,21 @@ export class ClientEventManager<
   public getChatHistory(payload: Check<T, IN_GAME, rIRequestChatHistoryEvent>) {
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
     this.send(EVENT_TYPES.REQUEST_CHAT_HISTORY, payload);
+  }
+
+
+  public sendSwitchReady(payload: Check<T, CONNECTION, eISwitchReady>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    this.send(EVENT_TYPES.SWITCH_READY, payload);
+  }
+
+  public listenToReadySwitched(payload: Check<T, CONNECTION, rIReadySwitched>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    this.socket.on(EVENT_TYPES.READY_SWITCHED, (target: number) => {
+      const copieArray = payload.readyArray;
+      copieArray[target] = !copieArray[target];
+      payload.setReadyArray(() => copieArray);
+    });
   }
 
 }

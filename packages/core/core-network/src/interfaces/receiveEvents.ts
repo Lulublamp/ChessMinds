@@ -73,6 +73,12 @@ export interface rILeaveLobbyEvent{
   Settlobby : ReactSetter<IMMPlayer[]>;
 }
 
+export interface rILobbyLeaveEvent {
+  callback: () => void;
+  lobby: IMMPlayer[];
+  setLobby: ReactSetter<IMMPlayer[]>;
+}
+
 export interface rIPGInvitation {
   setPopup: ReactSetter<boolean>;
   setPGInvitations: ReactSetter<PGinvitations[]>;
@@ -91,4 +97,10 @@ export interface rIReceiveChatMessageEvent {
 export interface rIRequestChatHistoryEvent {
   matchId: string;
   setChat: ReactSetter<ChatMessage[]>;
+}
+
+
+export interface rIReadySwitched {
+  readyArray: [boolean , boolean];
+  setReadyArray: ReactSetter<[boolean , boolean]>;
 }

@@ -121,7 +121,6 @@ export class ChessGame {
     }
     //Si les 2 joueurs ont fait 3 fois le même coup, c'est un pat
     if(from === this.movesHistory[this.movesHistory.length - 2]?.to && to === this.movesHistory[this.movesHistory.length - 2]?.from) {
-      console.log("same move");
       this.sameMoves++;
       console.log(this.sameMoves);
     }
@@ -153,8 +152,16 @@ export class ChessGame {
     //Si on mange une pièce, on la retire du joueur adverse
     if (toPiece) {
       if (toPiece.color === Color.White) {
+        const pieceCounter = this.blackPlayer.piecesTaken.get(toPiece.getPieceCode());
+        if(pieceCounter !== undefined){
+          this.blackPlayer.piecesTaken.set(toPiece.getPieceCode(), pieceCounter + 1);
+        }
         this.whitePlayer.removePiece(toPiece);
       } else {
+        const pieceCounter = this.whitePlayer.piecesTaken.get(toPiece.getPieceCode());
+        if(pieceCounter !== undefined){
+          this.whitePlayer.piecesTaken.set(toPiece.getPieceCode(), pieceCounter + 1);
+        }
         this.blackPlayer.removePiece(toPiece);
       }
     }
@@ -565,6 +572,14 @@ export class ChessGame {
     fen += this.movesHistory.length;
 
     return fen;
+  }
+
+  public getWhitePlayerPiecesTaken(): Map<string, number> {
+    return this.whitePlayer.piecesTaken;
+  }
+
+  public getBlackPlayerPiecesTaken(): Map<string, number> {
+    return this.blackPlayer.piecesTaken;
   }
 
 
