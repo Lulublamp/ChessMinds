@@ -12,6 +12,7 @@ import { RencontreCoupsService } from 'src/rencontre/rencontre-coups.service';
 import { Echiquier } from 'src/coups/entities/coups.entity';
 import { IGame } from '@TRPI/core/core-network';
 import { JoinQueuOption } from '@TRPI/core/core-network/src/MatchMaking';
+import e from 'express';
 
 
 function positionToNumber(position: string): number | null {
@@ -63,17 +64,17 @@ export class InGameGateway {
     console.log('in-game: Init');
   }
 
-  async  saveRencontre(rencontre) {
-    this.rencontreService.saveRencontre(rencontre);
+  async saveRencontre(rencontre, isRanked : boolean) {
+    this.rencontreService.saveRencontre(rencontre, isRanked);
   }
   
   async saveCoup(coup) {
     this.rencontreService.saveCoup(coup);
   }
   
-  async savePartie(rencontre, coups) {
+  async savePartie(rencontre, coups, isRanked : boolean) {
     try {
-      const savedRencontre = await this.saveRencontre(rencontre);
+      const savedRencontre = await this.saveRencontre(rencontre, isRanked);
   
       for (const coup of coups) {
         coup.idRencontre = savedRencontre;
@@ -225,7 +226,6 @@ export class InGameGateway {
     @ConnectedSocket() client: Socket,
   ) {
     const { matchId, from, to, promotion } = movePayload;
-    console.log('Promotion', promotion);
     const coupledGames = this.matchMakingService.queue.coupledGamesMap;
     console.log(coupledGames);
     if (!coupledGames.has(matchId)) {
@@ -241,20 +241,34 @@ export class InGameGateway {
       console.log(error);
       return;
     }
-
     console.log('move: ' + from + ' to ' + to);
     console.log('valid');
     if (gameResult) {
       // Récupérer les noms des joueurs
       const names = this.playerNames.get(matchId);
+      const matchgame = this.matchMakingService.queue.gamesList.find(
+        (game) => game.matchId === matchId);
 
+      let eloNoir = matchgame.black_player.elo;
+      let eloBlanc = matchgame.white_player.elo;
+      let kFactorB = this.rencontreService.calculateKFactor(eloBlanc);
+      let kFactorN = this.rencontreService.calculateKFactor(eloNoir);
+      let scoreBlanc = gameResult.winner === 0 ? 1 : gameResult.winner === 0.5 ? 0.5 : 0;
+      let scoreNoir = gameResult.winner === 1 ? 1 : gameResult.winner === 0.5 ? 0.5 : 0;
+      let neweloBlanc = this.rencontreService.calculateEloGain({ Elo: eloBlanc, score: scoreBlanc },
+        { Elo: eloNoir, score: scoreNoir}, kFactorB);
+      let neweloNoir = this.rencontreService.calculateEloGain({ Elo: eloNoir, score: scoreNoir },
+        { Elo: eloBlanc, score: scoreBlanc }, kFactorN);
+      
+      gameResult.eloBlancDiff = neweloBlanc - eloBlanc;
+      gameResult.eloNoirDiff = neweloNoir - eloNoir;
       // Sauvegarder la partie
       const rencontre = {
         pseudoJoueurBlanc: names.joueurBlanc,
         pseudoJoueurNoir: names.joueurNoir,
         vainqueur: gameResult.winner,
-        timer: Nt.MATCHMAKING_MODES_TIMERS.BLITZ, //A MODIFIER
-      };
+        timer: matchgame.matchOptions.timer, //A MODIFIER
+      }; 
 
       const coups = game.getMovesHistory().map((move, index) => ({
         idRencontre: null, // Cette valeur sera remplacée par l'ID de la rencontre sauvegardée
@@ -264,9 +278,9 @@ export class InGameGateway {
         couleur: formate_color(move.color),
         ordre: index + 1
       }));
-
+      
       try {
-        this.savePartie(rencontre, coups);
+        this.savePartie(rencontre, coups, true);//A MODIFIER
       } catch (error) {
         console.error('Erreur lors de la sauvegarde de la partie', error);
       }

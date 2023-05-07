@@ -25,7 +25,7 @@ export class Rencontre {
   @JoinColumn()
   joueurNoir: Joueur;
 
-  @Column({nullable:false})
+  @Column({ type: 'decimal', precision: 3, scale: 1, nullable: false })
   vainqueur: number;
 
   @OneToOne(() => Partie, partie => partie.rencontre)

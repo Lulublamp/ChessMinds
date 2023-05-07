@@ -31,13 +31,13 @@ export class RencontreCoupsService {
     private classementService: ClassementService,
   ) { }
 
-  private calculateEloGain(player: { Elo: number; score: number; }, opponent: { Elo: number; score: number; }, kFactor: number): number {
+  public calculateEloGain(player: { Elo: number; score: number; }, opponent: { Elo: number; score: number; }, kFactor: number): number {
     const expectedScore = 1 / (1 + Math.pow(10, (opponent.Elo - player.Elo) / 400));
     const newRating = player.Elo + kFactor * (player.score - expectedScore);
-    return newRating;
+    return Math.round(newRating);
   }
 
-  private calculateKFactor(rating: number): number {
+  public calculateKFactor(rating: number): number {
     if (rating < 2000) {
       return 40;
     } else if (rating < 2400) {
@@ -47,11 +47,10 @@ export class RencontreCoupsService {
     }
   }
 
-
-  async saveRencontre(rencontre: Partial<RencontreWithPseudos>): Promise<Rencontre> {
+  async saveRencontre(rencontre: Partial<RencontreWithPseudos>, isRanked: boolean) {
     const joueurBlanc = await this.joueurService.findJoueurByPseudo({ pseudo: rencontre.pseudoJoueurBlanc });
     const joueurNoir = await this.joueurService.findJoueurByPseudo({ pseudo: rencontre.pseudoJoueurNoir });
-
+    console.log('winner' + rencontre.vainqueur);
     const newRencontre = this.rencontreRepository.create({
       joueurBlanc,
       joueurNoir,
@@ -76,27 +75,29 @@ export class RencontreCoupsService {
       eloBlanc: eloB,
       eloNoir: eloN,
     });
-
     // Sauvegardez la Partie
-    await this.partieRepository.save(newPartie);
-
-    //update elo
-    const kFactor = this.calculateKFactor(eloB);
-    const newEloB = this.calculateEloGain({ Elo: eloB, score: rencontre.vainqueur === 1 ? 1 : 0 }, { Elo: eloN, score: rencontre.vainqueur === 1 ? 0 : 1 }, kFactor);
-    const newEloN = this.calculateEloGain({ Elo: eloN, score: rencontre.vainqueur === 2 ? 1 : 0 }, { Elo: eloB, score: rencontre.vainqueur === 2 ? 0 : 1 }, kFactor);
-
-    if (rencontre.timer === Nt.MATCHMAKING_MODES_TIMERS.BULLET) {
-      await this.classementService.updateElo(joueurBlanc.idJoueur, newEloB, TypePartie.BULLET);
-      await this.classementService.updateElo(joueurNoir.idJoueur, newEloN, TypePartie.BULLET);
-    } else if (rencontre.timer === Nt.MATCHMAKING_MODES_TIMERS.BLITZ) {
-      await this.classementService.updateElo(joueurBlanc.idJoueur, newEloB, TypePartie.BLITZ);
-      await this.classementService.updateElo(joueurNoir.idJoueur, newEloN, TypePartie.BLITZ);
-    } else {
-      await this.classementService.updateElo(joueurBlanc.idJoueur, newEloB, TypePartie.RAPIDE);
-      await this.classementService.updateElo(joueurNoir.idJoueur, newEloN, TypePartie.RAPIDE);
+    if (isRanked) {
+      await this.partieRepository.save(newPartie);
+      //update elo
+      const kFactorB = this.calculateKFactor(eloB);
+      const kFactorN = this.calculateKFactor(eloN);
+      const scoreBlanc = rencontre.vainqueur === 0 ? 1 : rencontre.vainqueur === 0.5 ? 0.5 : 0;
+      const scoreNoir = rencontre.vainqueur === 1 ? 1 : rencontre.vainqueur === 0.5 ? 0.5 : 0;
+      const newEloB = this.calculateEloGain({ Elo: eloB, score: scoreBlanc }, { Elo: eloN, score: scoreNoir }, kFactorB);
+      const newEloN = this.calculateEloGain({ Elo: eloN, score: scoreNoir}, { Elo: eloB, score: scoreBlanc }, kFactorN);
+      if (rencontre.timer === Nt.MATCHMAKING_MODES_TIMERS.BULLET) {
+        await this.classementService.updateElo(joueurBlanc.idJoueur, newEloB, TypePartie.BULLET);
+        await this.classementService.updateElo(joueurNoir.idJoueur, newEloN, TypePartie.BULLET);
+      } else if (rencontre.timer === Nt.MATCHMAKING_MODES_TIMERS.BLITZ) {
+        await this.classementService.updateElo(joueurBlanc.idJoueur, newEloB, TypePartie.BLITZ);
+        await this.classementService.updateElo(joueurNoir.idJoueur, newEloN, TypePartie.BLITZ);
+      } else {
+        await this.classementService.updateElo(joueurBlanc.idJoueur, newEloB, TypePartie.RAPIDE);
+        await this.classementService.updateElo(joueurNoir.idJoueur, newEloN, TypePartie.RAPIDE);
+      }
+      console.log('elo gain joueur blanc : ' + newEloB);
+      console.log('elo gain joueur noir : ' + newEloN);
     }
-    console.log('elo gain joueur blanc : ' + newEloB);
-    console.log('elo gain joueur noir : ' + newEloN);
     return savedRencontre;
   }
 

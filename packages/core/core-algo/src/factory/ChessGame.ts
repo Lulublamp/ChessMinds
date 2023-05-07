@@ -132,6 +132,7 @@ export class ChessGame {
       return {
         status: 'stalemate',
         message: 'Stalemate',
+        winner : 0.5
       };
     }
 
@@ -192,6 +193,7 @@ export class ChessGame {
       return {
         status: 'stalemate',
         message: 'Stalemate',
+        winner : 0.5
       };
     }
 

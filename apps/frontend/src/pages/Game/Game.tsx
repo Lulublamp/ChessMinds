@@ -150,14 +150,15 @@ const Game = () => {
 
   const handleGameEnd = (gameResult: any) => {
     if (_game === null) return;
+    console.log("Game end", gameResult);
     setGameEndInfo(
       {
         winner: gameResult.winner,
         playerName1: _game.white_player.name,
         playerName2: _game.black_player.name,
         gameType: selectedTimeMode,
-        ranking: elo,
-        rankingChange: -15
+        ranking: elo + (playerisWhite ? gameResult.eloBlancDiff : gameResult.eloNoirDiff),
+        rankingChange: playerisWhite ? gameResult.eloBlancDiff : gameResult.eloNoirDiff,
       }
     );
     setShowEndPopup(true);
@@ -246,14 +247,14 @@ const Game = () => {
     }}>
       {showEndPopup && gameEndInfo && (
         <ChessGameEndPopup
-          winner={gameEndInfo.winner ? 'Les noirs' : 'Les blancs'}
+          winner={gameEndInfo.winner}
           playerName1={gameEndInfo.playerName1}
           playerName2={gameEndInfo.playerName2}
           gameType={gameEndInfo.gameType}
           ranking={gameEndInfo.ranking}
           rankingChange={gameEndInfo.rankingChange}
           onNewGame={handleNewGame} // Implémentez cette fonction pour gérer la création d'une nouvelle partie
-          onReturn={handleReturn} // Implémentez cette fonction pour gérer le retour à l'écran précédent
+          onReturn={handleReturn} 
           idImageP1={idIcon ? idIcon[0] : 0}
           idImageP2={idIcon ? idIcon[1] : 0}
         />

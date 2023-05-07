@@ -60,7 +60,7 @@ const PrivateGame: React.FC<Props> = ({ onBackClick, lstIdInvitations, idMatch, 
     return () => {
       if (!idMatch) {
         console.log('Destroying server lobby');
-        globalSocket?.deleteLobby(null);
+        //globalSocket?.deleteLobby(null);
       }
       else {
         console.log('Leaving server lobby');
