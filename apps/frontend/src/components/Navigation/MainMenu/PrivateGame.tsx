@@ -79,9 +79,9 @@ const PrivateGame: React.FC<Props> = ({ onBackClick, lstIdInvitations, idMatch, 
       }
       else {
         console.log('Leaving server lobby');
-        globalSocket?.leaveLobby(null);
+        //globalSocket?.leaveLobby(null);
       }
-      globalSocket?.leaveLobby(payload);
+      //globalSocket?.leaveLobby(payload);
 
       LobbySetteur([]);
     }

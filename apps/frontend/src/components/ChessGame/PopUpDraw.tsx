@@ -3,17 +3,16 @@ import React from 'react';
 import './PopUpDraw.css';
 
 interface PopUpDrawProps {
-  onAccept: () => void;
-  onReject: () => void;
+  DrawResponse(response: boolean) : void;
 }
 
-const PopUpDraw: React.FC<PopUpDrawProps> = ({ onAccept, onReject }) => {
+const PopUpDraw: React.FC<PopUpDrawProps> = ({ DrawResponse}) => {
   return (
     <div className="PopUpDraw">
       <span>Demande de match nul</span>
       <div>
-        <button onClick={onAccept}>Accepter</button>
-        <button onClick={onReject}>Refuser</button>
+        <button onClick={() => {DrawResponse(true)}}>Accepter</button>
+        <button onClick={() => {DrawResponse(false)}}>Refuser</button>
       </div>
     </div>
   );

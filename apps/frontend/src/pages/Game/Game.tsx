@@ -20,8 +20,10 @@ import { useGameInfoContext } from '../../components/ChessGame/GameInfoProvider'
 import { UserContext } from '../../components/UserContext';
 import ChessGameEndPopup from '../../components/ChessGame/ChessGameEndPopup';
 import PopUpPromotion from '../../components/ChessGame/PopUpPromotion ';
+import PopUpDraw from '../../components/ChessGame/PopUpDraw';
 import axios from 'axios';
 import { API_BASE_URL } from '../../config';
+import { set } from 'lodash';
 
 type GameEndInfo = {
   winner: string;
@@ -276,6 +278,9 @@ const Game = () => {
           idImageP2={idIcon ? idIcon[1] : 0}
         />
       )}
+      {drawRequest && (
+        <PopUpDraw DrawResponse={DrawResponse} />
+      ) }
 
       <FindPlayer onCancel={cancelMatchmaking}
         show={!PlayerIsFind}

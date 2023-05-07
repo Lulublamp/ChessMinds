@@ -337,6 +337,10 @@ export class ChessGame {
     return this.board;
   }
 
+  public setDraw(){
+    
+  }
+
   public getMovesHistory(): Array<{ from: string, to: string, piece: string, color: Color }> {
     return this.movesHistory;
   }
