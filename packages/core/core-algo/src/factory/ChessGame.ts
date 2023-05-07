@@ -604,6 +604,26 @@ export class ChessGame {
     return this.whitePlayer.piecesTaken;
   }
 
+  public getDifferenceWhitePlayerPiecesTaken(): Map<string, number> {
+    let whitePiece = this.getWhitePlayerPiecesTaken();
+    let blackPiece = this.getBlackPlayerPiecesTaken();
+    let difference = new Map<string, number>();
+    for (let [key, value] of whitePiece) {
+      difference.set(key, value - (blackPiece.get(key) || 0));
+    }
+    return difference;
+  }
+
+  public getDifferenceBlackPlayerPiecesTaken(): Map<string, number> {
+    let whitePiece = this.getWhitePlayerPiecesTaken();
+    let blackPiece = this.getBlackPlayerPiecesTaken();
+    let difference = new Map<string, number>();
+    for (let [key, value] of blackPiece) {
+      difference.set(key, value - (whitePiece.get(key) || 0));
+    }
+    return difference;
+  }
+
   public getBlackPlayerPiecesTaken(): Map<string, number> {
     return this.blackPlayer.piecesTaken;
   }

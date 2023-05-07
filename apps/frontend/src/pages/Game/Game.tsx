@@ -43,6 +43,8 @@ const Game = () => {
   const [gameManager, setGameManager] = useState<ClientEventManager<IN_GAME> | null>(null);
   const gameManagerRef = useRef<ClientEventManager<IN_GAME> | null>(null);
   const [movesData, setMovesData] = useState<Move[]>([]);
+  const [differentialPiecesWhite, setDifferentialPiecesWhite] = useState<Map<string, number> | null>(null);
+  const [differentialPiecesBlack, setDifferentialPiecesBlack] = useState<Map<string, number> | null>(null);
   const [boardHistory, setBoardHistory] = useState<ChessBoard[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [playerisWhite, setPlayerisWhite] = useState(false);
@@ -248,6 +250,13 @@ const Game = () => {
     fetchIconData();
   }, [PlayerIsFind]);
 
+  const UpdateData = () => {
+    if(chessGame){
+      setDifferentialPiecesBlack(chessGame.getDifferenceBlackPlayerPiecesTaken());
+      setDifferentialPiecesWhite(chessGame.getDifferenceWhitePlayerPiecesTaken());
+    }
+  }
+
   return (
     <GameContext.Provider value={{
       clientManager: clientManager,
@@ -294,41 +303,44 @@ const Game = () => {
         <MovesListMobile moves={movesData} />
         <div className="leftContainer">
           <PlayerContainer
-            isWhitePlayer={playerisWhite}
+            isWhitePlayer={true}
             playerName={_game ? !playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
             playerScore={_game ? !playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
             playerScorePieceValue={2}
             time="10:00"
             enHaut={true}
             idIcon={idIcon.length > 0 ?idIcon[0] : 0}
+            lstPiece={differentialPiecesWhite}
           />
           <Chat 
             matchId={_game?.matchId || '0'}
             pseudo={user.user?.pseudo || 'Player'}
           />
           <PlayerContainer
-            isWhitePlayer={playerisWhite}
+            isWhitePlayer={false}
             playerName={_game ? playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
             playerScore={_game ? playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
             playerScorePieceValue={2}
             time="10:00"
             enHaut={false}
             idIcon={idIcon.length > 1 ?idIcon[1] : 0}
+            lstPiece={differentialPiecesBlack}
           />
         </div>
         <div className='TopContainer Mobile'>
           <PlayerContainer
-            isWhitePlayer={playerisWhite}
+            isWhitePlayer={true}
             playerName={_game ? !playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
             playerScore={_game ? !playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
             playerScorePieceValue={2}
             time="10:00"
             enHaut={true}
             idIcon={0}
+            lstPiece={differentialPiecesWhite}
           />
         </div>
         <div className="chessBoardContainer">
-          <ChessBoardRenderer onGameEnd={handleGameEnd} onShowPromotionPopup={handleShowPromotion} onClosePromotionPopup={handleClosePromotion} />
+          <ChessBoardRenderer onGameEnd={handleGameEnd} onShowPromotionPopup={handleShowPromotion} onClosePromotionPopup={handleClosePromotion} updateData={UpdateData} />
         </div>
         <div className="rightContainer">
           <MovesList moves={movesData} />
@@ -341,13 +353,14 @@ const Game = () => {
         </div>
         <div className='BotContainer Mobile'>
           <PlayerContainer
-            isWhitePlayer={playerisWhite}
+            isWhitePlayer={false}
             playerName={_game ? playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
             playerScore={_game ? playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
             playerScorePieceValue={2}
             time="10:00"
             enHaut={false}
             idIcon={0}
+            lstPiece={differentialPiecesBlack}
           />
         </div>
         <BottomMenuMobile

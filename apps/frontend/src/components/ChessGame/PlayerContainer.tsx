@@ -1,30 +1,21 @@
 import React, { useEffect } from "react";
+import { Bishop, ChessPiece, Color, King, Knight, Pawn, Queen, Rook } from "@TRPI/core/core-algo";
 import "./PlayerContainerStyle.css"
 import { useFPayload, useGameManager, usePlayerIsWhite } from "../../contexts/GameContext";
 import { JoinQueuOption } from "@TRPI/core/core-network/src/MatchMaking";
 import { MATCHMAKING_MODES_TIMERS } from "@TRPI/core/core-network";
 import ProfileImage from "../Logo_Icon/ProfileImage";
+import DisplayPiece from "./DisplayPiece";
 
 interface PlayerContainerProps {
   isWhitePlayer: boolean;
   playerName: string | undefined;
   playerScore: number | undefined;
   playerScorePieceValue: number;
+  lstPiece: Map<string, number> | null;
   time: string;
   enHaut?: boolean;
   idIcon: number;
-}
-
-function optionToTime(option: JoinQueuOption){
-
-  switch (option.timer) {
-    case MATCHMAKING_MODES_TIMERS.BLITZ:
-      return '3:00';
-    case MATCHMAKING_MODES_TIMERS.BULLET:
-      return '1:00';
-    case MATCHMAKING_MODES_TIMERS.RAPID:
-      return '5:00';
-  }
 }
 
 export const PlayerContainerAffichage: React.FC<PlayerContainerProps> = ({
@@ -33,8 +24,27 @@ export const PlayerContainerAffichage: React.FC<PlayerContainerProps> = ({
   playerScore,
   playerScorePieceValue,
   time,
-  idIcon
+  idIcon,
+  lstPiece
 }) => {
+
+  const convertStringToPiece = (piece: string): ChessPiece => {
+    switch (piece) {
+      case "p":
+        return new Pawn(isWhitePlayer ? Color.White : Color.Black, "");
+      case "r":
+        return new Rook(isWhitePlayer ? Color.White : Color.Black, "");
+      case "n":
+        return new Knight(isWhitePlayer ? Color.White : Color.Black, "");
+      case "b":
+        return new Bishop(isWhitePlayer ? Color.White : Color.Black, "");
+      case "q":
+        return new Queen(isWhitePlayer ? Color.White : Color.Black, "");
+      default:
+        throw new Error("Piece not found");
+    }
+  }
+
   return (
     <div className={`playerContainer ${isWhitePlayer ? "whitePlayer" : "blackPlayer"}`}>
       <div>
@@ -56,23 +66,14 @@ export const PlayerContainerAffichage: React.FC<PlayerContainerProps> = ({
         </div>
       </div>
       <div>
-        <svg width="45" height="48" viewBox="0 0 45 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M14.4422 27.4314C14.1439 27.8591 13.788 28.3045 13.3732 28.7627C11.9091 30.3797 10.1135 31.7101 8.9546 32.4057L8.75965 32.5227C7.98071 32.9902 7.5 33.8603 7.5 34.8027V41.1347C7.5 42.585 8.61929 43.7607 10 43.7607H34.375C35.7557 43.7607 36.875 42.585 36.875 41.1347V34.8027C36.875 33.8603 36.3943 32.9902 35.6154 32.5227L35.4204 32.4057C34.2615 31.7101 32.4659 30.3797 31.0018 28.7627C30.587 28.3045 30.2311 27.8591 29.9328 27.4314C31.03 27.1538 31.8452 26.1161 31.8452 24.8783V20.6037C31.8452 19.7504 31.4506 18.9504 30.7869 18.4583L29.7251 17.671C30.3378 16.4206 30.6845 15.0017 30.6845 13.4989C30.6845 8.45735 26.7937 4.37036 21.994 4.37036C17.1944 4.37036 13.3036 8.45735 13.3036 13.4989C13.3036 15.0862 13.6903 16.5795 14.3684 17.8797L13.5881 18.4583C12.9244 18.9504 12.5298 19.7504 12.5298 20.6037V24.8783C12.5298 26.1161 13.345 27.1538 14.4422 27.4314Z"
-            fill="#272727" />
-          <path
-            d="M28.1845 13.4989C28.1845 15.3848 27.4202 17.0832 26.1992 18.2709L29.3452 20.6036V24.8783H26.2654C26.4139 26.8597 27.6242 28.8427 29.1903 30.5724C30.8524 32.408 32.8521 33.8885 34.1801 34.6856L34.375 34.8026V41.1346H10V34.8026L10.1949 34.6856C11.5229 33.8885 13.5226 32.408 15.1847 30.5724C16.7508 28.8427 17.9611 26.8597 18.1097 24.8783H15.0298V20.6036L17.9598 18.4311C16.6396 17.2386 15.8036 15.4713 15.8036 13.4989C15.8036 9.90762 18.5751 6.99634 21.994 6.99634C25.413 6.99634 28.1845 9.90762 28.1845 13.4989Z"
-            fill="#F4F7FA" />
-        </svg>
-        <svg width="45" height="48" viewBox="0 0 45 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path
-            d="M14.4422 27.4314C14.1439 27.8591 13.788 28.3045 13.3732 28.7627C11.9091 30.3797 10.1135 31.7101 8.9546 32.4057L8.75965 32.5227C7.98071 32.9902 7.5 33.8603 7.5 34.8027V41.1347C7.5 42.585 8.61929 43.7607 10 43.7607H34.375C35.7557 43.7607 36.875 42.585 36.875 41.1347V34.8027C36.875 33.8603 36.3943 32.9902 35.6154 32.5227L35.4204 32.4057C34.2615 31.7101 32.4659 30.3797 31.0018 28.7627C30.587 28.3045 30.2311 27.8591 29.9328 27.4314C31.03 27.1538 31.8452 26.1161 31.8452 24.8783V20.6037C31.8452 19.7504 31.4506 18.9504 30.7869 18.4583L29.7251 17.671C30.3378 16.4206 30.6845 15.0017 30.6845 13.4989C30.6845 8.45735 26.7937 4.37036 21.994 4.37036C17.1944 4.37036 13.3036 8.45735 13.3036 13.4989C13.3036 15.0862 13.6903 16.5795 14.3684 17.8797L13.5881 18.4583C12.9244 18.9504 12.5298 19.7504 12.5298 20.6037V24.8783C12.5298 26.1161 13.345 27.1538 14.4422 27.4314Z"
-            fill="#272727" />
-          <path
-            d="M28.1845 13.4989C28.1845 15.3848 27.4202 17.0832 26.1992 18.2709L29.3452 20.6036V24.8783H26.2654C26.4139 26.8597 27.6242 28.8427 29.1903 30.5724C30.8524 32.408 32.8521 33.8885 34.1801 34.6856L34.375 34.8026V41.1346H10V34.8026L10.1949 34.6856C11.5229 33.8885 13.5226 32.408 15.1847 30.5724C16.7508 28.8427 17.9611 26.8597 18.1097 24.8783H15.0298V20.6036L17.9598 18.4311C16.6396 17.2386 15.8036 15.4713 15.8036 13.4989C15.8036 9.90762 18.5751 6.99634 21.994 6.99634C25.413 6.99634 28.1845 9.90762 28.1845 13.4989Z"
-            fill="#F4F7FA" />
-        </svg>
-        <span className="scorePieceValue">{`+${playerScorePieceValue}`}</span>
+        {lstPiece && Array.from(lstPiece.entries()).map(([piece, count]) => (
+          Array.from({ length: count }).map((_, i) => (
+            <DisplayPiece key={`${piece}-${i}`} pieceName={convertStringToPiece(piece)} />
+          ))
+        ))}
+        {
+          playerScorePieceValue > 0 && <span className="scorePieceValue">{`+${playerScorePieceValue}`}</span>
+        }
       </div>
     </div>
   );
@@ -82,19 +83,36 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
   isWhitePlayer,
   playerName,
   playerScore,
-  playerScorePieceValue,
-  time,
   enHaut,
-  idIcon
+  idIcon,
+  lstPiece,
 }) => {
   const fpayload = useFPayload();
-  const [gameManager , setGameManager] = useGameManager();
-  const [timer , setTimer] = React.useState(fpayload?.options.timer.toString());
-  const playerIsWhite = usePlayerIsWhite()
+  const [gameManager, setGameManager] = useGameManager();
+  const [timer, setTimer] = React.useState(fpayload?.options.timer.toString());
+  const [playerScorePieceValue, setPlayerScorePieceValue] = React.useState(0);
+
+  const pieceValues: { [key: string]: number } = {
+    "p": 1,
+    "r": 5,
+    "n": 3,
+    "b": 3,
+    "q": 9
+  };
 
   useEffect(() => {
     console.log('payload changed');
-  }, [fpayload])  
+  }, [fpayload])
+
+  useEffect(() => {
+    if (!lstPiece) return;
+    let totalScore = 0;
+    lstPiece.forEach((value, key) => {
+      totalScore += pieceValues[key] * value;
+    });
+    if(totalScore < 0) totalScore = 0;
+    setPlayerScorePieceValue(totalScore);
+  }, [lstPiece?.values()])
 
   useEffect(() => {
     if (gameManager) {
@@ -108,14 +126,15 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
   }, [gameManager])
 
   return (
-    <PlayerContainerAffichage 
+    <PlayerContainerAffichage
       isWhitePlayer={isWhitePlayer}
       playerName={playerName}
       playerScore={playerScore}
       playerScorePieceValue={playerScorePieceValue}
       time={timer}
       idIcon={idIcon}
-      />)
+      lstPiece={lstPiece}
+    />)
 };
 
 export default PlayerContainer;
