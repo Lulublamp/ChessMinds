@@ -3,7 +3,6 @@ import { JoinQueuOption } from "../MatchMaking";
 import { MATCHMAKING_MODES_TIMERS } from "../Namespace";
 import { Server } from 'socket.io';
 
-
 export class CTimer {
   public blackTime;
   public whiteTime;

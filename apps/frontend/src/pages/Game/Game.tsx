@@ -160,9 +160,8 @@ const Game = () => {
         handleGameEnd({winner: 0.5, eloBlancDiff: neweloBlanc, eloNoirDiff: neweloNoir});
       }
     }});
-    gameManager?.listenToAbandonGame({onGameAbandon: (winner: string, newBlancElo: number, newNoirElo: number) => {
-      //Game ended
-      console.log('Game abandoned', winner, newBlancElo, newNoirElo);
+    gameManager?.listenToAbandonGame({onGameAbandon: (winner: string, newEloBlanc: number, newEloNoir: number) => {
+      handleGameEnd({winner, eloBlancDiff: newEloBlanc, eloNoirDiff: newEloNoir});
     }});
   }, [gameManager]);
 
