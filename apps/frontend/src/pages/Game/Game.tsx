@@ -153,9 +153,10 @@ const Game = () => {
 
   useEffect(() => {
     gameManager?.listenToDrawRequest({setDrawRequest: setDrawRequest});
-    gameManager?.listenToDrawResponse({onResponse: (response: boolean) => {
-      //Afficher une popup avec le résultat ou avec la refuse en fonction de la réponse
-      console.log('Draw response recieved', response);
+    gameManager?.listenToDrawResponse({onResponse: (response: boolean,neweloBlanc: number | null, neweloNoir : number | null) => {
+      if(response){
+        handleGameEnd({winner: 0.5, eloBlancDiff: neweloBlanc, eloNoirDiff: neweloNoir});
+      }
     }});
   }, [gameManager]);
 
@@ -239,6 +240,7 @@ const Game = () => {
   //A appeler dans le popup de refus ou d'acceptation de la nulle
   const DrawResponse = (response: boolean) => {
     console.log('Draw response sent', response);
+    setDrawRequest(false);
     gameManager?.sendDrawResponse({matchId: _game?.matchId || '0', response: response});
   }
 

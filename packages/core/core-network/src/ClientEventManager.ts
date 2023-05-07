@@ -360,7 +360,7 @@ export class ClientEventManager<
   public listenToDrawResponse(payload: Check<T, IN_GAME, rIReceiveDrawResponseEvent>) {
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
     this.socket.on(EVENT_TYPES.DRAW_RESPONSE, (response: any) => {
-      payload.onResponse(response.accepted);
+      payload.onResponse(response.accepted, response.neweloBlanc, response.neweloNoir);
     });
   }
 
