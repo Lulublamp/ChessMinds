@@ -47,6 +47,7 @@ const Game = () => {
   const [showEndPopup, setShowEndPopup] = useState(false);
   const [fromToPromotion, setFromToPromotion] = useState<string[]>([]);
   const [showPromotionPopup, setShowPromotionPopup] = useState(false);
+  const [drawRequest, setDrawRequest] = useState(false);
   const [_game, set_Game] = useState<IGame | null>(null);
   const [chessGame, setChessGame] = useState<ChessGame | null>(new ChessGame());
   const { selectedTimeMode, isRanked } = useGameInfoContext();
@@ -148,6 +149,15 @@ const Game = () => {
     }
   }, []);
 
+  useEffect(() => {
+    gameManager?.listenToDrawRequest({setDrawRequest: setDrawRequest});
+    gameManager?.listenToDrawResponse({onResponse: (response: boolean) => {
+      //Afficher une popup avec le résultat ou avec la refuse en fonction de la réponse
+      console.log('Draw response recieved', response);
+    }});
+  }, [gameManager]);
+
+
   const handleGameEnd = (gameResult: any) => {
     if (_game === null) return;
     console.log("Game end", gameResult);
@@ -221,6 +231,13 @@ const Game = () => {
 
   const ProposeNulle = () => {
     console.log('Propose Nulle');
+    gameManager?.sendDrawRequest({matchId: _game?.matchId || '0'});
+  }
+
+  //A appeler dans le popup de refus ou d'acceptation de la nulle
+  const DrawResponse = (response: boolean) => {
+    console.log('Draw response sent', response);
+    gameManager?.sendDrawResponse({matchId: _game?.matchId || '0', response: response});
   }
 
   useEffect(() => {

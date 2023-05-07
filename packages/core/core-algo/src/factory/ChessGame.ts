@@ -15,6 +15,7 @@ export class ChessGame {
   private blackPlayer: Player; // le joueur noir
   private currentTurn: Color; // la couleur du joueur qui doit jouer le prochain tour
   private sameMoves: number; // le nombre de coups identiques joués
+  private drawRequested: boolean; // le joueur a-t-il demandé un match nul ?
 
   //Utiliser un tableau permet de rendre le code plus flexible et adaptable à des modifications éventuelles.
   //Cela pourrait être utile dans le cas où la logique du jeu est modifiée pour autoriser plus d'un pion à effectuer un double déplacement, par exemple
@@ -35,6 +36,7 @@ export class ChessGame {
     this.currentTurn = Color.White;
     this.initializePieces();
     this.sameMoves = 0;
+    this.drawRequested = false;
   }
 
   public vierge() {
@@ -497,6 +499,26 @@ export class ChessGame {
     this.QueenSideCastlingBlack = this.previousGame.QueenSideCastlingBlack;
     this.QueenSideCastlingWhite = this.previousGame.QueenSideCastlingWhite;
     this.previousGame = this.previousGame.previousGame;
+  }
+
+  public drawRequest() {
+    this.drawRequested = true;
+  }
+
+  public drawResponse(response: boolean) {
+    if(this.drawRequested === false) {
+      throw new Error('No draw request to respond to.');
+    }
+    if (response) {
+      // Draw
+    }
+    else{
+      this.drawRequested = false;
+    }
+  }
+
+  public getCurrentTurnColor(): string {
+    return this.currentTurn === Color.White ? 'White' : 'Black';
   }
 
   public generateFEN(): string {

@@ -99,6 +99,15 @@ export interface rIRequestChatHistoryEvent {
   setChat: ReactSetter<ChatMessage[]>;
 }
 
+export interface rIReceiveDrawRequestEvent {
+  setDrawRequest: ReactSetter<boolean>;
+}
+
+export interface rIReceiveDrawResponseEvent {
+  onResponse: (response: boolean) => void;
+}
+
+
 
 export interface rIReadySwitched {
   readyArray: [boolean , boolean];

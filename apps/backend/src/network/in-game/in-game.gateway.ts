@@ -10,7 +10,7 @@ import { Socket, Server } from 'socket.io';
 import { MatchMakingService } from '../match-making/match-making.service';
 import { RencontreCoupsService } from 'src/rencontre/rencontre-coups.service';
 import { Echiquier } from 'src/coups/entities/coups.entity';
-import { IGame } from '@TRPI/core/core-network';
+import { IGame, eIDrawRequestEvent, eIDrawResponseEvent } from '@TRPI/core/core-network';
 import { JoinQueuOption } from '@TRPI/core/core-network/src/MatchMaking';
 import e from 'express';
 
@@ -412,52 +412,58 @@ export class InGameGateway {
 
   @SubscribeMessage(Nt.EVENT_TYPES.DRAW_REQUEST)
   handleDrawRequest(
-    @MessageBody() payload: { matchId: string },
+    @MessageBody() payload: eIDrawRequestEvent,
     @ConnectedSocket() client: Socket,
   ) {
     console.log('in-game: Draw request');
-
-    const roomSockets = this.server.sockets.adapter.rooms.get(payload.matchId);
-
-    if (!roomSockets) {
-      console.log('error: room not found DRAW_REQUEST');
+    const games = this.matchMakingService.queue.gamesList;
+    const game = games.find((game) => game.matchId === payload.matchId);
+    if (!game) {
+      console.log('error: game not found DRAW_REQUEST');
       return;
     }
-
-    const opponentSocketId = [...roomSockets].find((socketId) => socketId !== client.id);
-
-    if (opponentSocketId) {
-      this.server.to(opponentSocketId).emit(Nt.EVENT_TYPES.DRAW_REQUEST);
-    } else {
-      console.log('error: opponent not found DRAW_REQUEST');
+    const coupledGame = this.matchMakingService.queue.coupledGamesMap.get(payload.matchId);
+    if (!coupledGame) {
+      console.log('error: coupled game not found DRAW_REQUEST');
+      return;
     }
+    //Find player's color
+    const playerColor = game.white_player.socketId === client.id ? 'White' : 'Black';
+    if(playerColor !== coupledGame.getCurrentTurnColor()){
+      console.log('error: not your turn DRAW_REQUEST');
+      return;
+    }
+    coupledGame.drawRequest();
+    
+    client.to(payload.matchId).emit(Nt.EVENT_TYPES.DRAW_REQUEST);
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.DRAW_RESPONSE)
   handleDrawResponse(
-    @MessageBody() payload: { matchId: string, accepted: boolean },
+    @MessageBody() payload: eIDrawResponseEvent,
     @ConnectedSocket() client: Socket,
   ) {
     console.log('in-game: Draw response');
-
-    const roomSockets = this.server.sockets.adapter.rooms.get(payload.matchId);
-
-    if (!roomSockets) {
-      console.log('error: room not found DRAW_RESPONSE');
+    const games = this.matchMakingService.queue.gamesList;
+    const game = games.find((game) => game.matchId === payload.matchId);
+    if (!game) {
+      console.log('error: game not found DRAW_REQUEST');
       return;
     }
 
-    const requesterSocketId = [...roomSockets].find((socketId) => socketId !== client.id);
-
-    if (requesterSocketId) {
-      if (payload.accepted) {
-        this.server.to(requesterSocketId).emit(Nt.EVENT_TYPES.DRAW_RESPONSE, { accepted: true });
-        // You can also handle the draw result here, e.g., update game state and inform both players.
-      } else {
-        this.server.to(requesterSocketId).emit(Nt.EVENT_TYPES.DRAW_RESPONSE, { accepted: false });
-      }
+    const coupledGame = this.matchMakingService.queue.coupledGamesMap.get(payload.matchId);
+    try{
+      coupledGame.drawResponse(payload.response);
+    }
+    catch(e){
+      console.log(e.message);
+      return;
+    }
+  
+    if (payload.response) {
+      client.to(payload.matchId).emit(Nt.EVENT_TYPES.DRAW_RESPONSE, { accepted: true });
     } else {
-      console.log('error: requester not found DRAW_RESPONSE');
+      client.to(payload.matchId).emit(Nt.EVENT_TYPES.DRAW_RESPONSE, { accepted: false });
     }
   }
 
