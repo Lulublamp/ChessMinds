@@ -300,7 +300,7 @@ const Game = () => {
             playerScorePieceValue={2}
             time="10:00"
             enHaut={true}
-            idIcon={idIcon?idIcon[0] : 0}
+            idIcon={idIcon.length > 0 ?idIcon[0] : 0}
           />
           <Chat 
             matchId={_game?.matchId || '0'}
@@ -313,7 +313,7 @@ const Game = () => {
             playerScorePieceValue={2}
             time="10:00"
             enHaut={false}
-            idIcon={idIcon?idIcon[1] : 0}
+            idIcon={idIcon.length > 1 ?idIcon[1] : 0}
           />
         </div>
         <div className='TopContainer Mobile'>

@@ -434,12 +434,7 @@ export class InGameGateway {
       console.log('error: coupled game not found DRAW_REQUEST');
       return;
     }
-    //Find player's color
-    const playerColor = game.white_player.socketId === client.id ? 'White' : 'Black';
-    if(playerColor !== coupledGame.getCurrentTurnColor()){
-      console.log('error: not your turn DRAW_REQUEST');
-      return;
-    }
+
     coupledGame.drawRequest();
     
     client.to(payload.matchId).emit(Nt.EVENT_TYPES.DRAW_REQUEST);
