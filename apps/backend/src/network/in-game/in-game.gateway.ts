@@ -10,7 +10,7 @@ import { Socket, Server } from 'socket.io';
 import { MatchMakingService } from '../match-making/match-making.service';
 import { RencontreCoupsService } from 'src/rencontre/rencontre-coups.service';
 import { Echiquier } from 'src/coups/entities/coups.entity';
-import { IGame, eIDrawRequestEvent, eIDrawResponseEvent } from '@TRPI/core/core-network';
+import { IGame, eIAbandonGameEvent, eIDrawRequestEvent, eIDrawResponseEvent } from '@TRPI/core/core-network';
 import { JoinQueuOption } from '@TRPI/core/core-network/src/MatchMaking';
 import e from 'express';
 
@@ -515,4 +515,38 @@ export class InGameGateway {
       this.server.to(payload.matchId).emit(Nt.EVENT_TYPES.DRAW_RESPONSE, { accepted: false, neweloBlanc: null, neweloNoir: null });
     }
   }
+
+  @SubscribeMessage(Nt.EVENT_TYPES.ABANDON_GAME)
+  handleAbandonGame(
+    @MessageBody() payload: eIAbandonGameEvent,
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log('in-game: Draw response');
+    const games = this.matchMakingService.queue.gamesList;
+    const game = games.find((game) => game.matchId === payload.matchId);
+    if (!game) {
+      console.log('error: game not found DRAW_REQUEST');
+      return;
+    }
+
+    const coupledGame = this.matchMakingService.queue.coupledGamesMap.get(payload.matchId);
+    if (!coupledGame) {
+      console.log('error: coupled game not found DRAW_REQUEST');
+      return;
+    }
+
+    //Find player's color
+    const playerColor = game.white_player.socketId === client.id ? 'White' : 'Black';
+    coupledGame.abandonGame(playerColor);
+    
+    
+    this.server.to(payload.matchId).emit(Nt.EVENT_TYPES.ABANDON_GAME, { winner: playerColor === 'White' ? 'Black' : 'White', newEloBlanc: 0, newEloNoir: 0 });
+
+    // this.matchMakingService.queue.destroyGame(payload.matchId);
+
+  }
+    
+
+
+
 }
