@@ -540,8 +540,5 @@ export class InGameGateway {
     // this.matchMakingService.queue.destroyGame(payload.matchId);
 
   }
-    
-
-
 
 }
