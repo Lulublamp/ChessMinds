@@ -75,7 +75,8 @@ const ChessGameEndPopup: React.FC<Props> = ({
           </div>
           <span>Classement</span>
           <span>
-            {ranking} <span className={rankingChange > 0 ? 'winelo' : 'lostelo'}> {rankingChange > 0 ? '+' : ''}{rankingChange}</span>
+            {ranking} <span className={rankingChange > 0 ? 'winelo' : 'lostelo'}> 
+            {rankingChange != 0 && rankingChange > 0 ? '+' : ''}{rankingChange != 0 && rankingChange}</span>
           </span>
           <button onClick={onNewGame}>🕹️ Nouvelle partie</button>
           <button onClick={onReturn}>Retour</button>
