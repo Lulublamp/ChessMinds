@@ -193,6 +193,8 @@ export class Queue {
   }
 
   public addToPrivateQueue(key: string, player: IMMPlayer) {
+    
+    // key = otherkey;
     if (!this.privateQueue.has(key)) {
       console.log('Init PG')
       this.privateQueue.set(key, []);
@@ -227,4 +229,6 @@ export class Queue {
   public deletePrivateQueue(key: string): void {
     this.privateQueue.delete(key);
   }
+
+  
 }

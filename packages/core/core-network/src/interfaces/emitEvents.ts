@@ -5,8 +5,6 @@ import { IGame } from "./game";
 import { IMMPlayer } from "./mmplayer";
 import { ReactSetter } from "./receiveEvents";
 
-
-
 export interface eILeaveRoomEvent {
   userId: string;
 }
@@ -36,19 +34,18 @@ export interface eIJoinQueueEvent {
 }
 
 export interface eIMakeMoveEvent {
-  matchId: string,
-  from: string,
-  to: string,
-  promotion?: string
+  matchId: string;
+  from: string;
+  to: string;
+  promotion?: string;
 }
 
 export interface eIFirstMoveEvent {
-  game: IGame
+  game: IGame;
 }
 
-
-export interface eISendChatMessageEvent extends Omit<ChatMessage, 'timestamp'> {}
-
+export interface eISendChatMessageEvent
+  extends Omit<ChatMessage, "timestamp"> {}
 
 export interface eIInviteAmisEvent {
   idJoueur: number;
@@ -73,11 +70,9 @@ export interface eISendEnviteEvent {
   idJoueurInvite: number;
 }
 
-
 export interface eIInviteFriend {
   idInvite: number;
 }
-
 
 export interface eIJoinLobby {
   lobbyId: string;

@@ -73,7 +73,7 @@ export class MatchMakingService {
   }
 
   public createLobby(player: Nt.IMMPlayer, socketId: string): string {
-    const comb = `${socketId}-${player.id}`;
+    const comb = `${MatchMakingService.generateRandomLobbyId()}-${player.id}`;
     this.queue.addToPrivateQueue(comb, player);
     console.log('[LOGS] createLobby : ', comb);
     return comb;
@@ -100,5 +100,16 @@ export class MatchMakingService {
       timer: Nt.MATCHMAKING_MODES_TIMERS.BLITZ,
     };
     return defaultOpt;
+  }
+
+  public static generateRandomLobbyId(): string {
+    let result = '';
+    const characters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const charactersLength = characters.length;
+    for (let i = 0; i < 12; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+    return result;
   }
 }

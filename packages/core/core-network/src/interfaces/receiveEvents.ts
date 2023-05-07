@@ -39,11 +39,11 @@ export interface rIIncomingGameEvent {
 
 export interface rINetworkMoveEvent {
   _forceUpdate: ReactSetter<number>;
-  chessGame: ChessGame
-  movesData: Move[]
-  boardHistory: ChessBoard[]
-  setMovesData: ReactSetter<Move[]>
-  setCurrentIndex : ReactSetter<number>
+  chessGame: ChessGame;
+  movesData: Move[];
+  boardHistory: ChessBoard[];
+  setMovesData: ReactSetter<Move[]>;
+  setCurrentIndex: ReactSetter<number>;
 }
 
 export interface rITimeEvent {
@@ -54,7 +54,7 @@ export interface rITimeEvent {
 
 export interface rITimeoutEvent {
   gameOver: ReactSetter<boolean>;
-  onGameEnd: (gameResult : any) => void;
+  onGameEnd: (gameResult: any) => void;
 }
 
 export interface rIInvitationFriendEvent {
@@ -63,14 +63,14 @@ export interface rIInvitationFriendEvent {
 }
 
 export interface rIJoinLobbyEvent {
-  goToPrivateGame: (() => void);
-  Settlobby : ReactSetter<IMMPlayer[]>;
-  lobbyRef : ReactRef<IMMPlayer[]>;
-  userId : number;
+  goToPrivateGame: () => void;
+  Settlobby: ReactSetter<IMMPlayer[]>;
+  lobbyRef: ReactRef<IMMPlayer[]>;
+  userId: number;
 }
 
-export interface rILeaveLobbyEvent{
-  Settlobby : ReactSetter<IMMPlayer[]>;
+export interface rILeaveLobbyEvent {
+  Settlobby: ReactSetter<IMMPlayer[]>;
 }
 
 export interface rILobbyLeaveEvent {
@@ -83,7 +83,6 @@ export interface rIPGInvitation {
   setPopup: ReactSetter<boolean>;
   setPGInvitations: ReactSetter<PGinvitations[]>;
 }
-
 
 export interface PGinvitations {
   idJoueur: number;
@@ -99,8 +98,11 @@ export interface rIRequestChatHistoryEvent {
   setChat: ReactSetter<ChatMessage[]>;
 }
 
-
 export interface rIReadySwitched {
-  readyArray: [boolean , boolean];
-  setReadyArray: ReactSetter<[boolean , boolean]>;
+  readyArray: [boolean, boolean];
+  setReadyArray: ReactSetter<[boolean, boolean]>;
+}
+
+export interface rILobbyCreated {
+  setLobbyId: ReactSetterOrNull<string>;
 }
