@@ -250,16 +250,22 @@ export class InGameGateway {
       const matchgame = this.matchMakingService.queue.gamesList.find(
         (game) => game.matchId === matchId);
 
-      let eloNoir = matchgame.black_player.elo;
-      let eloBlanc = matchgame.white_player.elo;
-      let kFactorB = this.rencontreService.calculateKFactor(eloBlanc);
-      let kFactorN = this.rencontreService.calculateKFactor(eloNoir);
-      let scoreBlanc = gameResult.winner === 0 ? 1 : gameResult.winner === 0.5 ? 0.5 : 0;
-      let scoreNoir = gameResult.winner === 1 ? 1 : gameResult.winner === 0.5 ? 0.5 : 0;
-      let neweloBlanc = this.rencontreService.calculateEloGain({ Elo: eloBlanc, score: scoreBlanc },
-        { Elo: eloNoir, score: scoreNoir }, kFactorB);
-      let neweloNoir = this.rencontreService.calculateEloGain({ Elo: eloNoir, score: scoreNoir },
-        { Elo: eloBlanc, score: scoreBlanc }, kFactorN);
+      let eloNoir = 0;
+      let eloBlanc = 0;
+      let neweloBlanc = 0;
+      let neweloNoir = 0;
+      if (matchgame.matchOptions.mode === Nt.MATCHMAKING_MODE.RANKED) {
+        eloNoir = matchgame.black_player.elo;
+        eloBlanc = matchgame.white_player.elo;
+        let kFactorB = this.rencontreService.calculateKFactor(eloBlanc);
+        let kFactorN = this.rencontreService.calculateKFactor(eloNoir);
+        let scoreBlanc = gameResult.winner === 0 ? 1 : gameResult.winner === 0.5 ? 0.5 : 0;
+        let scoreNoir = gameResult.winner === 1 ? 1 : gameResult.winner === 0.5 ? 0.5 : 0;
+        neweloBlanc = this.rencontreService.calculateEloGain({ Elo: eloBlanc, score: scoreBlanc },
+          { Elo: eloNoir, score: scoreNoir }, kFactorB);
+        neweloNoir = this.rencontreService.calculateEloGain({ Elo: eloNoir, score: scoreNoir },
+          { Elo: eloBlanc, score: scoreBlanc }, kFactorN);
+      }
 
       gameResult.eloBlancDiff = neweloBlanc - eloBlanc;
       gameResult.eloNoirDiff = neweloNoir - eloNoir;
@@ -468,16 +474,22 @@ export class InGameGateway {
       const matchgame = this.matchMakingService.queue.gamesList.find(
         (game) => game.matchId === payload.matchId);
 
-      let eloNoir = matchgame.black_player.elo;
-      let eloBlanc = matchgame.white_player.elo;
-      let kFactorB = this.rencontreService.calculateKFactor(eloBlanc);
-      let kFactorN = this.rencontreService.calculateKFactor(eloNoir);
-      let scoreBlanc = 0.5;
-      let scoreNoir = 0.5;
-      let neweloBlanc = this.rencontreService.calculateEloGain({ Elo: eloBlanc, score: scoreBlanc },
-        { Elo: eloNoir, score: scoreNoir }, kFactorB);
-      let neweloNoir = this.rencontreService.calculateEloGain({ Elo: eloNoir, score: scoreNoir },
-        { Elo: eloBlanc, score: scoreBlanc }, kFactorN);
+      let eloNoir = 0;
+      let eloBlanc = 0;
+      let neweloBlanc = 0;
+      let neweloNoir = 0;
+      if (matchgame.matchOptions.mode === Nt.MATCHMAKING_MODE.RANKED) {
+        eloNoir = matchgame.black_player.elo;
+        eloBlanc = matchgame.white_player.elo;
+        let kFactorB = this.rencontreService.calculateKFactor(eloBlanc);
+        let kFactorN = this.rencontreService.calculateKFactor(eloNoir);
+        let scoreBlanc = 0.5;
+        let scoreNoir = 0.5;
+        neweloBlanc = this.rencontreService.calculateEloGain({ Elo: eloBlanc, score: scoreBlanc },
+          { Elo: eloNoir, score: scoreNoir }, kFactorB);
+        neweloNoir = this.rencontreService.calculateEloGain({ Elo: eloNoir, score: scoreNoir },
+          { Elo: eloBlanc, score: scoreBlanc }, kFactorN);
+      }
 
       // Sauvegarder la partie
       const rencontre = {
