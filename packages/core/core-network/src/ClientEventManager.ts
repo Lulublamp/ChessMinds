@@ -15,9 +15,10 @@ import {
   eIDrawResponseEvent,
   eILeaveLobbyEvent,
   eISwitchReady,
+  eIAbandonGameEvent,
 } from "./interfaces/emitEvents";
 import { CONNECTION, IN_GAME, MATCH_MAKING, NAMESPACE_TYPES, PRIVATE, PRIVATE_GAME } from "./Namespace";
-import { Move, PGinvitations, rICreateRoomEvent, rIIncomingGameEvent, rIInvitationFriendEvent, rIJoinLobbyEvent, rINetworkMoveEvent, rIPGInvitation, rITimeEvent, rITimeoutEvent, rIReceiveChatMessageEvent, rIRequestChatHistoryEvent, rIReceiveDrawRequestEvent, rIReceiveDrawResponseEvent, rILeaveLobbyEvent, rILobbyLeaveEvent, rIReadySwitched } from "./interfaces/receiveEvents";
+import { Move, PGinvitations, rICreateRoomEvent, rIIncomingGameEvent, rIInvitationFriendEvent, rIJoinLobbyEvent, rINetworkMoveEvent, rIPGInvitation, rITimeEvent, rITimeoutEvent, rIReceiveChatMessageEvent, rIRequestChatHistoryEvent, rIReceiveDrawRequestEvent, rIReceiveDrawResponseEvent, rILeaveLobbyEvent, rILobbyLeaveEvent, rIReadySwitched, rIAbandonGameEvent } from "./interfaces/receiveEvents";
 import { IGame } from "./interfaces/game";
 // import { PrivateLobby } from "./utils/Lobby";
 import { ChessBoard, Color } from "../../core-algo";
@@ -376,6 +377,18 @@ export class ClientEventManager<
       const copieArray = payload.readyArray;
       copieArray[target] = !copieArray[target];
       payload.setReadyArray(() => copieArray);
+    });
+  }
+
+  public sendAbandonGame(payload: Check<T, IN_GAME, eIAbandonGameEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.send(EVENT_TYPES.ABANDON_GAME, payload);
+  }
+
+  public listenToAbandonGame(payload: Check<T, IN_GAME, rIAbandonGameEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.socket.on(EVENT_TYPES.ABANDON_GAME, (response: any) => {
+      payload.onGameAbandon(response.winner, response.newEloBlanc, response.newEloNoir);
     });
   }
 

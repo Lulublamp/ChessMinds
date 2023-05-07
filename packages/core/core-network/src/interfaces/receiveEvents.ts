@@ -111,3 +111,7 @@ export interface rIReadySwitched {
   readyArray: [boolean , boolean];
   setReadyArray: ReactSetter<[boolean , boolean]>;
 }
+
+export interface rIAbandonGameEvent {
+  onGameAbandon: (winner: string, newEloBlanc: number, newEloNoir: number) => void;
+}

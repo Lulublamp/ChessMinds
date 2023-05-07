@@ -521,6 +521,10 @@ export class ChessGame {
     }
   }
 
+  public abandonGame(playerColor: string){
+    console.log(playerColor + ' abandonne la partie');
+  }
+
   public getCurrentTurnColor(): string {
     return this.currentTurn === Color.White ? 'White' : 'Black';
   }
