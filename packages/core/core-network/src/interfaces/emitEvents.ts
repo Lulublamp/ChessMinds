@@ -31,6 +31,7 @@ export interface eIMatchMakingStateEvent {}
 
 export interface eIJoinQueueEvent {
   options: JoinQueuOption;
+  lobbyId?: string;
 }
 
 export interface eIMakeMoveEvent {
@@ -95,5 +96,9 @@ export interface eILeaveLobbyEvent {
 }
 
 export interface eISwitchReady {
+  lobbyId: string;
+}
+
+export interface eIStartPG {
   lobbyId: string;
 }

@@ -110,3 +110,10 @@ export interface rIReadySwitched {
 export interface rILobbyCreated {
   setLobbyId: ReactSetterOrNull<string>;
 }
+
+export interface rILinkingEvent {
+}
+
+export interface rIPGStartEvent {
+  navigateToGame: (lobbyId: string) => void;
+}

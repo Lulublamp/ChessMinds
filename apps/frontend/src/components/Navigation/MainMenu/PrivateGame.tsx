@@ -58,8 +58,16 @@ const PrivateGame: React.FC<Props> = ({
     globalSocket?.offListenToLobbyCreated();
     globalSocket?.offListenToJoinLobby();
     globalSocket?.offListenToLobbyLeave();
+    globalSocket?.offListenToReadySwitched();
+    globalSocket?.offListenToPGStarting();
+    globalSocket?.offListenToLinking();
     setReadyArray([false, false]);
     setChecked(false);
+  };
+
+  const navigateToGame = (lobbyId: string) => {
+    console.log("navigate to game in private games");
+    console.log("lobbyId : ", lobbyId);
   };
 
   const lobbyIdCleanUp = (id: string) => {
@@ -96,8 +104,7 @@ const PrivateGame: React.FC<Props> = ({
   //Ce useEffect gère l'apparition dans le lobby
   useEffect(() => {
     console.log("Current array ", readyArray);
-  } , [readyArray])
-
+  }, [readyArray]);
 
   useEffect(() => {
     globalSocket?.listenToJoinLobby({
@@ -110,6 +117,7 @@ const PrivateGame: React.FC<Props> = ({
       onReadyChange: handleReadyChange,
       isHost: isHost,
     });
+
     globalSocket?.listenToLobbyLeave({
       callback: onBackClick,
       lobby: lobby,
@@ -120,6 +128,12 @@ const PrivateGame: React.FC<Props> = ({
       readyArray: readyArray,
       setReadyArray: setReadyArray,
     });
+
+    globalSocket?.listenToPGStarting({
+      navigateToGame,
+    });
+
+    globalSocket?.listenToLinking({});
 
     return () => isHostCleanUp();
   }, [isHost]);
@@ -140,8 +154,7 @@ const PrivateGame: React.FC<Props> = ({
       isMounted.current = true;
       return;
     }
-    if (isReady == 'reset') return;
-
+    if (isReady == "reset") return;
 
     globalSocket?.sendSwitchReady({
       lobbyId: lobbyId ? lobbyId : invitationLobbyId!,
@@ -222,10 +235,11 @@ const PrivateGame: React.FC<Props> = ({
               setChecked={setChecked}
             />
             {isHost && <TimeMode onTimeModeSelect={handleTimeModeSelect} />}
-            {isHost && (
+            {isHost && readyArray[0] && readyArray[1] && (
               <PlayButton
                 selectedTimeMod={selectedTimeMod}
                 isRanked={"private"}
+                lobbyId={lobbyId!}
               />
             )}
           </div>

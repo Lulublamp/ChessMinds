@@ -110,7 +110,6 @@ export class ConnectionGateway {
   ) {
     const { isHost, lobbyId } = payload;
 
-
     const pg = this.matchMakingService.queue.getFromPrivateQueue(lobbyId);
     const maybeFirstId = pg.length == 2 ? pg[0].id : null;
     const maybeSecondId = pg.length == 2 ? pg[1].id : null;
@@ -247,5 +246,50 @@ export class ConnectionGateway {
         this.socketsMap.get(Number(lobby[1]?.id))?.id,
       ])
       .emit(Nt.EVENT_TYPES.READY_SWITCHED, { target });
+  }
+
+  @SubscribeMessage(Nt.EVENT_TYPES.START_PG)
+  handleStartPG(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: Nt.eIStartPG,
+  ) {
+    const { user } = client['user'];
+    const { lobbyId } = payload;
+
+    console.log('ConnectionGateway -> handleStartPG');
+
+    const lobby = this.matchMakingService.queue.getFromPrivateQueue(lobbyId);
+    if (lobby == null) {
+      console.log('Lobby not found : Start PG failed', lobbyId);
+      return;
+    }
+
+    if (lobby.length != 2) {
+      console.log('Lobby is not full : Start PG failed', lobbyId);
+      return;
+    }
+
+    const maybeFirstId = lobby[0].id;
+    const maybeSecondId = lobby[1].id;
+
+    const firstSocket = this.socketsMap.get(Number(maybeFirstId));
+    const secondSocket = this.socketsMap.get(Number(maybeSecondId));
+
+    if (firstSocket == null || secondSocket == null) {
+      console.log('Socket not found : Start PG failed', lobbyId);
+      return;
+    }
+
+    this.server
+      .to([firstSocket.id, secondSocket.id])
+      .emit(Nt.EVENT_TYPES.LINKING);
+
+    const timer = new Nt.DelayTimer(() => {
+      this.server
+        .to([firstSocket.id, secondSocket.id])
+        .emit(Nt.EVENT_TYPES.PG_STARTED, { lobbyId });
+    }, 3000);
+
+    timer.start();
   }
 }

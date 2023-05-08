@@ -13,6 +13,7 @@ import {
   eISendChatMessageEvent,
   eILeaveLobbyEvent,
   eISwitchReady,
+  eIStartPG,
 } from "./interfaces/emitEvents";
 import {
   CONNECTION,
@@ -39,6 +40,8 @@ import {
   rILobbyLeaveEvent,
   rIReadySwitched,
   rILobbyCreated,
+  rIPGStartEvent,
+  rILinkingEvent,
 } from "./interfaces/receiveEvents";
 import { IGame } from "./interfaces/game";
 // import { PrivateLobby } from "./utils/Lobby";
@@ -372,10 +375,10 @@ export class ClientEventManager<
             payload.onReadyChange("reset");
             payload.setChecked(false);
           }
-          return [false , false];
+          return [false, false];
         });
-      }else{
-        payload.setReadyArray([false , false])
+      } else {
+        payload.setReadyArray([false, false]);
       }
       if (!payload.isHost) {
         payload.goToPrivateGame();
@@ -454,6 +457,11 @@ export class ClientEventManager<
     });
   }
 
+  public offListenToReadySwitched() {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    this.socket.off(EVENT_TYPES.READY_SWITCHED);
+  }
+
   public listenToLobbyCreated(payload: Check<T, CONNECTION, rILobbyCreated>) {
     if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
     this.socket.on(EVENT_TYPES.LOBBY_CREATED, (lobby) => {
@@ -465,5 +473,37 @@ export class ClientEventManager<
   public offListenToLobbyCreated() {
     if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
     this.socket.off(EVENT_TYPES.LOBBY_CREATED);
+  }
+
+  public sendStartPG(payload: Check<T, CONNECTION, eIStartPG>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    this.send(EVENT_TYPES.START_PG, payload);
+  }
+
+  public listenToPGStarting(payload: Check<T, CONNECTION, rIPGStartEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    this.socket.on(EVENT_TYPES.PG_STARTED, ({ lobbyId }) => {
+      const { navigateToGame } = payload;
+      console.log("PG started", lobbyId);
+      navigateToGame(lobbyId);
+    });
+  }
+
+  public offListenToPGStarting() {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    this.socket.off(EVENT_TYPES.PG_STARTED);
+  }
+
+  public listenToLinking(payload: Check<T, CONNECTION, rILinkingEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    this.socket.on(EVENT_TYPES.LINKING, () => {
+      //
+      console.log("Linking");
+    });
+  }
+
+  public offListenToLinking() {
+    if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
+    this.socket.off(EVENT_TYPES.LINKING);
   }
 }

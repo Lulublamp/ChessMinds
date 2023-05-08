@@ -4,14 +4,18 @@ import './FindPlayer.css';
 interface FindPlayerProps {
   onCancel: () => void;
   show: boolean;
+  isPrivate: boolean;
 }
 
-const FindPlayer: React.FC<FindPlayerProps> = ({ onCancel, show }) => {
+const FindPlayer: React.FC<FindPlayerProps> = ({ onCancel, show , isPrivate }) => {
   if(!show) return null;
   return (
     <div className="findPlayer">
       <div className="search-container">
-        <h3>Recherche d'un joueur...</h3>
+        {isPrivate 
+        ? <h3>Recherche d'un joueur...</h3>
+        : <h3>Mise en relation...</h3>
+        } 
         <span className="loader">
         </span>
         <button className="cancel-btn" onClick={onCancel}>
