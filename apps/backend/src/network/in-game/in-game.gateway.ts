@@ -65,7 +65,7 @@ export class InGameGateway {
   }
 
   async saveRencontre(rencontre, isRanked: boolean) {
-    return  this.rencontreService.saveRencontre(rencontre, isRanked);
+    return this.rencontreService.saveRencontre(rencontre, isRanked);
   }
 
   async saveCoup(coup) {
@@ -180,11 +180,27 @@ export class InGameGateway {
       this.delayMap.set(game.matchId, timer30s);
     }
     client.join(game.matchId);
+    const callback = (matchId: string) => {
+      const matchgame = this.matchMakingService.queue.gamesList.find(
+        (game) => game.matchId === matchId);
+      return matchgame;
+    };
+    const callbackRencontreService = () => {
+      return this.rencontreService;
+    }
+    const callbackGame = (matchId: string) => {
+      const coupledGames = this.matchMakingService.queue.coupledGamesMap;
+      return coupledGames.get(matchId);
+    }
     const timer: Nt.CTimer = new Nt.CTimer(
       game.matchOptions,
       game.matchId,
       this.server,
+      callback,
+      callbackRencontreService,
+      callbackGame
     );
+
     this.timersMap.set(game.matchId, timer);
 
     // Stocker les noms des joueurs
@@ -296,15 +312,11 @@ export class InGameGateway {
       this.timersMap.get(matchId)?.stopTimer();
       this.matchMakingService.queue.destroyGame(matchId);
     }
-    else {
-      const timer = this.timersMap.get(matchId);
-      const newId = timer.continueTimer();
-      this.timers.set(matchId, newId);
-    }
+    const timer = this.timersMap.get(matchId);
+    const newId = timer.continueTimer();
+    this.timers.set(matchId, newId);
     this.server.to(matchId).emit(Nt.EVENT_TYPES.MOVES, from, to, promotion, gameResult);
   }
-
-
 
   @SubscribeMessage(Nt.EVENT_TYPES.SEND_CHAT_MESSAGE)
   handleSendMessage(
