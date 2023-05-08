@@ -7,7 +7,7 @@ import { useGlobalSocket } from '../../contexts/ContextPublicManager';
 interface PlayButtonProps {
   selectedTimeMod: MATCHMAKING_MODES_TIMERS;
   isRanked: MATCHMAKING_MODE;
-  lobbyId: string;
+  lobbyId?: string;
 }
 
 const PlayButton: React.FC<PlayButtonProps> = ({ selectedTimeMod, isRanked , lobbyId }) => {

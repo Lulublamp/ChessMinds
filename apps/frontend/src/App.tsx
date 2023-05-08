@@ -29,6 +29,7 @@ import AiMenu from "./components/Navigation/MainMenu/AiMenu";
 import PopUpInvitationLobby from "./components/Form/PopUpInvitationLobby";
 import { set } from "lodash";
 import { PrivateGameContext } from "./contexts/PrivateGameContext";
+import Apprendre from "./pages/Apprendre/Apprendre";
 
 const App: FC = () => {
   const [user, setUser] = useState<User | null>(null);
