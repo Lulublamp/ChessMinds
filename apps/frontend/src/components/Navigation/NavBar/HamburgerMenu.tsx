@@ -3,10 +3,11 @@ import React, { useState } from 'react';
 interface Props {
   onPlayClick: () => void;
   goClassementPage: () => void;
+  goApprendrePage: () => void;
   toggleDarkModeClick: (event: React.MouseEvent) => void;
 }
 
-const HamburgerMenu: React.FC<Props> = ({ onPlayClick, goClassementPage, toggleDarkModeClick }) => {
+const HamburgerMenu: React.FC<Props> = ({ onPlayClick, goClassementPage, toggleDarkModeClick, goApprendrePage }) => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   const toggleMenu = () => {
@@ -34,7 +35,7 @@ const HamburgerMenu: React.FC<Props> = ({ onPlayClick, goClassementPage, toggleD
         <span className="play-btn" onClick={onPlayClick}>
           Jouer
         </span>
-        <span>Apprendre</span>
+        <span onClick={goApprendrePage}>Apprendre</span>
         <span onClick={goClassementPage}>Classement</span>
         <button type="button" onClick={toggleDarkModeClick}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">

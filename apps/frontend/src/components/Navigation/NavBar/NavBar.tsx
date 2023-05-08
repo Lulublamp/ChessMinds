@@ -34,6 +34,10 @@ const Navbar: React.FC<Props> = ({ onPlayClick, onLogoutClick, toggleDarkMode, l
     onLogoutClick();
   };
 
+  const goToApprendrePage = () => {
+    navigate('/Apprendre');
+  };
+
   const toggleDarkModeClick = (event: React.MouseEvent) => {
     event.preventDefault();
     toggleDarkMode();
@@ -41,7 +45,7 @@ const Navbar: React.FC<Props> = ({ onPlayClick, onLogoutClick, toggleDarkMode, l
 
   return (
     <nav>
-      <HamburgerMenu onPlayClick={onPlayClick} goClassementPage={goClassementPage} toggleDarkModeClick={toggleDarkModeClick} />
+      <HamburgerMenu onPlayClick={onPlayClick} goClassementPage={goClassementPage} toggleDarkModeClick={toggleDarkModeClick} goApprendrePage={goToApprendrePage} />
       <div className="nav-container">
         <div onClick={goHomePage} className="logo-container">
           <Logo width={65} height={65} />
@@ -54,7 +58,7 @@ const Navbar: React.FC<Props> = ({ onPlayClick, onLogoutClick, toggleDarkMode, l
           <span className="play-btn" onClick={onPlayClick}>
             Jouer
           </span>
-          <span>Apprendre</span>
+          <span onClick={goToApprendrePage}>Apprendre</span>
           <span onClick={goClassementPage}>Classement</span>
           <button type="button" onClick={toggleDarkModeClick}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
