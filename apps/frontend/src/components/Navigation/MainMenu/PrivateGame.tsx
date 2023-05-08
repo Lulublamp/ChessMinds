@@ -15,6 +15,7 @@ import {
 import { useGlobalSocket } from "../../../contexts/ContextPublicManager";
 import { UserContext } from "../../UserContext";
 import { set } from "lodash";
+import { useNavigate } from "react-router-dom";
 
 interface Props {
   onBackClick: () => void;
@@ -53,6 +54,8 @@ const PrivateGame: React.FC<Props> = ({
 
   const [checked, setChecked] = useState(false);
 
+  const navigate = useNavigate();
+
   const isHostCleanUp = () => {
     console.log("Private game interface disappeared ! clean up");
     globalSocket?.offListenToLobbyCreated();
@@ -68,6 +71,7 @@ const PrivateGame: React.FC<Props> = ({
   const navigateToGame = (lobbyId: string) => {
     console.log("navigate to game in private games");
     console.log("lobbyId : ", lobbyId);
+    navigate(`/Game?id=${lobbyId}`);
   };
 
   const lobbyIdCleanUp = (id: string) => {

@@ -62,10 +62,12 @@ const Game = () => {
   const [gameEndInfo, setGameEndInfo] = useState<GameEndInfo | null>(null);
   const localStorage = window.localStorage;
 
+  const isPrivate = searchParams.get("id") !== null;
+
+
 
   const [matchMakingPayload, setMatchMakingPayload] = useState<eIJoinQueueEvent | null>(null);
 
-  const isPrivate = false;
 
   const fetchEloData = async (timeMode: MATCHMAKING_MODES_TIMERS) => {
     try {
@@ -101,6 +103,7 @@ const Game = () => {
 
   useEffect(() => {
     if (clientManager) return;
+    console.log(isPrivate);
     console.log('mounted in here');
     const fetchDataAndInitClient = async () => {
       await fetchEloData(selectedTimeMode);
@@ -122,6 +125,7 @@ const Game = () => {
       if (isPrivate) {
         console.log('its private');
         payload.options.mode = MATCHMAKING_MODE.PRIVATE;
+        payload.lobbyId = searchParams.get("id")!;
       }
       console.log('payload', payload);
       setMatchMakingPayload(payload);

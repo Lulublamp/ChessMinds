@@ -12,7 +12,7 @@ const FindPlayer: React.FC<FindPlayerProps> = ({ onCancel, show , isPrivate }) =
   return (
     <div className="findPlayer">
       <div className="search-container">
-        {isPrivate 
+        {!isPrivate 
         ? <h3>Recherche d'un joueur...</h3>
         : <h3>Mise en relation...</h3>
         } 
