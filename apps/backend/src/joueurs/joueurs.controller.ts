@@ -22,6 +22,7 @@ import {
   PlayerNotFound,
 } from 'src/errors/bErrors';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.gard';
+import { use } from 'passport';
 
 @Controller('joueurs')
 export class JoueursController {
@@ -62,6 +63,20 @@ export class JoueursController {
       throw new NotFoundException("Erreur lors de l'ajout de l'ami", error);
     }
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('friends/remove')
+  async removeFriend(@Body() payload: { friendId: number }, @Request() req) {
+    try {
+      return await this.joueursService.removeFriend(
+        req.user.idJoueur,
+        payload.friendId,
+      );
+    } catch (error) {
+      throw new NotFoundException("Erreur lors de la suppression de l'ami", error);
+    }
+  }
+  
 
   @UseGuards(JwtAuthGuard)
   @Get('dateInscription')

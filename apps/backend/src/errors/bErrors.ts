@@ -7,6 +7,12 @@ export class PlayerNotFound extends HttpException {
   }
 }
 
+export class NotFriends extends HttpException {
+  constructor() {
+    super('Not friends', HttpStatus.NOT_FOUND);
+  }
+}
+
 export class PlayerAlreadyExists extends HttpException {
   constructor() {
     super('Player already exists', HttpStatus.CONFLICT);

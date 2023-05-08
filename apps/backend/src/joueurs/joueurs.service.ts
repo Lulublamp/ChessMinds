@@ -8,6 +8,7 @@ import {
   PseudoPlayerAlreadyExists,
   PlayerNotCreated,
   PlayerNotFound,
+  NotFriends,
 } from 'src/errors/bErrors';
 import { comparePassword, hashPassword } from 'src/utils/bcrypt';
 import { Brackets, Repository } from 'typeorm';
@@ -147,6 +148,27 @@ export class JoueursService {
     }
   }
 
+  async removeFriend(joueurId: number, friendId: number) {
+    const joueur = await this.joueursRepository.findOne({ where: { idJoueur: joueurId }, relations: ['amis'] });
+    const maybeFriend = await this.joueursRepository.findOne({ where: { idJoueur: friendId }, relations: ['amis'] });
+    if (!joueur || !maybeFriend) {
+      throw new PlayerNotFound();
+    }
+    if (!joueur.amis.some(amis => amis.idJoueur === maybeFriend.idJoueur)) {
+      throw new NotFriends();
+    }
+    joueur.amis = joueur.amis.filter(amis => amis.idJoueur !== maybeFriend.idJoueur);
+    maybeFriend.amis = maybeFriend.amis.filter(amis => amis.idJoueur !== joueur.idJoueur);
+    try {
+      await this.joueursRepository.save(joueur);
+      await this.joueursRepository.save(maybeFriend);
+      console.log('Friend removed');
+    } catch (error) {
+      console.error(error);
+      throw new Error('Could not remove friend');
+    }
+  }
+  
   async getAmis(joueur: Joueur): Promise<Joueur[]> {
     const joueurTrouve = await this.joueursRepository.findOne({
       where: { idJoueur: joueur.idJoueur },
