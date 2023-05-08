@@ -46,16 +46,20 @@ const PrivateGame: React.FC<Props> = ({
 
   const isMounted = useRef(false);
 
-
   const [readyArray, setReadyArray] = useState<[boolean, boolean]>([
     false,
     false,
   ]);
 
+  const [checked, setChecked] = useState(false);
+
   const isHostCleanUp = () => {
+    console.log("Private game interface disappeared ! clean up");
     globalSocket?.offListenToLobbyCreated();
     globalSocket?.offListenToJoinLobby();
     globalSocket?.offListenToLobbyLeave();
+    setReadyArray([false, false]);
+    setChecked(false);
   };
 
   const lobbyIdCleanUp = (id: string) => {
@@ -88,20 +92,23 @@ const PrivateGame: React.FC<Props> = ({
   useEffect(() => {
     if (isHost) return;
     console.log("isHost : ", isHost);
-    globalSocket?.listenToJoinLobby({
-      goToPrivateGame,
-      Settlobby: setLobby,
-      lobbyRef: lobbyRef,
-      userId: Number(user.user!.id),
-    });
   }, [isHost]);
   //Ce useEffect gère l'apparition dans le lobby
+  useEffect(() => {
+    console.log("Current array ", readyArray);
+  } , [readyArray])
+
+
   useEffect(() => {
     globalSocket?.listenToJoinLobby({
       goToPrivateGame,
       Settlobby: setLobby,
       lobbyRef: lobbyRef,
       userId: Number(user.user!.id),
+      setReadyArray,
+      setChecked,
+      onReadyChange: handleReadyChange,
+      isHost: isHost,
     });
     globalSocket?.listenToLobbyLeave({
       callback: onBackClick,
@@ -133,6 +140,9 @@ const PrivateGame: React.FC<Props> = ({
       isMounted.current = true;
       return;
     }
+    if (isReady == 'reset') return;
+
+
     globalSocket?.sendSwitchReady({
       lobbyId: lobbyId ? lobbyId : invitationLobbyId!,
     });
@@ -206,7 +216,11 @@ const PrivateGame: React.FC<Props> = ({
                 </div>
               )}
             </div>
-            <ReadySwitch onReadyChange={handleReadyChange} />
+            <ReadySwitch
+              onReadyChange={handleReadyChange}
+              checked={checked}
+              setChecked={setChecked}
+            />
             {isHost && <TimeMode onTimeModeSelect={handleTimeModeSelect} />}
             {isHost && (
               <PlayButton

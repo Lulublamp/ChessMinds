@@ -67,6 +67,10 @@ export interface rIJoinLobbyEvent {
   Settlobby: ReactSetter<IMMPlayer[]>;
   lobbyRef: ReactRef<IMMPlayer[]>;
   userId: number;
+  setReadyArray: ReactSetter<[boolean, boolean]>;
+  setChecked: ReactSetter<boolean>;
+  onReadyChange: (checked: string) => void;
+  isHost: boolean;
 }
 
 export interface rILeaveLobbyEvent {

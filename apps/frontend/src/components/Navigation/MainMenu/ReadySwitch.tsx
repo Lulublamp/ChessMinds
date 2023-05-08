@@ -1,15 +1,17 @@
 import React, { useState } from 'react';
-import { MATCHMAKING_MODE } from '@TRPI/core/core-network';
+import { MATCHMAKING_MODE, ReactSetter } from '@TRPI/core/core-network';
 
 interface ReadySwitchProps {
   onReadyChange: (checked: string) => void;
+  checked: boolean;
+  setChecked: ReactSetter<boolean>;
 }
 
-const ReadySwitch: React.FC<ReadySwitchProps> = ({ onReadyChange }) => {
-  const [checked, setChecked] = useState(false);
+const ReadySwitch: React.FC<ReadySwitchProps> = ({ onReadyChange , checked , setChecked }) => {
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const isChecked = event.target.checked;
+    console.log('switch clicked : ' + isChecked + ' - ' + checked)
     setChecked(isChecked);
     if(isChecked)
       onReadyChange('ready');

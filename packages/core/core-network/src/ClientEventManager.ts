@@ -365,7 +365,19 @@ export class ClientEventManager<
       console.log("Lobby received", lobby);
       payload.Settlobby(lobby);
       payload.lobbyRef.current = lobby;
-      if (payload.userId !== Number(lobby[0].id)) {
+      if (payload.isHost) {
+        payload.setReadyArray((prev) => {
+          const isHostReady = prev[0];
+          if (isHostReady) {
+            payload.onReadyChange("reset");
+            payload.setChecked(false);
+          }
+          return [false , false];
+        });
+      }else{
+        payload.setReadyArray([false , false])
+      }
+      if (!payload.isHost) {
         payload.goToPrivateGame();
       }
     });
@@ -430,11 +442,14 @@ export class ClientEventManager<
   public listenToReadySwitched(payload: Check<T, CONNECTION, rIReadySwitched>) {
     if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
     this.socket.on(EVENT_TYPES.READY_SWITCHED, (payload_r: any) => {
-      payload.setReadyArray(prev => {
+      payload.setReadyArray((prev) => {
         const target: number = payload_r.target;
         const current = prev[target];
-        const result: [boolean , boolean] = [target == 0 ? !current : prev[0], target == 1 ? !current : prev[1]]
-        return result
+        const result: [boolean, boolean] = [
+          target == 0 ? !current : prev[0],
+          target == 1 ? !current : prev[1],
+        ];
+        return result;
       });
     });
   }
