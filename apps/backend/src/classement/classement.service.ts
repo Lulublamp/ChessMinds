@@ -28,7 +28,7 @@ export class ClassementService {
     }
     return Promise.resolve(classement[typePartie]);
   }
-  
+
 
   async getEloByUserId(joueurDto: JoueurDto): Promise<Partial<ClassementDto>> {
     const classement = await this.classementRepository.findOne({
@@ -46,45 +46,33 @@ export class ClassementService {
     };
   }
 
-  async getEloByUserIdAndTypePartie(joueurDto: JoueurDto, typePartie: TypePartie) {
-    const dernierClassement = await this.classementRepository
+  async getEloByUserIdAndTypePartie(joueurDto: JoueurDto, typePartie: TypePartie): Promise<number> {
+    const classement = await this.classementRepository
       .createQueryBuilder('classement')
       .select(`classement.${typePartie}`)
-      .where('classement.user_id = :userId', { userId: { idJoueur: joueurDto.idJoueur } })
+      .where('classement.user_id = :userId', { userId: joueurDto.idJoueur })
       .getOne();
-    return dernierClassement;
+
+    if (!classement) {
+      throw new NotFoundException('Classement introuvable pour cet utilisateur');
+    }
+    return classement[typePartie];
   }
+  
 
   async getMyRank(joueurDto: JoueurDto, typePartie: TypePartie): Promise<number> {
-    try {
-      const ranks = await this.fetchRanks(typePartie);
-      const myRank = ranks.findIndex(rank => rank.userId === joueurDto.idJoueur) + 1;
-      return myRank;
-    } catch (error) {
-      console.error('Erreur lors de la récupération du rang:', error);
-      return -1;
-    }
+    // Récupère l'ELO du joueur pour le type de partie donné
+    const myElo = await this.getEloByUserIdAndTypePartie(joueurDto, typePartie);
+
+    // Compte combien de joueurs ont un ELO plus élevé que le joueur donné pour le type de partie donné
+    const higherRankedPlayersCount = await this.classementRepository
+      .createQueryBuilder('classement')
+      .where(`classement.${typePartie} > :myElo`, { myElo: myElo })
+      .getCount();
+    // La position du joueur dans le classement est le nombre de joueurs avec un ELO plus élevé plus un
+    return higherRankedPlayersCount + 1;
   }
 
-  async fetchRanks(typePartie: TypePartie): Promise<Array<{ userId: number, rank: number }>> {
-    // Récupérer les classements de la partie demandée
-    const ranks = await this.classementRepository
-      .createQueryBuilder('classement')
-      .addSelect('classement.user_id', 'userId')
-      .addSelect(`classement.${typePartie}`, 'rank')
-      .orderBy(`classement.${typePartie}`, 'DESC')
-      .getRawMany();
-    // Vérifier si des classements ont été trouvés
-    if (!ranks || ranks.length === 0) {
-      throw new ClassementNotFound();
-    }
-    // Mapper les résultats pour correspondre au type attendu
-    const mappedRanks = ranks.map(rank => ({
-      userId: rank.userId,
-      rank: rank.rank,
-    }));
-    return mappedRanks;
-  }
 
 
   async findTop20ByElo(typePartie: TypePartie): Promise<Classement[]> {
