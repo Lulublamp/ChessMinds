@@ -28,7 +28,6 @@ const Historique: React.FC = () => {
       //console.log('Historique des parties récupéré avec succès:', response.data);
       // map response data to match GameHistory type
       const mappedData = response.data.map((game: any) => {
-        if(!game.partie.datePartie) return null;
         const date = new Date(game.partie.datePartie);
       
         return {

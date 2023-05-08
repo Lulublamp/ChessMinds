@@ -75,9 +75,9 @@ export class RencontreCoupsService {
       eloBlanc: eloB,
       eloNoir: eloN,
     });
+    await this.partieRepository.save(newPartie);
     // Sauvegardez la Partie
     if (isRanked) {
-      await this.partieRepository.save(newPartie);
       //update elo
       const kFactorB = this.calculateKFactor(eloB);
       const kFactorN = this.calculateKFactor(eloN);
@@ -106,12 +106,14 @@ export class RencontreCoupsService {
   }
 
   async getStats(joueur: JoueurDto): Promise<{ victoires: number; defaites: number; parties: number }> {
-    const victoires = await this.rencontreRepository.count({ where: { vainqueur: joueur.idJoueur } });
+    const victoiresBlanc = await this.rencontreRepository.count({ where: { vainqueur: 0, joueurBlanc : joueur } });
+    const victoiresNoir = await this.rencontreRepository.count({ where: { vainqueur: 1, joueurNoir: joueur } });
+    const nuls = await this.rencontreRepository.count({ where: { vainqueur: 0.5, joueurBlanc: joueur } }) + await this.rencontreRepository.count({ where: { vainqueur: 0.5, joueurNoir: joueur } });
+    const victoires = victoiresBlanc + victoiresNoir;
     const parties = await this.rencontreRepository.count({
       where: [{ joueurBlanc: joueur }, { joueurNoir: joueur }],
     });
-
-    const defaites = parties - victoires;
+    const defaites = parties - victoires - nuls;
     return { victoires, defaites, parties };
   }
 

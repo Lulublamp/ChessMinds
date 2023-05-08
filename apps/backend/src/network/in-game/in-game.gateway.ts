@@ -65,7 +65,7 @@ export class InGameGateway {
   }
 
   async saveRencontre(rencontre, isRanked: boolean) {
-    this.rencontreService.saveRencontre(rencontre, isRanked);
+    return  this.rencontreService.saveRencontre(rencontre, isRanked);
   }
 
   async saveCoup(coup) {

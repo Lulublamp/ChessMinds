@@ -29,16 +29,16 @@ const FriendsList: React.FC<FriendProps> = ({ lstIdInvitations, defiMode, onDefi
   const handleFriendClick = () => {
     setShowInvitation(false);
   };
-  
+
   const handleGetFriends = async () => {
-    try{
-      const response = await axios.get(`${API_BASE_URL}/joueurs/Getfriends`,{
+    try {
+      const response = await axios.get(`${API_BASE_URL}/joueurs/Getfriends`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('accessToken')}`,
         },
       });
       setLstFriends(response.data);
-    }catch(error){
+    } catch (error) {
       console.log(error);
     }
   };
@@ -52,7 +52,7 @@ const FriendsList: React.FC<FriendProps> = ({ lstIdInvitations, defiMode, onDefi
     <>
       <div className="FriendsList">
         <div>
-          <span onClick={handleFriendClick}>Amis (122)</span>
+          <span onClick={handleFriendClick}>Amis ({lstFriends.length})</span>
           <div>
             <div>
               <svg width="35" height="35" viewBox="0 0 35 35" fill="none" onClick={handleInvitationClick}>
@@ -74,13 +74,23 @@ const FriendsList: React.FC<FriendProps> = ({ lstIdInvitations, defiMode, onDefi
             {lstIdInvitations.map(id => (
               <FriendCardInvitation key={id} idJoueur={id} />
             ))}
+            {
+              lstIdInvitations.length === 0 && (
+                <span>Aucune demande d'amis</span>
+              )
+            }
           </div>
         )}
         {!showInvitation && (
           <div>
-            {lstFriends.map((friend: any,index) => (
+            {lstFriends.map((friend: any, index) => (
               <FriendCard key={index} idJoueur={friend} defiMode={defiMode} handleDefiClick={onDefi} />
             ))}
+            {
+              lstFriends.length === 0 && (
+                <span>Aucun amis</span>
+              )
+            }
           </div>
         )}
       </div>
