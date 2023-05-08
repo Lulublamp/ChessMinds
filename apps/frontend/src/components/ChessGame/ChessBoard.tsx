@@ -49,6 +49,8 @@ const ChessBoardRenderer: React.FC<Props> = ({onGameEnd, onShowPromotionPopup,on
       onGameEnd: onGameEnd
     });
 
+    gameManager?.listNoTime({onGameEnd});
+
   }, [_game])
 
   useEffect(() => {

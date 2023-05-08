@@ -48,6 +48,7 @@ import {
   rIAbandonGameEvent,
   rIReceiveDrawRequestEvent,
   rIReceiveDrawResponseEvent,
+  rINoTimeEvent,
 } from "./interfaces/receiveEvents";
 
 import { IGame } from "./interfaces/game";
@@ -245,6 +246,14 @@ export class ClientEventManager<
         });
       }
     );
+  }
+
+  public listNoTime(payload: Check<T, IN_GAME, rINoTimeEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.socket.on(EVENT_TYPES.NO_TIME, (gameResult: any) => {
+      console.log("no time received", gameResult);
+      payload.onGameEnd(gameResult);
+    });
   }
 
   public offListenToNetworkMove() {

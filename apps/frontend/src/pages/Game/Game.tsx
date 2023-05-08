@@ -312,7 +312,7 @@ const Game = () => {
         <MovesListMobile moves={movesData} />
         <div className="leftContainer">
           <PlayerContainer
-            isWhitePlayer={true}
+            isWhitePlayer={playerisWhite}
             playerName={_game ? !playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
             playerScore={_game ? !playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
             playerScorePieceValue={2}
@@ -326,7 +326,7 @@ const Game = () => {
             pseudo={user.user?.pseudo || 'Player'}
           />
           <PlayerContainer
-            isWhitePlayer={false}
+            isWhitePlayer={playerisWhite}
             playerName={_game ? playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
             playerScore={_game ? playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
             playerScorePieceValue={2}
@@ -338,7 +338,7 @@ const Game = () => {
         </div>
         <div className='TopContainer Mobile'>
           <PlayerContainer
-            isWhitePlayer={true}
+            isWhitePlayer={playerisWhite}
             playerName={_game ? !playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
             playerScore={_game ? !playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
             playerScorePieceValue={2}
@@ -362,7 +362,7 @@ const Game = () => {
         </div>
         <div className='BotContainer Mobile'>
           <PlayerContainer
-            isWhitePlayer={false}
+            isWhitePlayer={playerisWhite}
             playerName={_game ? playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
             playerScore={_game ? playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
             playerScorePieceValue={2}

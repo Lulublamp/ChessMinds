@@ -52,6 +52,10 @@ export interface rITimeEvent {
   id: "white" | "black";
 }
 
+export interface rINoTimeEvent{
+  onGameEnd: (gameResult: any) => void;
+}
+
 export interface rITimeoutEvent {
   gameOver: ReactSetter<boolean>;
   onGameEnd: (gameResult: any) => void;
