@@ -352,6 +352,7 @@ const App: FC = () => {
               />
               <Route path="/Replay" element={<Replay />} />
               <Route path="/GameAi" element={<GameAI />} />
+              <Route path="/Apprendre" element={<Apprendre />} />
             </Routes>
           </GameInfoProvider>
           <AuthWrapper

@@ -5,10 +5,16 @@ import { ChessGame } from "./ChessGame";
 export class Player {
   color: Color;
   pieces: ChessPiece[];
+  piecesTaken: Map<string, number> = new Map();
 
   constructor(color: Color) {
     this.color = color;
     this.pieces = [];
+    this.piecesTaken.set("p", 0);
+    this.piecesTaken.set("r", 0);
+    this.piecesTaken.set("n", 0);
+    this.piecesTaken.set("b", 0);
+    this.piecesTaken.set("q", 0);
   }
 
   addPiece(piece: ChessPiece) {

@@ -68,15 +68,27 @@ export class Queue {
   }
 
   isReadyToMatch(p: IRPlayer): [boolean, IRPlayer | null] {
+    const baseEloDifference = 100;
+    const scaleFactor = 2;
+  
+    const eloDifference = (p1Elo: number, p2Elo: number): number => {
+      return Math.abs(p1Elo - p2Elo);
+    };
+  
+    const acceptableEloDifference = (elo: number): number => {
+      return baseEloDifference + scaleFactor * Math.log10(elo);
+    };
+  
     const filtredQueue = this.queue.filter(
       (player) =>
-        player.rank === p.rank &&
+        eloDifference(player.elo, p.elo) <= acceptableEloDifference(p.elo) &&
         player.options?.mode === p.options.mode &&
         player.options?.timer === p.options.timer &&
         player.id !== p.id
     );
+  
     if (filtredQueue.length === 0) return [false, null];
-
+  
     const random = Math.floor(Math.random() * filtredQueue.length);
     return [true, filtredQueue[random]];
   }
@@ -92,7 +104,6 @@ export class Queue {
       socketId: null,
     };
 
-    pWithRank.rank = this.rankPlayers(pWithRank);
     pWithRank.socketId = socket;
 
     const [isReadyToMatch, matchPlayer] = this.isReadyToMatch(pWithRank);

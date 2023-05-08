@@ -15,6 +15,16 @@
   display: flex;
 }
 
+.playerContainer .piece{
+  width: 50px;
+  height: auto;
+}
+
+.playerContainer .piece img{
+  width: 100%;
+  height: auto;
+}
+
 .whitePlayer {
   flex-direction: column;
 }

@@ -96,7 +96,14 @@
   right: -35px;
   font-size: 22px;
   font-weight: bold;
-  color: #E65D6A;
+}
+
+.PopUpFinDePartie .lostelo{
+  color: #E63946;
+}
+
+.PopUpFinDePartie .winelo{
+  color: #4CAF50;
 }
 
 .PopUpFinDePartie > div:last-of-type > div > button{

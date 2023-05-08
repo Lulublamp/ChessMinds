@@ -15,6 +15,7 @@ export class ChessGame {
   private blackPlayer: Player; // le joueur noir
   private currentTurn: Color; // la couleur du joueur qui doit jouer le prochain tour
   private sameMoves: number; // le nombre de coups identiques joués
+  private drawRequested: boolean; // le joueur a-t-il demandé un match nul ?
 
   //Utiliser un tableau permet de rendre le code plus flexible et adaptable à des modifications éventuelles.
   //Cela pourrait être utile dans le cas où la logique du jeu est modifiée pour autoriser plus d'un pion à effectuer un double déplacement, par exemple
@@ -35,6 +36,7 @@ export class ChessGame {
     this.currentTurn = Color.White;
     this.initializePieces();
     this.sameMoves = 0;
+    this.drawRequested = false;
   }
 
   public vierge() {
@@ -121,7 +123,6 @@ export class ChessGame {
     }
     //Si les 2 joueurs ont fait 3 fois le même coup, c'est un pat
     if(from === this.movesHistory[this.movesHistory.length - 2]?.to && to === this.movesHistory[this.movesHistory.length - 2]?.from) {
-      console.log("same move");
       this.sameMoves++;
       console.log(this.sameMoves);
     }
@@ -132,6 +133,7 @@ export class ChessGame {
       return {
         status: 'stalemate',
         message: 'Stalemate',
+        winner : 0.5
       };
     }
 
@@ -152,8 +154,16 @@ export class ChessGame {
     //Si on mange une pièce, on la retire du joueur adverse
     if (toPiece) {
       if (toPiece.color === Color.White) {
+        const pieceCounter = this.blackPlayer.piecesTaken.get(toPiece.getPieceCode());
+        if(pieceCounter !== undefined){
+          this.blackPlayer.piecesTaken.set(toPiece.getPieceCode(), pieceCounter + 1);
+        }
         this.whitePlayer.removePiece(toPiece);
       } else {
+        const pieceCounter = this.whitePlayer.piecesTaken.get(toPiece.getPieceCode());
+        if(pieceCounter !== undefined){
+          this.whitePlayer.piecesTaken.set(toPiece.getPieceCode(), pieceCounter + 1);
+        }
         this.blackPlayer.removePiece(toPiece);
       }
     }
@@ -192,6 +202,7 @@ export class ChessGame {
       return {
         status: 'stalemate',
         message: 'Stalemate',
+        winner : 0.5
       };
     }
 
@@ -324,6 +335,10 @@ export class ChessGame {
 
   public getBoard(): ChessBoard {
     return this.board;
+  }
+
+  public setDraw(){
+    
   }
 
   public getMovesHistory(): Array<{ from: string, to: string, piece: string, color: Color }> {
@@ -490,6 +505,30 @@ export class ChessGame {
     this.previousGame = this.previousGame.previousGame;
   }
 
+  public drawRequest() {
+    this.drawRequested = true;
+  }
+
+  public drawResponse(response: boolean) {
+    if(this.drawRequested === false) {
+      throw new Error('No draw request to respond to.');
+    }
+    if (response) {
+      // Draw
+    }
+    else{
+      this.drawRequested = false;
+    }
+  }
+
+  public abandonGame(playerColor: string){
+    console.log(playerColor + ' abandonne la partie');
+  }
+
+  public getCurrentTurnColor(): string {
+    return this.currentTurn === Color.White ? 'White' : 'Black';
+  }
+
   public generateFEN(): string {
     let fen = "";
 
@@ -563,6 +602,34 @@ export class ChessGame {
     fen += this.movesHistory.length;
 
     return fen;
+  }
+
+  public getWhitePlayerPiecesTaken(): Map<string, number> {
+    return this.whitePlayer.piecesTaken;
+  }
+
+  public getDifferenceWhitePlayerPiecesTaken(): Map<string, number> {
+    let whitePiece = this.getWhitePlayerPiecesTaken();
+    let blackPiece = this.getBlackPlayerPiecesTaken();
+    let difference = new Map<string, number>();
+    for (let [key, value] of whitePiece) {
+      difference.set(key, value - (blackPiece.get(key) || 0));
+    }
+    return difference;
+  }
+
+  public getDifferenceBlackPlayerPiecesTaken(): Map<string, number> {
+    let whitePiece = this.getWhitePlayerPiecesTaken();
+    let blackPiece = this.getBlackPlayerPiecesTaken();
+    let difference = new Map<string, number>();
+    for (let [key, value] of blackPiece) {
+      difference.set(key, value - (whitePiece.get(key) || 0));
+    }
+    return difference;
+  }
+
+  public getBlackPlayerPiecesTaken(): Map<string, number> {
+    return this.blackPlayer.piecesTaken;
   }
 
 

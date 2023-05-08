@@ -99,6 +99,21 @@ export interface eISwitchReady {
   lobbyId: string;
 }
 
+
 export interface eIStartPG {
   lobbyId: string;
 }
+
+export interface eIDrawRequestEvent {
+  matchId: string;
+}
+
+export interface eIDrawResponseEvent {  
+  matchId: string;
+  response: boolean;
+}
+
+export interface eIAbandonGameEvent {
+  matchId: string;
+}
+

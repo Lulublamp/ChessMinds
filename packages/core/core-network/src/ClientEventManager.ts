@@ -11,9 +11,12 @@ import {
   eIPGInvitation,
   eIPGProcess,
   eISendChatMessageEvent,
+  eIDrawRequestEvent,
+  eIDrawResponseEvent,
   eILeaveLobbyEvent,
   eISwitchReady,
   eIStartPG,
+  eIAbandonGameEvent,
 } from "./interfaces/emitEvents";
 import {
   CONNECTION,
@@ -42,7 +45,11 @@ import {
   rILobbyCreated,
   rIPGStartEvent,
   rILinkingEvent,
+  rIAbandonGameEvent,
+  rIReceiveDrawRequestEvent,
+  rIReceiveDrawResponseEvent,
 } from "./interfaces/receiveEvents";
+
 import { IGame } from "./interfaces/game";
 // import { PrivateLobby } from "./utils/Lobby";
 import { ChessBoard, Color } from "../../core-algo";
@@ -437,6 +444,31 @@ export class ClientEventManager<
     this.send(EVENT_TYPES.REQUEST_CHAT_HISTORY, payload);
   }
 
+  public sendDrawRequest(payload: Check<T, IN_GAME, eIDrawRequestEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.send(EVENT_TYPES.DRAW_REQUEST, payload);
+  }
+
+  public listenToDrawRequest(payload: Check<T, IN_GAME, rIReceiveDrawRequestEvent>) {
+    if(!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.socket.on(EVENT_TYPES.DRAW_REQUEST, () => {
+      payload.setDrawRequest(() => true);
+    });
+  }
+
+  public sendDrawResponse(payload: Check<T, IN_GAME, eIDrawResponseEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.send(EVENT_TYPES.DRAW_RESPONSE, payload);
+  }
+
+  public listenToDrawResponse(payload: Check<T, IN_GAME, rIReceiveDrawResponseEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.socket.on(EVENT_TYPES.DRAW_RESPONSE, (response: any) => {
+      payload.onResponse(response.accepted, response.neweloBlanc, response.neweloNoir);
+    });
+  }
+
+
   public sendSwitchReady(payload: Check<T, CONNECTION, eISwitchReady>) {
     if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
     this.send(EVENT_TYPES.SWITCH_READY, payload);
@@ -506,4 +538,17 @@ export class ClientEventManager<
     if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
     this.socket.off(EVENT_TYPES.LINKING);
   }
+
+  public sendAbandonGame(payload: Check<T, IN_GAME, eIAbandonGameEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.send(EVENT_TYPES.ABANDON_GAME, payload);
+  }
+
+  public listenToAbandonGame(payload: Check<T, IN_GAME, rIAbandonGameEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.socket.on(EVENT_TYPES.ABANDON_GAME, (response: any) => {
+      payload.onGameAbandon(response.winner, response.newEloBlanc, response.newEloNoir);
+    });
+  }
+
 }

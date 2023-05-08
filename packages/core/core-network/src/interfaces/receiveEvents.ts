@@ -117,3 +117,20 @@ export interface rILinkingEvent {
 export interface rIPGStartEvent {
   navigateToGame: (lobbyId: string) => void;
 }
+
+export interface rIReceiveDrawRequestEvent {
+  setDrawRequest: ReactSetter<boolean>;
+}
+
+export interface rIReceiveDrawResponseEvent {
+  onResponse: (response: boolean, neweloBlanc: number | null, neweloNoir : number | null) => void;
+}
+
+export interface rIReadySwitched {
+  readyArray: [boolean , boolean];
+  setReadyArray: ReactSetter<[boolean , boolean]>;
+}
+
+export interface rIAbandonGameEvent {
+  onGameAbandon: (winner: string, newEloBlanc: number, newEloNoir: number) => void;
+}

@@ -11,9 +11,10 @@ interface Props{
   onGameEnd: (gameResult : any) => void;
   onShowPromotionPopup: (from:string, to : string) => void;
   onClosePromotionPopup: () => void;
+  updateData: () => void;
 }
 
-const ChessBoardRenderer: React.FC<Props> = ({onGameEnd, onShowPromotionPopup,onClosePromotionPopup}) => {
+const ChessBoardRenderer: React.FC<Props> = ({onGameEnd, onShowPromotionPopup,onClosePromotionPopup,updateData}) => {
 
   const playerIsWhite = usePlayerIsWhite()
   const [gameManager , setGameManager] = useGameManager();
@@ -65,6 +66,7 @@ const ChessBoardRenderer: React.FC<Props> = ({onGameEnd, onShowPromotionPopup,on
     console.log('updating moves data');
     onClosePromotionPopup();
     setSelectedCase(null);
+    updateData();
     setLegalMoves([]);
   }, [movesData])
 

@@ -56,7 +56,9 @@ const ChessGameEndPopup: React.FC<Props> = ({
       <div></div>
       <div>
         <div>
-          <h2>{winner} ont gagné</h2>
+          <h2>
+            {Number(winner) === 0.5 ? 'Match nul' : Number(winner) === 0 ? 'Les blancs ont gagné !' : 'Les noirs ont gagné !'}
+          </h2>
           <div>
             <div>
               <ProfileImage id={idImageP1} alt="Icon Player 1" />
@@ -73,7 +75,8 @@ const ChessGameEndPopup: React.FC<Props> = ({
           </div>
           <span>Classement</span>
           <span>
-            {ranking} <span>{rankingChange > 0 ? '+' : ''}{rankingChange}</span>
+            {ranking} <span className={rankingChange > 0 ? 'winelo' : 'lostelo'}> 
+            {rankingChange != 0 && rankingChange > 0 ? '+' : ''}{rankingChange != 0 && rankingChange}</span>
           </span>
           <button onClick={onNewGame}>🕹️ Nouvelle partie</button>
           <button onClick={onReturn}>Retour</button>

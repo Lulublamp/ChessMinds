@@ -1,0 +1,261 @@
+.PageApprendre {
+    font-style: normal;
+    color: var(--font-color);
+    width: 90%;
+    max-width: 1050px;
+    margin: auto;
+    margin-bottom: 50px;
+    overflow-x: hidden;
+}
+
+@media all and (max-width: 1100px) {
+    .PageApprendre {
+        width: 80%;
+    }
+}
+
+@media all and (max-width: 675px) {
+    .PageApprendre {
+        width: 90%;
+    }
+}
+
+.PageApprendre h2 {
+    color: var(--font-color);
+    margin: 45px 25px 30px 25px;
+    font-size: 24px;
+}
+
+.PageApprendre p,
+.PageApprendre li {
+    font-weight: 500;
+    font-size: 17px;
+    margin: 0;
+    color: var(--font-color);
+}
+
+.PageApprendre h3 {
+    color: var(--font-color);
+    font-size: 22px;
+    margin: 50px 0 25px 0;
+}
+
+.PageApprendre h4 {
+    font-size: 20px;
+    margin: 0;
+    color: var(--font-color);
+}
+
+
+/* --------------------------------------------------------------- */
+/* --------------- Partie du gros titre de la page --------------- */
+
+.PageApprendre>div:first-of-type {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 50px;
+}
+
+@media all and (max-width: 675px) {
+    .PageApprendre>div:first-of-type {
+        padding: 35px 20px;
+    }
+}
+
+.PageApprendre>div:first-of-type span {
+    font-weight: 700;
+    font-size: 38px;
+    color: var(--font-color);
+}
+
+@media all and (max-width: 675px) {
+    .PageApprendre>div:first-of-type span {
+        font-size: 30px;
+    }
+}
+
+@media all and (max-width: 400px) {
+    .PageApprendre>div:first-of-type span {
+        font-size: 25px;
+    }
+}
+
+.PageApprendre>div:first-of-type>div>span>span {
+    background: linear-gradient(135deg, #1584ce 12.82%, #8455ac 68.37%, #b96aa8 72.17%, #bf7aa7 76.43%, #d0b19e 80.6%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+
+/* --------------------------------------------------------------- */
+/* ---------------- Partie avec la bande plus foncé -------------- */
+
+.PageApprendre>div:nth-of-type(2) {
+    width: 100%;
+    position: absolute;
+    left: 0;
+    background: var(--main-color);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px 0px;
+}
+
+.PageApprendre>div:nth-of-type(2)>p {
+    font-weight: 600;
+    line-height: 24px;
+    color: #fafafa;
+    text-align: center;
+    width: 90%;
+    margin: 5px;
+}
+
+
+/* --------------------------------------------------------------- */
+/* ---------- Partie ou toutes les regles tiennent --------------- */
+
+.PageApprendre>div:nth-of-type(3)>div {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.PageApprendre>div:nth-of-type(3) {
+    margin-top: 100px;
+}
+
+@media all and (max-width: 800px) {
+    .PageApprendre>div:nth-of-type(3) {
+        margin-top: 150px;
+    }
+}
+
+.PageApprendre>div:nth-of-type(3)>div>ul {
+    margin-bottom: 25px;
+    width: 85%;
+}
+
+.PageApprendre>div:nth-of-type(3)>div:nth-of-type(2)>div:first-of-type,
+.PageApprendre>div:nth-of-type(3)>div:nth-of-type(2)>div:nth-of-type(2)>div,
+.PageApprendre>div:nth-of-type(3)>div:first-of-type>div {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: center;
+    align-content: center;
+    gap: 25px;
+}
+
+
+/* --------------------------------------------------------------- */
+/* ---------------------- Partie avec un cadre ------------------- */
+
+.MouvPiece,
+.Cadre {
+    box-shadow: 4px 4px 0px var(--drop-shadow);
+}
+
+.MouvPiece, .Cadre {
+    width: 100%;
+    max-width: 1000px;
+    border: solid 2px var(--font-color);
+}
+
+.Cadre>div {
+    padding: 25px;
+}
+
+.Cadre>div p {
+    margin-top: 10px;
+}
+
+.Cadre ul {
+    margin-left: 15px;
+}
+
+
+/* --------------------------------------------------------------- */
+/* ----------------- Partie mouvement des pieces ----------------- */
+
+.MouvPiece,
+.PageApprendre>div:nth-of-type(3)>div:nth-of-type(2)>div:nth-of-type(2)>div>.Cadre {
+    display: flex;
+    width: 48%;
+}
+
+@media all and (max-width: 1100px) {
+
+    .MouvPiece,
+    .PageApprendre>div:nth-of-type(3)>div:nth-of-type(2)>div:nth-of-type(2)>div>.Cadre {
+        width: 100%;
+    }
+}
+
+@media all and (max-width: 550px) {
+
+    .MouvPiece,
+    .PageApprendre>div:nth-of-type(3)>div:nth-of-type(2)>div:nth-of-type(2)>div>.Cadre {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+
+/* ------------- Partie mouvement des pieces avec image ------------- */
+.MouvPiece>div>p:first-of-type {
+    margin-bottom: 10px;
+}
+
+.MouvPiece>div>h4 {
+    padding-bottom: 10px;
+}
+
+.MouvPiece>div {
+    padding: 30px 20px;
+}
+
+@media all and (max-width: 550px) {
+    .MouvPiece>div {
+        padding: 20px;
+    }
+}
+
+.MouvPiece>img {
+    max-height: 225px;
+    max-width: 225px;
+    margin: 20px 0 20px 20px;
+}
+
+@media all and (max-width: 1300px) {
+    .MouvPiece>img {
+        height: 175px;
+        width: 175px;
+    }
+}
+
+@media all and (max-width: 1100px) {
+    .MouvPiece>img {
+        height: 200px;
+        width: 200px;
+    }
+}
+
+@media all and (max-width: 550px) {
+    .MouvPiece>img {
+        margin: 20px 0 0 0;
+    }
+}
+
+
+/* --------------------------------------------------------------- */
+/* ------------------ Partie resultat partie ------------------ */
+
+.PageApprendre>div:nth-of-type(3)>div:nth-of-type(3)>div>.Cadre {
+    margin: 20px 0;
+}
+
+.PageApprendre>div:nth-of-type(3)>div:nth-of-type(3)>div>p,
+.PageApprendre>div:nth-of-type(3)>div:nth-of-type(3)>div>.Cadre>div p {
+    padding-bottom: 5px;
+}

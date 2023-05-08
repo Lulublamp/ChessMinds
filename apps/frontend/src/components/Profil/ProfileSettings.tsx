@@ -13,6 +13,8 @@ const ProfileSettings: React.FC<Props> = ({ onIconClick, iconId }) => {
   const user = useContext(UserContext);
   const [pseudo, setPseudo] = useState(user?.user?.pseudo || "");
   const [email, setEmail] = useState(user?.user?.email || "");
+  const [statut, setStatut] = useState("");
+  const [success, setSuccess] = useState(false);
 
 
   const handlePseudoChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -40,9 +42,13 @@ const ProfileSettings: React.FC<Props> = ({ onIconClick, iconId }) => {
             ...user.user,
             pseudo: response.data.pseudo,
           });
+          setStatut("Pseudo mis à jour avec succès");
+          setSuccess(true);
         }
       } catch (error) {
         console.error("Erreur lors de la mise à jour du pseudo:", error);
+        setStatut("Erreur lors de la mise à jour du pseudo");
+        setSuccess(false);
       }
     }
     else {
@@ -62,14 +68,18 @@ const ProfileSettings: React.FC<Props> = ({ onIconClick, iconId }) => {
           },
         });
         console.log("Email mis à jour avec succès:", response.data);
-        if (response.data.email) {
+        setStatut("Email mis à jour avec succès");
+        setSuccess(true);
+        if (response.data.adresseMail) {
           user.setUser({
             ...user.user,
-            email: response.data.email,
+            email: response.data.adresseMail,
           });
         }
       } catch (error) {
         console.error("Erreur lors de la mise à jour de l'email:", error);
+        setStatut("Erreur lors de la mise à jour de l'email");
+        setSuccess(false);
       }
     }
     else {
@@ -96,6 +106,7 @@ const ProfileSettings: React.FC<Props> = ({ onIconClick, iconId }) => {
           <input type="password" defaultValue="Mot de passe" />
           <button>Modifier</button>
         </div>
+        <span className={success ? 'success' : 'error'} >{statut}</span>
       </div>
     </div>
   );

@@ -48,6 +48,8 @@ const GameAI = () => {
   const [gameEndInfo, setGameEndInfo] = useState<GameEndInfo | null>(null);
   const [selectedCase, setSelectedCase] = useState<{ row: number, col: number } | null>(null);
   const [legalMoves, setLegalMoves] = useState<string[]>([]);
+  const [differentialPiecesWhite, setDifferentialPiecesWhite] = useState<Map<string, number> | null>(null);
+  const [differentialPiecesBlack, setDifferentialPiecesBlack] = useState<Map<string, number> | null>(null);
 
   useEffect(() => {
     const eloAiFromUrl = searchParams.get('eloAi');
@@ -85,6 +87,7 @@ const GameAI = () => {
   const handlePromotion = (from: string, to: string, piece: string) => {
     if (!chessGame) return;
     chessGame.makeMove(from, to, piece);
+    setDifferentialPiecesWhite(chessGame.getWhitePlayerPiecesTaken());
   };
 
   const NewGame = () => {
@@ -102,7 +105,7 @@ const GameAI = () => {
     navigate("/MainMenu");
   }
 
-  const handleAiTurn = async (playerMove : any | null) => {
+  const handleAiTurn = async (playerMove: any | null) => {
     if (!chessGame) return;
     let fen = chessGame.generateFEN();
     try {
@@ -112,7 +115,8 @@ const GameAI = () => {
         let from = response.data.bestmove[0] + response.data.bestmove[1];
         let to = response.data.bestmove[2] + response.data.bestmove[3];
         const gameResult = chessGame.makeMove(from, to);
-        if(gameResult){
+        setDifferentialPiecesBlack(chessGame.getBlackPlayerPiecesTaken());
+        if (gameResult) {
           handleGameEnd(gameResult);
         }
         if (playerMove == null) {
@@ -155,7 +159,7 @@ const GameAI = () => {
       setCurrentIndex(currentIndex - 1);
     }
   }
-  
+
   const Abandon = () => {
     handleGameEnd({
       status: 'abandon',
@@ -165,7 +169,7 @@ const GameAI = () => {
   }
 
   const onCaseClick = (row: number, col: number) => {
-    if(!chessGame) return;
+    if (!chessGame) return;
     let board: ChessBoard = chessGame!.getBoard();
     let coordinate: string = String.fromCharCode("a".charCodeAt(0) + row) + (8 - col);
     let piece: ChessPiece | null = board.getPieceAt(coordinate);
@@ -186,9 +190,10 @@ const GameAI = () => {
       setSelectedCase(null);
       setLegalMoves([]);
       let gameResult = chessGame.makeMove(from, to);
+      setDifferentialPiecesWhite(chessGame.getWhitePlayerPiecesTaken());
       boardHistory.push(chessGame.getBoard().copyBoard());
       setCurrentIndex(currentIndex + 1);
-      if(gameResult){
+      if (gameResult) {
         handleGameEnd(gameResult);
       }
       let newMove = {
@@ -282,7 +287,7 @@ const GameAI = () => {
       {showPromotionPopup && (
         <PopUpPromotion choosePiece={handlePromotion} closePopUp={handleClosePromotion} from={fromToPromotion[0]} to={fromToPromotion[1]} />)
       }
-     {showEndPopup && gameEndInfo && (
+      {showEndPopup && gameEndInfo && (
         <ChessGameEndPopup
           winner={gameEndInfo.winner ? 'Les noirs' : 'Les blancs'}
           playerName1={gameEndInfo.playerName1}
@@ -298,31 +303,35 @@ const GameAI = () => {
       )}
       <MovesListMobile moves={movesData} />
       <div className="leftContainer">
-      <PlayerContainerAffichage
-          isWhitePlayer={playerisWhite}
+        <PlayerContainerAffichage
+          isWhitePlayer={false}
           playerName={"AI"}
           playerScore={eloAi}
           playerScorePieceValue={0}
           time="inf"
           idIcon={8}
+          lstPiece={differentialPiecesBlack}
         />
         <PlayerContainerAffichage
-          isWhitePlayer={playerisWhite}
+          isWhitePlayer={true}
           playerName={"Player"}
           playerScore={elo}
           playerScorePieceValue={0}
           time="inf"
           idIcon={0}
+          lstPiece={differentialPiecesWhite}
         />
       </div>
       <div className='TopContainer Mobile'>
         <PlayerContainerAffichage
-          isWhitePlayer={playerisWhite}
-          playerName={"Player"}
-          playerScore={elo}
+          isWhitePlayer={false}
+          playerName={"AI"}
+          playerScore={3600}
           playerScorePieceValue={2}
           time="inf"
-          idIcon={0}
+          enHaut={false}
+          idIcon={8}
+          lstPiece={differentialPiecesBlack}
         />
       </div>
       <div className="chessBoardContainer">
@@ -338,13 +347,13 @@ const GameAI = () => {
       </div>
       <div className='BotContainer Mobile'>
         <PlayerContainerAffichage
-          isWhitePlayer={playerisWhite}
-          playerName={"AI"}
-          playerScore={3600}
+          isWhitePlayer={true}
+          playerName={"Player"}
+          playerScore={elo}
           playerScorePieceValue={2}
           time="inf"
-          enHaut={false}
-          idIcon={8}
+          idIcon={0}
+          lstPiece={differentialPiecesWhite}
         />
       </div>
       <BottomMenuMobile

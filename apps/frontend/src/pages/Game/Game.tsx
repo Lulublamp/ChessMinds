@@ -20,8 +20,10 @@ import { useGameInfoContext } from '../../components/ChessGame/GameInfoProvider'
 import { UserContext } from '../../components/UserContext';
 import ChessGameEndPopup from '../../components/ChessGame/ChessGameEndPopup';
 import PopUpPromotion from '../../components/ChessGame/PopUpPromotion ';
+import PopUpDraw from '../../components/ChessGame/PopUpDraw';
 import axios from 'axios';
 import { API_BASE_URL } from '../../config';
+import { set } from 'lodash';
 
 type GameEndInfo = {
   winner: string;
@@ -41,12 +43,15 @@ const Game = () => {
   const [gameManager, setGameManager] = useState<ClientEventManager<IN_GAME> | null>(null);
   const gameManagerRef = useRef<ClientEventManager<IN_GAME> | null>(null);
   const [movesData, setMovesData] = useState<Move[]>([]);
+  const [differentialPiecesWhite, setDifferentialPiecesWhite] = useState<Map<string, number> | null>(null);
+  const [differentialPiecesBlack, setDifferentialPiecesBlack] = useState<Map<string, number> | null>(null);
   const [boardHistory, setBoardHistory] = useState<ChessBoard[]>([]);
   const [currentIndex, setCurrentIndex] = useState<number>(0);
   const [playerisWhite, setPlayerisWhite] = useState(false);
   const [showEndPopup, setShowEndPopup] = useState(false);
   const [fromToPromotion, setFromToPromotion] = useState<string[]>([]);
   const [showPromotionPopup, setShowPromotionPopup] = useState(false);
+  const [drawRequest, setDrawRequest] = useState(false);
   const [_game, set_Game] = useState<IGame | null>(null);
   const [chessGame, setChessGame] = useState<ChessGame | null>(new ChessGame());
   const { selectedTimeMode, isRanked } = useGameInfoContext();
@@ -148,16 +153,30 @@ const Game = () => {
     }
   }, []);
 
+  useEffect(() => {
+    gameManager?.listenToDrawRequest({setDrawRequest: setDrawRequest});
+    gameManager?.listenToDrawResponse({onResponse: (response: boolean,neweloBlanc: number | null, neweloNoir : number | null) => {
+      if(response){
+        handleGameEnd({winner: 0.5, eloBlancDiff: neweloBlanc, eloNoirDiff: neweloNoir});
+      }
+    }});
+    gameManager?.listenToAbandonGame({onGameAbandon: (winner: string, newEloBlanc: number, newEloNoir: number) => {
+      handleGameEnd({winner, eloBlancDiff: newEloBlanc, eloNoirDiff: newEloNoir});
+    }});
+  }, [gameManager]);
+
+
   const handleGameEnd = (gameResult: any) => {
     if (_game === null) return;
+    console.log("Game end", gameResult);
     setGameEndInfo(
       {
         winner: gameResult.winner,
         playerName1: _game.white_player.name,
         playerName2: _game.black_player.name,
         gameType: selectedTimeMode,
-        ranking: elo,
-        rankingChange: -15
+        ranking: elo + (playerisWhite ? gameResult.eloBlancDiff : gameResult.eloNoirDiff),
+        rankingChange: playerisWhite ? gameResult.eloBlancDiff : gameResult.eloNoirDiff,
       }
     );
     setShowEndPopup(true);
@@ -216,15 +235,31 @@ const Game = () => {
 
   const Abandon = () => {
     console.log('Abandon');
+    gameManager?.sendAbandonGame({matchId: _game?.matchId || '0'});
   }
 
   const ProposeNulle = () => {
     console.log('Propose Nulle');
+    gameManager?.sendDrawRequest({matchId: _game?.matchId || '0'});
+  }
+
+  //A appeler dans le popup de refus ou d'acceptation de la nulle
+  const DrawResponse = (response: boolean) => {
+    console.log('Draw response sent', response);
+    setDrawRequest(false);
+    gameManager?.sendDrawResponse({matchId: _game?.matchId || '0', response: response});
   }
 
   useEffect(() => {
     fetchIconData();
   }, [PlayerIsFind]);
+
+  const UpdateData = () => {
+    if(chessGame){
+      setDifferentialPiecesBlack(chessGame.getDifferenceBlackPlayerPiecesTaken());
+      setDifferentialPiecesWhite(chessGame.getDifferenceWhitePlayerPiecesTaken());
+    }
+  }
 
   return (
     <GameContext.Provider value={{
@@ -246,18 +281,21 @@ const Game = () => {
     }}>
       {showEndPopup && gameEndInfo && (
         <ChessGameEndPopup
-          winner={gameEndInfo.winner ? 'Les noirs' : 'Les blancs'}
+          winner={gameEndInfo.winner}
           playerName1={gameEndInfo.playerName1}
           playerName2={gameEndInfo.playerName2}
           gameType={gameEndInfo.gameType}
           ranking={gameEndInfo.ranking}
           rankingChange={gameEndInfo.rankingChange}
           onNewGame={handleNewGame} // Implémentez cette fonction pour gérer la création d'une nouvelle partie
-          onReturn={handleReturn} // Implémentez cette fonction pour gérer le retour à l'écran précédent
+          onReturn={handleReturn} 
           idImageP1={idIcon ? idIcon[0] : 0}
           idImageP2={idIcon ? idIcon[1] : 0}
         />
       )}
+      {drawRequest && (
+        <PopUpDraw DrawResponse={DrawResponse} />
+      ) }
 
       <FindPlayer onCancel={cancelMatchmaking}
         show={!PlayerIsFind}
@@ -270,41 +308,44 @@ const Game = () => {
         <MovesListMobile moves={movesData} />
         <div className="leftContainer">
           <PlayerContainer
-            isWhitePlayer={playerisWhite}
+            isWhitePlayer={true}
             playerName={_game ? !playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
             playerScore={_game ? !playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
             playerScorePieceValue={2}
             time="10:00"
             enHaut={true}
-            idIcon={idIcon?idIcon[0] : 0}
+            idIcon={idIcon.length > 0 ?idIcon[0] : 0}
+            lstPiece={differentialPiecesWhite}
           />
           <Chat 
             matchId={_game?.matchId || '0'}
             pseudo={user.user?.pseudo || 'Player'}
           />
           <PlayerContainer
-            isWhitePlayer={playerisWhite}
+            isWhitePlayer={false}
             playerName={_game ? playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
             playerScore={_game ? playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
             playerScorePieceValue={2}
             time="10:00"
             enHaut={false}
-            idIcon={idIcon?idIcon[1] : 0}
+            idIcon={idIcon.length > 1 ?idIcon[1] : 0}
+            lstPiece={differentialPiecesBlack}
           />
         </div>
         <div className='TopContainer Mobile'>
           <PlayerContainer
-            isWhitePlayer={playerisWhite}
+            isWhitePlayer={true}
             playerName={_game ? !playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
             playerScore={_game ? !playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
             playerScorePieceValue={2}
             time="10:00"
             enHaut={true}
             idIcon={0}
+            lstPiece={differentialPiecesWhite}
           />
         </div>
         <div className="chessBoardContainer">
-          <ChessBoardRenderer onGameEnd={handleGameEnd} onShowPromotionPopup={handleShowPromotion} onClosePromotionPopup={handleClosePromotion} />
+          <ChessBoardRenderer onGameEnd={handleGameEnd} onShowPromotionPopup={handleShowPromotion} onClosePromotionPopup={handleClosePromotion} updateData={UpdateData} />
         </div>
         <div className="rightContainer">
           <MovesList moves={movesData} />
@@ -317,13 +358,14 @@ const Game = () => {
         </div>
         <div className='BotContainer Mobile'>
           <PlayerContainer
-            isWhitePlayer={playerisWhite}
+            isWhitePlayer={false}
             playerName={_game ? playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
             playerScore={_game ? playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
             playerScorePieceValue={2}
             time="10:00"
             enHaut={false}
             idIcon={0}
+            lstPiece={differentialPiecesBlack}
           />
         </div>
         <BottomMenuMobile

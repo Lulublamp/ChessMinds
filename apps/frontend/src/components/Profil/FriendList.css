@@ -64,7 +64,7 @@
   margin-right: 15px;
 }
 
-.FriendsList > div:last-of-type > div button{
+.FriendsList > div:last-of-type > div button{ 
   width: 130px;
   height: 40px;
   border: none;
@@ -74,6 +74,11 @@
   font-size: 18px;
   font-weight: bold;
   cursor: pointer;
+}
+
+.FriendsList > div:last-of-type > div svg{
+  cursor: pointer;
+  margin-left: 5px;
 }
 
 .FriendsList > div:first-of-type{
@@ -131,6 +136,7 @@
   margin-right: 0px !important;
   background-color: #E63946 !important;
 }
+
 
 
 
