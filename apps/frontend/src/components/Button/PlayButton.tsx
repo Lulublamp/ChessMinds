@@ -24,7 +24,7 @@ const PlayButton: React.FC<PlayButtonProps> = ({ selectedTimeMod, isRanked , lob
 
   const handlePlayClick = () => {
     globalSocket?.sendStartPG({
-      lobbyId,
+      lobbyId: lobbyId!,
     });
     setGameInfo(selectedTimeMod, isRanked);
     // navigate('/Game');

@@ -51,7 +51,7 @@ export class MatchMakingGateway {
   ) {
     console.log('match-making: User join queue');
     // console.log(client['user']);
-    const { options } = joinQueuPayload;
+    const { options, lobbyId } = joinQueuPayload;
     const player: Nt.IMMPlayer = this.matchMakingService.mapPlayer(
       client['user'],
       options,
@@ -62,6 +62,13 @@ export class MatchMakingGateway {
       console.log('private game not implemented yet !');
       if (joinQueuPayload.lobbyId === undefined)
         throw new Error('LobbyId is undefined');
+      const pg = this.matchMakingService.queue.getFromPrivateQueue(lobbyId);
+      if (pg === undefined) {
+        console.log('private game not found');
+        return;
+      } else {
+        console.log('private game found --> : ', pg);
+      }
       return;
     }
     // console.log('playerPayload : ');
