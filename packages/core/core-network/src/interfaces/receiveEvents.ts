@@ -39,11 +39,11 @@ export interface rIIncomingGameEvent {
 
 export interface rINetworkMoveEvent {
   _forceUpdate: ReactSetter<number>;
-  chessGame: ChessGame
-  movesData: Move[]
-  boardHistory: ChessBoard[]
-  setMovesData: ReactSetter<Move[]>
-  setCurrentIndex : ReactSetter<number>
+  chessGame: ChessGame;
+  movesData: Move[];
+  boardHistory: ChessBoard[];
+  setMovesData: ReactSetter<Move[]>;
+  setCurrentIndex: ReactSetter<number>;
 }
 
 export interface rITimeEvent {
@@ -54,7 +54,7 @@ export interface rITimeEvent {
 
 export interface rITimeoutEvent {
   gameOver: ReactSetter<boolean>;
-  onGameEnd: (gameResult : any) => void;
+  onGameEnd: (gameResult: any) => void;
 }
 
 export interface rIInvitationFriendEvent {
@@ -63,14 +63,18 @@ export interface rIInvitationFriendEvent {
 }
 
 export interface rIJoinLobbyEvent {
-  goToPrivateGame: (() => void);
-  Settlobby : ReactSetter<IMMPlayer[]>;
-  lobbyRef : ReactRef<IMMPlayer[]>;
-  userId : number;
+  goToPrivateGame: () => void;
+  Settlobby: ReactSetter<IMMPlayer[]>;
+  lobbyRef: ReactRef<IMMPlayer[]>;
+  userId: number;
+  setReadyArray: ReactSetter<[boolean, boolean]>;
+  setChecked: ReactSetter<boolean>;
+  onReadyChange: (checked: string) => void;
+  isHost: boolean;
 }
 
-export interface rILeaveLobbyEvent{
-  Settlobby : ReactSetter<IMMPlayer[]>;
+export interface rILeaveLobbyEvent {
+  Settlobby: ReactSetter<IMMPlayer[]>;
 }
 
 export interface rILobbyLeaveEvent {
@@ -84,7 +88,6 @@ export interface rIPGInvitation {
   setPGInvitations: ReactSetter<PGinvitations[]>;
 }
 
-
 export interface PGinvitations {
   idJoueur: number;
   pseudo: string;
@@ -97,6 +100,22 @@ export interface rIReceiveChatMessageEvent {
 export interface rIRequestChatHistoryEvent {
   matchId: string;
   setChat: ReactSetter<ChatMessage[]>;
+}
+
+export interface rIReadySwitched {
+  readyArray: [boolean, boolean];
+  setReadyArray: ReactSetter<[boolean, boolean]>;
+}
+
+export interface rILobbyCreated {
+  setLobbyId: ReactSetterOrNull<string>;
+}
+
+export interface rILinkingEvent {
+}
+
+export interface rIPGStartEvent {
+  navigateToGame: (lobbyId: string) => void;
 }
 
 export interface rIReceiveDrawRequestEvent {

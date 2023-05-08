@@ -28,7 +28,7 @@ export class ConnectionGateway {
   constructor(
     private connectionService: ConnectionService,
     private matchMakingService: MatchMakingService,
-  ) { }
+  ) {}
 
   handleConnection(client: Socket) {
     console.log('New Global Connection : ' + client['user'].user.pseudo);
@@ -100,6 +100,7 @@ export class ConnectionGateway {
 
     const lobbyId = this.matchMakingService.createLobby(player, client.id);
 
+    this.server.to(client.id).emit(Nt.EVENT_TYPES.LOBBY_CREATED, lobbyId);
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.LEAVE_LOBBY)
@@ -109,10 +110,13 @@ export class ConnectionGateway {
   ) {
     const { isHost, lobbyId } = payload;
 
-    const hostId = payload.lobbyId.split('-')[0];
+    const pg = this.matchMakingService.queue.getFromPrivateQueue(lobbyId);
+    const maybeFirstId = pg.length == 2 ? pg[0].id : null;
+    const maybeSecondId = pg.length == 2 ? pg[1].id : null;
+
     if (isHost == false) {
       this.server
-        .to([hostId, client.id])
+        .to([client.id, this.socketsMap.get(Number(maybeFirstId))?.id])
         .emit(Nt.EVENT_TYPES.LOBBY_LEAVE, payload);
       this.matchMakingService.queue.removeFromPrivateQueue(
         lobbyId,
@@ -121,8 +125,6 @@ export class ConnectionGateway {
       return;
     }
 
-    const pg = this.matchMakingService.queue.getFromPrivateQueue(lobbyId);
-    const maybeSecondId = pg.length == 2 ? pg[1].id : null;
     this.server
       .to([client.id, this.socketsMap.get(Number(maybeSecondId))?.id])
       .emit(Nt.EVENT_TYPES.LOBBY_LEAVE, payload);
@@ -149,8 +151,9 @@ export class ConnectionGateway {
       return;
     }
 
+    const hostSocket = this.socketsMap.get(Number(maybeLobby[0].id));
     this.server
-      .to([lobbyId.split('-')[0], client.id])
+      .to([hostSocket.id, client.id])
       .emit(Nt.EVENT_TYPES.LOBBY_STATUS, maybeLobby);
   }
 
@@ -180,11 +183,12 @@ export class ConnectionGateway {
     );
 
     if (!canInvite) {
+      return;
+    } else {
       const timer = new Nt.DelayTimer(() => {
         this.lastInviteMap.delete(user.idJoueur);
       }, 3000);
       timer.start();
-      return;
     }
 
     this.lastInviteMap.set(user.idJoueur, idInvite);
@@ -230,7 +234,7 @@ export class ConnectionGateway {
 
     const lobby = this.matchMakingService.queue.getFromPrivateQueue(lobbyId);
     if (lobby == null) {
-      console.log('Lobby not found : Switch ready failed' , lobbyId);
+      console.log('Lobby not found : Switch ready failed', lobbyId);
       return;
     }
 
@@ -242,5 +246,50 @@ export class ConnectionGateway {
         this.socketsMap.get(Number(lobby[1]?.id))?.id,
       ])
       .emit(Nt.EVENT_TYPES.READY_SWITCHED, { target });
+  }
+
+  @SubscribeMessage(Nt.EVENT_TYPES.START_PG)
+  handleStartPG(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() payload: Nt.eIStartPG,
+  ) {
+    const { user } = client['user'];
+    const { lobbyId } = payload;
+
+    console.log('ConnectionGateway -> handleStartPG');
+
+    const lobby = this.matchMakingService.queue.getFromPrivateQueue(lobbyId);
+    if (lobby == null) {
+      console.log('Lobby not found : Start PG failed', lobbyId);
+      return;
+    }
+
+    if (lobby.length != 2) {
+      console.log('Lobby is not full : Start PG failed', lobbyId);
+      return;
+    }
+
+    const maybeFirstId = lobby[0].id;
+    const maybeSecondId = lobby[1].id;
+
+    const firstSocket = this.socketsMap.get(Number(maybeFirstId));
+    const secondSocket = this.socketsMap.get(Number(maybeSecondId));
+
+    if (firstSocket == null || secondSocket == null) {
+      console.log('Socket not found : Start PG failed', lobbyId);
+      return;
+    }
+
+    this.server
+      .to([firstSocket.id, secondSocket.id])
+      .emit(Nt.EVENT_TYPES.LINKING);
+
+    const timer = new Nt.DelayTimer(() => {
+      this.server
+        .to([firstSocket.id, secondSocket.id])
+        .emit(Nt.EVENT_TYPES.PG_STARTED, { lobbyId });
+    }, 3000);
+
+    timer.start();
   }
 }

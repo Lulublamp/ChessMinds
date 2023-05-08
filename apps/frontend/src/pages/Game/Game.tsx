@@ -299,6 +299,7 @@ const Game = () => {
 
       <FindPlayer onCancel={cancelMatchmaking}
         show={!PlayerIsFind}
+        isPrivate={isPrivate}
       />
       <section className="chessGame">
         {showPromotionPopup && (

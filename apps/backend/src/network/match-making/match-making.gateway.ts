@@ -60,6 +60,8 @@ export class MatchMakingGateway {
     // console.log(player);
     if (options.mode === Nt.MATCHMAKING_MODE.PRIVATE) {
       console.log('private game not implemented yet !');
+      if (joinQueuPayload.lobbyId === undefined)
+        throw new Error('LobbyId is undefined');
       return;
     }
     // console.log('playerPayload : ');

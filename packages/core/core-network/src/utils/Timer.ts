@@ -73,7 +73,8 @@ export class CTimer {
     let timer: NodeJS.Timer;
     if (this.turn === 0 && this.blackTime > 0) { // tour blanc
       timer = setInterval(() => {
-        this.blackTime -= 1;
+        this.blackTime -= 1
+        //à enlever après
         this.sendData(this.server, this.matchId);
         // console.log('white time: ' + this.blackTime);
         if (this.blackTime <= 0) {
