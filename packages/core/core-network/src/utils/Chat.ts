@@ -8,6 +8,8 @@ export interface ChatMessage {
 export class ChatService {
   private chatHistory: Map<string, ChatMessage[]> = new Map<string, ChatMessage[]>();
 
+  constructor() {}
+
   public addChatMessage(matchId: string, chatMessage: ChatMessage): void {
     if (!this.chatHistory.has(matchId)) {
       this.chatHistory.set(matchId, []);
