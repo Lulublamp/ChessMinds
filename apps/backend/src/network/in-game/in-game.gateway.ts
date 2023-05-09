@@ -50,7 +50,7 @@ export class InGameGateway {
   server: Server;
 
   private sockets: Socket[] = [];
-  private chatService: Nt.ChatService = new Nt.ChatService();
+  // private chatService: Nt.ChatService = new Nt.ChatService();
   private timers = new Map<string, NodeJS.Timer>();
   private timersMap = new Map<string, Nt.CTimer>();
   private playerNames: Map<
@@ -64,6 +64,7 @@ export class InGameGateway {
   constructor(
     private matchMakingService: MatchMakingService,
     private rencontreService: RencontreCoupsService,
+    private chatService: Nt.ChatService,
   ) {}
 
   afterInit() {
