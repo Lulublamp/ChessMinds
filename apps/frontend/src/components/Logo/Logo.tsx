@@ -1,5 +1,5 @@
 import React from 'react';
-import imageUrl from '../../images/logo.png'
+import imageUrl from '../../images/logo.svg'
 
 interface LogoProps {
   width: number;

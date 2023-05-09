@@ -6,7 +6,7 @@ import { IGame } from "../interfaces/game";
 import { ChessGame } from "../../../core-algo";
 
 enum Echiquier {
-  a1 = 11, a2 =12,  a3 = 13, a4 = 14, a5 = 15, a6 = 16, a7 = 17, a8 = 18,
+  a1 = 11, a2 = 12, a3 = 13, a4 = 14, a5 = 15, a6 = 16, a7 = 17, a8 = 18,
   b1 = 21, b2 = 22, b3 = 23, b4 = 24, b5 = 25, b6 = 26, b7 = 27, b8 = 28,
   c1 = 31, c2 = 32, c3 = 33, c4 = 34, c5 = 35, c6 = 36, c7 = 37, c8 = 38,
   d1 = 41, d2 = 42, d3 = 43, d4 = 44, d5 = 45, d6 = 46, d7 = 47, d8 = 48,
@@ -25,7 +25,7 @@ export class CTimer {
   private time: number;
   private matchgame: IGame;
   private rencontreService: any;
-  private game : ChessGame;
+  private game: ChessGame;
   constructor(
     public options: JoinQueuOption,
     public matchId: string,
@@ -71,7 +71,7 @@ export class CTimer {
     }
     let ifTimer = false;
     let timer: NodeJS.Timer;
-    if (this.turn === 0 && this.blackTime > 0) { // tour blanc
+    if (this.turn === 0 && this.blackTime > 0) {
       timer = setInterval(() => {
         this.blackTime -= 1
         //à enlever après
@@ -79,34 +79,20 @@ export class CTimer {
         // console.log('white time: ' + this.blackTime);
         if (this.blackTime <= 0) {
           clearInterval(timer);
-          this.server.to(this.matchId).emit(EVENT_TYPES.NO_TIME, 'black');
+          this.server.to(this.matchId).emit(EVENT_TYPES.NO_TIME, this.endGame(0));
           this.blackTime = 0;
-          this.endGame(0);
-        }
-        if (this.whiteTime <= 0) {
-          clearInterval(timer);
-          this.server.to(this.matchId).emit(EVENT_TYPES.NO_TIME, 'white');
-          this.whiteTime = 0;
-          this.endGame(1);
         }
       }, 1000);
       ifTimer = true;
-    } else if (this.turn === 1 && this.whiteTime > 0) { // tour noir
+    } else if (this.turn === 1 && this.whiteTime > 0) {
       timer = setInterval(() => {
         this.whiteTime -= 1;
         this.sendData(this.server, this.matchId);
         // console.log('black time: ' + this.whiteTime);
         if (this.whiteTime <= 0) {
           clearInterval(timer);
-          this.server.to(this.matchId).emit(EVENT_TYPES.NO_TIME, 'white');
+          this.server.to(this.matchId).emit(EVENT_TYPES.NO_TIME, this.endGame(1));
           this.whiteTime = 0;
-          this.endGame(1);
-        }
-        if (this.blackTime <= 0) {
-          clearInterval(timer);
-          this.server.to(this.matchId).emit(EVENT_TYPES.NO_TIME, 'black');
-          this.blackTime = 0;
-          this.endGame(0);
         }
       }, 1000);
       ifTimer = true;
@@ -117,7 +103,20 @@ export class CTimer {
     return timer!;
   }
 
-  private async endGame(winner: number) {
+  private async save(rencontre: any, coups: any[]) {
+    try {
+      const savedRencontre = await this.rencontreService.saveRencontre(rencontre, this.matchgame.matchOptions.mode === MATCHMAKING_MODE.RANKED);
+      for (const coup of coups) {
+        coup.idRencontre = savedRencontre;
+        await this.rencontreService.saveCoup(coup);
+      }
+      console.log('Partie sauvegardée avec succès');
+    } catch (error) {
+      console.error('Erreur lors de la sauvegarde de la partie', error);
+    }
+  }
+
+  private endGame(winner: number) {
     let eloNoir = 0;
     let eloBlanc = 0;
     let neweloBlanc = 0;
@@ -134,7 +133,6 @@ export class CTimer {
       neweloNoir = this.rencontreService.calculateEloGain({ Elo: eloNoir, score: scoreNoir },
         { Elo: eloBlanc, score: scoreBlanc }, kFactorN);
     }
-
     // Sauvegarder la partie
     const rencontre = {
       pseudoJoueurBlanc: this.matchgame.white_player.name,
@@ -142,7 +140,6 @@ export class CTimer {
       vainqueur: winner,
       timer: this.matchgame.matchOptions.timer,
     };
-
     const coups = this.game.getMovesHistory().map((move, index) => ({
       idRencontre: null, // Cette valeur sera remplacée par l'ID de la rencontre sauvegardée
       caseSource: this.positionToNumber(move.from),
@@ -151,16 +148,11 @@ export class CTimer {
       couleur: this.formate_color(move.color),
       ordre: index + 1
     }));
-
-    try {
-      const savedRencontre = await this.rencontreService.saveRencontre(rencontre, this.matchgame.matchOptions.mode === MATCHMAKING_MODE.RANKED);
-      for (const coup of coups) {
-        coup.idRencontre = savedRencontre;
-        await this.rencontreService.saveCoup(coup);
-      }
-      console.log('Partie sauvegardée avec succès');
-    } catch (error) {
-      console.error('Erreur lors de la sauvegarde de la partie', error);
+    this.save(rencontre, coups);
+    return {
+      winner: winner,
+      eloBlancDiff: neweloBlanc - eloBlanc,
+      eloNoirDiff: neweloNoir - eloNoir,
     }
   }
 
@@ -170,7 +162,7 @@ export class CTimer {
       blackTime: this.whiteTime,
     };
   }
-  
+
   public sendData(server: Server, matchId: string) {
     server.to(matchId).emit(EVENT_TYPES.TIMER, this.getData());
     server.to(matchId).emit('debug', 'debug ci/cd');
@@ -183,8 +175,8 @@ export class CTimer {
     }
     return Echiquier[positionLower as keyof typeof Echiquier];
   }
-  
-  
+
+
   private formate_piece(piecename: string) {
     if (piecename === 'Pawn') return 'PION';
     if (piecename === 'Rook') return 'TOUR';
@@ -193,10 +185,10 @@ export class CTimer {
     if (piecename === 'Queen') return 'DAME';
     if (piecename === 'King') return 'ROI';
   }
-  
+
   private formate_color(color: number) {
     if (color === 0) return 'BLANC';
     if (color === 1) return 'NOIR';
   }
-  
+
 }

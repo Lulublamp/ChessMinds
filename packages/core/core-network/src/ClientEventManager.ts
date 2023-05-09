@@ -48,6 +48,7 @@ import {
   rIAbandonGameEvent,
   rIReceiveDrawRequestEvent,
   rIReceiveDrawResponseEvent,
+  rINoTimeEvent,
 } from "./interfaces/receiveEvents";
 
 import { IGame } from "./interfaces/game";
@@ -182,7 +183,7 @@ export class ClientEventManager<
 
   public listenToNetworkMove(
     payload: Check<T, IN_GAME, rINetworkMoveEvent>,
-    onGameEnd: (gameResult: any) => void
+    onGameEnd: (gameResult: any) => void, soundPlay : (isCheck : boolean) => void
   ) {
     if (this.matchId == null) return;
     console.log("listen to network move");
@@ -194,6 +195,11 @@ export class ClientEventManager<
         const currentTurn =
           payload.chessGame.getCurrentTurn() == Color.White ? "white" : "black";
         payload.chessGame.makeMove(from, to, promotion);
+        if(payload.chessGame.getBoard().getWhiteKing().isKingInCheck(payload.chessGame.getBoard().getWhiteKing().position, payload.chessGame) 
+          || payload.chessGame.getBoard().getBlackKing().isKingInCheck(payload.chessGame.getBoard().getBlackKing().position, payload.chessGame))
+          soundPlay(true);
+        else
+          soundPlay(false);
         payload.boardHistory.push(payload.chessGame.getBoard().copyBoard());
         payload.setCurrentIndex(payload.boardHistory.length - 1);
         // Gérer le résultat de la partie
@@ -250,6 +256,14 @@ export class ClientEventManager<
         });
       }
     );
+  }
+
+  public listNoTime(payload: Check<T, IN_GAME, rINoTimeEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+    this.socket.on(EVENT_TYPES.NO_TIME, (gameResult: any) => {
+      console.log("no time received", gameResult);
+      payload.onGameEnd(gameResult);
+    });
   }
 
   public offListenToNetworkMove() {

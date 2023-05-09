@@ -6,6 +6,8 @@ import "./ChessBoardStyle.css";
 import { ClientEventManager, IGame, IN_GAME } from "@TRPI/core/core-network";
 import { useGameManager, useMovesData, usePlayerIsWhite, useIndex, useBoardHistory,useChessGame, useGame , useFPayload}  from "../../contexts/GameContext";
 import { random } from "lodash";
+import soundPieceMove from "../../sound/move-self.mp3";
+import soundPieceCheck from "../../sound/move-check.mp3";
 
 interface Props{
   onGameEnd: (gameResult : any) => void;
@@ -39,15 +41,18 @@ const ChessBoardRenderer: React.FC<Props> = ({onGameEnd, onShowPromotionPopup,on
       setMovesData,
       setCurrentIndex,
       movesData,
-      boardHistory
+      boardHistory,
     },
-    onGameEnd
+    onGameEnd,
+    playSound
     )
 
     gameManager?.listenToTimeout({
       gameOver: setGameOver,
       onGameEnd: onGameEnd
     });
+
+    gameManager?.listNoTime({onGameEnd});
 
   }, [_game])
 
@@ -61,6 +66,12 @@ const ChessBoardRenderer: React.FC<Props> = ({onGameEnd, onShowPromotionPopup,on
   useEffect(() => {
     console.log('force updating');
   }, [_fu])
+
+
+  const playSound = (isCheck: boolean) => {
+    const audio = new Audio(isCheck ? soundPieceCheck : soundPieceMove);
+    audio.play();
+  }
 
   useEffect(() => {
     console.log('updating moves data');
