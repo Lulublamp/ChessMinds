@@ -1,0 +1,76 @@
+.PageNotFound {
+  background-color: var(--background-color);
+  height: auto;
+  margin-top: 50px;
+  width: 90%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap-reverse;
+  justify-content: space-around;
+  align-items: end;
+}
+
+.PageNotFound img{
+  width: 925px;
+  height: 616.67px;
+}
+
+.PageNotFound>div {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+  width: 500px;
+  margin-bottom: 100px;
+}
+
+.PageNotFound>div h1 {
+  font-style: normal;
+  font-weight: 800;
+  font-size: 108px;
+  line-height: 132px;
+  margin-bottom: 0px;
+  margin-top: 0px;
+  text-shadow: 4px 4px 0px rgba(0, 0, 0, 0.25);
+  color: black;
+}
+
+.PageNotFound>div span {
+  color: var(--font-color);
+  font-size: 38px;
+  font-weight: bold;
+  margin-left: 25px;
+}
+
+.PageNotFound>div p{
+  color: var(--font-color);
+  font-size: 26px;
+  font-weight: bold;
+  margin: 50px 0px;
+}
+
+.PageNotFound>div button{
+  width: 441px;
+  height: 85px;
+  border: solid 2px #212121;
+  color: #212121;
+  background-color: #fff;
+  box-shadow: 4px 4px 0px #221122;
+  border-radius: 15px;
+  font-size: 38px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+@media (max-width: 925px){
+  .PageNotFound img{
+    width: 95%;
+    height: auto;
+  }
+}
+
+@media (max-width: 500px){
+  .PageNotFound>div {
+    width: 95%;
+  }
+}

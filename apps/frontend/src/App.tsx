@@ -15,6 +15,7 @@ import AuthWrapper from "./components/Navigation/AuthWrapper";
 import axios from "axios";
 import { API_BASE_URL } from "./config";
 import { PublicContext } from "./contexts/ContextPublicManager";
+import PageNotFound from "./components/Navigation/404";
 import {
   CONNECTION,
   ClientEventManager,
@@ -354,6 +355,7 @@ const App: FC = () => {
               <Route path="/Replay" element={<Replay />} />
               <Route path="/GameAi" element={<GameAI />} />
               <Route path="/Apprendre" element={<Apprendre />} />
+              <Route path="/*" element={<PageNotFound onBackClick={() => {authWrapperRef.current.handleGoToMainMenu()}} />} />
             </Routes>
           </GameInfoProvider>
           <AuthWrapper
