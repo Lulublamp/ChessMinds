@@ -10,10 +10,14 @@ import { Socket, Server } from 'socket.io';
 import { MatchMakingService } from '../match-making/match-making.service';
 import { RencontreCoupsService } from 'src/rencontre/rencontre-coups.service';
 import { Echiquier } from 'src/coups/entities/coups.entity';
-import { IGame, eIAbandonGameEvent, eIDrawRequestEvent, eIDrawResponseEvent } from '@TRPI/core/core-network';
+import {
+  IGame,
+  eIAbandonGameEvent,
+  eIDrawRequestEvent,
+  eIDrawResponseEvent,
+} from '@TRPI/core/core-network';
 import { JoinQueuOption } from '@TRPI/core/core-network/src/MatchMaking';
 import e from 'express';
-
 
 function positionToNumber(position: string): number | null {
   const positionLower = position.toLowerCase();
@@ -22,7 +26,6 @@ function positionToNumber(position: string): number | null {
   }
   return Echiquier[positionLower as keyof typeof Echiquier];
 }
-
 
 function formate_piece(piecename: string) {
   if (piecename === 'Pawn') return 'PION';
@@ -58,7 +61,10 @@ export class InGameGateway {
   private delayMap = new Map<string, Nt.DelayTimer>();
   private timeoutMap = new Map<string, Nt.DelayTimer>();
 
-  constructor(private matchMakingService: MatchMakingService, private rencontreService: RencontreCoupsService) { }
+  constructor(
+    private matchMakingService: MatchMakingService,
+    private rencontreService: RencontreCoupsService,
+  ) {}
 
   afterInit() {
     console.log('in-game: Init');
@@ -146,7 +152,6 @@ export class InGameGateway {
     // const game = games.find((game) => game.socketIdWhite === client.id || game.socketIdBlack === client.id);
   }
 
-
   @SubscribeMessage(Nt.EVENT_TYPES.ATTACH)
   handleAttach(
     @MessageBody() payload: { matchId: string; name: string },
@@ -182,23 +187,24 @@ export class InGameGateway {
     client.join(game.matchId);
     const callback = (matchId: string) => {
       const matchgame = this.matchMakingService.queue.gamesList.find(
-        (game) => game.matchId === matchId);
+        (game) => game.matchId === matchId,
+      );
       return matchgame;
     };
     const callbackRencontreService = () => {
       return this.rencontreService;
-    }
+    };
     const callbackGame = (matchId: string) => {
       const coupledGames = this.matchMakingService.queue.coupledGamesMap;
       return coupledGames.get(matchId);
-    }
+    };
     const timer: Nt.CTimer = new Nt.CTimer(
       game.matchOptions,
       game.matchId,
       this.server,
       callback,
       callbackRencontreService,
-      callbackGame
+      callbackGame,
     );
 
     this.timersMap.set(game.matchId, timer);
@@ -264,7 +270,8 @@ export class InGameGateway {
       // Récupérer les noms des joueurs
       const names = this.playerNames.get(matchId);
       const matchgame = this.matchMakingService.queue.gamesList.find(
-        (game) => game.matchId === matchId);
+        (game) => game.matchId === matchId,
+      );
 
       let eloNoir = 0;
       let eloBlanc = 0;
@@ -273,14 +280,22 @@ export class InGameGateway {
       if (matchgame.matchOptions.mode === Nt.MATCHMAKING_MODE.RANKED) {
         eloNoir = matchgame.black_player.elo;
         eloBlanc = matchgame.white_player.elo;
-        let kFactorB = this.rencontreService.calculateKFactor(eloBlanc);
-        let kFactorN = this.rencontreService.calculateKFactor(eloNoir);
-        let scoreBlanc = gameResult.winner === 0 ? 1 : gameResult.winner === 0.5 ? 0.5 : 0;
-        let scoreNoir = gameResult.winner === 1 ? 1 : gameResult.winner === 0.5 ? 0.5 : 0;
-        neweloBlanc = this.rencontreService.calculateEloGain({ Elo: eloBlanc, score: scoreBlanc },
-          { Elo: eloNoir, score: scoreNoir }, kFactorB);
-        neweloNoir = this.rencontreService.calculateEloGain({ Elo: eloNoir, score: scoreNoir },
-          { Elo: eloBlanc, score: scoreBlanc }, kFactorN);
+        const kFactorB = this.rencontreService.calculateKFactor(eloBlanc);
+        const kFactorN = this.rencontreService.calculateKFactor(eloNoir);
+        const scoreBlanc =
+          gameResult.winner === 0 ? 1 : gameResult.winner === 0.5 ? 0.5 : 0;
+        const scoreNoir =
+          gameResult.winner === 1 ? 1 : gameResult.winner === 0.5 ? 0.5 : 0;
+        neweloBlanc = this.rencontreService.calculateEloGain(
+          { Elo: eloBlanc, score: scoreBlanc },
+          { Elo: eloNoir, score: scoreNoir },
+          kFactorB,
+        );
+        neweloNoir = this.rencontreService.calculateEloGain(
+          { Elo: eloNoir, score: scoreNoir },
+          { Elo: eloBlanc, score: scoreBlanc },
+          kFactorN,
+        );
       }
 
       gameResult.eloBlancDiff = neweloBlanc - eloBlanc;
@@ -299,11 +314,15 @@ export class InGameGateway {
         caseDestination: positionToNumber(move.to),
         piece: formate_piece(move.piece),
         couleur: formate_color(move.color),
-        ordre: index + 1
+        ordre: index + 1,
       }));
 
       try {
-        this.savePartie(rencontre, coups, matchgame.matchOptions.mode === Nt.MATCHMAKING_MODE.RANKED);
+        this.savePartie(
+          rencontre,
+          coups,
+          matchgame.matchOptions.mode === Nt.MATCHMAKING_MODE.RANKED,
+        );
       } catch (error) {
         console.error('Erreur lors de la sauvegarde de la partie', error);
       }
@@ -315,7 +334,9 @@ export class InGameGateway {
     const timer = this.timersMap.get(matchId);
     const newId = timer.continueTimer();
     this.timers.set(matchId, newId);
-    this.server.to(matchId).emit(Nt.EVENT_TYPES.MOVES, from, to, promotion, gameResult);
+    this.server
+      .to(matchId)
+      .emit(Nt.EVENT_TYPES.MOVES, from, to, promotion, gameResult);
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.SEND_CHAT_MESSAGE)
@@ -323,7 +344,6 @@ export class InGameGateway {
     @MessageBody() chatMessage: Nt.eISendChatMessageEvent,
     @ConnectedSocket() client: Socket,
   ) {
-
     const chatMessageWithTimestamp: Nt.ChatMessage = {
       ...chatMessage,
       timestamp: Date.now(),
@@ -373,21 +393,25 @@ export class InGameGateway {
     }
 
     //Find player's color
-    const playerColor = game.white_player.socketId === client.id ? "White" : "Black";
+    const playerColor =
+      game.white_player.socketId === client.id ? 'White' : 'Black';
 
-    const coupledGame = this.matchMakingService.queue.coupledGamesMap.get(payload.matchId);
+    const coupledGame = this.matchMakingService.queue.coupledGamesMap.get(
+      payload.matchId,
+    );
 
     try {
       coupledGame.cancelMove(playerColor);
-    }
-    catch (error) {
+    } catch (error) {
       console.log('error: invalid cancel move !!');
       console.log(error);
       return;
     }
 
     // Find the opponent's socket ID
-    const opponentSocketId = [...roomSockets].find((socketId) => socketId !== client.id);
+    const opponentSocketId = [...roomSockets].find(
+      (socketId) => socketId !== client.id,
+    );
 
     // Emit the cancel move request only to the opponent
     if (opponentSocketId) {
@@ -395,12 +419,11 @@ export class InGameGateway {
     } else {
       console.log('error: opponent not found CANCEL_MOVE');
     }
-
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.CANCEL_MOVE_RESPONSE)
   handleCancelMoveResponse(
-    @MessageBody() payload: { matchId: string, accepted: boolean },
+    @MessageBody() payload: { matchId: string; accepted: boolean },
     @ConnectedSocket() client: Socket,
   ) {
     console.log('in-game: Cancel move response');
@@ -420,15 +443,21 @@ export class InGameGateway {
     }
 
     // Find the requester's socket ID
-    const requesterSocketId = [...roomSockets].find((socketId) => socketId !== client.id);
+    const requesterSocketId = [...roomSockets].find(
+      (socketId) => socketId !== client.id,
+    );
 
     if (requesterSocketId) {
       if (payload.accepted) {
         // Emit the cancel move response event to the requester with acceptance status
-        this.server.to(requesterSocketId).emit(Nt.EVENT_TYPES.CANCEL_MOVE_RESPONSE, { accepted: true });
+        this.server
+          .to(requesterSocketId)
+          .emit(Nt.EVENT_TYPES.CANCEL_MOVE_RESPONSE, { accepted: true });
       } else {
         // Emit the cancel move response event to the requester with rejection status
-        this.server.to(requesterSocketId).emit(Nt.EVENT_TYPES.CANCEL_MOVE_RESPONSE, { accepted: false });
+        this.server
+          .to(requesterSocketId)
+          .emit(Nt.EVENT_TYPES.CANCEL_MOVE_RESPONSE, { accepted: false });
       }
     } else {
       console.log('error: requester not found CANCEL_MOVE_RESPONSE');
@@ -447,7 +476,9 @@ export class InGameGateway {
       console.log('error: game not found DRAW_REQUEST');
       return;
     }
-    const coupledGame = this.matchMakingService.queue.coupledGamesMap.get(payload.matchId);
+    const coupledGame = this.matchMakingService.queue.coupledGamesMap.get(
+      payload.matchId,
+    );
     if (!coupledGame) {
       console.log('error: coupled game not found DRAW_REQUEST');
       return;
@@ -471,11 +502,12 @@ export class InGameGateway {
       return;
     }
 
-    const coupledGame = this.matchMakingService.queue.coupledGamesMap.get(payload.matchId);
+    const coupledGame = this.matchMakingService.queue.coupledGamesMap.get(
+      payload.matchId,
+    );
     try {
       coupledGame.drawResponse(payload.response);
-    }
-    catch (e) {
+    } catch (e) {
       console.log(e.message);
       return;
     }
@@ -484,7 +516,8 @@ export class InGameGateway {
       // Récupérer les noms des joueurs
       const names = this.playerNames.get(payload.matchId);
       const matchgame = this.matchMakingService.queue.gamesList.find(
-        (game) => game.matchId === payload.matchId);
+        (game) => game.matchId === payload.matchId,
+      );
 
       let eloNoir = 0;
       let eloBlanc = 0;
@@ -493,14 +526,20 @@ export class InGameGateway {
       if (matchgame.matchOptions.mode === Nt.MATCHMAKING_MODE.RANKED) {
         eloNoir = matchgame.black_player.elo;
         eloBlanc = matchgame.white_player.elo;
-        let kFactorB = this.rencontreService.calculateKFactor(eloBlanc);
-        let kFactorN = this.rencontreService.calculateKFactor(eloNoir);
-        let scoreBlanc = 0.5;
-        let scoreNoir = 0.5;
-        neweloBlanc = this.rencontreService.calculateEloGain({ Elo: eloBlanc, score: scoreBlanc },
-          { Elo: eloNoir, score: scoreNoir }, kFactorB);
-        neweloNoir = this.rencontreService.calculateEloGain({ Elo: eloNoir, score: scoreNoir },
-          { Elo: eloBlanc, score: scoreBlanc }, kFactorN);
+        const kFactorB = this.rencontreService.calculateKFactor(eloBlanc);
+        const kFactorN = this.rencontreService.calculateKFactor(eloNoir);
+        const scoreBlanc = 0.5;
+        const scoreNoir = 0.5;
+        neweloBlanc = this.rencontreService.calculateEloGain(
+          { Elo: eloBlanc, score: scoreBlanc },
+          { Elo: eloNoir, score: scoreNoir },
+          kFactorB,
+        );
+        neweloNoir = this.rencontreService.calculateEloGain(
+          { Elo: eloNoir, score: scoreNoir },
+          { Elo: eloBlanc, score: scoreBlanc },
+          kFactorN,
+        );
       }
 
       // Sauvegarder la partie
@@ -517,11 +556,15 @@ export class InGameGateway {
         caseDestination: positionToNumber(move.to),
         piece: formate_piece(move.piece),
         couleur: formate_color(move.color),
-        ordre: index + 1
+        ordre: index + 1,
       }));
 
       try {
-        this.savePartie(rencontre, coups, matchgame.matchOptions.mode === Nt.MATCHMAKING_MODE.RANKED);
+        this.savePartie(
+          rencontre,
+          coups,
+          matchgame.matchOptions.mode === Nt.MATCHMAKING_MODE.RANKED,
+        );
       } catch (error) {
         console.error('Erreur lors de la sauvegarde de la partie', error);
       }
@@ -529,9 +572,17 @@ export class InGameGateway {
       this.delayMap.get(payload.matchId)?.stop();
       this.timersMap.get(payload.matchId)?.stopTimer();
       this.matchMakingService.queue.destroyGame(payload.matchId);
-      this.server.to(payload.matchId).emit(Nt.EVENT_TYPES.DRAW_RESPONSE, { accepted: true, neweloBlanc: neweloBlanc - eloBlanc, neweloNoir: neweloNoir - eloNoir });
+      this.server.to(payload.matchId).emit(Nt.EVENT_TYPES.DRAW_RESPONSE, {
+        accepted: true,
+        neweloBlanc: neweloBlanc - eloBlanc,
+        neweloNoir: neweloNoir - eloNoir,
+      });
     } else {
-      this.server.to(payload.matchId).emit(Nt.EVENT_TYPES.DRAW_RESPONSE, { accepted: false, neweloBlanc: null, neweloNoir: null });
+      this.server.to(payload.matchId).emit(Nt.EVENT_TYPES.DRAW_RESPONSE, {
+        accepted: false,
+        neweloBlanc: null,
+        neweloNoir: null,
+      });
     }
   }
 
@@ -547,20 +598,24 @@ export class InGameGateway {
       return;
     }
 
-    const coupledGame = this.matchMakingService.queue.coupledGamesMap.get(payload.matchId);
+    const coupledGame = this.matchMakingService.queue.coupledGamesMap.get(
+      payload.matchId,
+    );
     if (!coupledGame) {
       console.log('error: coupled game not found ABANDON_GAME');
       return;
     }
 
     //Find player's color
-    const playerColor = game.white_player.socketId === client.id ? 'White' : 'Black';
+    const playerColor =
+      game.white_player.socketId === client.id ? 'White' : 'Black';
     console.log('playerColor', playerColor);
     coupledGame.abandonGame(playerColor);
     // Récupérer les noms des joueurs
     const names = this.playerNames.get(payload.matchId);
     const matchgame = this.matchMakingService.queue.gamesList.find(
-      (game) => game.matchId === payload.matchId);
+      (game) => game.matchId === payload.matchId,
+    );
 
     let neweloBlanc = 0;
     let neweloNoir = 0;
@@ -569,14 +624,20 @@ export class InGameGateway {
     if (matchgame.matchOptions.mode === Nt.MATCHMAKING_MODE.RANKED) {
       eloNoir = matchgame.black_player.elo;
       eloBlanc = matchgame.white_player.elo;
-      let kFactorB = this.rencontreService.calculateKFactor(eloBlanc);
-      let kFactorN = this.rencontreService.calculateKFactor(eloNoir);
-      let scoreBlanc = playerColor === 'White' ? 0 : 1;
-      let scoreNoir = playerColor === 'Black' ? 0 : 1;
-      neweloBlanc = this.rencontreService.calculateEloGain({ Elo: eloBlanc, score: scoreBlanc },
-        { Elo: eloNoir, score: scoreNoir }, kFactorB);
-      neweloNoir = this.rencontreService.calculateEloGain({ Elo: eloNoir, score: scoreNoir },
-        { Elo: eloBlanc, score: scoreBlanc }, kFactorN);
+      const kFactorB = this.rencontreService.calculateKFactor(eloBlanc);
+      const kFactorN = this.rencontreService.calculateKFactor(eloNoir);
+      const scoreBlanc = playerColor === 'White' ? 0 : 1;
+      const scoreNoir = playerColor === 'Black' ? 0 : 1;
+      neweloBlanc = this.rencontreService.calculateEloGain(
+        { Elo: eloBlanc, score: scoreBlanc },
+        { Elo: eloNoir, score: scoreNoir },
+        kFactorB,
+      );
+      neweloNoir = this.rencontreService.calculateEloGain(
+        { Elo: eloNoir, score: scoreNoir },
+        { Elo: eloBlanc, score: scoreBlanc },
+        kFactorN,
+      );
     }
 
     // Sauvegarder la partie
@@ -593,11 +654,15 @@ export class InGameGateway {
       caseDestination: positionToNumber(move.to),
       piece: formate_piece(move.piece),
       couleur: formate_color(move.color),
-      ordre: index + 1
+      ordre: index + 1,
     }));
 
     try {
-      this.savePartie(rencontre, coups, matchgame.matchOptions.mode === Nt.MATCHMAKING_MODE.RANKED);
+      this.savePartie(
+        rencontre,
+        coups,
+        matchgame.matchOptions.mode === Nt.MATCHMAKING_MODE.RANKED,
+      );
     } catch (error) {
       console.error('Erreur lors de la sauvegarde de la partie', error);
     }
@@ -606,7 +671,10 @@ export class InGameGateway {
     this.delayMap.get(payload.matchId)?.stop();
     this.timersMap.get(payload.matchId)?.stopTimer();
     this.matchMakingService.queue.destroyGame(payload.matchId);
-    this.server.to(payload.matchId).emit(Nt.EVENT_TYPES.ABANDON_GAME, { winner: playerColor === 'White' ? 1 : 0, newEloBlanc: neweloBlanc - eloBlanc, newEloNoir: neweloNoir - eloNoir });
+    this.server.to(payload.matchId).emit(Nt.EVENT_TYPES.ABANDON_GAME, {
+      winner: playerColor === 'White' ? 1 : 0,
+      newEloBlanc: neweloBlanc - eloBlanc,
+      newEloNoir: neweloNoir - eloNoir,
+    });
   }
-
 }

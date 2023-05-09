@@ -124,6 +124,11 @@ export class ClientEventManager<
     this.send(EVENT_TYPES.JOIN_QUEUE, data);
   }
 
+  public joinPgEvent(data: Check<T, MATCH_MAKING , eIJoinQueueEvent>) {
+    if (!this.validateEmit(NAMESPACE_TYPES.MATCH_MAKING)) return;
+    this.send(EVENT_TYPES.JOIN_PG_QUEUE, data);
+  }
+
   public listenToIncomingMatch(
     payload: Check<T, MATCH_MAKING, rIIncomingGameEvent>
   ) {
@@ -449,8 +454,10 @@ export class ClientEventManager<
     this.send(EVENT_TYPES.DRAW_REQUEST, payload);
   }
 
-  public listenToDrawRequest(payload: Check<T, IN_GAME, rIReceiveDrawRequestEvent>) {
-    if(!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
+  public listenToDrawRequest(
+    payload: Check<T, IN_GAME, rIReceiveDrawRequestEvent>
+  ) {
+    if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
     this.socket.on(EVENT_TYPES.DRAW_REQUEST, () => {
       payload.setDrawRequest(() => true);
     });
@@ -461,13 +468,18 @@ export class ClientEventManager<
     this.send(EVENT_TYPES.DRAW_RESPONSE, payload);
   }
 
-  public listenToDrawResponse(payload: Check<T, IN_GAME, rIReceiveDrawResponseEvent>) {
+  public listenToDrawResponse(
+    payload: Check<T, IN_GAME, rIReceiveDrawResponseEvent>
+  ) {
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
     this.socket.on(EVENT_TYPES.DRAW_RESPONSE, (response: any) => {
-      payload.onResponse(response.accepted, response.neweloBlanc, response.neweloNoir);
+      payload.onResponse(
+        response.accepted,
+        response.neweloBlanc,
+        response.neweloNoir
+      );
     });
   }
-
 
   public sendSwitchReady(payload: Check<T, CONNECTION, eISwitchReady>) {
     if (!this.validateEmit(NAMESPACE_TYPES.CONNECTION)) return;
@@ -547,8 +559,11 @@ export class ClientEventManager<
   public listenToAbandonGame(payload: Check<T, IN_GAME, rIAbandonGameEvent>) {
     if (!this.validateEmit(NAMESPACE_TYPES.IN_GAME)) return;
     this.socket.on(EVENT_TYPES.ABANDON_GAME, (response: any) => {
-      payload.onGameAbandon(response.winner, response.newEloBlanc, response.newEloNoir);
+      payload.onGameAbandon(
+        response.winner,
+        response.newEloBlanc,
+        response.newEloNoir
+      );
     });
   }
-
 }

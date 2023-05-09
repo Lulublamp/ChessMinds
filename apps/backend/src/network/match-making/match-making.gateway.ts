@@ -10,6 +10,7 @@ import { Server, Socket } from 'socket.io';
 
 import { MatchMakingService } from './match-making.service';
 import { ChessGame } from '@TRPI/core/core-algo';
+import { IRPlayer } from '@TRPI/core/core-network';
 
 @WebSocketGateway({
   namespace: Nt.NAMESPACE_TYPES.MATCH_MAKING,
@@ -58,19 +59,6 @@ export class MatchMakingGateway {
     );
     // console.log('player : ');
     // console.log(player);
-    if (options.mode === Nt.MATCHMAKING_MODE.PRIVATE) {
-      console.log('private game not implemented yet !');
-      if (joinQueuPayload.lobbyId === undefined)
-        throw new Error('LobbyId is undefined');
-      const pg = this.matchMakingService.queue.getFromPrivateQueue(lobbyId);
-      if (pg === undefined) {
-        console.log('private game not found');
-        return;
-      } else {
-        console.log('private game found --> : ', pg);
-      }
-      return;
-    }
     // console.log('playerPayload : ');
     // console.log(playerPayload);
     const maybeGame = this.matchMakingService.queue.addPlayerToQueue(
@@ -83,11 +71,41 @@ export class MatchMakingGateway {
       return;
     }
 
-    const socketWhite = maybeGame.white_player.socketId;
-    const socketBlack = maybeGame.black_player.socketId;
+    const socketWhite = (maybeGame.white_player as IRPlayer).socketId;
+    const socketBlack = (maybeGame.black_player as IRPlayer).socketId;
 
     this.server
       .to([socketWhite, socketBlack])
       .emit(Nt.EVENT_TYPES.INCOMING_CATCH, maybeGame);
+  }
+
+  @SubscribeMessage(Nt.EVENT_TYPES.JOIN_PG_QUEUE)
+  handleJoinPGQueue(
+    @MessageBody() joinQueuPayload: Nt.eIJoinQueueEvent,
+    @ConnectedSocket() client: Socket,
+  ) {
+    console.log('match-making: User join private queue');
+    const { lobbyId } = joinQueuPayload;
+    if (joinQueuPayload.lobbyId === undefined)
+      throw new Error('LobbyId is undefined');
+    const pg = this.matchMakingService.queue.gamesList.find(
+      (game) => game.matchId === lobbyId,
+    );
+    if (pg === undefined) {
+      console.log('private game not found');
+      return;
+    }
+    this.matchMakingService.queue.mutateGameSocketId(
+      pg.matchId,
+      client.id,
+      client['user'].user.pseudo,
+    );
+    console.log('private game found --> : ', pg);
+    const socketWhite = (pg.white_player as IRPlayer).socketId;
+    const socketBlack = (pg.black_player as IRPlayer).socketId;
+    this.server
+      .to([socketWhite, socketBlack])
+      .emit(Nt.EVENT_TYPES.INCOMING_CATCH, pg);
+    return;
   }
 }

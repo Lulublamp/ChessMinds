@@ -6,6 +6,7 @@ export interface IMMPlayer {
   name: string;
   elo: number;
   options: JoinQueuOption;
+  socketId?: string | null;
 }
 
 export interface IRPlayer extends IMMPlayer {

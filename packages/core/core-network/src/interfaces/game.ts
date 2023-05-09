@@ -1,5 +1,5 @@
 import { JoinQueuOption } from "../MatchMaking";
-import { IRPlayer } from "./mmplayer";
+import { IMMPlayer, IRPlayer } from "./mmplayer";
 
 export interface IGameState {
   state: string;
@@ -9,8 +9,8 @@ export interface IGameState {
 export interface IGame {
   matchId: string;
   matchOptions: JoinQueuOption;
-  white_player: IRPlayer;
-  black_player: IRPlayer;
+  white_player: IRPlayer | IMMPlayer;
+  black_player: IRPlayer | IMMPlayer;
   createdAt: Date;
   state: IGameState;
 }

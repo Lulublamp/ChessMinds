@@ -47,6 +47,8 @@ const PrivateGame: React.FC<Props> = ({
 
   const isMounted = useRef(false);
 
+  const [pgReady, setPgReady] = useState(false);
+
   const [readyArray, setReadyArray] = useState<[boolean, boolean]>([
     false,
     false,
@@ -75,10 +77,13 @@ const PrivateGame: React.FC<Props> = ({
   };
 
   const lobbyIdCleanUp = (id: string) => {
-    globalSocket?.leaveLobby({
-      lobbyId: id,
-      isHost: isHost,
-    });
+    if (!pgReady) {
+      console.log("leaving lobby");
+      globalSocket?.leaveLobby({
+        lobbyId: id,
+        isHost: isHost,
+      });
+    }
     setLobby([]);
     setLobbyId(null);
   };
@@ -100,15 +105,6 @@ const PrivateGame: React.FC<Props> = ({
     globalSocket?.listenToLobbyCreated({ setLobbyId });
     globalSocket?.createLobby(null);
   }, [isHost]);
-  //Ce useEffect gère le non host
-  useEffect(() => {
-    if (isHost) return;
-    console.log("isHost : ", isHost);
-  }, [isHost]);
-  //Ce useEffect gère l'apparition dans le lobby
-  useEffect(() => {
-    console.log("Current array ", readyArray);
-  }, [readyArray]);
 
   useEffect(() => {
     globalSocket?.listenToJoinLobby({
@@ -133,9 +129,14 @@ const PrivateGame: React.FC<Props> = ({
       setReadyArray: setReadyArray,
     });
 
-    globalSocket?.listenToPGStarting({
-      navigateToGame,
-    });
+    console.log("listening to pg starting", isHost);
+
+    if (!isHost) {
+      console.log("listening to pg starting", isHost);
+      globalSocket?.listenToPGStarting({
+        navigateToGame,
+      });
+    }
 
     globalSocket?.listenToLinking({});
 
@@ -168,31 +169,7 @@ const PrivateGame: React.FC<Props> = ({
   const handleDefi = (id: number) => {
     globalSocket?.sendPGinvitation({ idInvite: id, lobbyId: lobbyId! });
     console.log("defi", id);
-  };
-
-  // useEffect(() => {
-
-  //   console.log('isHost changed in private game yeah ! : ', isHost);
-
-  //   globalSocket?.listenToLobbyLeave({
-  //     callback: onBackClick,
-  //     lobby: Lobby,
-  //     setLobby: LobbySetteur,
-  //   });
-
-  //   globalSocket?.listenToReadySwitched({
-  //     readyArray: readyArray,
-  //     setReadyArray: setReadyArray,
-  //   });
-
-  //   if (!isHost) {
-  //     console.log('Joining server lobby', idMatch);
-  //     InvitationSetteur((prevState) =>
-  //       prevState.filter((invitation) => invitation.lobbyId !== idMatch)
-  //     );
-  //     return;
-  //   };
-  // }, [isHost]);
+  }
 
   return (
     <section className="PrivateLobby">
@@ -205,7 +182,7 @@ const PrivateGame: React.FC<Props> = ({
           </div>
           <div className="menu-container">
             <div className="Lobby">
-              <h3>Lobby :</h3>
+              <h3>Lobby : {lobbyId}</h3>
               <div>
                 <svg width="21" height="18" viewBox="0 0 21 18" fill="none">
                   <path
@@ -244,6 +221,7 @@ const PrivateGame: React.FC<Props> = ({
                 selectedTimeMod={selectedTimeMod}
                 isRanked={"private"}
                 lobbyId={lobbyId!}
+                setPgReady={setPgReady}
               />
             )}
           </div>

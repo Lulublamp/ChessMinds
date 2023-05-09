@@ -172,6 +172,28 @@ export class Queue {
     return game;
   }
 
+  BuildPrivateGame(
+    firstPlayer: IMMPlayer,
+    secondPlayer: IMMPlayer,
+    matchId: string
+  ): IGame {
+    let random = Math.floor(Math.random() * 2);
+    const white_player = random === 0 ? firstPlayer : secondPlayer;
+    const black_player = random === 0 ? secondPlayer : firstPlayer;
+    const game: IGame = {
+      matchId,
+      white_player,
+      black_player,
+      matchOptions: firstPlayer.options || secondPlayer.options,
+      createdAt: new Date(),
+      state: {
+        state: "ongoing",
+        winner: undefined,
+      },
+    };
+    return game;
+  }
+
   static generateMatchId(
     firstPlayer: IRPlayer,
     secondPlayer: IRPlayer

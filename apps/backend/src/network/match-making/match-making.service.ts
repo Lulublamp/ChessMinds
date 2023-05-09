@@ -51,7 +51,11 @@ export class MatchMakingService {
       console.log(g);
       return g.black_player.id == playerId || g.white_player.id == playerId;
     });
-    return playerInGame ? true : false;
+    return playerInGame
+      ? playerInGame.matchOptions.mode == 'private'
+        ? false
+        : true
+      : false;
   }
 
   public checkPlayerInGameCB(playerId: string): string {

@@ -15,7 +15,7 @@ interface Props {
   onNewGameClick: () => void;
   onPrivateGameClick: () => void;
   onAiGameClick: () => void;
-  onJoinGameClick: () => void;
+  onJoinGameClick: (lobbyCode: string) => void;
   isDarkMode: boolean;
 }
 

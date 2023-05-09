@@ -110,7 +110,11 @@ export class ConnectionGateway {
   ) {
     const { isHost, lobbyId } = payload;
 
+    console.log('ConnectionGateway -> handleLeaveLobby -> lobbyId', lobbyId);
+    console.log('ConnectionGateway -> handleLeaveLobby -> isHost', isHost);
+
     const pg = this.matchMakingService.queue.getFromPrivateQueue(lobbyId);
+    if (pg == null) return;
     const maybeFirstId = pg.length == 2 ? pg[0].id : null;
     const maybeSecondId = pg.length == 2 ? pg[1].id : null;
 
@@ -280,16 +284,16 @@ export class ConnectionGateway {
       return;
     }
 
+    const game = this.matchMakingService.queue.BuildPrivateGame(
+      lobby[0],
+      lobby[1],
+      lobbyId,
+    );
+
+    this.matchMakingService.queue.mapPrivateGame(game);
+
     this.server
       .to([firstSocket.id, secondSocket.id])
-      .emit(Nt.EVENT_TYPES.LINKING);
-
-    const timer = new Nt.DelayTimer(() => {
-      this.server
-        .to([firstSocket.id, secondSocket.id])
-        .emit(Nt.EVENT_TYPES.PG_STARTED, { lobbyId });
-    }, 3000);
-
-    timer.start();
+      .emit(Nt.EVENT_TYPES.PG_STARTED, { lobbyId });
   }
 }

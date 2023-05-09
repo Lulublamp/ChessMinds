@@ -245,10 +245,20 @@ const App: FC = () => {
 
   const handleNewPrivateGameClick = () => {
     setShowPrivateGame(true);
-    setIsHost(() => true);
+    setIsHost(true);
   };
 
-  const handleJoinLobby = () => {};
+  const handleJoinLobby = (lobbyCode: string) => {
+    const id = lobbyCode.split("-")[1].replace("-", "");
+    socketGlobalRef.current?.processPGInvitation({
+      idInviter: Number(id),
+      lobbyId: lobbyCode,
+      accept: true,
+    });
+    setShowPrivateGame(true);
+    setCurrentLobbyId(lobbyCode);
+
+  };
 
   const handleAiGameClick = () => {
     setShowAiMenu(true);

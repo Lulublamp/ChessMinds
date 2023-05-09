@@ -64,10 +64,7 @@ const Game = () => {
 
   const isPrivate = searchParams.get("id") !== null;
 
-
-
   const [matchMakingPayload, setMatchMakingPayload] = useState<eIJoinQueueEvent | null>(null);
-
 
   const fetchEloData = async (timeMode: MATCHMAKING_MODES_TIMERS) => {
     try {
@@ -140,8 +137,9 @@ const Game = () => {
         url: import.meta.env.VITE_SERVER_URL || `${API_BASE_URL}`,
         gameRef: gameManagerRef,
       }
-      newClientManager.listenToIncomingMatch(listeningPayload)
-      newClientManager.joinMatchMakingEvent(payload)
+      newClientManager.listenToIncomingMatch(listeningPayload);
+      if (isPrivate) newClientManager.joinPgEvent(payload);
+      else newClientManager.joinMatchMakingEvent(payload);
       setClientManager(() => newClientManager);
       clientManagerRef.current = newClientManager;
       console.log('mounted in here finished');
