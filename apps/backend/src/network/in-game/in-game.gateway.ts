@@ -56,7 +56,7 @@ export class InGameGateway {
   constructor(
     private matchMakingService: MatchMakingService,
     private rencontreService: RencontreCoupsService,
-    private chatService: Nt.ChatService,
+    // private chatService: Nt.ChatService,
   ) {}
 
   afterInit() {
@@ -342,10 +342,10 @@ export class InGameGateway {
       timestamp: Date.now(),
     };
 
-    this.chatService.addChatMessage(
-      chatMessage.matchId,
-      chatMessageWithTimestamp,
-    );
+    // this.chatService.addChatMessage(
+    //   chatMessage.matchId,
+    //   chatMessageWithTimestamp,
+    // );
     client
       .to(chatMessage.matchId)
       .emit(Nt.EVENT_TYPES.RECEIVE_CHAT_MESSAGE, chatMessageWithTimestamp);
@@ -357,9 +357,9 @@ export class InGameGateway {
     @ConnectedSocket() client: Socket,
   ) {
     console.log('in-game: Chat history request');
-    const chatHistory = this.chatService.getChatHistory(payload.matchId);
+    // const chatHistory = this.chatService.getChatHistory(payload.matchId);
     // client.emit(Nt.EVENT_TYPES.SEND_CHAT_HISTORY, chatHistory);
-    payload.setChat(chatHistory);
+    // payload.setChat(chatHistory);
   }
 
   @SubscribeMessage(Nt.EVENT_TYPES.CANCEL_MOVE)
