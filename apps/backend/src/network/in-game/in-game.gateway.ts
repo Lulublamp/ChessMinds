@@ -10,14 +10,6 @@ import { Socket, Server } from 'socket.io';
 import { MatchMakingService } from '../match-making/match-making.service';
 import { RencontreCoupsService } from 'src/rencontre/rencontre-coups.service';
 import { Echiquier } from 'src/coups/entities/coups.entity';
-import {
-  IGame,
-  eIAbandonGameEvent,
-  eIDrawRequestEvent,
-  eIDrawResponseEvent,
-} from '@TRPI/core/core-network';
-import { JoinQueuOption } from '@TRPI/core/core-network/src/MatchMaking';
-import e from 'express';
 
 function positionToNumber(position: string): number | null {
   const positionLower = position.toLowerCase();
@@ -467,7 +459,7 @@ export class InGameGateway {
 
   @SubscribeMessage(Nt.EVENT_TYPES.DRAW_REQUEST)
   handleDrawRequest(
-    @MessageBody() payload: eIDrawRequestEvent,
+    @MessageBody() payload: Nt.eIDrawRequestEvent,
     @ConnectedSocket() client: Socket,
   ) {
     console.log('in-game: Draw request');
@@ -492,7 +484,7 @@ export class InGameGateway {
 
   @SubscribeMessage(Nt.EVENT_TYPES.DRAW_RESPONSE)
   handleDrawResponse(
-    @MessageBody() payload: eIDrawResponseEvent,
+    @MessageBody() payload: Nt.eIDrawResponseEvent,
     @ConnectedSocket() client: Socket,
   ) {
     console.log('in-game: Draw response');
@@ -589,7 +581,7 @@ export class InGameGateway {
 
   @SubscribeMessage(Nt.EVENT_TYPES.ABANDON_GAME)
   handleAbandonGame(
-    @MessageBody() payload: eIAbandonGameEvent,
+    @MessageBody() payload: Nt.eIAbandonGameEvent,
     @ConnectedSocket() client: Socket,
   ) {
     const games = this.matchMakingService.queue.gamesList;
