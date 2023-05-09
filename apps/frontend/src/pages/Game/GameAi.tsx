@@ -109,7 +109,12 @@ const GameAI = () => {
     if (!chessGame) return;
     let fen = chessGame.generateFEN();
     try {
-      const response = await axios.post(`https://lucas-blampied.fr/ChessAi/test.php`, { fen: fen, elo: eloAi });
+      const response = await axios.post(`https://lucas-blampied.fr/ChessAi/test.php`, { 
+        fen: fen, elo: eloAi,
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
       //const response = { data: { bestmove: "d7d5" } };
       if (response.data.bestmove) {
         let from = response.data.bestmove[0] + response.data.bestmove[1];

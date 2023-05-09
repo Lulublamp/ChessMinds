@@ -106,7 +106,7 @@ const Game = () => {
       await fetchEloData(selectedTimeMode);
       setBoardHistory(() => [findChessGame.getBoard().copyBoard()]);
 
-      const newClientManager = new ClientEventManager<MATCH_MAKING>(import.meta.env.VITE_SERVER_URL || `${API_BASE_URL}`, NAMESPACE_TYPES.MATCH_MAKING, localStorage.getItem("accessToken")!);
+      const newClientManager = new ClientEventManager<MATCH_MAKING>(`${API_BASE_URL}`, NAMESPACE_TYPES.MATCH_MAKING, localStorage.getItem("accessToken")!);
       console.log("Info :", selectedTimeMode, isRanked, elo, user.user?.pseudo);
       if (!user.user?.pseudo || elo === undefined || selectedTimeMode === undefined || isRanked === undefined) {
         navigate('/MainMenu');
@@ -134,7 +134,7 @@ const Game = () => {
         disconnect: setClientManager,
         nextGameManager: setGameManager,
         name: user.user.pseudo,
-        url: import.meta.env.VITE_SERVER_URL || `${API_BASE_URL}`,
+        url:  `${API_BASE_URL}`,
         gameRef: gameManagerRef,
       }
       newClientManager.listenToIncomingMatch(listeningPayload);
