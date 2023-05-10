@@ -1,5 +1,5 @@
-import React, { FC, useState, useEffect, useRef } from "react";
-import { HashRouter, Routes, Route, useNavigate } from "react-router-dom";
+import React, { FC, useState, useEffect, useRef, useMemo } from "react";
+import { HashRouter, Routes, Route, useNavigate, useLocation } from "react-router-dom";
 import Game from "./pages/Game/Game";
 import Navbar from "./components/Navigation/NavBar/NavBar";
 import HomePage from "./pages/Home/HomePage";
@@ -265,7 +265,29 @@ const App: FC = () => {
     setShowAiMenu(true);
   };
 
-  const getMenuElement = () => {
+  const [firstRender, setFirstRender] = useState(true);
+
+  const LocationMonitor: FC = () => {
+    const location = useLocation();
+
+    useEffect(() => {
+      if(location.pathname === "/MainMenu" && !firstRender) {
+        setFirstRender(true);
+        setShowAiMenu(false);
+        setShowMatchmaking(false);
+        setShowPrivateGame(false);
+      }
+      else if(location.pathname !== "/MainMenu" && firstRender) {
+        setFirstRender(false);
+      }
+    }, [location]);
+
+    return null; // Ce composant n'a pas besoin de rendre quoi que ce soit.
+  };
+
+  const MenuElement = () => {
+
+
     if (showMatchmaking) {
       return <Matchmaking onBackClick={onBackClickMenu} />;
     }
@@ -297,97 +319,92 @@ const App: FC = () => {
       />
     );
   };
- 
-  useEffect(() => {
-    return () => {
-      console.log("unmount");
-    };
-  },[showMatchmaking]);
 
-  const onAcceptPG = (invitation: PGinvitations) => {
-    console.log("accept private game");
-    let indexLobby = PGInvitations.findIndex(
-      (invit) => invit.lobbyId === invitation.lobbyId
-    );
-    setPgIndex(indexLobby);
-    socketGlobalRef.current?.processPGInvitation({
-      idInviter: PGInvitations[indexLobby].idJoueur,
-      lobbyId: PGInvitations[indexLobby].lobbyId,
-      accept: true,
-    });
-    setShowPopupInvitationLobby(false);
-    setCurrentLobbyId(invitation.lobbyId);
-    setPGInvitations((prevState) =>
-      prevState.filter((inv) => inv.lobbyId !== invitation.lobbyId)
-    );
-
-    setShowPrivateGame(true);
-  };
-
-  const onDeclinePG = (invitation: PGinvitations) => {
-    console.log("decline private game");
-    setPGInvitations((prevState) =>
-      prevState.filter((inv) => inv.lobbyId !== invitation.lobbyId)
-    );
-  };
-
-  return (
-    <PublicContext.Provider value={{ publicManager: socketGlobal }}>
-      <UserContext.Provider value={{ user, setUser }}>
-        <HashRouter>
-          <Navbar
-            onPlayClick={handleLoginPopupClick}
-            onLogoutClick={handleLogout}
-            toggleDarkMode={togleDarkMode}
-            lstIdInvitations={lstIdInvitations}
-          />
-          {PGInvitations.map((invitation, index) => (
-            <PopUpInvitationLobby
-              key={index}
-              invitation={invitation}
-              onAccept={() => onAcceptPG(invitation)}
-              onDecline={() => onDeclinePG(invitation)}
-            />
-          ))}
-          <GameInfoProvider>
-            <Routes>
-              <Route
-                path="/"
-                element={
-                  <HomePage
-                    onPlayClick={handleLoginPopupClick}
-                    onDownloadClick={handleDownloadClick}
-                    darkMode={darkMode}
-                  />
-                }
-              />
-              <Route path="/MainMenu" element={getMenuElement()} />
-              <Route path="/Game" element={<Game />} />
-              <Route path="/Classement" element={<Classement />} />
-              <Route
-                path="/Profil"
-                element={<Profil lstIdInvitations={lstIdInvitations} />}
-              />
-              <Route path="/Replay" element={<Replay />} />
-              <Route path="/GameAi" element={<GameAI />} />
-              <Route path="/Apprendre" element={<Apprendre />} />
-              <Route path="/*" element={<PageNotFound onBackClick={() => {authWrapperRef.current.handleGoToMainMenu()}} />} />
-            </Routes>
-          </GameInfoProvider>
-          <AuthWrapper
-            ref={authWrapperRef}
-            showLoginPopup={showLoginPopup}
-            showSignupPopup={showSignupPopup}
-            isLogged={isLoggedIn}
-            handleCloseLoginPopup={handleCloseLoginPopup}
-            handleCloseSignupPopup={handleCloseSignupPopup}
-            handleSwitchToSignup={handleSwitchToSignup}
-            handleSwitchToLogin={handleSwitchToLogin}
-          />
-        </HashRouter>
-      </UserContext.Provider>
-    </PublicContext.Provider>
+const onAcceptPG = (invitation: PGinvitations) => {
+  console.log("accept private game");
+  let indexLobby = PGInvitations.findIndex(
+    (invit) => invit.lobbyId === invitation.lobbyId
   );
+  setPgIndex(indexLobby);
+  socketGlobalRef.current?.processPGInvitation({
+    idInviter: PGInvitations[indexLobby].idJoueur,
+    lobbyId: PGInvitations[indexLobby].lobbyId,
+    accept: true,
+  });
+  setShowPopupInvitationLobby(false);
+  setCurrentLobbyId(invitation.lobbyId);
+  setPGInvitations((prevState) =>
+    prevState.filter((inv) => inv.lobbyId !== invitation.lobbyId)
+  );
+
+  setShowPrivateGame(true);
+};
+
+const onDeclinePG = (invitation: PGinvitations) => {
+  console.log("decline private game");
+  setPGInvitations((prevState) =>
+    prevState.filter((inv) => inv.lobbyId !== invitation.lobbyId)
+  );
+};
+
+return (
+  <PublicContext.Provider value={{ publicManager: socketGlobal }}>
+    <UserContext.Provider value={{ user, setUser }}>
+      <HashRouter>
+        <Navbar
+          onPlayClick={handleLoginPopupClick}
+          onLogoutClick={handleLogout}
+          toggleDarkMode={togleDarkMode}
+          lstIdInvitations={lstIdInvitations}
+        />
+        <LocationMonitor />
+        {PGInvitations.map((invitation, index) => (
+          <PopUpInvitationLobby
+            key={index}
+            invitation={invitation}
+            onAccept={() => onAcceptPG(invitation)}
+            onDecline={() => onDeclinePG(invitation)}
+          />
+        ))}
+        <GameInfoProvider>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <HomePage
+                  onPlayClick={handleLoginPopupClick}
+                  onDownloadClick={handleDownloadClick}
+                  darkMode={darkMode}
+                />
+              }
+            />
+            <Route path="/MainMenu" element={<MenuElement />} />
+            <Route path="/Game" element={<Game />} />
+            <Route path="/Classement" element={<Classement />} />
+            <Route
+              path="/Profil"
+              element={<Profil lstIdInvitations={lstIdInvitations} />}
+            />
+            <Route path="/Replay" element={<Replay />} />
+            <Route path="/GameAi" element={<GameAI />} />
+            <Route path="/Apprendre" element={<Apprendre />} />
+            <Route path="/*" element={<PageNotFound onBackClick={() => { authWrapperRef.current.handleGoToMainMenu() }} />} />
+          </Routes>
+        </GameInfoProvider>
+        <AuthWrapper
+          ref={authWrapperRef}
+          showLoginPopup={showLoginPopup}
+          showSignupPopup={showSignupPopup}
+          isLogged={isLoggedIn}
+          handleCloseLoginPopup={handleCloseLoginPopup}
+          handleCloseSignupPopup={handleCloseSignupPopup}
+          handleSwitchToSignup={handleSwitchToSignup}
+          handleSwitchToLogin={handleSwitchToLogin}
+        />
+      </HashRouter>
+    </UserContext.Provider>
+  </PublicContext.Provider>
+);
 };
 
 export default App;
