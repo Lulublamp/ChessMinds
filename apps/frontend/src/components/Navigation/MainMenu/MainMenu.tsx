@@ -82,7 +82,7 @@ const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick, onPrivateGam
             onNewGameClick={onNewGameClick}
             onPrivateGameClick={ShowPopUp}
             onAiGameClick={onAiGameClick}
-            
+
           />
         </div>
         <div className="right-container">

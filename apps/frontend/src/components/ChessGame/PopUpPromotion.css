@@ -24,7 +24,7 @@
   transform: translate(-50%, -50%);
   width: 800px;
   height: 250px;
-  background-color: #fff;
+  background-color: var(--background-color);
   border-radius: 11px;
   border: solid 2px var(--font-color);
   display: flex;

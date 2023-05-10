@@ -353,6 +353,9 @@ export class ChessGame {
       for (let j = 0; j < 8; j++) {
         const piece = this.board.getPieceAt(String.fromCharCode(97 + i) + (j + 1));
         if (piece) {
+          if(piece instanceof Pawn && this.pawnsWithDoubleMove.length > 0 && piece.position == this.pawnsWithDoubleMove[0].position){
+            piece.setDoubleMove();
+          }
           if (piece.color === Color.White) {
             this.whitePlayer.addPiece(piece);
           } else {

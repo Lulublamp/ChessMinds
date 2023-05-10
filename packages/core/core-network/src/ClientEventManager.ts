@@ -192,6 +192,8 @@ export class ClientEventManager<
       EVENT_TYPES.MOVES,
       (from: string, to: string, promotion: string, gameResult: any) => {
         console.log("move received", from, to);
+        if(payload.boardHistory.length > 0)
+          payload.chessGame.setBoard(payload.boardHistory[payload.boardHistory.length - 1]);
         const currentTurn =
           payload.chessGame.getCurrentTurn() == Color.White ? "white" : "black";
         payload.chessGame.makeMove(from, to, promotion);

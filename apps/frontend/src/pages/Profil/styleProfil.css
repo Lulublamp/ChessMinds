@@ -136,8 +136,15 @@
 .Profil .leftContainer .Historique header,
 .Profil .leftContainer .Historique main {
   display: flex;
-  flex-direction: column;
   width: 100%;
+}
+
+.Profil .leftContainer .Historique header{
+  flex-direction: column;
+}
+
+.Profil .leftContainer .Historique main{
+  flex-direction: column-reverse;
 }
 
 .Profil .leftContainer .Historique main {

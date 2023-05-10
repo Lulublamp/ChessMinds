@@ -614,13 +614,13 @@ export class InGameGateway {
     let neweloNoir = 0;
     let eloNoir = 0;
     let eloBlanc = 0;
+    const scoreBlanc = playerColor === 'White' ? 0 : 1;
+    const scoreNoir = playerColor === 'Black' ? 0 : 1;
     if (matchgame.matchOptions.mode === Nt.MATCHMAKING_MODE.RANKED) {
       eloNoir = matchgame.black_player.elo;
       eloBlanc = matchgame.white_player.elo;
       const kFactorB = this.rencontreService.calculateKFactor(eloBlanc);
       const kFactorN = this.rencontreService.calculateKFactor(eloNoir);
-      const scoreBlanc = playerColor === 'White' ? 0 : 1;
-      const scoreNoir = playerColor === 'Black' ? 0 : 1;
       neweloBlanc = this.rencontreService.calculateEloGain(
         { Elo: eloBlanc, score: scoreBlanc },
         { Elo: eloNoir, score: scoreNoir },
@@ -637,7 +637,7 @@ export class InGameGateway {
     const rencontre = {
       pseudoJoueurBlanc: names.joueurBlanc,
       pseudoJoueurNoir: names.joueurNoir,
-      vainqueur: 0.5, // Match nul
+      vainqueur: scoreBlanc > scoreNoir ? 0 : 1, 
       timer: matchgame.matchOptions.timer,
     };
 
