@@ -297,6 +297,12 @@ const App: FC = () => {
       />
     );
   };
+ 
+  useEffect(() => {
+    return () => {
+      console.log("unmount");
+    };
+  },[showMatchmaking]);
 
   const onAcceptPG = (invitation: PGinvitations) => {
     console.log("accept private game");

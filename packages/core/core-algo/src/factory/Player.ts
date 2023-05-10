@@ -26,7 +26,7 @@ export class Player {
   }
 
   removePiece(piece: ChessPiece) {
-    let index = 0;
+    let index = -1;
     for (let i = 0; i < this.pieces.length; i++) {
       if (this.pieces[i].position === piece.position) {
         index = i;

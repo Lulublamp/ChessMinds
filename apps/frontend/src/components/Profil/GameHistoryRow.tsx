@@ -43,7 +43,7 @@ const GameHistoryRow: React.FC<Props> = ({player1, player2, elo1, elo2, result, 
       }
       {Number(result) === 0.5 && <span style={{color : "#007DF0"}}>Draw</span>}
       <button onClick={handleReplay}>Replay</button>
-      <span>{nbr_coups}</span>
+      <span>{Math.ceil(nbr_coups/2)}</span>
       <span>{date}</span>
     </div>
   );

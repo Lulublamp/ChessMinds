@@ -8,6 +8,11 @@
   align-items: center;
 }
 
+.gameControl button{
+  background-color: inherit;
+  border: none;
+}
+
 .gameControl svg {
   cursor: pointer;
 }

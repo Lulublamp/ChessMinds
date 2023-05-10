@@ -68,7 +68,7 @@ const Replay: React.FC = () => {
           const blackCoup = coupsData[i + 1];
 
           const move: Move = {
-            turn: whiteCoup.ordre,
+            turn: Math.ceil(whiteCoup.ordre/2),
             white: convertNumberToPosition(whiteCoup.caseDestination),
             whitePiece: ConvertDataBaseObjectToChessObject(whiteCoup.piece, Color.White),
             black: blackCoup ? convertNumberToPosition(blackCoup.caseDestination) : null,

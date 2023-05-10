@@ -51,8 +51,7 @@ const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick, onPrivateGam
         });
     }
   }, [user, navigate, setUser]);
-
-
+  
   const ShowPopUp = () => {
     setShowPrivateGamePopup(true);
   }
