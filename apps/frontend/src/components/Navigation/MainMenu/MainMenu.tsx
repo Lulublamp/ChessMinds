@@ -5,7 +5,7 @@ import imageBanner from '../../../images/0_2.png';
 import imageBannerDark from '../../../images/0_2_dark.png';
 import { UserContext, User } from '../../UserContext';
 import PopUpDefiAmi from './PopUpDefiAmi';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import './styleMenu.css';
 import axios from 'axios';
 import { API_BASE_URL } from '../../../config';
@@ -24,9 +24,17 @@ const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick, onPrivateGam
   const { setUser } = useContext(UserContext);
   const [showPrivateGamePopup, setShowPrivateGamePopup] = React.useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+
+  const newGame = searchParams.get('newGame');
 
   useEffect(() => {
     const token = localStorage.getItem('accessToken');
+    console.log(newGame);
+    if (newGame){
+      onNewGameClick();
+    }
 
     if (token === null) {
       navigate('/');
@@ -50,7 +58,7 @@ const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick, onPrivateGam
           navigate('/');
         });
     }
-  }, [user, navigate, setUser]);
+  }, [user, setUser, navigate]);
 
 
   const ShowPopUp = () => {
@@ -59,7 +67,8 @@ const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick, onPrivateGam
 
 
   return (
-    <section className="MainMenu">
+    
+    !newGame ? <section className="MainMenu">
       {showPrivateGamePopup && <PopUpDefiAmi onClose={() => setShowPrivateGamePopup(false)} onJoinLobby={onJoinGameClick} onCreateLobby={onPrivateGameClick}/> }
       <div>
         <div className="left-container">
@@ -73,6 +82,7 @@ const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick, onPrivateGam
             onNewGameClick={onNewGameClick}
             onPrivateGameClick={ShowPopUp}
             onAiGameClick={onAiGameClick}
+            
           />
         </div>
         <div className="right-container">
@@ -82,6 +92,8 @@ const MainMenu: React.FC<Props> = ({ onLogoutClick, onNewGameClick, onPrivateGam
         </div>
       </div>
     </section>
+    : null
+
   );
 };
 

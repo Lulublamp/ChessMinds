@@ -200,6 +200,7 @@ const Game = () => {
 
   const handleNewGame = () => {
     console.log('handleNewGame');
+    navigate('/MainMenu?newGame=true');
   };
 
   const handleReturn = () => {

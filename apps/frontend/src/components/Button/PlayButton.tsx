@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useGameInfoContext } from '../ChessGame/GameInfoProvider';
 import { useNavigate } from 'react-router-dom';
 import { MATCHMAKING_MODES_TIMERS, MATCHMAKING_MODE, ReactSetter } from '@TRPI/core/core-network';
@@ -9,9 +9,10 @@ interface PlayButtonProps {
   isRanked: MATCHMAKING_MODE;
   lobbyId?: string;
   setPgReady?: ReactSetter<boolean>
+  reGame?: boolean;
 }
 
-const PlayButton: React.FC<PlayButtonProps> = ({ selectedTimeMod, isRanked , lobbyId , setPgReady }) => {
+const PlayButton: React.FC<PlayButtonProps> = ({ selectedTimeMod, isRanked , lobbyId , setPgReady , reGame }) => {
 
   const { setGameInfo } = useGameInfoContext();
   const navigate = useNavigate();
@@ -19,7 +20,11 @@ const PlayButton: React.FC<PlayButtonProps> = ({ selectedTimeMod, isRanked , lob
   const globalSocket  = useGlobalSocket();
 
 
-
+  useEffect(() => {
+    if (reGame)
+      handlePlayClick();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reGame]);
 
 
 

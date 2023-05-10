@@ -8,6 +8,7 @@ import TimeMode from './TimeMode';
 import { MATCHMAKING_MODES_TIMERS, MATCHMAKING_MODE } from '@TRPI/core/core-network';
 import axios from 'axios';
 import { API_BASE_URL } from '../../../config';
+import { useSearchParams } from 'react-router-dom';
 
 
 interface Props {
@@ -17,6 +18,10 @@ interface Props {
 const Matchmaking: React.FC<Props> = ({onBackClick}) => {
   const [selectedTimeMod, setSelectedTimeMod] = useState<MATCHMAKING_MODES_TIMERS>('bullet');
   const [isRanked, setIsRanked] = useState<MATCHMAKING_MODE>('unranked');
+  const [searchParams] = useSearchParams();
+
+  const reGame = searchParams.get('newGame');
+
   
   const handleTimeModeSelect = (timeMode: MATCHMAKING_MODES_TIMERS) => {
     setSelectedTimeMod(timeMode);
@@ -74,7 +79,7 @@ const Matchmaking: React.FC<Props> = ({onBackClick}) => {
           <div className="menu-container">
             <TimeMode onTimeModeSelect={handleTimeModeSelect}/>
             <RankedSwitch onRankedChange={handleRankedChange}/>
-            <PlayButton selectedTimeMod={selectedTimeMod} isRanked={isRanked}/>
+            <PlayButton selectedTimeMod={selectedTimeMod} isRanked={isRanked} reGame={reGame ? true : false}/>
           </div>
         </div>
         <div className="right-container">
