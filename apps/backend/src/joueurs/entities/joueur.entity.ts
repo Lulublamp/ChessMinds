@@ -33,7 +33,7 @@ export class Joueur {
   @Column({nullable: false , default: 0})
   image: number;
 
-  @ManyToMany(() => Joueur , (user) => user.amis )
+  @ManyToMany(() => Joueur , (user) => user.amis)
   @JoinTable()
   amis: Joueur[]; 
 

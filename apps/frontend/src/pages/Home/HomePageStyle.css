@@ -99,13 +99,13 @@ nav .button-container .download{
   animation: slideIn 0.8s ease-out forwards;
 }
 
-.icon {
+.HomePage .icon {
   width: 31px;
   height: 31px;
   margin-right: 11px;
   margin-bottom: 8px;
   margin-left: 2px;
-  background-image: url(../../images/EmojiFusee.png);
+  background-image: url(../../images/EmojiFuseeCopy.png);
   background-repeat: no-repeat;
   background-size: cover;
 }

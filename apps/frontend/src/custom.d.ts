@@ -4,3 +4,13 @@ declare module "*.svg" {
   const src: string;
   export default src;
 }
+
+declare module "*.png" {
+  const value: any;
+  export = value;
+}
+
+declare module "*.mp3" {
+  const value: any;
+  export = value;
+}

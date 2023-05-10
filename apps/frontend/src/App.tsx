@@ -172,7 +172,7 @@ const App: FC = () => {
         socketGlobalRef.current.close();
       }
       const _clientManager = new ClientEventManager<CONNECTION>(
-        import.meta.env.VITE_SERVER_URL || `${API_BASE_URL}`,
+        `${API_BASE_URL}`,
         NAMESPACE_TYPES.CONNECTION,
         localStorage.getItem("accessToken")!
       );
