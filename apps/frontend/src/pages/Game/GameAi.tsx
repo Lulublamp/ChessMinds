@@ -304,6 +304,7 @@ const GameAI = () => {
           onReturn={BackToMenu} // Implémentez cette fonction pour gérer le retour à l'écran précédent
           idImageP1={0}
           idImageP2={8}
+          isPrivate={true}
         />
       )}
       <MovesListMobile moves={movesData} />
