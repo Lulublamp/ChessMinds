@@ -13,6 +13,7 @@ interface Props {
   rankingChange: number;
   onNewGame: () => void;
   onReturn: () => void;
+  isPrivate: boolean;
 }
 
 const GetSvg = (gameType: string) => {
@@ -50,6 +51,7 @@ const ChessGameEndPopup: React.FC<Props> = ({
   onReturn,
   idImageP1,
   idImageP2,
+  isPrivate,
 }) => {
 
   const copyGameLink = async () => {
@@ -88,7 +90,7 @@ const ChessGameEndPopup: React.FC<Props> = ({
             {ranking} <span className={rankingChange > 0 ? 'winelo' : 'lostelo'}> 
             {rankingChange != 0 && rankingChange > 0 ? '+' : ''}{rankingChange != 0 && rankingChange}</span>
           </span>
-          <button onClick={onNewGame}>🕹️ Nouvelle partie</button>
+          {!isPrivate && <button onClick={onNewGame}>🕹️ Nouvelle partie</button>}
           <button onClick={onReturn}>Retour</button>
           <div className="partage">
             <span>Partager</span>

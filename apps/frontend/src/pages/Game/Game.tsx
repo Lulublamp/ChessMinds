@@ -294,6 +294,7 @@ const Game = () => {
           onReturn={handleReturn} 
           idImageP1={idIcon ? idIcon[0] : 0}
           idImageP2={idIcon ? idIcon[1] : 0}
+          isPrivate={isPrivate}
         />
       )}
       {drawRequest && (
