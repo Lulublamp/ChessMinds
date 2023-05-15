@@ -570,6 +570,7 @@ export class InGameGateway {
         neweloBlanc: neweloBlanc - eloBlanc,
         neweloNoir: neweloNoir - eloNoir,
       });
+      this.matchMakingService.queue.destroyGame(payload.matchId);
     } else {
       this.server.to(payload.matchId).emit(Nt.EVENT_TYPES.DRAW_RESPONSE, {
         accepted: false,
@@ -669,5 +670,6 @@ export class InGameGateway {
       newEloBlanc: neweloBlanc - eloBlanc,
       newEloNoir: neweloNoir - eloNoir,
     });
+    this.matchMakingService.queue.destroyGame(payload.matchId);
   }
 }
