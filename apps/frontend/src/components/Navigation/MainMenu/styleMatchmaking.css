@@ -290,14 +290,25 @@ input:checked+.slider .checked-icon {
 
 @media (max-width: 450px) {
   .Matchmaking .left-container {
-    width: 100%;
-    min-width: 100%;
+    width: 95%;
+    min-width: 95%;
     padding-left: 0;
   }
 
-  .menu-container>button {
-    width: 100%;
+  .Matchmaking .menu-container>button {
+    width: 90%;
     height: 70px;
     font-size: 25px;
+    margin: 35px auto 0 auto;
+  }
+
+  .Matchmaking .format-container {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 45px;
+    row-gap: 20px;
+    justify-content: center;
+    height: 250px;
   }
 }
