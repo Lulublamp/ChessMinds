@@ -82,7 +82,6 @@ export const PlayerContainerAffichage: React.FC<PlayerContainerProps> = ({
 const PlayerContainer: React.FC<PlayerContainerProps> = ({
   isWhitePlayer,
   playerName,
-  playerScore,
   enHaut,
   idIcon,
   lstPiece,
@@ -129,7 +128,7 @@ const PlayerContainer: React.FC<PlayerContainerProps> = ({
     <PlayerContainerAffichage
       isWhitePlayer={isWhitePlayer}
       playerName={playerName}
-      playerScore={playerScore}
+      playerScore={playerScorePieceValue}
       playerScorePieceValue={playerScorePieceValue}
       time={timer}
       idIcon={idIcon}

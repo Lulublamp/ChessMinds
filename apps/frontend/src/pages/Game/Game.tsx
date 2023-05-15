@@ -315,11 +315,11 @@ const Game = () => {
             isWhitePlayer={playerisWhite}
             playerName={_game ? !playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
             playerScore={_game ? !playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
-            playerScorePieceValue={2}
+            playerScorePieceValue={0}
             time="10:00"
             enHaut={true}
             idIcon={idIcon.length > 0 ?idIcon[0] : 0}
-            lstPiece={differentialPiecesWhite}
+            lstPiece={playerisWhite ? differentialPiecesBlack : differentialPiecesWhite}
           />
           <Chat 
             matchId={_game?.matchId || '0'}
@@ -329,11 +329,11 @@ const Game = () => {
             isWhitePlayer={playerisWhite}
             playerName={_game ? playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
             playerScore={_game ? playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
-            playerScorePieceValue={2}
+            playerScorePieceValue={0}
             time="10:00"
             enHaut={false}
             idIcon={idIcon.length > 1 ?idIcon[1] : 0}
-            lstPiece={differentialPiecesBlack}
+            lstPiece={playerisWhite ? differentialPiecesWhite : differentialPiecesBlack}
           />
         </div>
         <div className='TopContainer Mobile'>
@@ -341,11 +341,11 @@ const Game = () => {
             isWhitePlayer={playerisWhite}
             playerName={_game ? !playerisWhite ? _game.white_player.name : _game.black_player.name : 'Player'}
             playerScore={_game ? !playerisWhite ? _game.white_player.elo : _game.black_player.elo : 0}
-            playerScorePieceValue={2}
+            playerScorePieceValue={0}
             time="10:00"
             enHaut={true}
             idIcon={0}
-            lstPiece={differentialPiecesWhite}
+            lstPiece={playerisWhite ? differentialPiecesBlack : differentialPiecesWhite}
           />
         </div>
         <div className="chessBoardContainer">
@@ -369,7 +369,7 @@ const Game = () => {
             time="10:00"
             enHaut={false}
             idIcon={0}
-            lstPiece={differentialPiecesBlack}
+            lstPiece={playerisWhite ? differentialPiecesWhite : differentialPiecesBlack}
           />
         </div>
         <BottomMenuMobile
