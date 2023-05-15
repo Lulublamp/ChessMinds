@@ -4,7 +4,7 @@
   right: 2%;
   width: 381px;
   height: 150px;
-  background: #FFFFFF;
+  background: var(--background-color);
   border: solid 2px #212121;
   border-radius: 11px;
   padding: 14px 20px;
@@ -18,7 +18,7 @@
 .PopUpInvitationLobby span{
   font-size: 18px;
   font-weight: bold;
-  color: #212121;
+  color: var(--font-color);
 }
 
 .PopUpInvitationLobby > div{
