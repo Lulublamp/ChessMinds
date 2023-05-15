@@ -195,3 +195,24 @@
   transform: translateX(-50%);
   z-index: 1;
 }
+
+
+@media (max-width: 450px) {
+  .AiMenu .left-container {
+    width: 95%;
+    min-width: 95%;
+    padding-left: 0;
+    margin: auto;
+  }
+
+  .AiMenu .menu-container>button {
+    width: 90%;
+    height: 70px;
+    font-size: 25px;
+    margin: 35px auto 0 auto;
+  }
+
+  .AiMenu .slider-container {
+    width: 90%;
+  }
+}
