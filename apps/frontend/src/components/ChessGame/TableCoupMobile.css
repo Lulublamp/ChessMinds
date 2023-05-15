@@ -1,12 +1,13 @@
 .coupsContainerMobile{
-  width: auto;
+  width: 100vw;
   margin-top: 1px;
-  min-width: 100%;
+  margin-left: 0px;
   overflow-x: auto;
   height: 43px;
   border: solid 1px var(--font-color);
   display: none;
   flex-direction: row;
+  overflow-x: auto;
 }
 
 .coupsContainerMobile > div{
@@ -20,6 +21,9 @@
   color: var(--font-color);
   font-size: 18px;
   font-weight: 500;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .coupsContainerMobile > div > div:first-of-type{
