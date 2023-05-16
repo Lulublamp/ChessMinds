@@ -105,7 +105,7 @@ export class RencontreCoupsService {
     return this.coupsRepository.save(coup);
   }
 
-  async getStats(joueur: JoueurDto): Promise<{ victoires: number; defaites: number; parties: number }> {
+  async getStats(joueur: JoueurDto): Promise<{ victoires: number; defaites: number; parties: number }> { 
     const victoiresBlanc = await this.rencontreRepository.count({ where: { vainqueur: 0, joueurBlanc : joueur } });
     const victoiresNoir = await this.rencontreRepository.count({ where: { vainqueur: 1, joueurNoir: joueur } });
     const nuls = await this.rencontreRepository.count({ where: { vainqueur: 0.5, joueurBlanc: joueur } }) + await this.rencontreRepository.count({ where: { vainqueur: 0.5, joueurNoir: joueur } });
@@ -113,6 +113,7 @@ export class RencontreCoupsService {
     const parties = await this.rencontreRepository.count({
       where: [{ joueurBlanc: joueur }, { joueurNoir: joueur }],
     });
+    console.log('partie : ' + parties);
     const defaites = parties - victoires - nuls;
     return { victoires, defaites, parties };
   }

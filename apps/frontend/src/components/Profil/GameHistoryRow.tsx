@@ -11,14 +11,13 @@ interface Props {
   date: string;
   nbr_coups: number;
   id_rencontre: number;
+  playerpseudo : string;
 }
 
-const GameHistoryRow: React.FC<Props> = ({player1, player2, elo1, elo2, result, date, nbr_coups, id_rencontre}) => {
+const GameHistoryRow: React.FC<Props> = ({player1, player2, elo1, elo2, result, date, nbr_coups, id_rencontre, playerpseudo}) => {
 
   const navigate = useNavigate();
   
-  const user = useContext(UserContext);
-
   const handleReplay = () => {
     navigate(`/Replay?idRencontre=${id_rencontre}`);
   };
@@ -29,16 +28,16 @@ const GameHistoryRow: React.FC<Props> = ({player1, player2, elo1, elo2, result, 
         <span>{player1} ({elo1})</span>
         <span>{player2} ({elo2})</span>
       </div>
-      {Number(result) === 0.0 && user.user?.pseudo === player1 
+      {Number(result) === 0.0 && playerpseudo === player1 
         && <span style={{color : "#47E639"}}>W</span>
       }
-      {Number(result) === 0.0 && user.user?.pseudo === player2
+      {Number(result) === 0.0 && playerpseudo === player2
         && <span style={{color : "#E63946"}}>L</span>
       }
-      {Number(result) === 1.0 && user.user?.pseudo === player1
+      {Number(result) === 1.0 && playerpseudo === player1
         && <span style={{color : "#E63946"}}>L</span>
       }
-      {Number(result) === 1.0 && user.user?.pseudo === player2
+      {Number(result) === 1.0 && playerpseudo === player2
         && <span style={{color : "#47E639"}}>W</span>
       }
       {Number(result) === 0.5 && <span style={{color : "#007DF0"}}>Draw</span>}

@@ -130,7 +130,7 @@ const Profil: React.FC<ProfilProps> = ({ lstIdInvitations }) => {
           <Historique />
         </div>
         <div className="rightContainer">
-          <Statistiques />
+          <Statistiques/>
           {user.user?.pseudo === PlayerDetails.pseudo && <FriendsList lstIdInvitations={lstIdInvitations} defiMode={false} />}
         </div>
       </section>

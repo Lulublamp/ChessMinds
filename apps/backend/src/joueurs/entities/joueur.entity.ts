@@ -42,9 +42,6 @@ export class Joueur {
     dto.idJoueur = this.idJoueur;
     dto.adresseMail = this.adresseMail;
     dto.pseudo = this.pseudo;
-    dto.motDePasse = this.motDePasse;
-    dto.dateInscription = this.dateInscription;
-
     return dto;
   }
 
