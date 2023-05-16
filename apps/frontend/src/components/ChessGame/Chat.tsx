@@ -38,19 +38,22 @@ const Chat: React.FC<Props> = ({matchId, pseudo}) => {
     }
   };
 
-
-
+  const handleKeyPress = (event: React.KeyboardEvent) => {
+    if (event.key === 'Enter') {
+      handleSendMessage();
+    }
+  }
   return (
     <div className="chatContainer">
       <div className="messageContainer">
         {messages.map((message, index) => (
           <div key={index} className={`message ${message.sender === pseudo ? "sent" : "received"}`}>
-            <p>{message.message}</p>
+            <p>{message.sender +" : "+ message.message}</p>
           </div>
         ))}
       </div>
       <div className="sendMessage">
-        <input type="text" placeholder="Envoyer un message..." value={inputValue} onChange={handleInputChange} />
+        <input type="text" placeholder="Envoyer un message..." value={inputValue} onChange={handleInputChange} onKeyDown={handleKeyPress}/>
         <svg
           width="24"
           height="25"
