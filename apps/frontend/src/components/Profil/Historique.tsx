@@ -109,9 +109,14 @@ const Historique: React.FC = () => {
         }
       }
     }
-    GameHistory();
+    GameHistory().then();
   }, [user.user, idPlayer, location]);
 
+
+  useEffect(() => {
+    document.querySelector("main")?.scrollTo(0, 0);
+    console.log("scroll", document.querySelector("main")?.scrollTop);
+  }, [gameHistory]);
 
   return (
     <div className="Historique">
@@ -129,7 +134,7 @@ const Historique: React.FC = () => {
       </header>
       <main>
         {gameHistory
-          ? gameHistory.map((game, index) => <GameHistoryRow
+          ? [...gameHistory].reverse().map((game, index) => <GameHistoryRow
             key={index}
             elo1={game.elo1}
             elo2={game.elo2}

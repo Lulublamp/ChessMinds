@@ -137,6 +137,12 @@
   background-color: #E63946 !important;
 }
 
+@media (max-width: 500px){
+  .FriendsList{
+    width: 100%;
+  }
+}
+
 
 
 

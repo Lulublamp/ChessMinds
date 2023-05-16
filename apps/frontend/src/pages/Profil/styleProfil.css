@@ -144,7 +144,7 @@
 }
 
 .Profil .leftContainer .Historique main{
-  flex-direction: column-reverse;
+  flex-direction: column;
 }
 
 .Profil .leftContainer .Historique main {
@@ -315,7 +315,28 @@
 }
 
 @media (max-width: 800px){
+  .Profil .leftContainer{
+    width: 98%;
+  }
+  .Profil .rightContainer{
+    width: 98%;
+  }
+  .Profil .rightContainer .Statistiques{
+    width: 100%;
+    height: auto;
+  }
+  .Profil .leftContainer .MainCadre{
+    height: auto;
+  }
   .Profil .leftContainer .MainCadre, .Profil .leftContainer .Historique{
     width: 95%;
+  }
+  .Profil .leftContainer .MainCadre>div:first-of-type{
+    flex-direction: column;
+  }
+  .Profil .leftContainer .MainCadre>div>div{
+    justify-content: center;
+    align-items: center;
+    text-align: center;
   }
 }

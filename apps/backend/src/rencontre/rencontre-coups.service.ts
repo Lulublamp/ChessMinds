@@ -113,7 +113,6 @@ export class RencontreCoupsService {
     const parties = await this.rencontreRepository.count({
       where: [{ joueurBlanc: joueur }, { joueurNoir: joueur }],
     });
-    console.log('partie : ' + parties);
     const defaites = parties - victoires - nuls;
     return { victoires, defaites, parties };
   }
