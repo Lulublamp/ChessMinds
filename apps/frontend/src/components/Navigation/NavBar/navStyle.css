@@ -212,6 +212,12 @@ nav .button-container > div > span {
   border-right: solid 1px var(--font-color);
 }
 
+nav .menu span:last-of-type{
+  margin-top: 100px;
+  color: #E63946;
+  font-weight: 500;
+}
+
 .menu .close-btn-container {
   position: absolute;
   top: 10px;

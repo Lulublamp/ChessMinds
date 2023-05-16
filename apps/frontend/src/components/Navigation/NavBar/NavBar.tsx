@@ -45,7 +45,7 @@ const Navbar: React.FC<Props> = ({ onPlayClick, onLogoutClick, toggleDarkMode, l
 
   return (
     <nav>
-      <HamburgerMenu onPlayClick={onPlayClick} goClassementPage={goClassementPage} toggleDarkModeClick={toggleDarkModeClick} goApprendrePage={goToApprendrePage} />
+      <HamburgerMenu onPlayClick={onPlayClick} goClassementPage={goClassementPage} toggleDarkModeClick={toggleDarkModeClick} goApprendrePage={goToApprendrePage} onLogoutClick={logout} />
       <div className="nav-container">
         <div onClick={goHomePage} className="logo-container">
           <Logo width={65} height={65} />
